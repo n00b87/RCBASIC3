@@ -1,0 +1,159 @@
+-------------------------
+|types of parameters
+-------------------------
+raw_number = starting character (0-9)
+n# = starting character n followed by # (# is a number denoting the number register to use)
+s# = starting character s followed by # (# is a number denoting the string register to use)
+!id = starting character is ! followed id (id is a number denoting the id vector position)
+@[data_address] = starting character is @ followed by the number specifying the offset in the data segment
+
+----------------------------------------
+|SYSTEM AND VM OPERATION
+---------------------------------------
+
+0  - end
+
+---------------------------------------
+|MOVING DATA
+----------------------------------------
+
+32 - mov	n#	n#
+33 - mov	n#	raw_number
+34 - mov	n#	!id
+35 - mov	!id	n#
+
+36 - mov$	s#	s#
+37 - mov$	s#	@[data_address]
+38 - mov$	s#	!id
+39 - mov$	!id	s#
+
+--------------------------------------
+|OPERATORS
+-------------------------------------
+
+40 - add$	s#	s#
+
+41 - add	n#	n#
+42 - sub	n#	n#
+43 - mul	n#	n#
+44 - div	n#	n#
+45 - pow	n#	n#
+46 - mod	n#	n#
+47 - shl	n#	n#
+48 - shr	n#	n#
+49 - and	n#	n#
+50 - or		n#	n#
+51 - xor	n#	n#
+52 - not	n#	n#
+
+--------------------------------------
+|COMPARE AND JUMP
+--------------------------------------
+CMP_EQUAL
+CMP_NOT_EQUAL
+CMP_GREATER
+CMP_GREATER_EQUAL
+CMP_LESS
+CMP_LESS_EQUAL
+-------------------------------------
+
+53 - cmp	n#	n#
+54 - cmp$	s#	s#
+55 - cmp_u	n#	n#
+
+56 - jmp	n#
+57 - jmp	@[address]
+58 - je		n#
+59 - je		@[address]
+60 - jne	n#
+61 - jne	@[address]
+62 - jg		n#
+63 - jg		@[address]
+64 - jge	n#
+65 - jge	@[address]
+66 - jl		n#
+67 - jl		@[address]
+68 - jle	n#
+69 - jle	@[address]
+
+--------------------------------------
+|OBJECTS  (USER TYPES AND ARRAYS)
+--------------------------------------
+OBJ_CURRENT_POSITION
+OBJ_CURRENT_TYPE
+--------------------------------------
+
+70 - obj_num	!id
+71 - obj_num1	!id	n# (n# is the first dimension)
+72 - obj_num2	!id	n#	n#
+73 - obj_num3	!id	n#	n#	n#
+
+74 - obj_str	!id
+75 - obj_str1	!id	n# (n# is the first dimension)
+76 - obj_str2	!id	n#	n#
+77 - obj_str3	!id	n#	n#	n#
+
+78 - obj_usr	!id
+79 - obj_usr1	!id	n# (n# is the first dimension)
+80 - obj_usr2	!id	n#	n#
+81 - obj_usr3	!id	n#	n#	n#
+
+82 - obj_get	n#
+83 - obj_get$	s#
+
+84 - obj_set	n#
+85 - obj_set	s$
+
+86 - clear_obj
+
+--------------------------------------------
+|STACKS
+--------------------------------------------
+<STACK> NUM_STACK
+<STACK> STR_STACK
+--------------------------------------------
+
+99 	- push n#
+100	- push$ s#
+
+101 - pop n#
+102 - pop$ s$
+
+103 - get_stack_size	n#
+104	- get_stack_size$	n#
+
+105	- clear_stack
+106	- clear_stack$
+
+---------------------------------------------
+|LOOP
+---------------------------------------------
+<STACK> LOOP_STACK
+---------------------------------------------
+
+107 - while	n#
+108 - wend
+
+109	- for !id	n# (starting value)	n# (ending value)	n#(step value)
+110	- next
+
+111 - do
+112 - loop
+113	- loop_while	n#
+114	- loop_until	n#
+
+------------------------------------------
+|FUNCTIONS AND SUB ROUTINES
+------------------------------------------
+<STACK> FUNCTION_STACK
+------------------------------------------
+
+115 - gosub	@[address]
+116 - return
+
+------------------------------------------
+|BUILT-IN LIBRARY
+------------------------------------------
+
+117 - func	raw_number (built-in function index)
+                      
