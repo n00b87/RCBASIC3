@@ -1839,6 +1839,15 @@ void rc_media_loadImage_ex_hw(int slot, string img_file, double color)
         cout << "LoadImage Error: " << SDL_GetError() << endl;
         return;
     }
+
+    if(color < 0)
+    {
+        Uint32 * c = (Uint32*)image->pixels;
+        SDL_SetColorKey(image, SDL_TRUE, c[0]);
+    }
+    else
+        SDL_SetColorKey(image, SDL_TRUE, (Uint32)color);
+
     #ifdef RC_ANDROID
     SDL_Surface * image_cv = SDL_ConvertSurfaceFormat(image, rc_pformat->format, 0);
     #else
@@ -1853,13 +1862,6 @@ void rc_media_loadImage_ex_hw(int slot, string img_file, double color)
         SDL_FreeSurface(image);
         return;
     }
-    if(color < 0)
-    {
-        Uint32 * c = (Uint32*)image_cv->pixels;
-        SDL_SetColorKey(image_cv, SDL_TRUE, c[0]);
-    }
-    else
-        SDL_SetColorKey(image_cv, SDL_TRUE, (Uint32)color);
 
     #ifdef RC_ANDROID
     SDL_DestroyTexture(rc_himage[slot][rc_active_window]);

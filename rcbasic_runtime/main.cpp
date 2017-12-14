@@ -858,7 +858,8 @@ void next_118(uint64_t f_addr)
     //cout << "id[10] = " << num_var[10].nid_value[0].value[0] << " --> " << (uint64_t)(&num_var[10].nid_value[0].value[0]) << endl;
     //cout << "id[11] = " << num_var[11].nid_value[0].value[0] << " --> " << (uint64_t)(&num_var[11].nid_value[0].value[0]) << endl;
     //cin.get();
-    rc_events();
+    //there is no point in trying to poll events in a for loop so i disabled it
+    //rc_events();
 }
 
 void do_119() //I realized that I didn't need this so its here so I can keep numbered order from my initial design
