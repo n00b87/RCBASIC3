@@ -214,12 +214,14 @@ bool rc_eval(string line)
         return true;
     }
 
+    //cout << "get tokens" << endl;
     if(!tokens(line))
     {
         //cout << "Error1: " << rc_getError() << endl;
         return false;
     }
 
+    //cout << "get preprocessor" << endl;
     if(!rc_preprocessor())
     {
         return false;
@@ -227,6 +229,9 @@ bool rc_eval(string line)
 
     //cout << "-------START TOKENS--------" << endl;
     //output_tokens();
+
+    //cout << "check rule" << endl;
+    //cout << "token: " << token[0] << endl;
 
     if(!check_rule())
     {

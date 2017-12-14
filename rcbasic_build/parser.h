@@ -1612,19 +1612,23 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     token_replace = "?";
                 }
 
+                //cout << "start_dbg" << endl;
+
                 if(!id[expr_id].isBuiltin)
                 {
                     for(int n = n_tmp.size()-1; n >= 0; n--)
                     {
                         vm_asm.push_back("pop " + n_tmp[n]);
                     }
-                    for(int n = s_reg-1; n >= 0; n--)
+                    for(int n = s_tmp.size()-1; n >= 0; n--)
                     {
                         vm_asm.push_back("pop$ " + s_tmp[n]);
                     }
                     n_tmp.clear();
                     s_tmp.clear();
                 }
+
+                //cout << "end dbg" << endl;
 
 //                if(isInFunctionScope)
 //                {
@@ -1796,14 +1800,16 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
     {
         getBlock(start_token, end_token, start_block, end_block); //sets the current start_block and end_block
 
+        //cout << "start pp" << endl;
         if(!pre_parse(start_block, end_block, PP_FLAG_ARRAY))
         {
             return false;
         }
+        //cout << "end pp" << endl;
 
         getArgBlockStuff(start_block, arg_count);
 
-        //cout << "start block = " << start_token << endl << endl;
+        //cout << "start block = " << start_token << endl << endl; cout << "end block = " << end_token << endl;
 
         if(end_block < 0) //if end_block is less than 0 then an error occurred so this function will return false
         {
@@ -1853,6 +1859,7 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
         }
         else
         {
+            //cout << "start" << endl;
             if(!eval_pow(start_block, end_block))
                 return false;
             if(!eval_muldiv(start_block, end_block))
@@ -3759,6 +3766,7 @@ bool check_rule()
         }
         else if(token.size() > 2)
         {
+            //cout << "token[1] = " << token[1] << endl;
             if(token[1].compare("<equal>")==0)
             {
                 string var_id = "";
@@ -3933,6 +3941,7 @@ bool check_rule()
             }
             else if(rc_substr(token[0], 0, 4).compare("<id>")==0 && token.size() > 5)
             {
+                //cout << "dbg 1" << endl;
                 int expr_id = getIDInScope_ByIndex(token[0].substr(4));
 
                 if(expr_id < 0)
@@ -3968,6 +3977,7 @@ bool check_rule()
                 }
                 else
                 {
+                    //cout << "dbg 2" << endl;
                     if(!eval_expression())
                     {
                         rc_setError("^Could not evaluate expression");
@@ -4044,7 +4054,7 @@ bool check_rule()
         }
         else
         {
-            if(!eval_expression())
+            if(!eval_expression(0, token.size()-1))
             {
                 rc_setError("Could not evaluate expression");
                 return false;
