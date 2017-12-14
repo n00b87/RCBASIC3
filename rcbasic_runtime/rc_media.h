@@ -350,6 +350,8 @@ bool rc_media_init()
 
 	rc_pformat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 
+	//rc_active_font = -1;
+
 	rc_udp_packet = SDLNet_AllocPacket(512);
 	rc_packet_size = 512;
 
@@ -2304,8 +2306,8 @@ void rc_media_rotateImageEX_hw(int slot, int x, int y, int src_x, int src_y, int
 void rc_media_zoomImage_hw(int slot, int x, int y, double zoom_x, double zoom_y)
 {
     SDL_Rect dst;
-    dst.x = x - (rc_image_width[slot]*zoom_x/2);
-    dst.y = y - (rc_image_height[slot]*zoom_y/2);
+    dst.x = x;
+    dst.y = y;
     dst.w = rc_image_width[slot] * zoom_x;
     dst.h = rc_image_height[slot] * zoom_y;
     SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_himage[slot][rc_active_window], NULL, &dst);

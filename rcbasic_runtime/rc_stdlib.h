@@ -15,8 +15,11 @@
 #include <sys/types.h>  //file system stuff
 #include <unistd.h>   //file system stuff
 #include <dirent.h>
-#include <SDL2/SDL.h>
-
+#ifdef RC_ANDROID
+	#include "SDL.h"
+#else
+	#include <SDL2/SDL.h>
+#endif
 //
 #define RC_LINUX
 //#define RC_WINDOWS

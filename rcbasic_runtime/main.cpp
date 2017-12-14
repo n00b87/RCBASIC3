@@ -1,3 +1,14 @@
+//#define RC_LINUX
+//#define RC_WINDOWS
+//#define RC_ANDROID
+
+#ifdef RC_ANDROID
+    #include <jni.h>
+    #include <sys/param.h>
+    #include <algorithm>
+    #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "native-activity", __VA_ARGS__))
+#endif // RC_ANDROID
+
 #include <iostream>
 #include <inttypes.h>
 #include <fstream>
@@ -129,8 +140,6 @@ rc_vm_s * vm_s;
 stack<rc_vm_n>  n_stack;
 stack<rc_vm_s> s_stack;
 stack<rc_loop> loop_stack;
-
-rc_loop for_loop;
 
 int current_n_stack_count = 0;
 int current_s_stack_count = 0;
@@ -808,6 +817,7 @@ void wend_116(uint64_t jmp_addr)
 void for_117(uint64_t nid, int n1, int n2, int n3)
 {
     num_var[nid].nid_value[0].value[0] = vm_n[n1].value;
+    rc_loop for_loop;
     for_loop.counter = &num_var[nid];
     for_loop.f_end = vm_n[n2].value;
     for_loop.f_step = vm_n[n3].value;
@@ -819,6 +829,11 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
 
     loop_stack.push(for_loop);
     //current_loop_stack_count++;
+    //cout << "nid = " << nid << " --> " << (uint64_t)(&num_var[nid].nid_value[0].value[0]) << endl;
+    //cout << "nid_value = " << num_var[nid].nid_value[0].value[0] << endl;
+    //cout << "id[10] = " << num_var[10].nid_value[0].value[0] << " --> " << (uint64_t)(&num_var[10].nid_value[0].value[0]) << endl;
+    //cout << "id[11] = " << num_var[11].nid_value[0].value[0] << " --> " << (uint64_t)(&num_var[11].nid_value[0].value[0]) << endl;
+    //cin.get();
 }
 
 void next_118(uint64_t f_addr)
@@ -840,6 +855,9 @@ void next_118(uint64_t f_addr)
         loop_stack.pop();
         //current_loop_stack_count--;
     }
+    //cout << "id[10] = " << num_var[10].nid_value[0].value[0] << " --> " << (uint64_t)(&num_var[10].nid_value[0].value[0]) << endl;
+    //cout << "id[11] = " << num_var[11].nid_value[0].value[0] << " --> " << (uint64_t)(&num_var[11].nid_value[0].value[0]) << endl;
+    //cin.get();
     rc_events();
 }
 
@@ -870,6 +888,7 @@ void loop_until_122(int n1, uint64_t jmp_addr)
 void pop_loop_stack_123()
 {
     loop_stack.pop();
+    //rc_events();
     //current_loop_stack_count--;
 }
 
@@ -887,10 +906,12 @@ void return_125()
 {
     //cout << "\nvar 0 = " << num_var[0].value[0] << endl;
     //cout << "var1 = " << num_var[1].value[0] << endl;
+    //cout << "current address = " << current_segment << " : " << current_address << endl;
     current_address = gosub_return_addr.top();
     gosub_return_addr.pop();
     current_segment = gosub_return_addr.top();
     gosub_return_addr.pop();
+    //cout << "return to: " << current_segment << " : " << current_address << endl;
 }
 
 addr_entry byref_id;
@@ -2412,8 +2433,9 @@ bool rcbasic_run()
                 i[2] = readInt();
                 i[3] = readInt();
                 //cout << "step = " << vm_n[i[3]].value << endl;
+                //cout << "for counter = " << vm_n[i[1]].value << " to " << vm_n[i[2]].value << " step " << vm_n[i[3]].value << endl;
                 for_117(i[0], i[1], i[2], i[3]);
-                //cout << "found for: " << current_segment << " " << current_address << endl;
+                //cout << "for info: " << current_segment << " " << current_address << endl << endl;
                 //cout << "for counter = " << vm_n[i[1]].value << " to " << vm_n[i[2]].value << " step " << vm_n[i[3]].value << endl;
                 break;
             case 118:
@@ -2524,6 +2546,16 @@ void rcbasic_init()
     rc_media_init();
 }
 
+void rcbasic_clean()
+{
+    rc_media_quit();
+    byref_addr_table.empty();
+    loop_stack.empty();
+    n_stack.empty();
+    s_stack.empty();
+    gosub_return_addr.empty();
+}
+
 
 int main(int argc, char * argv[])
 {
@@ -2533,7 +2565,13 @@ int main(int argc, char * argv[])
         GetCurrentDirectory(MAX_PATH, buf);
         rc_dir_path = buf;
     #else
-        rc_dir_path = get_current_dir_name();
+		#ifdef RC_ANDROID
+			char buf[BUF_SIZE];
+			getcwd(buf, BUF_SIZE);
+			rc_dir_path = (string)buf;
+		#else
+			rc_dir_path = get_current_dir_name();
+		#endif
     #endif // RC_WINDOWS
 
     string rc_filename = "";
@@ -2575,6 +2613,8 @@ int main(int argc, char * argv[])
     }
     else
         cout << "Could not load rcbasic program" << endl;
+
+    rcbasic_clean();
     //cout << "Hello world!" << endl;
     return 0;
 }
