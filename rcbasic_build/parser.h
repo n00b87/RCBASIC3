@@ -2885,7 +2885,7 @@ bool check_rule()
 
                     if(rc_substr(scope_type, 0, 5).compare("#FOR:")==0)
                     {
-                        vm_asm.push_back("pop_loop");
+                        vm_asm.push_back("pop_loop_stack");
                     }
                     else if(rc_substr(scope_type, 0, 8).compare("#SELECT:")==0)
                     {
@@ -3038,7 +3038,7 @@ bool check_rule()
 
                 if(rc_substr(scope_type, 0, 5).compare("#FOR:")==0)
                 {
-                    vm_asm.push_back("pop_loop");
+                    vm_asm.push_back("pop_loop_stack");
                 }
                 else if(rc_substr(scope_type, 0, 8).compare("#SELECT:")==0)
                 {

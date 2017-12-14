@@ -929,6 +929,10 @@ namespace rc_cbc_assembler
             {
                 writeSegment(139);
             }
+            else
+            {
+                cout << "unrecognized cmd: " << line_arg[0] << endl;
+            }
 
 
 
@@ -1091,12 +1095,12 @@ namespace rc_cbc_assembler
 
     void rc_clean()
     {
-        if(is_file_exist("main.rc_data"))
-            remove("main.rc_data");
-        if(is_file_exist("main_str_data.sdata"))
-            remove("main_str_data.sdata");
-        if(is_file_exist("main.rc_asm"))
-            remove("main.rc_asm");
+//        if(is_file_exist("main.rc_data"))
+//            remove("main.rc_data");
+//        if(is_file_exist("main_str_data.sdata"))
+//            remove("main_str_data.sdata");
+//        if(is_file_exist("main.rc_asm"))
+//            remove("main.rc_asm");
     }
 
     int rc_assemble(string cbc_file)
@@ -1124,6 +1128,19 @@ namespace rc_cbc_assembler
             return 0;
         }
         cout << "RCBasic Binary Program compiled" << endl;
+
+        //debug
+        fstream f("code.dbg", fstream::out | fstream::binary);
+        for(int i = 0; i < rc_code_segment.size(); i++)
+            f.put(rc_code_segment[i]);
+        f.close();
+        f.open("data.dbg", fstream::out | fstream::binary);
+
+        for(int i = 0; i < rc_data_segment.size(); i++)
+            f.put(rc_data_segment[i]);
+
+        f.close();
+        //end debug
         rc_clean();
         return 0;
     }

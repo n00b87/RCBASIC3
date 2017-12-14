@@ -1,0 +1,207 @@
+-------------------------
+|types of parameters
+-------------------------
+raw_number = starting character (0-9)
+n# = starting character n followed by # (# is a number denoting the number register to use)
+s# = starting character s followed by # (# is a number denoting the string register to use)
+r# = starting character r followed by # (# is a number denoting the reference register to use) //references are set when obj_get or mov(34) or mov(38) is called
+!id = starting character is ! followed id (id is a number denoting the id vector position)
+@[data_address] = starting character is @ followed by the number specifying the offset in the data segment
+
+----------------------------------------
+|SYSTEM AND VM OPERATION
+---------------------------------------
+
+0  - end
+
+---------------------------------------
+|MOVING DATA
+----------------------------------------
+
+32 - mov	n#	n#
+33 - mov	n#	raw_number
+34 - mov	n#	!id
+35 - mov	!id	n#
+
+36 - mov$	s#	s#
+37 - mov$	s#	@[data_address]
+38 - mov$	s#	!id
+39 - mov$	!id	s#
+
+40 - mov_r	r#	n#
+41 - mov_r$	r#	s#
+
+42 - mov_type	r#	r#  //copy user types and arrays
+
+--------------------------------------
+|OPERATORS
+-------------------------------------
+
+43 - add$	s#	s#
+
+44 - add	n#	n#
+45 - sub	n#	n#
+46 - mul	n#	n#
+47 - div	n#	n#
+48 - pow	n#	n#
+49 - mod	n#	n#
+50 - shl	n#	n#
+51 - shr	n#	n#
+52 - and	n#	n#
+53 - or		n#	n#
+54 - xor	n#	n#
+55 - not	n#	n#
+
+--------------------------------------
+|COMPARE AND JUMP
+--------------------------------------
+CMP_EQUAL
+CMP_NOT_EQUAL
+CMP_GREATER
+CMP_GREATER_EQUAL
+CMP_LESS
+CMP_LESS_EQUAL
+-------------------------------------
+
+56 - cmp	n#	n#
+57 - cmp$	s#	s#
+58 - cmp_u	n#	n#
+
+59 - jmp	n#
+60 - jmp	@[address]
+61 - je		n#
+62 - je		@[address]
+63 - jne	n#
+64 - jne	@[address]
+65 - jg		n#
+66 - jg		@[address]
+67 - jge	n#
+68 - jge	@[address]
+69 - jl		n#
+70 - jl		@[address]
+71 - jle	n#
+72 - jle	@[address]
+
+--------------------------------------
+|OBJECTS  (USER TYPES AND ARRAYS)
+--------------------------------------
+OBJ_CURRENT_POSITION
+OBJ_CURRENT_TYPE
+--------------------------------------
+
+73 - obj_num	!id
+74 - obj_num1	!id	n# (n# is the first dimension)
+75 - obj_num2	!id	n#	n#
+76 - obj_num3	!id	n#	n#	n#
+
+77 - obj_str	!id
+78 - obj_str1	!id	n# (n# is the first dimension)
+79 - obj_str2	!id	n#	n#
+80 - obj_str3	!id	n#	n#	n#
+
+81 - obj_usr	!id
+82 - obj_usr1	!id	n# (n# is the first dimension)
+83 - obj_usr2	!id	n#	n#
+84 - obj_usr3	!id	n#	n#	n#
+
+85 - obj_get	n#
+86 - obj_get$	s#
+
+87 - obj_set	n#
+88 - obj_set	s$
+
+89 - clear_obj
+
+90 - dim_type	!id		raw_number (user_type)
+91 - dim_type1	!id		raw_number (user type)		n# (dim1)
+92 - dim_type2	!id		raw_number (user type)		n# (dim1)	n# (dim2)
+93 - dim_type3	!id		raw_number (user type)		n# (dim1)	n# (dim2)	n# (dim3)
+
+94 - dim_num1	!id		n# (dim1)
+95 - dim_num2	!id		n# (dim1)	n# (dim2)
+96 - dim_num3	!id		n# (dim1)	n# (dim2)	n# (dim3)
+
+97 - dim_str1	!id		n# (dim1)
+98 - dim_str2	!id		n# (dim1)	n# (dim2)
+99 - dim_str3	!id		n# (dim1)	n# (dim2)	n# (dim3)
+
+--------------------------------------------
+|STACKS
+--------------------------------------------
+<STACK> NUM_STACK
+<STACK> STR_STACK
+--------------------------------------------
+
+100 - delete !id
+101 - delete$ !id
+
+102	- push n#
+103 - push !id
+
+104 - push$ s#
+105 - push$ !id
+
+106 - push_empty$
+
+107 - pop n#
+108 - pop !id
+
+109 - pop$ s$
+110 - pop$ !id
+
+111 - get_stack_size	n#
+112	- get_stack_size$	n#
+
+113	- clear_stack
+114	- clear_stack$
+
+---------------------------------------------
+|LOOP
+---------------------------------------------
+<STACK> LOOP_STACK
+---------------------------------------------
+
+115 - while	n#
+116 - wend @address  'using jmp in parser for now
+
+117	- for !id	n# (starting value)	n# (ending value)	n#(step value)
+118	- next @address
+
+119 - do
+120 - loop
+121	- loop_while	n#
+122	- loop_until	n#
+
+123 - pop_loop_stack
+
+------------------------------------------
+|FUNCTIONS AND SUB ROUTINES
+------------------------------------------
+<STACK> FUNCTION_STACK
+------------------------------------------
+
+124 - gosub	@[address]
+125 - return
+
+-----------------------------------------
+|POINTERS
+-----------------------------------------
+126 - ptr !id n#
+127 - ptr$ !id s#
+
+------------------------------------------
+|ADDED STUFF 'Because I didn't plan this design that well
+------------------------------------------
+          
+128 - print n#
+129 - print$ s#
+130 - func	raw_number (built-in function index)
+131 - push raw_number
+132 - println
+133 - mov	n#	%CMP_FLAG
+134 - cmp	n#	raw_number
+135 - mov_arr n#	n#
+136 - mov_arr$ s#	s#
+137 - pop_ptr	n#
+138 - preset !id
+139 - preset$ !id
