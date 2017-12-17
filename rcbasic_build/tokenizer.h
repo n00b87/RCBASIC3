@@ -867,17 +867,17 @@ string rc_keywordToken(string sline)
 
 void output_tokens()
 {
-//    for(int i = 0; i < token.size(); i++)
-//    {
-//        try
-//        {
-//            cout << i << ":" << token.at(i) << endl;
-//        }
-//        catch(out_of_range& e)
-//        {
-//            cout << "Token Out of Range Error: " << e.what() << endl;
-//        }
-//    }
+    for(int i = 0; i < token.size(); i++)
+    {
+        try
+        {
+            cout << i << ":" << token.at(i) << endl;
+        }
+        catch(out_of_range& e)
+        {
+            cout << "Token Out of Range Error: " << e.what() << endl;
+        }
+    }
 }
 
 void clearTokens()

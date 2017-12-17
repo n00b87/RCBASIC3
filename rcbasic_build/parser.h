@@ -941,6 +941,54 @@ bool eval_not(int start_block, int end_block)
 #define PP_FLAG_NONE 0
 #define PP_FLAG_ARRAY 1
 
+int getArrayObjStart(int arg_id)
+{
+    string start_arg = "n" + rc_intToString(n_reg);
+    inc_n(1);
+    vm_asm.push_back("mov " + start_arg + " 0");
+    if(id[arg_id].type == ID_TYPE_ARR_NUM)
+    {
+        switch(id[arg_id].num_args)
+        {
+            case 1:
+                vm_asm.push_back("obj_num1 !" + rc_intToString(id[arg_id].vec_pos) + " " + start_arg);
+                break;
+            case 2:
+                vm_asm.push_back("obj_num2 !" + rc_intToString(id[arg_id].vec_pos) + " " + start_arg + " " + start_arg);
+                break;
+            case 3:
+                vm_asm.push_back("obj_num3 !" + rc_intToString(id[arg_id].vec_pos) + " " + start_arg + " " + start_arg + " " + start_arg);
+                break;
+        }
+        int obj_n = n_reg;
+        inc_n(1);
+        vm_asm.push_back("obj_get n" + rc_intToString(obj_n));
+        return obj_n;
+    }
+    else if(id[arg_id].type == ID_TYPE_ARR_STR)
+    {
+        switch(id[arg_id].num_args)
+        {
+            case 1:
+                vm_asm.push_back("obj_str1 !" + rc_intToString(id[arg_id].vec_pos) + " " + start_arg);
+                break;
+            case 2:
+                vm_asm.push_back("obj_str2 !" + rc_intToString(id[arg_id].vec_pos) + " " + start_arg + " " + start_arg);
+                break;
+            case 3:
+                vm_asm.push_back("obj_str3 !" + rc_intToString(id[arg_id].vec_pos) + " " + start_arg + " " + start_arg + " " + start_arg);
+                break;
+        }
+        int obj_s = s_reg;
+        inc_s(1);
+        vm_asm.push_back("obj_get$ s" + rc_intToString(obj_s));
+        return obj_s;
+    }
+
+    return 0;
+
+}
+
 bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 {
 
@@ -1319,7 +1367,9 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
             }
             else if( (id[expr_id].type == ID_TYPE_FN_NUM || id[expr_id].type == ID_TYPE_FN_STR || id[expr_id].type == ID_TYPE_SUB) && pp_flags == PP_FLAG_ARRAY)
             {
+                //cout << "FUNCTION: " << id[expr_id].name << endl;
 
+                //output_tokens();
                 //cout << "found function: " << id[expr_id].name << " " << current_block_state << endl << endl;
                 //cout << "fn ids = " << id[expr_id].fn_var.size() << endl;
 
@@ -1474,6 +1524,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                         resolve_index = getResolveReg(args[n]);
                         if(args[n].substr(0,4).compare("<id>")==0)
                         {
+                            //cout << "found id: " << args[n] << " in " << id[expr_id].name << endl;
                             string t_replace = "";
                             int arg_id = getIDInScope_ByIndex(args[n].substr(4));
                             if(arg_id < 0)
@@ -1483,9 +1534,10 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                             }
                             if(id[arg_id].type == ID_TYPE_ARR_NUM)
                             {
-                                t_replace = "n" + rc_intToString(n_reg);
-                                inc_n(1);
-                                vm_asm.push_back("mov " + t_replace + " !" + rc_intToString(id[arg_id].vec_pos));
+                                t_replace = "n" + rc_intToString( getArrayObjStart(arg_id));
+                                //t_replace = "n" + rc_intToString(n_reg);
+                                //inc_n(1);
+                                //vm_asm.push_back("mov " + t_replace + " !" + rc_intToString(id[arg_id].vec_pos));
 
                                 resolveID_id_reg.push_back(t_replace);
                                 resolveID_id_type.push_back(id[arg_id].type);
@@ -1493,9 +1545,10 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                             }
                             else if(id[arg_id].type == ID_TYPE_ARR_STR)
                             {
-                                t_replace = "s" + rc_intToString(s_reg);
-                                inc_s(1);
-                                vm_asm.push_back("mov$ " + t_replace + " !" + rc_intToString(id[arg_id].vec_pos));
+                                t_replace = "s" + rc_intToString( getArrayObjStart(arg_id));
+                                //t_replace = "s" + rc_intToString(s_reg);
+                                //inc_s(1);
+                                //vm_asm.push_back("mov$ " + t_replace + " !" + rc_intToString(id[arg_id].vec_pos));
 
                                 resolveID_id_reg.push_back(t_replace);
                                 resolveID_id_type.push_back(id[arg_id].type);
@@ -1844,12 +1897,13 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
                     return false;
                 if(!eval_not(arg_start, arg_end))
                     return false;
+                arg_result = "";
 
                 for(int n = arg_start; n <= arg_end; n++)
                 {
                     if(token[n].size()>0)
                     {
-                        if(token[n].substr(0,1).compare("n")==0 || token[n].substr(0,1).compare("s")==0)
+                        if(token[n].substr(0,1).compare("n")==0 || token[n].substr(0,1).compare("s")==0 || token[n].substr(0,4).compare("<id>") == 0)
                            arg_result = token[n];
                     }
                     token[n] = "";
