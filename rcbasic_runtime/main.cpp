@@ -1,6 +1,6 @@
 //#define RC_LINUX
 //#define RC_WINDOWS
-//#define RC_ANDROID
+#define RC_ANDROID
 
 #ifdef RC_ANDROID
     #include <jni.h>
@@ -12,7 +12,12 @@
 #include <iostream>
 #include <inttypes.h>
 #include <fstream>
-#include <SDL2/SDL.h>
+#ifdef RC_ANDROID
+	#include "SDL.h"
+	#include <unistd.h>
+#else
+	#include <SDL2/SDL.h>
+#endif
 #include <math.h>
 #include <vector>
 #include <stack>
@@ -2573,8 +2578,8 @@ int main(int argc, char * argv[])
         rc_dir_path = buf;
     #else
 		#ifdef RC_ANDROID
-			char buf[BUF_SIZE];
-			getcwd(buf, BUF_SIZE);
+			char buf[2048];
+			getcwd(buf, 2048);
 			rc_dir_path = (string)buf;
 		#else
 			rc_dir_path = get_current_dir_name();
@@ -2597,7 +2602,16 @@ int main(int argc, char * argv[])
             rc_filename += ".cbc";
         }
         #endif // RC_WINDOWS
-
+	
+	#ifdef RC_ANDROID
+	if(argc > 1)
+	{
+		rc_cmd_count = argc - 1;
+		rc_cmd_args = new string[rc_cmd_count];
+		for(int i = 1; i < argc; i++)
+			rc_cmd_args[i-1] = argv[i];
+	}
+	#else
     if(argc >2)
     {
         rc_cmd_count = argc - 2;
@@ -2605,8 +2619,13 @@ int main(int argc, char * argv[])
         for(int i = 2; i < argc; i++)
             rc_cmd_args[i-2] = argv[i];
     }
+    #endif
 
     rcbasic_init();
+    
+    #ifdef RC_ANDROID
+		rc_filename = "main.cbc";
+    #endif
 
     //cout << "starting: " << rc_filename << endl;
 
