@@ -1385,6 +1385,9 @@ void func_130(uint64_t fn)
         case FN_WindowEvent_Minimize: //Number Function
             rc_push_num( rc_media_windowEvent_Minimize( WINDOWEVENT_MINIMIZE_WIN ) );
             break;
+        case FN_ActiveWindow:
+            rc_push_num(rc_active_window);
+            break;
         case FN_CanvasOpen: //Sub Procedure
             rc_media_openScreen_hw( CANVASOPEN_C_NUM, CANVASOPEN_W, CANVASOPEN_H, CANVASOPEN_VIEWPORT_X, CANVASOPEN_VIEWPORT_Y, CANVASOPEN_VIEWPORT_W, CANVASOPEN_VIEWPORT_H, CANVASOPEN_MODE);
             break;
@@ -1432,6 +1435,9 @@ void func_130(uint64_t fn)
             break;
         case FN_CanvasClip: //Sub Procedure
             rc_media_getScreenClip_hw( CANVASCLIP_SLOT, CANVASCLIP_X, CANVASCLIP_Y, CANVASCLIP_W, CANVASCLIP_H );
+            break;
+        case FN_ActiveCanvas:
+            rc_push_num(rc_active_screen);
             break;
         case FN_Box: //Sub Procedure
             rc_media_box_hw( BOX_X1, BOX_Y1, BOX_X2, BOX_Y2 );
@@ -2591,6 +2597,14 @@ int main(int argc, char * argv[])
             rc_filename += ".cbc";
         }
         #endif // RC_WINDOWS
+
+    if(argc >2)
+    {
+        rc_cmd_count = argc - 2;
+        rc_cmd_args = new string[rc_cmd_count];
+        for(int i = 2; i < argc; i++)
+            rc_cmd_args[i-2] = argv[i];
+    }
 
     rcbasic_init();
 
