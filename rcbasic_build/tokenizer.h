@@ -245,7 +245,7 @@ bool tokens(const std::string &data)
                         ch = data[inc(x,1)];
                         if(ch == '\\')
                             s_data.push_back('\\');
-                        else if(ch == '\"')
+                        else if(ch == '\"' || ch == 'q')
                             s_data.push_back('\"');
                         else if(ch == '\'')
                             s_data.push_back('\'');
