@@ -1,6 +1,6 @@
 //#define RC_WINDOWS
-//#define RC_LINUX
-#define RC_ANDROID
+#define RC_LINUX
+//#define RC_ANDROID
 
 #ifdef RC_ANDROID
 
@@ -3657,7 +3657,7 @@ void rc_media_ReadInput_ToggleBackspace(bool flag)
 int rc_media_inkey()
 {
     int k = rc_inkey;
-    rc_inkey = 0;
+    //rc_inkey = 0;
     return k;
 //    while(rc_getEvents())
 //    {

@@ -1,12 +1,6 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
-//#define RC_LINUX
-//#define RC_WINDOWS
-//#define RC_MAC
-#define RC_ANDROID
-//#define RC_IOS
-
 #include <iostream>
 #include <stdio.h>
 #include <iomanip>
@@ -27,6 +21,11 @@
 	#include <SDL2/SDL.h>
 #endif
 //
+#define RC_LINUX
+//#define RC_WINDOWS
+//#define RC_MAC
+//#define RC_ANDROID
+//#define RC_IOS
 
 
 #ifdef RC_WINDOWS
