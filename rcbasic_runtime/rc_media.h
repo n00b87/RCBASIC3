@@ -511,7 +511,7 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     }
     #endif // RC_ANDROID
 
-    rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
 
     if(rc_win_renderer[win_num] == NULL)
     {

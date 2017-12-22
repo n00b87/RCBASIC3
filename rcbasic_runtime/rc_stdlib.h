@@ -894,7 +894,7 @@ inline string rc_intern_date()
 
 inline unsigned long rc_intern_ticks()
 {
-    return SDL_GetTicks();
+    return clock();
 }
 
 inline string rc_intern_time()
@@ -921,7 +921,8 @@ inline string rc_intern_time()
 
 inline double rc_intern_timer()
 {
-    return clock() / (double)(CLOCKS_PER_SEC / 1000);
+    return SDL_GetTicks();
+    //return clock() / (double)(CLOCKS_PER_SEC / 1000);
 }
 
 inline void rc_intern_wait(double m_sec)
