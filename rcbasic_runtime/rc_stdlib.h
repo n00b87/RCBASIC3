@@ -21,8 +21,8 @@
 	#include <SDL2/SDL.h>
 #endif
 //
-#define RC_LINUX
-//#define RC_WINDOWS
+//#define RC_LINUX
+#define RC_WINDOWS
 //#define RC_MAC
 //#define RC_ANDROID
 //#define RC_IOS
@@ -779,14 +779,14 @@ inline string rc_intern_OS()
 
 #else
 
-inline int rc_intern_dirChange()
+inline int rc_intern_dirChange(string dpath)
 {
-    if(SetCurrentDirectory(rc_sid[CHANGEDIR_PATH_STR][0].c_str())==0)
+    if(SetCurrentDirectory(dpath.c_str())==0)
     {
         cout << "Error: Could not change directory\n";
         return 2;
     }
-    rc_dir_path = rc_sid[CHANGEDIR_PATH_STR][0];
+    rc_dir_path = dpath;
     return 0;
 }
 
@@ -802,9 +802,9 @@ bool dirExists(const std::string& dirName_in)
   return false;    // this is not a directory!
 }
 
-inline int rc_intern_dirExist()
+inline int rc_intern_dirExist(string dpath)
 {
-    return dirExists(rc_sid[DIREXISTS_PATH_STR][0]);
+    return dirExists(dpath);
 }
 
 HANDLE hFind;
@@ -847,9 +847,9 @@ string rc_intern_dirNext()
     return ffd.cFileName;
 }
 
-inline int rc_intern_dirCreate()
+inline int rc_intern_dirCreate(string dpath)
 {
-    if(CreateDirectory(rc_sid[MAKEDIR_PATH_STR][0].c_str(),NULL)!=0)
+    if(CreateDirectory(dpath.c_str(),NULL)!=0)
     {
         cout << "ERROR: Could not make directory" << endl;
         return 0;
@@ -857,9 +857,9 @@ inline int rc_intern_dirCreate()
     return 1;
 }
 
-inline int rc_intern_dirDelete()
+inline int rc_intern_dirDelete(string dpath)
 {
-    if(RemoveDirectory(rc_sid[REMOVEDIR_PATH_STR][0].c_str())==0)
+    if(RemoveDirectory(dpath.c_str())==0)
     {
         cout << "ERROR: Could not delete directory" << endl;
         return 0;
