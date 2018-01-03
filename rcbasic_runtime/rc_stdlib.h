@@ -1,6 +1,12 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
+#define RC_LINUX
+//#define RC_WINDOWS
+//#define RC_MAC
+//#define RC_ANDROID
+//#define RC_IOS
+
 #include <iostream>
 #include <stdio.h>
 #include <iomanip>
@@ -21,11 +27,6 @@
 	#include <SDL2/SDL.h>
 #endif
 //
-//#define RC_LINUX
-#define RC_WINDOWS
-//#define RC_MAC
-//#define RC_ANDROID
-//#define RC_IOS
 
 
 #ifdef RC_WINDOWS
@@ -368,9 +369,9 @@ inline string rc_intern_hex(uint64_t n)
     return ss.str();
 }
 
-inline uint64_t rc_intern_int(double n)
+inline int64_t rc_intern_int(double n)
 {
-    return (uint64_t)n;
+    return (int64_t)n;
 }
 
 inline double rc_intern_log(double n)

@@ -1,5 +1,5 @@
-#define RC_WINDOWS
-//#define RC_LINUX
+//#define RC_WINDOWS
+#define RC_LINUX
 //#define RC_ANDROID
 
 #ifdef RC_ANDROID
@@ -75,6 +75,7 @@ const int MAX_SPRITES = 32; //1024;
 const int MAX_SOUNDS = 1024;
 const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
+const int MAX_FINGERS = 10;
 
 #endif // RC_ANDROID
 
@@ -185,6 +186,7 @@ int rc_mt_numFingers = 0;
 double rc_mt_theta = 0;
 double rc_mt_dist = 0;
 SDL_TouchID rc_touchDevice;
+SDL_Finger rc_finger[10];
 
 int rc_win_width = 0;
 int rc_win_height = 0;
@@ -346,7 +348,22 @@ bool rc_media_init()
 		exit(EXIT_FAILURE);
 	}
 
-	rc_touchDevice = SDL_GetTouchDevice(0);
+
+	for(int i = 0; i < SDL_GetNumTouchDevices(); i++)
+    {
+        rc_touchDevice = SDL_GetTouchDevice(i);
+
+        if(rc_touchDevice != 0)
+            break;
+    }
+
+    for(int i = 0; i < MAX_FINGERS; i++)
+    {
+        rc_finger[i].id = -1;
+        rc_finger[i].x = -1;
+        rc_finger[i].y = -1;
+        rc_finger[i].pressure = 0;
+    }
 
 	rc_pformat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 
@@ -525,7 +542,7 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     	}
     	SDL_DestroyRenderer(rc_win_renderer[win_num]);
     	rc_win_renderer[win_num] = NULL;
-    	rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+    	rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
     	if(rc_win_renderer[win_num] == NULL)
     	{
     		__android_log_write(ANDROID_LOG_ERROR, "Renderer Error2: ", SDL_GetError());
@@ -3274,6 +3291,21 @@ void rc_media_GetRenderedText_hw(int slot, string text)
     SDL_FreeSurface(rendered_text);
 }
 
+void rc_setTouchFingerEvent(SDL_FingerID fingerID, double x, double y, double pressure)
+{
+    for(int i = 0; i < MAX_FINGERS; i++)
+    {
+        if(rc_finger[i].id == -1 || rc_finger[i].id == fingerID)
+        {
+            rc_finger[i].id = fingerID;
+            rc_finger[i].x = x;
+            rc_finger[i].y = y;
+            rc_finger[i].pressure = pressure;
+            return;
+        }
+    }
+}
+
 int rc_getEvents()
 {
     SDL_Event event;
@@ -3482,6 +3514,7 @@ int rc_getEvents()
             rc_touchX = event.tfinger.x * rc_win_width;
             rc_touchY = event.tfinger.y * rc_win_height;
             rc_pressure = event.tfinger.pressure;
+            rc_setTouchFingerEvent(event.tfinger.fingerId, rc_touchX, rc_touchY, rc_pressure);
             break;
         case SDL_FINGERUP:
             rc_touch = 0;
@@ -3489,6 +3522,7 @@ int rc_getEvents()
             rc_touchX = event.tfinger.x * rc_win_width;
             rc_touchY = event.tfinger.y * rc_win_height;
             rc_pressure = event.tfinger.pressure;
+            rc_setTouchFingerEvent(event.tfinger.fingerId, -1, -1, 0);
             break;
         case SDL_FINGERMOTION:
             rc_touch = 1;
@@ -3497,6 +3531,7 @@ int rc_getEvents()
             rc_motionX = event.tfinger.dx * rc_win_width;
             rc_motionY = event.tfinger.dy * rc_win_height;
             rc_pressure = event.tfinger.pressure;
+            rc_setTouchFingerEvent(event.tfinger.fingerId, rc_touchX, rc_touchY, rc_pressure);
             break;
         case SDL_MULTIGESTURE:
             rc_touch = 2;
@@ -3554,15 +3589,19 @@ bool rc_media_windowEvent_Maximize(int win_num)
 
 void rc_media_getTouchFinger(int finger, double * x, double * y, double * pressure)
 {
-    SDL_Finger * rc_finger = SDL_GetTouchFinger(rc_touchDevice, finger);
-    *x = rc_finger->x;
-    *y = rc_finger->y;
-    *pressure = rc_finger->pressure;
+    if(finger < MAX_FINGERS)
+    {
+        *x = rc_finger[finger].x;
+        *y = rc_finger[finger].y;
+        *pressure = rc_finger[finger].pressure;
+    }
 }
 
 int rc_media_numFingers()
 {
-    return SDL_GetNumTouchFingers(rc_touchDevice);
+    if(rc_touchDevice)
+        return SDL_GetNumTouchFingers(rc_touchDevice);
+    return 0;
 }
 
 double rc_media_touchPressure()
@@ -3572,11 +3611,11 @@ double rc_media_touchPressure()
 
 void rc_media_getTouch(double * status, double * x, double * y, double * distX, double * distY)
 {
-    *status = rc_touch;
-    *x = rc_touchX;
-    *y = rc_touchY;
-    *distX = rc_motionX;
-    *distY = rc_motionY;
+    *status = (double)rc_touch;
+    *x = (double)rc_touchX;
+    *y = (double)rc_touchY;
+    *distX = (double)rc_motionX;
+    *distY = (double)rc_motionY;
     return;
 //    while(rc_getEvents())
 //    {
@@ -3599,10 +3638,10 @@ void rc_media_getTouch(double * status, double * x, double * y, double * distX, 
 
 void rc_media_getMultiTouch(double * status, double * x, double * y, double * numFingers, double * dist, double * theta)
 {
-    *status = rc_mt_status;
-    *x = rc_mt_x;
-    *y = rc_mt_y;
-    *numFingers = rc_mt_numFingers;
+    *status = (double)rc_mt_status;
+    *x = (double)rc_mt_x;
+    *y = (double)rc_mt_y;
+    *numFingers = (double)rc_mt_numFingers;
     *dist = rc_mt_dist;
     *theta = rc_mt_theta;
     return;

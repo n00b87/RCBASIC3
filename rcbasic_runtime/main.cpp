@@ -1,5 +1,5 @@
-//#define RC_LINUX
-#define RC_WINDOWS
+#define RC_LINUX
+//#define RC_WINDOWS
 //#define RC_ANDROID
 
 #ifdef RC_ANDROID
@@ -12,7 +12,11 @@
 #include <iostream>
 #include <inttypes.h>
 #include <fstream>
-#include <SDL2/SDL.h>
+#ifdef RC_ANDROID
+	#include "SDL.h"
+#else
+	#include <SDL2/SDL.h>
+#endif
 #include <math.h>
 #include <vector>
 #include <stack>
@@ -386,17 +390,17 @@ void pow_48(int n1, int n2)
 
 void mod_49(int n1, int n2)
 {
-    vm_n[n1].value = (uint64_t)(vm_n[n1].value) % (uint64_t)(vm_n[n2].value);
+    vm_n[n1].value = (int64_t)(vm_n[n1].value) % (int64_t)(vm_n[n2].value);
 }
 
 void shl_50(int n1, int n2)
 {
-    vm_n[n1].value = (uint64_t)(vm_n[n1].value) << (uint64_t)(vm_n[n2].value);
+    vm_n[n1].value = (int64_t)(vm_n[n1].value) << (int64_t)(vm_n[n2].value);
 }
 
 void shr_51(int n1, int n2)
 {
-    vm_n[n1].value = (uint64_t)(vm_n[n1].value) >> (uint64_t)(vm_n[n2].value);
+    vm_n[n1].value = (int64_t)(vm_n[n1].value) >> (int64_t)(vm_n[n2].value);
 }
 
 void and_52(int n1, int n2)
@@ -406,17 +410,17 @@ void and_52(int n1, int n2)
 
 void or_53(int n1, int n2)
 {
-    vm_n[n1].value = (uint64_t)(vm_n[n1].value) | (uint64_t)(vm_n[n2].value);
+    vm_n[n1].value = (int64_t)(vm_n[n1].value) | (int64_t)(vm_n[n2].value);
 }
 
 void xor_54(int n1, int n2)
 {
-    vm_n[n1].value = !((uint64_t)(vm_n[n1].value)) != !((uint64_t)(vm_n[n2].value));
+    vm_n[n1].value = !((int64_t)(vm_n[n1].value)) != !((int64_t)(vm_n[n2].value));
 }
 
 void not_55(int n1)
 {
-    vm_n[n1].value = !((uint64_t)vm_n[n1].value);
+    vm_n[n1].value = !((int64_t)vm_n[n1].value);
 }
 
 void cmp_56(int n1, int n2)
@@ -938,9 +942,28 @@ void ptrS_127(uint64_t sid, int s1)
     str_var[sid].sid_value = vm_s[s1].r;
 }
 
+void rc_print_num(double n)
+{
+    stringstream s;
+    s << fixed << n;
+    string s_out = s.str();
+    int s_decimal = s_out.find_first_of(".");
+    if(s_decimal != string::npos)
+    {
+        int trail_end = s_out.length();
+        for(int i = s_decimal; i < s_out.length(); i++)
+        {
+            if(s_out[i] != '0')
+                trail_end = i+1;
+        }
+        s_out = s_out.substr(0, trail_end);
+    }
+    cout << s_out;
+}
+
 void print_128(int n1)
 {
-    cout << vm_n[n1].value;
+    rc_print_num(vm_n[n1].value);
 }
 
 void printS_129(int s1)
@@ -2573,8 +2596,8 @@ int main(int argc, char * argv[])
         rc_dir_path = buf;
     #else
 		#ifdef RC_ANDROID
-			char buf[BUF_SIZE];
-			getcwd(buf, BUF_SIZE);
+			char buf[2048];
+			getcwd(buf, 2048);
 			rc_dir_path = (string)buf;
 		#else
 			rc_dir_path = get_current_dir_name();
@@ -2607,6 +2630,10 @@ int main(int argc, char * argv[])
     }
 
     rcbasic_init();
+
+    #ifdef RC_ANDROID
+		rc_filename = "main.cbc";
+	#endif
 
     //cout << "starting: " << rc_filename << endl;
 
