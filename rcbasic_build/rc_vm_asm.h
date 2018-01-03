@@ -1130,16 +1130,16 @@ namespace rc_cbc_assembler
         cout << "RCBasic Binary Program compiled" << endl;
 
         //debug
-        fstream f("code.dbg", fstream::out | fstream::binary);
-        for(int i = 0; i < rc_code_segment.size(); i++)
-            f.put(rc_code_segment[i]);
-        f.close();
-        f.open("data.dbg", fstream::out | fstream::binary);
+        //fstream f("code.dbg", fstream::out | fstream::binary);
+        //for(int i = 0; i < rc_code_segment.size(); i++)
+        //    f.put(rc_code_segment[i]);
+        //f.close();
+        //f.open("data.dbg", fstream::out | fstream::binary);
 
-        for(int i = 0; i < rc_data_segment.size(); i++)
-            f.put(rc_data_segment[i]);
+        //for(int i = 0; i < rc_data_segment.size(); i++)
+        //    f.put(rc_data_segment[i]);
 
-        f.close();
+        //f.close();
         //end debug
         rc_clean();
         return 0;
