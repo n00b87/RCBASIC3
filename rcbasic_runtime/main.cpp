@@ -957,6 +957,8 @@ void rc_print_num(double n)
                 trail_end = i+1;
         }
         s_out = s_out.substr(0, trail_end);
+        if(s_out.substr(s_out.length()-1,1).compare(".")==0)
+            s_out = s_out.substr(0, s_out.length()-1);
     }
     cout << s_out;
 }
@@ -2058,6 +2060,60 @@ void presetS_139(uint64_t sid)
         str_var[sid].sid_value[0].value[i] = "";
 }
 
+void redim_140(uint64_t nid, int n1)
+{
+    num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value);
+    num_var[nid].dimensions = 1;
+    num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
+    num_var[nid].dim[1] = 0;
+    num_var[nid].dim[2] = 0;
+}
+
+void redim_141(uint64_t nid, int n1, int n2)
+{
+    num_var[nid].nid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value );
+    num_var[nid].dimensions = 2;
+    num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
+    num_var[nid].dim[1] = (uint64_t)vm_n[n2].value;
+    num_var[nid].dim[2] = 0;
+}
+
+void redim_142(uint64_t nid, int n1, int n2, int n3)
+{
+    num_var[nid].nid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
+    num_var[nid].dimensions = 3;
+    num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
+    num_var[nid].dim[1] = (uint64_t)vm_n[n2].value;
+    num_var[nid].dim[2] = (uint64_t)vm_n[n3].value;
+}
+
+void redimS_143(uint64_t sid, int n1)
+{
+    str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value);
+    str_var[sid].dimensions = 1;
+    str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
+    str_var[sid].dim[1] = 0;
+    str_var[sid].dim[2] = 0;
+}
+
+void redimS_144(uint64_t sid, int n1, int n2)
+{
+    str_var[sid].sid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value );
+    str_var[sid].dimensions = 2;
+    str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
+    str_var[sid].dim[1] = (uint64_t)vm_n[n2].value;
+    str_var[sid].dim[2] = 0;
+}
+
+void redimS_145(uint64_t sid, int n1, int n2, int n3)
+{
+    str_var[sid].sid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
+    str_var[sid].dimensions = 3;
+    str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
+    str_var[sid].dim[1] = (uint64_t)vm_n[n2].value;
+    str_var[sid].dim[2] = (uint64_t)vm_n[n3].value;
+}
+
 bool rcbasic_run()
 {
     unsigned char rcbasic_cmd;
@@ -2562,6 +2618,42 @@ bool rcbasic_run()
                 i[0] = readInt();
                 presetS_139(i[0]);
                 break;
+            case 140:
+                i[0] = readInt();
+                i[1] = readInt();
+                redim_140(i[0], i[1]);
+                break;
+            case 141:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                redim_141(i[0], i[1], i[2]);
+                break;
+            case 142:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                i[3] = readInt();
+                redim_142(i[0], i[1], i[2], i[3]);
+                break;
+            case 143:
+                i[0] = readInt();
+                i[1] = readInt();
+                redimS_143(i[0], i[1]);
+                break;
+            case 144:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                redimS_144(i[0], i[1], i[2]);
+                break;
+            case 145:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                i[3] = readInt();
+                redimS_145(i[0], i[1], i[2], i[3]);
+                break;
             default:
                 cout << "invalid cmd: " << rcbasic_cmd << endl;
                 return 0;
@@ -2620,6 +2712,12 @@ int main(int argc, char * argv[])
             rc_filename += ".cbc";
         }
         #endif // RC_WINDOWS
+
+    if(rc_filename.compare("-v")==0)
+    {
+        cout << "RCBASIC v3.0.4" << endl;
+        return 0;
+    }
 
     if(argc >2)
     {
