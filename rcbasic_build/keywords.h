@@ -37,6 +37,7 @@ string keyWords[] = {
     "SUB", //33
     "NOT", //34
     "ELSEIF", //35
+    "REDIM", //36
 };
 
 #endif // KEYWORDS_H_INCLUDED

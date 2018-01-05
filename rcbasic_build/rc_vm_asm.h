@@ -929,6 +929,30 @@ namespace rc_cbc_assembler
             {
                 writeSegment(139);
             }
+            else if(line_arg[0].compare("redim1")==0)
+            {
+                writeSegment(140);
+            }
+            else if(line_arg[0].compare("redim2")==0)
+            {
+                writeSegment(141);
+            }
+            else if(line_arg[0].compare("redim3")==0)
+            {
+                writeSegment(142);
+            }
+            else if(line_arg[0].compare("redim1$")==0)
+            {
+                writeSegment(143);
+            }
+            else if(line_arg[0].compare("redim2$")==0)
+            {
+                writeSegment(144);
+            }
+            else if(line_arg[0].compare("redim3$")==0)
+            {
+                writeSegment(145);
+            }
             else
             {
                 cout << "unrecognized cmd: " << line_arg[0] << endl;
@@ -1095,12 +1119,12 @@ namespace rc_cbc_assembler
 
     void rc_clean()
     {
-//        if(is_file_exist("main.rc_data"))
-//            remove("main.rc_data");
-//        if(is_file_exist("main_str_data.sdata"))
-//            remove("main_str_data.sdata");
-//        if(is_file_exist("main.rc_asm"))
-//            remove("main.rc_asm");
+        if(is_file_exist("main.rc_data"))
+            remove("main.rc_data");
+        if(is_file_exist("main_str_data.sdata"))
+            remove("main_str_data.sdata");
+        if(is_file_exist("main.rc_asm"))
+            remove("main.rc_asm");
     }
 
     int rc_assemble(string cbc_file)

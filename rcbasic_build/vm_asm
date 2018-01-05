@@ -205,3 +205,11 @@ OBJ_CURRENT_TYPE
 137 - pop_ptr	n#
 138 - preset !id
 139 - preset$ !id
+
+140 - redim1	!id	n#
+141 - redim2	!id	n#	n#
+142 - redim3	!id n#	n#	n#
+
+143 - redim1$	!id	n#
+144 - redim2$	!id	n#	n#
+145 - redim3$	!id n#	n#	n#

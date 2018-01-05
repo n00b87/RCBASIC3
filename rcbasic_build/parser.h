@@ -2553,6 +2553,262 @@ bool check_rule()
                 return false;
             }
         }
+        else if(token[0].compare("<redim>")==0)
+        {
+            //cout << "REDIM RULE FOUND" << endl;  //'DIM' [ID]; '[' #; #; # ']' ; 'AS' [TYPE]; '=' (VALUE)
+
+            string id_name = "";
+            int id_type = ID_TYPE_NUM;
+            string id_type_name = "";
+            int dimensions = 0;
+            int id_index = -1;
+
+            //check if the next token is a identifier
+            if(token.size() > 1)
+            {
+                if(token[1].substr(0,4).compare("<id>")==0)
+                {
+                    //if the identifier is not a valid name then return false
+                    id_name = token[1].substr(4);
+                    id_type = ID_TYPE_NUM;
+                    id_type_name = "";
+                    dimensions = 0;
+
+                    if(!isValidIDName(id_name))
+                    {
+                        rc_setError("Invalid Identifier name");
+                        return false;
+                    }
+
+
+                    id_index  = getIDInScope_ByIndex(id_name);
+                    //cout << "debug 0: " << id_index << " -> " << id[id_index].name << " --- " << id[id_index].vec_pos << endl;
+
+                    //if the identifier already exists and current_block state is not type then return false
+                    if(id_index < 0)
+                    {
+                        rc_setError("Identifier was not defined in current scope");
+                        return false;
+                    }
+
+                    if(id[id_index].num_args <= 0)
+                    {
+                        rc_setError("REDIM expected array identifier");
+                        return false;
+                    }
+
+                    id_type = id[id_index].type;
+
+                    //cout << "db1\n";
+
+                    //if there are only two tokens then return here because there is nothing left to check
+                    if(token.size()==2)
+                    {
+                        rc_setError("Dimensions must be specified for REDIM");
+                        //cout << "return true here" << endl;
+                        return false;
+                    }
+
+                    //cout << "db2\n";
+
+                    //current token
+                    int token_index = 2;
+
+                    //check for the next rule; must be [], AS, or =
+                    if(token[token_index].compare("<square>")==0 && current_block_state == BLOCK_STATE_TYPE)
+                    {
+                        token_index++;
+                        int end_token = token_index;
+                        int sq_scope = 1;
+                        for(; end_token < token.size(); end_token++)
+                        {
+                            if(token[end_token].compare("<square>")==0)
+                                sq_scope++;
+                            else if(token[end_token].compare("</square>")==0)
+                                sq_scope--;
+
+                            if(sq_scope==0)
+                                break;
+                        }
+                        if(sq_scope != 0)
+                        {
+                            rc_setError("Expected ] in array definition");
+                            return false;
+                        }
+                        if(end_token > token_index)
+                            end_token--;
+                        else
+                        {
+                            rc_setError("Expected atleast 1 parameter in member array definition");
+                            return false;
+                        }
+                        if(eval_constantExpression(token_index, end_token))
+                        {
+                            dimensions = constant_arg_count;
+                        }
+                        else
+                        {
+                            rc_setError("Expected constant for type member array");
+                            return false;
+                        }
+                        token_index = end_token+2;
+
+                    }
+                    else if(token[token_index].compare("<square>")==0)
+                    {
+                        multi_arg[0] = "";
+                        multi_arg[1] = "";
+                        multi_arg[2] = "";
+                        multi_arg_count = 0;
+                        int end_token = token_index+1;
+                        int sq_scope = 1;
+                        for(; end_token < token.size(); end_token++)
+                        {
+                            if(token[end_token].compare("</square>")==0)
+                                sq_scope--;
+                            else if(token[end_token].compare("<square>")==0)
+                                sq_scope++;
+
+                            if(sq_scope==0)
+                                break;
+                        }
+
+                        if(sq_scope != 0)
+                        {
+                            rc_setError("Expected ] in array definition");
+                            return false;
+                        }
+
+                        //cout << "debug 1: " << id_index << endl;
+
+                        if(!eval_expression(token_index, end_token, true))
+                        {
+                            rc_setError("Could not evaluate expression in array definition");
+                            return false;
+                        }
+
+                        //cout << "debug 2: " << id_index << endl;
+
+                        if(multi_arg_count <= 0 || multi_arg_count > 3)
+                        {
+                            rc_setError("Expected 1 to 3 Arguments for array re-dimension, Found " + rc_intToString(multi_arg_count));
+                            return false;
+                        }
+                        else
+                        {
+                            //cout << "M_ARG[0] = " << multi_arg[0] << endl;
+                            //cout << "M_ARG[1] = " << multi_arg[1] << endl;
+                            //cout << "M_ARG[2] = " << multi_arg[2] << endl;
+                            dimensions = multi_arg_count;
+                        }
+                        token_index = end_token+1;
+
+                        //cout << "debug 3: " << id_index << endl;
+                    }
+                    else
+                    {
+                        rc_setError("Expected dimensions for REDIM");
+                        return false;
+                    }
+
+                    if(token.size()>token_index)
+                    {
+                        rc_setError("Invalid use of REDIM");
+                        return false;
+                    }
+
+                    //cout << "debug 4: " << id_index << endl;
+
+                }
+                else
+                {
+                    //if the next token is not an id then the syntax is incorrect and false is returned
+                    rc_setError("Expected Identifier name");
+                    return false;
+                }
+
+                if(dimensions > 0)
+                {
+                    //cout << "debug 5: " << id_index <<  endl;
+                    switch(id_type)
+                    {
+                        case ID_TYPE_NUM:
+                            id_type = ID_TYPE_ARR_NUM;
+                            break;
+                        case ID_TYPE_STR:
+                            id_type = ID_TYPE_ARR_STR;
+                            break;
+                    }
+
+                    //cout << "debug 6: " << id_index << endl;
+
+                    if(id[id_index].num_args != dimensions)
+                    {
+                        id[id_index].num_args = dimensions;
+                    }
+
+                    //cout << "debug 7: " << id_index << " -- " << id[id_index].type << endl;
+
+                    if(id[id_index].type == ID_TYPE_NUM || id[id_index].type == ID_TYPE_ARR_NUM)
+                    {
+                        //cout << "debug 8" << endl;
+                        switch(dimensions)
+                        {
+                            case 1:
+                                vm_asm.push_back("redim1 !" + rc_intToString(id[id_index].vec_pos) + " " + multi_arg[0]);
+                                break;
+                            case 2:
+                                vm_asm.push_back("redim2 !" + rc_intToString(id[id_index].vec_pos) + " " + multi_arg[0] + " " + multi_arg[1]);
+                                break;
+                            case 3:
+                                vm_asm.push_back("redim3 !" + rc_intToString(id[id_index].vec_pos) + " " + multi_arg[0] + " " + multi_arg[1] + " " + multi_arg[2]);
+                                break;
+                            default:
+                                rc_setError("Invalid number of dimensions in REDIM");
+                                return false;
+                        }
+                    }
+                    else if(id[id_index].type == ID_TYPE_STR || id[id_index].type == ID_TYPE_ARR_STR)
+                    {
+                        switch(dimensions)
+                        {
+                            case 1:
+                                vm_asm.push_back("redim1$ !" + rc_intToString(id[id_index].vec_pos) + " " + multi_arg[0]);
+                                break;
+                            case 2:
+                                vm_asm.push_back("redim2$ !" + rc_intToString(id[id_index].vec_pos) + " " + multi_arg[0] + " " + multi_arg[1]);
+                                break;
+                            case 3:
+                                vm_asm.push_back("redim3$ !" + rc_intToString(id[id_index].vec_pos) + " " + multi_arg[0] + " " + multi_arg[1] + " " + multi_arg[2]);
+                                break;
+                            default:
+                                rc_setError("Invalid number of dimensions in REDIM");
+                                return false;
+                        }
+                    }
+                    else
+                    {
+                        rc_setError("Invalid type for REDIM");
+                        return false;
+                    }
+                    //cout << "balls" << endl;
+                    return true;
+                }
+                else
+                {
+                    rc_setError("Expected dimensions in REDIM");
+                    return false;
+                }
+
+            }
+            else
+            {
+                //if the size of the token vector is not greater than one then the syntax for the line is incomplete so I return false
+                rc_setError("Expected Identifier name");
+                return false;
+            }
+            //cout << "debug final" << endl;
+        }
         else if(token[0].compare("<end>")==0)
         {
             if(token.size()==1)
@@ -3817,6 +4073,7 @@ bool check_rule()
                 rc_setError("Cannot delete identifier of this type");
                 return false;
             }
+            id[id_index].name = "";
         }
         else if(token.size() > 2)
         {

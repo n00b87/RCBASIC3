@@ -537,6 +537,12 @@ int main(int argc, char * argv[])
     if(argc > 1)
         rc_filename = argv[1];
 
+    if(rc_filename.compare("-v")==0)
+    {
+        cout << "RCBASIC v3.0.4" << endl;
+        return 0;
+    }
+
     //rc_filename = "tst.bas";
 
     cout << "Source: " << rc_filename << endl;
@@ -610,7 +616,7 @@ int main(int argc, char * argv[])
         return 0;
     }
 
-    cout << endl << "Compiled Successfully" << endl;
+    cout << endl << "Compiled Successfully" << endl << endl << endl; //skip 3 lines so that start of program is not right below this line
 
     return 0;
 
