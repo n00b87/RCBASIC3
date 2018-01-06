@@ -1883,6 +1883,8 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
             {
                 getBlockArg(i, arg_start, arg_end);
 
+                if(!eval_not(start_block, end_block))
+                    return false;
                 if(!eval_pow(arg_start, arg_end))
                     return false;
                 if(!eval_muldiv(arg_start, arg_end))
@@ -1894,8 +1896,6 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
                 if(!eval_cmp(arg_start, arg_end))
                     return false;
                 if(!eval_andor(arg_start, arg_end))
-                    return false;
-                if(!eval_not(arg_start, arg_end))
                     return false;
                 arg_result = "";
 
@@ -1914,6 +1914,8 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
         else
         {
             //cout << "start" << endl;
+            if(!eval_not(start_block, end_block))
+                return false;
             if(!eval_pow(start_block, end_block))
                 return false;
             if(!eval_muldiv(start_block, end_block))
@@ -1925,8 +1927,6 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
             if(!eval_cmp(start_block, end_block))
                 return false;
             if(!eval_andor(start_block, end_block))
-                return false;
-            if(!eval_not(start_block, end_block))
                 return false;
             //cout << "end here" << endl;
         }
