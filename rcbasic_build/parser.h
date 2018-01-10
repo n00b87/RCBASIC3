@@ -3482,7 +3482,7 @@ bool check_rule()
             }
             if(token.size()==1)
             {
-                vm_asm.push_back("jmp @" + current_scope);
+                vm_asm.push_back("loop @" + current_scope);
                 vm_asm.push_back("label " + do_end.top());
                 do_end.pop();
 
