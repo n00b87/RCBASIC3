@@ -227,6 +227,10 @@ bool rc_toggleBackspace = true;
 
 static Uint32 baseticks = 0;
 
+uint32_t rc_fps = 0;
+uint32_t rc_fps_frames = 0;
+uint32_t rc_fps_timer = 0;
+
 #ifdef RC_ANDROID
 double rc_mouse_scale_x = 0;
 double rc_mouse_scale_y = 0;
@@ -3886,6 +3890,17 @@ void rc_media_updateWindow_hw()
     SDL_RenderPresent(rc_win_renderer[rc_active_window]);
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
     SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
+
+    rc_fps_frames++;
+
+    uint32_t t = SDL_GetTicks();
+
+    if( (t - rc_fps_timer) >= 1000 )
+    {
+        rc_fps_timer = t;
+        rc_fps = rc_fps_frames;
+        rc_fps_frames = 0;
+    }
 }
 
 bool rc_media_imageExist_hw(int slot)

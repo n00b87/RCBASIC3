@@ -405,7 +405,7 @@ void shr_51(int n1, int n2)
 
 void and_52(int n1, int n2)
 {
-    vm_n[n1].value = (uint64_t)(vm_n[n1].value) & (uint64_t)(vm_n[n2].value);
+    vm_n[n1].value = (int64_t)(vm_n[n1].value) & (int64_t)(vm_n[n2].value);
 }
 
 void or_53(int n1, int n2)
@@ -810,7 +810,7 @@ void while_115(int n1, uint64_t jmp_addr)
 {
     if(vm_n[n1].value == 0)
         current_address = jmp_addr;
-    rc_events();
+    //rc_events();
 }
 
 void wend_116(uint64_t jmp_addr)
@@ -873,28 +873,26 @@ void do_119() //I realized that I didn't need this so its here so I can keep num
 void loop_120(uint64_t jmp_addr) //not actually used
 {
     current_address = jmp_addr;
-    rc_events();
+    //rc_events();
 }
 
 void loop_while_121(int n1, uint64_t jmp_addr)
 {
     if(vm_n[n1].value != 0)
         current_address = jmp_addr;
-    rc_events();
+    //rc_events();
 }
 
 void loop_until_122(int n1, uint64_t jmp_addr)
 {
     if(vm_n[n1].value == 0)
         current_address = jmp_addr;
-    rc_events();
+    //rc_events();
 }
 
 void pop_loop_stack_123()
 {
     loop_stack.pop();
-    //rc_events();
-    //current_loop_stack_count--;
 }
 
 void gosub_124(uint64_t sub_addr)
@@ -1312,6 +1310,7 @@ void func_130(uint64_t fn)
             rc_media_setActiveWindow( WINDOW_WIN );
             break;
         case FN_Update: //Sub Procedure
+            rc_events();
             rc_media_updateWindow_hw();
             break;
         case FN_Cls: //Sub Procedure
@@ -1412,6 +1411,9 @@ void func_130(uint64_t fn)
             break;
         case FN_ActiveWindow:
             rc_push_num(rc_active_window);
+            break;
+        case FN_FPS:
+            rc_push_num(rc_fps);
             break;
         case FN_CanvasOpen: //Sub Procedure
             rc_media_openScreen_hw( CANVASOPEN_C_NUM, CANVASOPEN_W, CANVASOPEN_H, CANVASOPEN_VIEWPORT_X, CANVASOPEN_VIEWPORT_Y, CANVASOPEN_VIEWPORT_W, CANVASOPEN_VIEWPORT_H, CANVASOPEN_MODE);
@@ -1903,7 +1905,7 @@ void func_130(uint64_t fn)
             rc_push_num( rc_media_videoEnd() );
             break;
         case FN_GetVideoStats: //Sub Procedure
-            rc_media_getVideoStats( GETVIDEOSTATS_VFILE$, &GETVIDEOSTATS_VLEN, &GETVIDEOSTATS_FPS, &GETVIDEOSTATS_FRAME_W, &GETVIDEOSTATS_FRAME_H );
+            rc_media_getVideoStats( GETVIDEOSTATS_VFILE$, &GETVIDEOSTATS_VLEN, &GETVIDEOSTATS_VFPS, &GETVIDEOSTATS_FRAME_W, &GETVIDEOSTATS_FRAME_H );
             break;
         case FN_SetVideoDrawRect: //Sub Procedure
             rc_media_setVideoDrawRect( SETVIDEODRAWRECT_X, SETVIDEODRAWRECT_Y, SETVIDEODRAWRECT_W, SETVIDEODRAWRECT_H );
