@@ -13,19 +13,17 @@
 #include <wx/wx.h>
 
 //(*Headers(rc_ideFrame)
+#include <wx/toolbar.h>
 #include <wx/sizer.h>
 #include <wx/menu.h>
-#include <wx/aui/aui.h>
-#include <wx/toolbar.h>
-#include <wx/frame.h>
 #include <wx/statusbr.h>
+#include <wx/frame.h>
+#include <wx/aui/aui.h>
 //*)
 
 #include <wx/process.h>
 #include <wx/stdpaths.h>
 #include <wx/stc/stc.h>
-
-#define RC_WINDOWS
 
 class rc_ideFrame: public wxFrame
 {
@@ -84,30 +82,30 @@ class rc_ideFrame: public wxFrame
         //*)
 
         //(*Declarations(rc_ideFrame)
-        wxToolBarToolBase* ToolBarItem4;
-        wxMenuItem* MenuItem8;
-        wxToolBar* ToolBar1;
-        wxMenuItem* MenuItem7;
-        wxToolBarToolBase* ToolBarItem3;
-        wxMenuItem* MenuItem5;
-        wxMenu* Menu3;
-        wxMenuItem* MenuItem4;
-        wxMenuItem* MenuItem14;
-        wxMenuItem* MenuItem11;
-        wxMenuItem* MenuItem15;
-        wxMenuItem* MenuItem13;
-        wxMenuItem* MenuItem10;
-        wxToolBarToolBase* ToolBarItem6;
-        wxMenuItem* MenuItem12;
-        wxToolBarToolBase* ToolBarItem1;
-        wxMenuItem* MenuItem3;
-        wxStatusBar* StatusBar1;
-        wxMenuItem* MenuItem6;
-        wxAuiNotebook* AuiNotebook1;
         wxToolBarToolBase* ToolBarItem5;
-        wxMenuItem* MenuItem9;
+        wxStatusBar* StatusBar1;
+        wxMenuItem* MenuItem12;
+        wxToolBarToolBase* ToolBarItem6;
+        wxMenu* Menu3;
+        wxMenuItem* MenuItem15;
         wxToolBarToolBase* ToolBarItem2;
+        wxMenuItem* MenuItem3;
+        wxAuiNotebook* AuiNotebook1;
+        wxMenuItem* MenuItem9;
         wxMenu* Menu4;
+        wxToolBar* ToolBar1;
+        wxMenuItem* MenuItem11;
+        wxToolBarToolBase* ToolBarItem4;
+        wxMenuItem* MenuItem5;
+        wxToolBarToolBase* ToolBarItem1;
+        wxMenuItem* MenuItem10;
+        wxToolBarToolBase* ToolBarItem3;
+        wxMenuItem* MenuItem7;
+        wxMenuItem* MenuItem4;
+        wxMenuItem* MenuItem6;
+        wxMenuItem* MenuItem13;
+        wxMenuItem* MenuItem8;
+        wxMenuItem* MenuItem14;
         //*)
 
         DECLARE_EVENT_TABLE()
@@ -128,11 +126,7 @@ public:
     virtual void OnTerminate(int pid, int status)
     {
         wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
-        #ifndef RC_WINDOWS
         editor_path = editor_path.substr(0, editor_path.find_last_of(_("/"))) +_("/");
-        #else
-        editor_path = editor_path.substr(0, editor_path.find_last_of(_("\\"))) +_("\\");
-        #endif // RC_WINDOWS
         wxSetWorkingDirectory(editor_path);
     }
 

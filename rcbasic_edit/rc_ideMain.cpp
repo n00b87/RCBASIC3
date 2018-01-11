@@ -56,6 +56,9 @@ wxString wxbuildinfo(wxbuildinfoformat format)
     return wxbuild;
 }
 
+//#define RC_WINDOWS
+#define RC_LINUX
+
 //(*IdInit(rc_ideFrame)
 const long rc_ideFrame::ID_AUINOTEBOOK1 = wxNewId();
 const long rc_ideFrame::newID = wxNewId();
@@ -87,8 +90,6 @@ BEGIN_EVENT_TABLE(rc_ideFrame,wxFrame)
     //(*EventTable(rc_ideFrame)
     //*)
 END_EVENT_TABLE()
-
-#define RC_WINDOWS
 
 int rc_current_page = 0;
 wxString rc_fnames[999];
@@ -130,7 +131,7 @@ void rc_initKeywords()
     rc_keywords += wxT("getvideosize videoexists setvideoalpha soundfrombuffer command command$ numcommands str_f str_f$ str_s str_s$ cls env env$ setenv prefpath prefpath$ numjoyhats joyhat numjoytrackballs getjoytrackball ");
     rc_keywords += wxT("windowhasinputfocus windowhasmousefocus push_n push_s pop_n pop_s pop_s$ n_stack_size s_stack_size joystickisconnected ");
     rc_keywords += wxT("numwindows windowexists readinput_togglebackspace windowevent_close windowevent_minimize windowevent_maximize poly polyfill cint32 cint64 mousex mousey mousebutton mousewheelx mousewheely setclearcolor ");
-    rc_keywords += wxT("stringarraydim stringarraysize numberarraydim numberarraysize activewindow activecanvas ");
+    rc_keywords += wxT("stringarraydim stringarraysize numberarraydim numberarraysize activewindow activecanvas fps ");
 
     rc_keywords2 = wxT("k_0 k_1 k_2 k_3 k_4 k_5 k_6 k_7 k_8 k_9 k_a k_ac_back k_ac_bookmarks k_ac_forward k_ac_home k_ac_refresh k_ac_search k_ac_stop k_again k_alterase k_application ");
     rc_keywords2 += wxT("k_audiomute k_audionext k_audioplay k_audioprev k_audiostop k_b k_backslash k_backspace k_brightnessdown k_brightnessup k_c k_calculator k_cancel k_capslock k_clear ");
@@ -173,7 +174,11 @@ rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
     SetExtraStyle( GetExtraStyle() | wxFRAME_EX_METAL );
     {
     	wxIcon FrameIcon;
-    	FrameIcon.CopyFromBitmap(wxBitmap(wxImage(rc_path + _T("\\icon\\rcbasic.ico"))));
+    	#ifdef RC_WINDOWS
+            FrameIcon.CopyFromBitmap(wxBitmap(wxImage(rc_path + _T("\\icon\\rcbasic.ico"))));
+    	#else
+            FrameIcon.CopyFromBitmap(wxBitmap(wxImage(rc_path + _T("/icon/rcbasic.ico"))));
+    	#endif
     	SetIcon(FrameIcon);
     }
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
@@ -278,7 +283,7 @@ void rc_ideFrame::OnQuit(wxCommandEvent& event)
 
 void rc_ideFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = _("RC BASIC v3.0.2\nCopyright (C) 2015-2017 Rodney Cunningham\n\nFor latest release, updates, and info go to http://www.rcbasic.com\nAnd the forum at rcbasic.freeforums.net");
+    wxString msg = _("RCBASIC v3.0.4\nCopyright (C) 2015-2018 Rodney Cunningham ( aka n00b )\n\nFor latest release, updates, and info go to \nhttp://www.rcbasic.com\n\nAnd the forum at \nhttp://rcbasic.freeforums.net");
     wxMessageBox(msg);
 }
 
@@ -701,11 +706,11 @@ void rc_ideFrame::OnCompile(wxCommandEvent& event)
 
     #ifndef RC_WINDOWS
     wxSetWorkingDirectory(rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("/")));
+    wxString fs = rc_path + _("rcbasic_build ") + _("\"") + rc_fnames[AuiNotebook1->GetPageIndex(t)] + _("\"");
     #else
     wxSetWorkingDirectory(rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("\\")));
-    #endif
-
     wxString fs = rc_path + _("rcbasic_build.exe ") + _("\"") + rc_fnames[AuiNotebook1->GetPageIndex(t)] + _("\"");
+    #endif
 
     int rt = -1;
     rt = wxExecute(fs, wxEXEC_SYNC);
