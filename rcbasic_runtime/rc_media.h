@@ -62,6 +62,7 @@ const int MAX_SPRITES = 32; //1024;
 const int MAX_SOUNDS = 1024;
 const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
+const int MAX_FINGERS = 10;
 #else
 
 //Screen dimension constants
@@ -638,9 +639,14 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     rc_mouse_scale_y = (double)(h / rc_displayMode[win_num].h);
     #endif // RC_ANDROID
 
-    #ifndef RC_ANDROID
+    //#ifndef RC_ANDROID
     rc_hconsole[win_num] = SDL_CreateTexture(rc_win_renderer[win_num],rc_pformat->format,SDL_TEXTUREACCESS_TARGET,w,h);
-    #endif // RC_ANDROID
+    SDL_SetTextureBlendMode(rc_hconsole[rc_active_window], SDL_BLENDMODE_BLEND);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
+    SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 0);
+    SDL_RenderClear(rc_win_renderer[rc_active_window]);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    //#endif // RC_ANDROID
 
     //cout << "wtf" << endl;
 
@@ -660,7 +666,7 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     rc_win_width = w;
     rc_win_height = h;
     #else
-    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 255);
     SDL_RenderClear(rc_win_renderer[win_num]);
     #endif // RC_ANDROID
 
@@ -1489,8 +1495,12 @@ void rc_media_box_hw(int x1, int y1, int x2, int y2)
 
 void rc_media_boxFill_hw(int x1, int y1, int x2, int y2)
 {
+    //cout << "boxfill debug: " << rc_active_window << " -> " << rc_active_screen << endl;
     if(rc_screenCheck())
     {
+        //Uint8 r, g, b, a;
+        //SDL_GetRenderDrawColor(rc_win_renderer[rc_active_window], &r, &g, &b, &a);
+        //cout << "color: " << (int)r << ", " << (int)g << ", " << (int)b << ", " << (int)a << endl;
         SDL_Rect src_rect;
         src_rect.x = x1;
         src_rect.y = y1;
@@ -2562,6 +2572,9 @@ void rc_media_cls()
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window]);
         SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 255);
         SDL_RenderClear(rc_win_renderer[rc_active_window]);
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
+        SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 0);
+        SDL_RenderClear(rc_win_renderer[rc_active_window]);
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
         SDL_RenderClear(rc_win_renderer[rc_active_window]);
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
@@ -2570,7 +2583,7 @@ void rc_media_cls()
 
 void rc_media_printS_hw(string txt)
 {
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window]);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
 
     string tc = txt;
     string t_out[rc_console_height[rc_active_window]];
@@ -2604,7 +2617,7 @@ void rc_media_printS_hw(string txt)
     rc_sConsole_y[rc_active_window] += i;
 
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
-    SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_backBuffer[rc_active_window],NULL,NULL);
+    SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_hconsole[rc_active_window],NULL,NULL);
 
     SDL_RenderPresent(rc_win_renderer[rc_active_window]);
 
@@ -2633,7 +2646,7 @@ string rc_media_inputS_hw(string prompt)
     sub_line.y = (rc_sConsole_y[rc_active_window]+1) * 8;
     sub_line.w = 0;
     sub_line.h = 8;
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window]);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
     SDL_Rect txt_rect;
     txt_rect = first_line;
     txt_rect.w = 128;
@@ -2666,7 +2679,7 @@ string rc_media_inputS_hw(string prompt)
         }
         if(in_buf.length()>0)
         {
-        	SDL_SetRenderTarget(rc_win_renderer[rc_active_window],rc_backBuffer[rc_active_window]);
+        	SDL_SetRenderTarget(rc_win_renderer[rc_active_window],rc_hconsole[rc_active_window]);
             tc = in_buf;
             i = 0;
             int x = rc_sConsole_x[rc_active_window];
@@ -2725,7 +2738,7 @@ string rc_media_inputS_hw(string prompt)
                 stringRGBA(rc_win_renderer[rc_active_window], 0, (rc_sConsole_y[rc_active_window] + n) * 8, t_out[n].c_str(), rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, 255);//rc_ink_color.a);
             }
             SDL_SetRenderTarget(rc_win_renderer[rc_active_window],NULL);
-            SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_backBuffer[rc_active_window],NULL,NULL);
+            SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_hconsole[rc_active_window],NULL,NULL);
             SDL_RenderPresent(rc_win_renderer[rc_active_window]);
         }
     }
@@ -2753,7 +2766,7 @@ string rc_media_ZoneInputS_hw(int x, int y, int w, int h)
     zone.y = y;
     zone.w = w;
     zone.h = h;
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
     SDL_StartTextInput();
     while(loop)
     {
@@ -2801,7 +2814,7 @@ string rc_media_ZoneInputS_hw(int x, int y, int w, int h)
                     break;
             }
 
-            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window]);
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
             SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_clearColor>>16, rc_clearColor>>8, rc_clearColor, rc_clearColor>>24);
             SDL_RenderFillRect(rc_win_renderer[rc_active_window], &zone);
 
@@ -2817,12 +2830,13 @@ string rc_media_ZoneInputS_hw(int x, int y, int w, int h)
             }
 
             SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
-            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window], NULL, NULL);
+            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window], NULL, NULL);
             SDL_RenderPresent(rc_win_renderer[rc_active_window]);
         }
     }
     SDL_StopTextInput();
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen]);
+    if(rc_active_screen >= 0)
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen]);
     return in_buf;
 }
 #else
@@ -2832,16 +2846,23 @@ void rc_media_cls()
     if(rc_winCheck(rc_active_window))
     {
         SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_clearColor>>16, rc_clearColor>>8, rc_clearColor, rc_clearColor>>24);
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
+        SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 0);
+        SDL_RenderClear(rc_win_renderer[rc_active_window]);
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
         SDL_RenderClear(rc_win_renderer[rc_active_window]);
-        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
+        if(rc_active_screen >= 0)
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
         rc_media_ink(rc_ink);
     }
 }
 
 void rc_media_printS_hw(string txt)
 {
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    if(rc_active_window < 0)
+        return;
+
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
 
     string tc = txt;
     string t_out[rc_console_height[rc_active_window]];
@@ -2874,6 +2895,9 @@ void rc_media_printS_hw(string txt)
 
     rc_sConsole_y[rc_active_window] += i;
 
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window], NULL, NULL);
+
     SDL_RenderPresent(rc_win_renderer[rc_active_window]);
     if(rc_active_screen>=0)
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
@@ -2900,7 +2924,7 @@ string rc_media_inputS_hw(string prompt)
     sub_line.y = (rc_sConsole_y[rc_active_window]+1) * 8;
     sub_line.w = 0;
     sub_line.h = 8;
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
 
     if(in_buf.length()>0)
     {
@@ -3045,12 +3069,19 @@ string rc_media_inputS_hw(string prompt)
             {
                 stringRGBA(rc_win_renderer[rc_active_window], 0, (rc_sConsole_y[rc_active_window] + n) * 8, t_out[n].c_str(), rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
             }
+
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window], NULL, NULL);
+
             SDL_RenderPresent(rc_win_renderer[rc_active_window]);
+
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
         }
     }
     rc_sConsole_y[rc_active_window] += i;
     rc_sConsole_x[rc_active_window] = 0;
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen]);
+    if(rc_active_screen >= 0)
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen]);
     return in_buf.substr(prompt.length());
 }
 
@@ -3070,7 +3101,7 @@ string rc_media_ZoneInputS_hw(int x, int y, int w, int h)
     zone.y = y;
     zone.w = w;
     zone.h = h;
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
     while(loop)
     {
         if(SDL_WaitEvent(&in_evt))
@@ -3131,10 +3162,16 @@ string rc_media_ZoneInputS_hw(int x, int y, int w, int h)
                 stringRGBA(rc_win_renderer[rc_active_window], x, y + (n * 8), t_out[n].c_str(), rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
             }
 
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window], NULL, NULL);
+
             SDL_RenderPresent(rc_win_renderer[rc_active_window]);
+
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
         }
     }
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen]);
+    if(rc_active_screen >= 0)
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen]);
     return in_buf;
 }
 
@@ -3877,9 +3914,13 @@ void rc_media_updateWindow_hw()
         //cout << "DRAW SCREEN: " << s_num << endl;
         if(rc_hscreen[rc_active_window][s_num] != NULL && rc_screen_visible[rc_active_window][s_num])
         {
+            //cout << "draw canvas " << s_num << endl;
             SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], &rc_screen_rect[rc_active_window][s_num]);
         }
     }
+    //#ifndef RC_ANDROID
+        SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window], NULL, NULL);
+    //#endif // RC_ANDROID
     //cout << endl;
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
     #ifdef RC_ANDROID

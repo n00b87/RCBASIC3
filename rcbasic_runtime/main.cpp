@@ -1493,7 +1493,7 @@ void func_130(uint64_t fn)
             break;
         case FN_SetColor: //Sub Procedure
             rc_media_ink( SETCOLOR_C );
-        break;
+            break;
         case FN_Line: //Sub Procedure
             rc_media_line_hw( LINE_X1, LINE_Y1, LINE_X2, LINE_Y2 );
             break;
