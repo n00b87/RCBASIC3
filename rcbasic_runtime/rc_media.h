@@ -4459,10 +4459,11 @@ Uint32 rc_net_udp_getRemotePort(int socket)
     return ip->port;
 }
 
-void rc_net_udp_closeSocket(int socket)
+int rc_net_udp_closeSocket(int socket)
 {
     SDLNet_UDP_Close(rc_udp_socket[socket]);
     rc_udp_socket[socket] = NULL;
+    return 0;
 }
 
 int rc_net_udp_sendData(int slot, string host, Uint16 port, string s_data)

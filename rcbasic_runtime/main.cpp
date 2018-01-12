@@ -257,6 +257,8 @@ void rc_events()
     cycleVideo();
     if(rc_checkEvent())
     {
+        rc_mwheelx = 0;
+        rc_mwheely = 0;
         for(int i = 0; i < MAX_WINDOWS; i++)
             rc_win_event[i] = 0;
         while(rc_getEvents()){}
@@ -1854,7 +1856,7 @@ void func_130(uint64_t fn)
             rc_push_num( rc_net_udp_openSocket( UDP_SOCKETOPEN_SOCKET, UDP_SOCKETOPEN_PORT ) );
             break;
         case FN_UDP_SocketClose: //Sub Procedure
-            rc_net_udp_closeSocket( UDP_SOCKETCLOSE_SOCKET );
+            rc_push_num(rc_net_udp_closeSocket( UDP_SOCKETCLOSE_SOCKET ));
             break;
         case FN_UDP_GetData: //Number Function
             rc_push_num( rc_net_udp_readStream( UDP_GETDATA_SOCKET, &UDP_GETDATA_SDATA$, &UDP_GETDATA_HOST$, &UDP_GETDATA_PORT ) );
