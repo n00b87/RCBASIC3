@@ -1,4 +1,4 @@
-RCBasic Programming Language
+﻿RCBasic Programming Language
 
 
 RCBasic is a free and open source dialect of the BASIC programming language.  It is intended to
@@ -12,4 +12,5 @@ Special Thanks to the sdlBasic community and the retrogamecoding and BP communit
 Credit goes to the following for making RCBasic what it is:
 
 Rodney Cunningham ( aka n00b ) - Project Founder / Lead Developer
+
 sdlBasic admin - tokenizer / debugging and community contributions
