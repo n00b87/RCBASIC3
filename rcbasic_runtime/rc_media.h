@@ -641,11 +641,11 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
 
     //#ifndef RC_ANDROID
     rc_hconsole[win_num] = SDL_CreateTexture(rc_win_renderer[win_num],rc_pformat->format,SDL_TEXTUREACCESS_TARGET,w,h);
-    SDL_SetTextureBlendMode(rc_hconsole[rc_active_window], SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
-    SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 0);
-    SDL_RenderClear(rc_win_renderer[rc_active_window]);
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    SDL_SetTextureBlendMode(rc_hconsole[win_num], SDL_BLENDMODE_BLEND);
+    SDL_SetRenderTarget(rc_win_renderer[win_num], rc_hconsole[win_num]);
+    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 0);
+    SDL_RenderClear(rc_win_renderer[win_num]);
+    SDL_SetRenderTarget(rc_win_renderer[win_num], NULL);
     //#endif // RC_ANDROID
 
     //cout << "wtf" << endl;
