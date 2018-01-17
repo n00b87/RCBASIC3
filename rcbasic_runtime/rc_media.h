@@ -1377,6 +1377,40 @@ void rc_media_getScreenClip_hw(int slot, int sx, int sy, int sw, int sh)
     }
 }
 
+void rc_media_getScreenClip2_hw(int slot, int sx, int sy, int sw, int sh, bool flag)
+{
+    if(!flag)
+    {
+        rc_media_getScreenClip_hw(slot, sx, sy, sw, sh);
+    }
+    else if(rc_screenCheck(rc_active_screen))
+    {
+        if(rc_himage[slot][rc_active_window] != NULL)
+        {
+            cout << "CanvasClip_Ex Error: Image slot is already occupied" << endl;
+            return;
+        }
+        SDL_Rect src, dst;
+        rc_himage[slot][rc_active_window] = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, sw, sh);
+        src.x = sx;
+        src.y = sy;
+        src.w = sw;
+        src.h = sh;
+        dst.x = 0;
+        dst.y = 0;
+        dst.w = sw;
+        dst.h = sh;
+        rc_himage_rect[slot] = dst;
+        rc_image_width[slot] = sw;
+        rc_image_height[slot] = sh;
+        rc_image_isLoaded[slot] = true;
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_himage[slot][rc_active_window]);
+        SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen], &src, &dst);
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_screen], rc_hscreen[rc_active_window][rc_active_screen]);
+    }
+}
+
+
 void rc_media_getWindowClip_hw(int slot, int sx, int sy, int sw, int sh)
 {
     SDL_Surface * img_surf = SDL_CreateRGBSurface(0, sw, sh, 32, 0, 0, 0, 0);

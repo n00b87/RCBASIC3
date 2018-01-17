@@ -1465,6 +1465,9 @@ void func_130(uint64_t fn)
         case FN_CanvasClip: //Sub Procedure
             rc_media_getScreenClip_hw( CANVASCLIP_SLOT, CANVASCLIP_X, CANVASCLIP_Y, CANVASCLIP_W, CANVASCLIP_H );
             break;
+        case FN_CanvasClip_Ex:
+            rc_media_getScreenClip2_hw( CANVASCLIP_EX_SLOT, CANVASCLIP_EX_SX, CANVASCLIP_EX_SY, CANVASCLIP_EX_SW, CANVASCLIP_EX_SH, CANVASCLIP_EX_FLAG);
+            break;
         case FN_ActiveCanvas:
             rc_push_num(rc_active_screen);
             break;

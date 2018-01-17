@@ -834,3 +834,10 @@
 #define FN_PrefPath$ 301
 #define PREFPATH$_ORG_NAME$ str_var[0].sid_value[0].value[0]
 #define PREFPATH$_APP_NAME$ str_var[1].sid_value[0].value[0]
+#define FN_CanvasClip_Ex 302
+#define CANVASCLIP_EX_SLOT num_var[0].nid_value[0].value[0]
+#define CANVASCLIP_EX_SX num_var[1].nid_value[0].value[0]
+#define CANVASCLIP_EX_SY num_var[2].nid_value[0].value[0]
+#define CANVASCLIP_EX_SW num_var[3].nid_value[0].value[0]
+#define CANVASCLIP_EX_SH num_var[4].nid_value[0].value[0]
+#define CANVASCLIP_EX_FLAG num_var[5].nid_value[0].value[0]
