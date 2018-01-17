@@ -325,3 +325,5 @@ function NumCommands()
 function Env$(v$)
 sub SetEnv$(v$)
 function PrefPath$(org_name$, app_name$)
+'More stuff
+sub CanvasClip_Ex(slot, sx, sy, sw, sh, flag)

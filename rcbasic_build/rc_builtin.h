@@ -840,7 +840,13 @@ add_embedded_arg("v$", ID_TYPE_STR);
 embed_function("PrefPath$", ID_TYPE_FN_STR);
 add_embedded_arg("org_name$", ID_TYPE_STR);
 add_embedded_arg("app_name$", ID_TYPE_STR);
-
+embed_function("CanvasClip_Ex", ID_TYPE_SUB);
+add_embedded_arg("slot", ID_TYPE_NUM);
+add_embedded_arg("sx", ID_TYPE_NUM);
+add_embedded_arg("sy", ID_TYPE_NUM);
+add_embedded_arg("sw", ID_TYPE_NUM);
+add_embedded_arg("sh", ID_TYPE_NUM);
+add_embedded_arg("flag", ID_TYPE_NUM);
 }
 
 
