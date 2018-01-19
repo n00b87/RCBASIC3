@@ -14,3 +14,5 @@ Credit goes to the following for making RCBasic what it is:
 Rodney Cunningham ( aka n00b ) - Project Founder / Lead Developer
 
 sdlBasic admin - tokenizer / debugging and community contributions
+
+For current release builds visit http://www.rcbasic.com
