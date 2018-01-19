@@ -3839,11 +3839,13 @@ bool rc_media_mouseIsVisible()
 
 int rc_media_mouseX()
 {
+    SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     return rc_mouseX;
 }
 
 int rc_media_mouseY()
 {
+    SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     return rc_mouseY;
 }
 
