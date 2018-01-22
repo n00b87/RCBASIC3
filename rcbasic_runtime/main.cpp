@@ -1414,6 +1414,9 @@ void func_130(uint64_t fn)
         case FN_ActiveWindow:
             rc_push_num(rc_active_window);
             break;
+        case FN_SetWindowIcon:
+            rc_media_setWindowIcon( SETWINDOWICON_WIN, SETWINDOWICON_SLOT );
+            break;
         case FN_FPS:
             rc_push_num(rc_fps);
             break;
@@ -1463,10 +1466,7 @@ void func_130(uint64_t fn)
             rc_media_setScreenZ( SETCANVASZ_C_NUM, SETCANVASZ_Z );
             break;
         case FN_CanvasClip: //Sub Procedure
-            rc_media_getScreenClip_hw( CANVASCLIP_SLOT, CANVASCLIP_X, CANVASCLIP_Y, CANVASCLIP_W, CANVASCLIP_H );
-            break;
-        case FN_CanvasClip_Ex:
-            rc_media_getScreenClip2_hw( CANVASCLIP_EX_SLOT, CANVASCLIP_EX_SX, CANVASCLIP_EX_SY, CANVASCLIP_EX_SW, CANVASCLIP_EX_SH, CANVASCLIP_EX_FLAG);
+            rc_media_getScreenClip2_hw( CANVASCLIP_SLOT, CANVASCLIP_X, CANVASCLIP_Y, CANVASCLIP_W, CANVASCLIP_H, CANVASCLIP_FLAG );
             break;
         case FN_ActiveCanvas:
             rc_push_num(rc_active_screen);
@@ -1562,9 +1562,6 @@ void func_130(uint64_t fn)
         case FN_GetImageSize: //Sub Procedure
             rc_media_getImageSize_hw( GETIMAGESIZE_SLOT, &GETIMAGESIZE_W, &GETIMAGESIZE_H );
             break;
-        case FN_FlipImage: //Sub Procedure
-            rc_media_MirrorImage_hw( FLIPIMAGE_SLOT, FLIPIMAGE_H, FLIPIMAGE_V );
-            break;
         case FN_DrawImage: //Sub Procedure
             rc_media_drawImage_hw( DRAWIMAGE_SLOT, DRAWIMAGE_X, DRAWIMAGE_Y );
             break;
@@ -1596,6 +1593,13 @@ void func_130(uint64_t fn)
         case FN_DrawImage_Rotozoom_Ex: //Sub Procedure
             rc_media_rotozoomImageEX_hw( DRAWIMAGE_ROTOZOOM_EX_SLOT, DRAWIMAGE_ROTOZOOM_EX_X, DRAWIMAGE_ROTOZOOM_EX_Y, DRAWIMAGE_ROTOZOOM_EX_SRC_X, DRAWIMAGE_ROTOZOOM_EX_SRC_Y,
                                          DRAWIMAGE_ROTOZOOM_EX_SRC_W, DRAWIMAGE_ROTOZOOM_EX_SRC_H, DRAWIMAGE_ROTOZOOM_EX_ANGLE, DRAWIMAGE_ROTOZOOM_EX_ZX, DRAWIMAGE_ROTOZOOM_EX_ZY );
+            break;
+        case FN_DrawImage_Flip:
+            rc_media_drawImage_Flip( DRAWIMAGE_FLIP_SLOT, DRAWIMAGE_FLIP_X, DRAWIMAGE_FLIP_Y, DRAWIMAGE_FLIP_H, DRAWIMAGE_FLIP_V );
+            break;
+        case FN_DrawImage_Flip_Ex:
+            rc_media_drawImage_Flip_Ex(DRAWIMAGE_FLIP_EX_SLOT, DRAWIMAGE_FLIP_EX_X, DRAWIMAGE_FLIP_EX_Y, DRAWIMAGE_FLIP_EX_SRC_X, DRAWIMAGE_FLIP_EX_SRC_Y, DRAWIMAGE_FLIP_EX_SRC_W,
+                                       DRAWIMAGE_FLIP_EX_SRC_H, DRAWIMAGE_FLIP_EX_H, DRAWIMAGE_FLIP_EX_V);
             break;
         case FN_InKey: //Number Function
             rc_push_num( rc_media_inkey() );
@@ -1942,13 +1946,21 @@ void func_130(uint64_t fn)
         case FN_Env$: //String Function
             rc_push_str( rc_intern_env( ENV$_V$ ) );
             break;
-        case FN_SetEnv$: //Sub Procedure
-            rc_intern_setEnv( SETENV$_V$ );
+        case FN_SetEnv: //Sub Procedure
+            rc_intern_setEnv( SETENV_V$ );
             break;
         case FN_PrefPath$: //String Function
             rc_push_str( rc_intern_prefPath( PREFPATH$_ORG_NAME$, PREFPATH$_APP_NAME$ ) );
             break;
-
+        case FN_ClipboardText$:
+            rc_push_str( rc_media_getClipboardText() );
+            break;
+        case FN_SetClipboardText:
+            rc_media_setClipboardText( SETCLIPBOARDTEXT_TXT$ );
+            break;
+        case FN_HasClipboardText:
+            rc_push_num( rc_media_hasClipboardText() );
+            break;
     }
 }
 
@@ -2722,7 +2734,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC v3.0.4" << endl;
+        cout << "RCBASIC v3.0.5" << endl;
         return 0;
     }
 

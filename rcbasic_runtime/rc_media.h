@@ -1120,6 +1120,53 @@ void rc_media_restoreWindow(int win_num)
         cout << "RestoreWindow Error: Window #" << win_num << " is not an active window" << endl;
 }
 
+void rc_media_setWindowIcon(int win_num, int slot)
+{
+    SDL_Rect img_rect;
+    img_rect.x = 0;
+    img_rect.y = 0;
+    img_rect.w = rc_image_width[slot];
+    img_rect.h = rc_image_height[slot];
+    if(rc_himage[slot][win_num] != NULL)
+    {
+        SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_VERTICAL);
+
+        SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[slot], rc_image_height[slot], 32, 0, 0, 0, 0);
+        SDL_Texture * tmp_tex = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, rc_image_width[slot], rc_image_height[slot]);
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window],NULL);
+        SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,&img_rect);
+        //SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
+
+        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &img_rect, rc_pformat->format,tmp_surf->pixels,tmp_surf->pitch);
+
+        SDL_SetColorKey(tmp_surf,SDL_TRUE,rc_image_colorKey[slot]);
+
+        SDL_SetWindowIcon(rc_win[rc_active_window], tmp_surf);
+
+
+        if(rc_active_screen >= 0)
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
+
+        SDL_DestroyTexture(tmp_tex);
+        SDL_FreeSurface(tmp_surf);
+    }
+}
+
+string rc_media_getClipboardText()
+{
+    return (string) SDL_GetClipboardText();
+}
+
+void rc_media_setClipboardText(string txt)
+{
+    SDL_SetClipboardText(txt.c_str());
+}
+
+int rc_media_hasClipboardText()
+{
+    return (int)SDL_HasClipboardText();
+}
+
 bool rc_screenCheck(int s_num = -1)
 {
     if(s_num == -1)
@@ -2468,6 +2515,46 @@ void rc_media_drawImage_hw(int slot, int x, int y)
             cout << "DrawImage error: " << SDL_GetError() << endl;
 
     }
+}
+
+void rc_media_drawImage_Flip(int slot, int x, int y, int flipH, int flipV)
+{
+    SDL_RendererFlip rf = SDL_FLIP_NONE;
+    if(flipH!=0)
+        rf = (SDL_RendererFlip)(rf | SDL_FLIP_HORIZONTAL);
+    if(flipV!=0)
+        rf = (SDL_RendererFlip)(rf | SDL_FLIP_VERTICAL);
+
+    SDL_Rect dst;
+    dst.x = x;
+    dst.y = y;
+    dst.w = rc_image_width[slot];
+    dst.h = rc_image_height[slot];
+
+    SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window], NULL, &dst, 0, NULL, rf);
+}
+
+void rc_media_drawImage_Flip_Ex(int slot, int x, int y, int src_x, int src_y, int src_w, int src_h, int flipH, int flipV)
+{
+    SDL_RendererFlip rf = SDL_FLIP_NONE;
+    if(flipH!=0)
+        rf = (SDL_RendererFlip)(rf | SDL_FLIP_HORIZONTAL);
+    if(flipV!=0)
+        rf = (SDL_RendererFlip)(rf | SDL_FLIP_VERTICAL);
+
+    SDL_Rect dst;
+    dst.x = x;
+    dst.y = y;
+    dst.w = rc_image_width[slot];
+    dst.h = rc_image_height[slot];
+
+    SDL_Rect src;
+    src.x = src_x;
+    src.y = src_y;
+    src.w = src_w;
+    src.h = src_h;
+
+    SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window], &src, &dst, 0, NULL, rf);
 }
 
 void rc_media_getRectangle_hw(int slot, int x, int y, int w, int h)
