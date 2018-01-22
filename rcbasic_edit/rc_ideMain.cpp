@@ -113,10 +113,10 @@ void rc_initKeywords()
     rc_keywords += wxT("date date$ ticks time time$ timer wait ");
     rc_keywords += wxT("windowopen windowclose raisewindow window update showwindow hidewindow setwindowtitle windowtitle windowtitle$ setwindowposition getwindowposition setwindowsize getwindowsize ");
     rc_keywords += wxT("setwindowminsize getwindowminsize setwindowmaxsize getwindowmaxsize windowisfullscreen windowisvisible windowisbordered windowisresizable windowisminimized ");
-    rc_keywords += wxT("windowismaximized setwindowfullscreen maximizewindow minimizewindow setwindowborder ");
+    rc_keywords += wxT("windowismaximized setwindowfullscreen maximizewindow minimizewindow setwindowborder setwindowicon ");
     rc_keywords += wxT("canvasopen canvasclose setcanvasviewport getcanvasviewport canvas setcanvasoffset getcanvasoffset getcanvassize clearcanvas setcanvasalpha copycanvas clonecanvas ");
     rc_keywords += wxT("setcanvasz box boxfill circle circlefill ellipse ellipsefill floodfill pixel setcolor line rgb rgba pset loadimage imageexists colorkey copyimage deleteimage setimagealpha ");
-    rc_keywords += wxT("imagealpha getimagesize flipimage drawimage drawimage_blit drawimage_blit_ex drawimage_rotate drawimage_rotate_ex drawimage_zoom drawimage_zoom_ex drawimage_rotozoom drawimage_rotozoom_ex ");
+    rc_keywords += wxT("imagealpha getimagesize drawimage drawimage_blit drawimage_blit_ex drawimage_rotate drawimage_rotate_ex drawimage_zoom drawimage_zoom_ex drawimage_rotozoom drawimage_rotozoom_ex drawimage_flip drawimage_flip_ex ");
     rc_keywords += wxT("getcursor prints inputs inputs$ locate fontisloaded font loadfont deletefont setfontstyle drawtext drawtext_shaded drawtext_blended inkey key waitkey hidemouse showmouse mouseisvisible getmouse ");
     rc_keywords += wxT("getmousewheel numjoysticks joyaxis joybutton joyname joyname$ loadsound loadmusic playsound playsoundtimed playmusic pausesound resumesound pausemusic resumemusic ");
     rc_keywords += wxT("deletesound fademusicin fademusicout musicexists setmusicvolume musicvolume setmusicposition musicposition rewindmusic setsoundchannels numsoundchannels soundisenabled soundexists ");
@@ -131,7 +131,7 @@ void rc_initKeywords()
     rc_keywords += wxT("getvideosize videoexists setvideoalpha soundfrombuffer command command$ numcommands str_f str_f$ str_s str_s$ cls env env$ setenv prefpath prefpath$ numjoyhats joyhat numjoytrackballs getjoytrackball ");
     rc_keywords += wxT("windowhasinputfocus windowhasmousefocus push_n push_s pop_n pop_s pop_s$ n_stack_size s_stack_size joystickisconnected ");
     rc_keywords += wxT("numwindows windowexists readinput_togglebackspace windowevent_close windowevent_minimize windowevent_maximize poly polyfill cint32 cint64 mousex mousey mousebutton mousewheelx mousewheely setclearcolor ");
-    rc_keywords += wxT("stringarraydim stringarraysize numberarraydim numberarraysize activewindow activecanvas fps ");
+    rc_keywords += wxT("stringarraydim stringarraysize numberarraydim numberarraysize activewindow activecanvas fps hasclipboardtext setclipboardtext clipboardtext ");
 
     rc_keywords2 = wxT("k_0 k_1 k_2 k_3 k_4 k_5 k_6 k_7 k_8 k_9 k_a k_ac_back k_ac_bookmarks k_ac_forward k_ac_home k_ac_refresh k_ac_search k_ac_stop k_again k_alterase k_application ");
     rc_keywords2 += wxT("k_audiomute k_audionext k_audioplay k_audioprev k_audiostop k_b k_backslash k_backspace k_brightnessdown k_brightnessup k_c k_calculator k_cancel k_capslock k_clear ");
@@ -283,7 +283,7 @@ void rc_ideFrame::OnQuit(wxCommandEvent& event)
 
 void rc_ideFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = _("RCBASIC v3.0.4\nCopyright (C) 2015-2018 Rodney Cunningham ( aka n00b )\n\nFor latest release, updates, and info go to \nhttp://www.rcbasic.com\n\nAnd the forum at \nhttp://rcbasic.freeforums.net");
+    wxString msg = _("RCBASIC Editor\nCopyright (C) 2015-2018 Rodney Cunningham ( aka n00b )\n\nFor latest release, updates, and info go to \nhttp://www.rcbasic.com\n\nAnd the forum at \nhttp://rcbasic.freeforums.net");
     wxMessageBox(msg);
 }
 
