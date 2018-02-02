@@ -304,7 +304,7 @@ bool rc_media_init()
             rc_screen_rect[i][j].y = 0;
             rc_screen_rect[i][j].w = 0;
             rc_screen_rect[i][j].h = 0;
-            rc_screen_z[i][j] = 31;
+            rc_screen_z[i][j] = j;
             rc_screen_zOrder[i][j] = j;
             rc_screen_visible[i][j] = false;
         }
@@ -1511,27 +1511,18 @@ void rc_media_cloneScreen_hw(int src_screen, int dst_screen)
 
 void rc_sortZ()
 {
-    int tc1 = 0;
-    int tc2 = 0;
-    //int tmp_zOrder[MAX_SCREENS];
     int aw  = rc_active_window;
+    int z = 0;
     for(int i = 0; i < MAX_SCREENS; i++)
     {
-        tc1 = rc_screen_zOrder[aw][i];
         for(int n = 0; n < MAX_SCREENS; n++)
         {
-            tc2 = rc_screen_zOrder[aw][n];
-            //cout << "compare screen #" << tc2 << " z = " << rc_screen_z[aw][tc2] << " with screen #" << tc1 << " z = " << rc_screen_z[aw][tc1] << endl;
-            //string s; cin >>s;
-            if(rc_screen_z[aw][tc2] < rc_screen_z[aw][tc1])
-            {
-                //cout << "swap z" << endl;
-                //string s; cin >> s;
-                rc_screen_zOrder[aw][i] = tc2;
-                rc_screen_zOrder[aw][n] = tc1;
-                tc1 = tc2;
-            }
-        }
+			if(rc_screen_z[aw][n] == i)
+			{
+				rc_screen_zOrder[aw][z] = n;
+				z++;
+			}
+		}
     }
 }
 
