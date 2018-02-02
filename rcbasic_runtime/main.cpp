@@ -1383,6 +1383,7 @@ void func_130(uint64_t fn)
             break;
         case FN_SetWindowFullscreen: //Sub Procedure
             rc_media_setWindowFullscreen( SETWINDOWFULLSCREEN_WIN, SETWINDOWFULLSCREEN_FLAG );
+            rc_media_cls();
             break;
         case FN_MaximizeWindow: //Sub Procedure
             rc_media_maximizeWindow( MAXIMIZEWINDOW_WIN );

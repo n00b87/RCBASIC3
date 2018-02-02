@@ -1505,6 +1505,7 @@ void rc_media_cloneScreen_hw(int src_screen, int dst_screen)
             rc_screen_height[rc_active_window][dst_screen] = rc_screen_height[rc_active_window][src_screen];
             rc_screen_rect[rc_active_window][dst_screen] = rc_screen_rect[rc_active_window][src_screen];
             rc_screenview[rc_active_window][dst_screen] = rc_screenview[rc_active_window][src_screen];
+            rc_screen_visible[rc_active_window][dst_screen] = rc_screen_visible[rc_active_window][src_screen];
         }
     }
 }
@@ -1550,62 +1551,78 @@ void rc_media_setScreenZ(int s_num, int z)
 
 void rc_media_box_hw(int x1, int y1, int x2, int y2)
 {
-    if(rc_screenCheck())
-    {
-        //rectangleRGBA(rc_win_renderer[rc_active_window], x1, y1, x2, y2, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
-        int w = x2 - x1;
-        int h = y2 - y1;
-
-        SDL_Rect dst;
-        dst.x = x1;
-        dst.y = y1;
-        dst.w = w;
-        dst.h = h;
-        SDL_RenderDrawRect(rc_win_renderer[rc_active_window], &dst);
-    }
+	Sint16 vx[4], vy[4];
+    
+    vx[0] = (Sint16)x1;
+    vy[0] = (Sint16)y1;
+    
+    vx[1] = (Sint16)x2;
+    vy[1] = (Sint16)y1;
+    
+    vx[2] = (Sint16)x2;
+    vy[2] = (Sint16)y2;
+    
+    vx[3] = (Sint16)x1;
+    vy[3] = (Sint16)y2;
+    
+    polygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_boxFill_hw(int x1, int y1, int x2, int y2)
 {
-    //cout << "boxfill debug: " << rc_active_window << " -> " << rc_active_screen << endl;
-    if(rc_screenCheck())
-    {
-        //Uint8 r, g, b, a;
-        //SDL_GetRenderDrawColor(rc_win_renderer[rc_active_window], &r, &g, &b, &a);
-        //cout << "color: " << (int)r << ", " << (int)g << ", " << (int)b << ", " << (int)a << endl;
-        SDL_Rect src_rect;
-        src_rect.x = x1;
-        src_rect.y = y1;
-        src_rect.w = x2 - x1;
-        src_rect.h = y2 - y1;
-        SDL_RenderFillRect(rc_win_renderer[rc_active_window], &src_rect);
-    }
+	Sint16 vx[4], vy[4];
+    
+    vx[0] = (Sint16)x1;
+    vy[0] = (Sint16)y1;
+    
+    vx[1] = (Sint16)x2;
+    vy[1] = (Sint16)y1;
+    
+    vx[2] = (Sint16)x2;
+    vy[2] = (Sint16)y2;
+    
+    vx[3] = (Sint16)x1;
+    vy[3] = (Sint16)y2;
+    
+    filledPolygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_rectangle(int x, int y, int w, int h)
 {
-    if(rc_screenCheck())
-    {
-        SDL_Rect src_rect;
-        src_rect.x = x;
-        src_rect.y = y;
-        src_rect.w = w;
-        src_rect.h = h;
-        SDL_RenderDrawRect(rc_win_renderer[rc_active_window], &src_rect);
-    }
+	Sint16 vx[4], vy[4];
+    
+    vx[0] = (Sint16)x;
+    vy[0] = (Sint16)y;
+    
+    vx[1] = (Sint16)x + w;
+    vy[1] = (Sint16)y;
+    
+    vx[2] = (Sint16)x + w;
+    vy[2] = (Sint16)y + h;
+    
+    vx[3] = (Sint16)x;
+    vy[3] = (Sint16)y + h;
+    
+    polygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_rectangleFill(int x, int y, int w, int h)
 {
-    if(rc_screenCheck())
-    {
-        SDL_Rect src_rect;
-        src_rect.x = x;
-        src_rect.y = y;
-        src_rect.w = w;
-        src_rect.h = h;
-        SDL_RenderFillRect(rc_win_renderer[rc_active_window], &src_rect);
-    }
+	Sint16 vx[4], vy[4];
+    
+    vx[0] = (Sint16)x;
+    vy[0] = (Sint16)y;
+    
+    vx[1] = (Sint16)x + w;
+    vy[1] = (Sint16)y;
+    
+    vx[2] = (Sint16)x + w;
+    vy[2] = (Sint16)y + h;
+    
+    vx[3] = (Sint16)x;
+    vy[3] = (Sint16)y + h;
+    
+    filledPolygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_roundRect(int x, int y, int w, int h, int r)
