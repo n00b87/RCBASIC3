@@ -2735,16 +2735,16 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC v3.0.5" << endl;
+        cout << "RCBASIC v3.0.6" << endl;
         return 0;
     }
 
-    if(argc >2)
+    if(argc >1)
     {
-        rc_cmd_count = argc - 2;
+        rc_cmd_count = argc - 1;
         rc_cmd_args = new string[rc_cmd_count];
-        for(int i = 2; i < argc; i++)
-            rc_cmd_args[i-2] = argv[i];
+        for(int i = 1; i < argc; i++)
+            rc_cmd_args[i-1] = argv[i];
     }
 
     rcbasic_init();
