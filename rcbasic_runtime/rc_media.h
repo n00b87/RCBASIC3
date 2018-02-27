@@ -56,7 +56,7 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 const int MAX_WINDOWS = 1;  //8
-const int MAX_SCREENS = 16; //32
+const int MAX_SCREENS = 8; //32
 const int MAX_IMAGES = 4096; //65536;
 const int MAX_SPRITES = 32; //1024;
 const int MAX_SOUNDS = 1024;
@@ -70,7 +70,7 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 const int MAX_WINDOWS = 8;  //8
-const int MAX_SCREENS = 16; //32
+const int MAX_SCREENS = 8; //32
 const int MAX_IMAGES = 4096; //65536;
 const int MAX_SPRITES = 32; //1024;
 const int MAX_SOUNDS = 1024;
@@ -1552,76 +1552,76 @@ void rc_media_setScreenZ(int s_num, int z)
 void rc_media_box_hw(int x1, int y1, int x2, int y2)
 {
 	Sint16 vx[4], vy[4];
-    
+
     vx[0] = (Sint16)x1;
     vy[0] = (Sint16)y1;
-    
+
     vx[1] = (Sint16)x2;
     vy[1] = (Sint16)y1;
-    
+
     vx[2] = (Sint16)x2;
     vy[2] = (Sint16)y2;
-    
+
     vx[3] = (Sint16)x1;
     vy[3] = (Sint16)y2;
-    
+
     polygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_boxFill_hw(int x1, int y1, int x2, int y2)
 {
 	Sint16 vx[4], vy[4];
-    
+
     vx[0] = (Sint16)x1;
     vy[0] = (Sint16)y1;
-    
+
     vx[1] = (Sint16)x2;
     vy[1] = (Sint16)y1;
-    
+
     vx[2] = (Sint16)x2;
     vy[2] = (Sint16)y2;
-    
+
     vx[3] = (Sint16)x1;
     vy[3] = (Sint16)y2;
-    
+
     filledPolygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_rectangle(int x, int y, int w, int h)
 {
 	Sint16 vx[4], vy[4];
-    
+
     vx[0] = (Sint16)x;
     vy[0] = (Sint16)y;
-    
+
     vx[1] = (Sint16)x + w;
     vy[1] = (Sint16)y;
-    
+
     vx[2] = (Sint16)x + w;
     vy[2] = (Sint16)y + h;
-    
+
     vx[3] = (Sint16)x;
     vy[3] = (Sint16)y + h;
-    
+
     polygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_rectangleFill(int x, int y, int w, int h)
 {
 	Sint16 vx[4], vy[4];
-    
+
     vx[0] = (Sint16)x;
     vy[0] = (Sint16)y;
-    
+
     vx[1] = (Sint16)x + w;
     vy[1] = (Sint16)y;
-    
+
     vx[2] = (Sint16)x + w;
     vy[2] = (Sint16)y + h;
-    
+
     vx[3] = (Sint16)x;
     vy[3] = (Sint16)y + h;
-    
+
     filledPolygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
