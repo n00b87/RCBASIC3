@@ -569,7 +569,7 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
         {
             for(int w = 0; w < MAX_WINDOWS; w++)
             {
-                if(rc_win[w] != NULL)
+                if(rc_win[w] != NULL && rc_himage[i][w]==NULL)
                 {
                     SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[i], rc_image_height[i], 32, 0, 0, 0, 0);
                     //cout << "ColorKey = " << (Uint32)rc_image_colorKey_r[i] << ", ";
