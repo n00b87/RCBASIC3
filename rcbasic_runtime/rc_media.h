@@ -2592,6 +2592,7 @@ void rc_media_getRectangle_hw(int slot, int x, int y, int w, int h)
         if(rc_win[i] != NULL)
         {
             rc_himage[slot][i] = SDL_CreateTextureFromSurface(rc_win_renderer[i],rect_surf);
+            rc_image_isLoaded[slot] = true;
         }
     }
 
@@ -3455,6 +3456,7 @@ void rc_media_GetRenderedText_hw(int slot, string text)
             rc_himage_rect[slot].h = rendered_text->h;
             rc_image_width[slot] = rendered_text->w;
             rc_image_height[slot] = rendered_text->h;
+            rc_image_isLoaded[slot] = true;
         }
     }
 
@@ -4077,7 +4079,7 @@ void rc_media_updateWindow_hw()
 
 bool rc_media_imageExist_hw(int slot)
 {
-    if(rc_himage[slot][0] == NULL)
+    if(rc_himage[slot][0] == NULL && (!rc_image_isLoaded[slot]) )
         return false;
     return true;
 }
