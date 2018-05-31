@@ -2932,6 +2932,20 @@ bool check_rule()
 
                 vm_asm.push_back("label SELECT:" + rc_intToString(select_block.top().index) + "->CASE:" + rc_intToString(select_block.top().case_index));
                 vm_asm.push_back("label SELECT:" + rc_intToString(select_block.top().index) + "->END");
+
+                if(select_block.top().case_type==ID_TYPE_STR)
+                {
+                    string compare_case = "s" + rc_intToString(s_reg);
+                    vm_asm.push_back("pop$ " + compare_case);
+                    inc_s(1);
+                }
+                else
+                {
+                    string compare_case = "n" + rc_intToString(n_reg);
+                    vm_asm.push_back("pop " + compare_case);
+                    inc_n(1);
+                }
+
                 select_block.pop();
                 exit_scope(1);
             }

@@ -539,7 +539,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC v3.0.5" << endl;
+        cout << "RCBASIC Compiler v3.0.7" << endl;
         return 0;
     }
 
