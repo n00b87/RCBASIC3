@@ -2279,10 +2279,10 @@ void rc_media_deleteImage_hw(int slot)
         cout << "DeleteImage Error: Image Slot must be in the range of 0 to " << MAX_IMAGES-1 << endl;
         return;
     }
-    if(rc_himage[slot]==NULL)
-        return;
     for(int i = 0; i < MAX_WINDOWS; i++)
     {
+        if(rc_himage[slot][i] == NULL)
+            continue;
         SDL_DestroyTexture(rc_himage[slot][i]);
         rc_himage[slot][i] = NULL;
     }
@@ -4079,9 +4079,7 @@ void rc_media_updateWindow_hw()
 
 bool rc_media_imageExist_hw(int slot)
 {
-    if(rc_himage[slot][0] == NULL && (!rc_image_isLoaded[slot]) )
-        return false;
-    return true;
+    return rc_image_isLoaded[slot];
 }
 
 int rc_media_numJoysticks()

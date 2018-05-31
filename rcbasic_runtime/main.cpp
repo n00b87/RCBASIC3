@@ -1039,6 +1039,9 @@ void func_130(uint64_t fn)
     switch(fn)
     {
         case FN_FPrint:
+            //cout << "gosub addr size: " << gosub_return_addr.size() << endl;
+            //cout << "for stack size: " << loop_stack.size() << endl;
+            //cout << "byref addr table: " << byref_addr_table.size() << endl << endl;
             rc_fprint( FPRINT_TXT$ );
             break;
         case FN_Input$:
@@ -1607,7 +1610,7 @@ void func_130(uint64_t fn)
             break;
         case FN_Key: //Number Function
             rc_push_num( rc_media_key( KEY_KEY_CODE ) );
-        break;
+            break;
         case FN_WaitKey: //Number Function
             rc_push_num( rc_media_waitKey() );
             break;
@@ -2735,7 +2738,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC v3.0.6" << endl;
+        cout << "RCBASIC Runtime v3.0.7" << endl;
         return 0;
     }
 
