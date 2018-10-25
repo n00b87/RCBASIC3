@@ -15,4 +15,4 @@ Rodney Cunningham ( aka n00b ) - Project Founder / Lead Developer
 
 sdlBasic admin - tokenizer / debugging and community contributions
 
-For current release builds visit http://www.rcbasic.com
+For current release builds visit http://rcbasic.freeforums.net 
