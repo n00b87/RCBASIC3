@@ -63,6 +63,7 @@ const int MAX_SOUNDS = 1024;
 const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
 const int MAX_FINGERS = 10;
+const int MAX_SOCKETS = 1024;
 #else
 
 //Screen dimension constants
@@ -77,6 +78,7 @@ const int MAX_SOUNDS = 1024;
 const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
 const int MAX_FINGERS = 10;
+const int MAX_SOCKETS = 1024;
 
 #endif // RC_ANDROID
 
@@ -189,8 +191,8 @@ double rc_mt_dist = 0;
 SDL_TouchID rc_touchDevice;
 SDL_Finger rc_finger[10];
 
-int rc_win_width = 0;
-int rc_win_height = 0;
+int rc_win_width[MAX_WINDOWS];
+int rc_win_height[MAX_WINDOWS];
 
 Uint32 rc_update_timer = 0;
 Uint32 rc_auto_time = 0;
@@ -199,9 +201,9 @@ int rc_update_flag = 0;
 Mix_Chunk * rc_sound[MAX_SOUNDS];
 Mix_Music * rc_music;
 
-TCPsocket rc_socket[5];
+TCPsocket rc_socket[1024];
 
-UDPsocket rc_udp_socket[5];
+UDPsocket rc_udp_socket[1024];
 UDPpacket * rc_udp_packet;
 int rc_udp_channel;
 string rc_udp_data;
@@ -235,6 +237,9 @@ uint32_t rc_fps_timer = 0;
 #ifdef RC_ANDROID
 double rc_mouse_scale_x = 0;
 double rc_mouse_scale_y = 0;
+#else
+double rc_fullscreen_mouse_scale_x[MAX_WINDOWS];
+double rc_fullscreen_mouse_scale_y[MAX_WINDOWS];
 #endif // RC_ANDROID
 
 typedef struct AudioQueue
@@ -279,6 +284,11 @@ int rc_video_currentLoop = 0;
 
 bool rc_media_init()
 {
+    for(int i = 0; i < MAX_SOCKETS; i++)
+    {
+        rc_socket[i] = NULL;
+        rc_udp_socket[i] = NULL;
+    }
     for(int i = 0; i < MAX_SOUNDS; i++)
         rc_sound[i] = NULL;
 
@@ -519,8 +529,8 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     //rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
     rc_win_id[win_num] = SDL_GetWindowID(rc_win[win_num]);
 
-    rc_win_width = w;
-    rc_win_height = h;
+    rc_win_width[win_num] = w;
+    rc_win_height[win_num] = h;
     //SDL_SetSurfaceRLE(rc_win_surface[win_num],1);
     //rc_console = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
     //SDL_SetColorKey(rc_console, SDL_TRUE, rc_clearColor);
@@ -635,8 +645,22 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     //cout << "cunt" << endl;
 
     #ifdef RC_ANDROID
-    rc_mouse_scale_x = (double)(w / rc_displayMode[win_num].w);
-    rc_mouse_scale_y = (double)(h / rc_displayMode[win_num].h);
+    rc_mouse_scale_x = (double)((double)w / (double)rc_displayMode[win_num].w);
+    rc_mouse_scale_y = (double)((double)h / (double)rc_displayMode[win_num].h);
+    #else
+    if(flags == SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP)
+    {
+        //cout << "W = " << w << endl;
+        //cout << "D.W = " << rc_displayMode[win_num].w << endl;
+        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
+        //cout << "fs = " << rc_fullscreen_mouse_scale_x[win_num] << endl;
+        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)h / (double)rc_displayMode[win_num].h);
+    }
+    else
+    {
+        rc_fullscreen_mouse_scale_x[win_num] = 1;
+        rc_fullscreen_mouse_scale_y[win_num] = 1;
+    }
     #endif // RC_ANDROID
 
     //#ifndef RC_ANDROID
@@ -813,9 +837,21 @@ void rc_media_setWindowSize(int win_num, int w, int h)
         #ifdef RC_ANDROID
         rc_mouse_scale_x = 1;
         rc_mouse_scale_y = 1;
+        #else
+        if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
+        {
+            cout << "Something happend: " << SDL_GetError() << endl;
+            rc_fullscreen_mouse_scale_x[win_num] = 1;
+            rc_fullscreen_mouse_scale_y[win_num] = 1;
+        }
+        else
+        {
+            rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
+            rc_fullscreen_mouse_scale_y[win_num] = (double)((double)h / (double)rc_displayMode[win_num].h);
+        }
         #endif // RC_ANDROID
-        rc_win_width = w;
-        rc_win_height = h;
+        rc_win_width[win_num] = w;
+        rc_win_height[win_num] = h;
     }
     else
         cout << "SetWindowSize Error: Window #" << win_num << " is not an active window" << endl;
@@ -1036,6 +1072,19 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
             cout << "SDL_FULLSCREEN ERROR: " << SDL_GetError() << endl;
             return;
         }
+
+        if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
+        {
+            cout << "Something happend: " << SDL_GetError() << endl;
+            rc_fullscreen_mouse_scale_x[win_num] = 1;
+            rc_fullscreen_mouse_scale_y[win_num] = 1;
+        }
+        else
+        {
+            rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
+            rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
+        }
+
         SDL_PumpEvents();
         SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
         //SDL_GetWindowDisplayMode(rc_win[win_num],&rc_displayMode[win_num]);
@@ -1056,6 +1105,8 @@ void rc_media_maximizeWindow(int win_num)
         rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
         rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
+        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
+        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
     }
     else
         cout << "MaximizeWindow Error: Window #" << win_num << " is not an active window" << endl;
@@ -1070,6 +1121,8 @@ void rc_media_minimizeWindow(int win_num)
         rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
         rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
+        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
+        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
     }
     else
         cout << "MinimizeWindow Error: Window #" << win_num << " is not an active window" << endl;
@@ -1115,6 +1168,8 @@ void rc_media_restoreWindow(int win_num)
         rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
         rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
+        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
+        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
     }
     else
         cout << "RestoreWindow Error: Window #" << win_num << " is not an active window" << endl;
@@ -1681,10 +1736,27 @@ Uint32 rc_media_getPixel_hw(int x, int y)
     //cout << "surface = ( " << rc_win_surface[rc_active_window]->w << ", " << rc_win_surface[rc_active_window]->h << " ) " << endl;
     int w = 0;
     int h = 0;
-    SDL_GetWindowSize(rc_win[rc_active_window], &w, &h);
-    Uint32 * s_pixels = (Uint32*)SDL_malloc(sizeof(Uint32) * (w * h));
-    SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, rc_pformat->format, (void*)s_pixels, w*4);
-    Uint32 p_color =  s_pixels[y*w+x];
+    //SDL_GetWindowSize(rc_win[rc_active_window], &w, &h);
+    //w = rc_displayMode[rc_active_window].w;
+    //h = rc_displayMode[rc_active_window].h;
+    Uint32 * s_pixels = (Uint32*)SDL_malloc(sizeof(Uint32));
+    SDL_Rect p_rect;
+    p_rect.x = x / rc_fullscreen_mouse_scale_x[rc_active_window];
+    p_rect.y = y / rc_fullscreen_mouse_scale_y[rc_active_window];
+    p_rect.w = 1;
+    p_rect.h = 1;
+    SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &p_rect, rc_pformat->format, (void*)s_pixels, 4);
+
+    #ifdef RC_ANDROID
+    y = y * rc_mouse_scale_y;
+    x = x * rc_mouse_scale_x;
+    #else
+    //int sy = y * rc_fullscreen_mouse_scale_y[rc_active_window];
+    //int sx = x * rc_fullscreen_mouse_scale_x[rc_active_window];
+    //cout << "sm dbg = " << sx << ", " << sy << ", " << w << ", " << h << endl;
+    #endif // RC_ANDROID
+
+    Uint32 p_color =  s_pixels[0];
     //cout << "color = " << p_color << endl;
     SDL_free(s_pixels);
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
@@ -2563,46 +2635,6 @@ void rc_media_drawImage_Flip_Ex(int slot, int x, int y, int src_x, int src_y, in
     src.h = src_h;
 
     SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window], &src, &dst, 0, NULL, rf);
-}
-
-void rc_media_getRectangle_hw(int slot, int x, int y, int w, int h)
-{
-    SDL_Rect src;
-    src.x = x;
-    src.y = y;
-    src.w = w;
-    src.h = h;
-
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window],NULL);
-
-    int win_w;
-    int win_h;
-    SDL_GetWindowSize(rc_win[rc_active_window],&win_w,&win_h);
-
-    SDL_Surface * wsurf = SDL_CreateRGBSurface(0, win_w, win_h, 32, 0, 0, 0, 0);
-    SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, wsurf->format->format, wsurf->pixels, wsurf->pitch);
-
-    SDL_Surface * rect_surf = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
-    SDL_BlitSurface(wsurf, &src, rect_surf, NULL);
-
-    for(int i = 0; i < MAX_WINDOWS; i++)
-    {
-        SDL_DestroyTexture(rc_himage[slot][i]);
-
-        if(rc_win[i] != NULL)
-        {
-            rc_himage[slot][i] = SDL_CreateTextureFromSurface(rc_win_renderer[i],rect_surf);
-            rc_image_isLoaded[slot] = true;
-        }
-    }
-
-    rc_image_width[slot] = w;
-    rc_image_height[slot] = h;
-
-    SDL_FreeSurface(wsurf);
-    SDL_FreeSurface(rect_surf);
-
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
 }
 
 void rc_media_drawImage_Clip_hw(int slot, int x, int y, int src_x, int src_y, int src_w, int src_h)
@@ -3683,25 +3715,25 @@ int rc_getEvents()
             break;
         case SDL_FINGERDOWN:
             rc_touch = 1;
-            rc_touchX = event.tfinger.x * rc_win_width;
-            rc_touchY = event.tfinger.y * rc_win_height;
+            rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
+            rc_touchY = event.tfinger.y * rc_win_height[rc_active_window];
             rc_pressure = event.tfinger.pressure;
             rc_setTouchFingerEvent(event.tfinger.fingerId, rc_touchX, rc_touchY, rc_pressure);
             break;
         case SDL_FINGERUP:
             rc_touch = 0;
             rc_mt_status = 0;
-            rc_touchX = event.tfinger.x * rc_win_width;
-            rc_touchY = event.tfinger.y * rc_win_height;
+            rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
+            rc_touchY = event.tfinger.y * rc_win_height[rc_active_window];
             rc_pressure = event.tfinger.pressure;
             rc_setTouchFingerEvent(event.tfinger.fingerId, -1, -1, 0);
             break;
         case SDL_FINGERMOTION:
             rc_touch = 1;
-            rc_touchX = event.tfinger.x * rc_win_width;
-            rc_touchY = event.tfinger.y * rc_win_height;
-            rc_motionX = event.tfinger.dx * rc_win_width;
-            rc_motionY = event.tfinger.dy * rc_win_height;
+            rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
+            rc_touchY = event.tfinger.y * rc_win_height[rc_active_window];
+            rc_motionX = event.tfinger.dx * rc_win_width[rc_active_window];
+            rc_motionY = event.tfinger.dy * rc_win_height[rc_active_window];
             rc_pressure = event.tfinger.pressure;
             rc_setTouchFingerEvent(event.tfinger.fingerId, rc_touchX, rc_touchY, rc_pressure);
             break;
@@ -3789,23 +3821,6 @@ void rc_media_getTouch(double * status, double * x, double * y, double * distX, 
     *distX = (double)rc_motionX;
     *distY = (double)rc_motionY;
     return;
-//    while(rc_getEvents())
-//    {
-//        if(event.type == SDL_FINGERDOWN || event.type == SDL_FINGERUP || event.type == SDL_FINGERMOTION)
-//        {
-//            *status = rc_touch;
-//            *x = rc_touchX;
-//            *y = rc_touchY;
-//            *distX = rc_motionX;
-//            *distY = rc_motionY;
-//            return;
-//        }
-//    }
-    //rc_touch = 0;
-    //rc_touchX = 0;
-    //rc_touchY = 0;
-    //rc_motionX = 0;
-    //rc_motionY = 0;
 }
 
 void rc_media_getMultiTouch(double * status, double * x, double * y, double * numFingers, double * dist, double * theta)
@@ -3817,21 +3832,6 @@ void rc_media_getMultiTouch(double * status, double * x, double * y, double * nu
     *dist = rc_mt_dist;
     *theta = rc_mt_theta;
     return;
-//    while(rc_getEvents())
-//    {
-//        if(event.type == SDL_MULTIGESTURE)
-//        {
-//            if(rc_touch != 2)
-//                *status = 0;
-//            else
-//                *status = 1;
-//            *x = rc_mt_x;
-//            *y = rc_mt_y;
-//            *numFingers = rc_mt_numFingers;
-//            *dist = rc_mt_dist;
-//            *theta = rc_mt_theta;
-//        }
-//    }
 }
 
 void rc_media_ReadInput_Start()
@@ -3868,16 +3868,7 @@ void rc_media_ReadInput_ToggleBackspace(bool flag)
 int rc_media_inkey()
 {
     int k = rc_inkey;
-    //rc_inkey = 0;
     return k;
-//    while(rc_getEvents())
-//    {
-//        switch(event.type)
-//        {
-//            case SDL_KEYDOWN:
-//                return event.key.keysym.sym;
-//        }
-//    }
 }
 
 int rc_media_key(int check_Key)
@@ -3885,17 +3876,6 @@ int rc_media_key(int check_Key)
     if(keyState == NULL)
         keyState = SDL_GetKeyboardState(NULL);
     return keyState[SDL_GetScancodeFromKey(check_Key)];
-//    while(rc_getEvents())
-//    {
-//        if(event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
-//        {
-//            keyState = SDL_GetKeyboardState(NULL);
-//            break;
-//        }
-//    }
-//    if(keyState == NULL)
-//        keyState = SDL_GetKeyboardState(NULL);
-//    return keyState[SDL_GetScancodeFromKey(check_Key)];// = SDL_GetKeyFromScancode(rc_scancode);
 }
 
 int rc_media_waitKey()
@@ -3937,13 +3917,14 @@ bool rc_media_mouseIsVisible()
 int rc_media_mouseX()
 {
     SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
-    return rc_mouseX;
+    //cout << "debug: " << rc_fullscreen_mouse_scale_x[rc_active_window] << endl;
+    return rc_mouseX * rc_fullscreen_mouse_scale_x[rc_active_window];
 }
 
 int rc_media_mouseY()
 {
     SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
-    return rc_mouseY;
+    return rc_mouseY * rc_fullscreen_mouse_scale_y[rc_active_window];
 }
 
 int rc_media_mouseButton(int m)
@@ -3967,40 +3948,9 @@ void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, doubl
     *mb1 = rc_mbutton1;
     *mb2 = rc_mbutton2;
     *mb3 = rc_mbutton3;
-    *x = rc_mouseX;
-    *y = rc_mouseY;
+    *x = rc_mouseX * rc_fullscreen_mouse_scale_x[rc_active_window];
+    *y = rc_mouseY * rc_fullscreen_mouse_scale_y[rc_active_window];
     return;
-//    while(rc_getEvents())
-//    {
-//        if(event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
-//        {
-//            SDL_GetMouseState(&x_data, &y_data);
-//            *x = x_data;
-//            *y = y_data;
-//            rc_mbutton1 = 0;
-//            rc_mbutton2 = 0;
-//            rc_mbutton3 = 0;
-//            switch(event.button.button)
-//            {
-//                case SDL_BUTTON_LEFT:
-//                    *mb1 = 1;
-//                    break;
-//                case SDL_BUTTON_MIDDLE:
-//                    *mb2 = 1;
-//                    break;
-//                case SDL_BUTTON_RIGHT:
-//                    *mb3 = 1;
-//                    break;
-//            }
-//            //*mb1 = SDL_BUTTON(SDL_BUTTON_LEFT);
-//            //*mb2 = SDL_BUTTON(SDL_BUTTON_MIDDLE);
-//            //*mb3 = SDL_BUTTON(SDL_BUTTON_RIGHT);
-//            return;
-//        }
-//    }
-//    rc_mbutton1 = 0;
-//    rc_mbutton2 = 0;
-//    rc_mbutton3 = 0;
 }
 
 int rc_media_mouseWheelX()
@@ -4018,20 +3968,6 @@ void rc_media_getMouseWheel(double * x_axis, double * y_axis)
     *x_axis = rc_mwheelx;
     *y_axis = rc_mwheely;
     return;
-//    while(rc_getEvents())
-//    {
-//        switch(event.type)
-//        {
-//            case SDL_MOUSEWHEEL:
-//                *x_axis = event.wheel.x;
-//                *y_axis = event.wheel.y;
-//                rc_mwheelx = 0;
-//                rc_mwheely = 0;
-//                return;
-//        }
-//    }
-//    rc_mwheelx = 0;
-//    rc_mwheely = 0;
 }
 
 void rc_media_updateWindow_hw()
@@ -4422,6 +4358,11 @@ void rc_media_stopSound(int channel)
 
 int rc_net_tcp_openSocket(int _socket, string host, Uint16 port)
 {
+    if(_socket >= MAX_SOCKETS)
+    {
+        cout << "TCP_SocketOpen Error: Maximum number of sockets available is " << MAX_SOCKETS << endl;
+        return 0;
+    }
     IPaddress ip;
     if(host.compare("") == 0)
     {
@@ -4441,7 +4382,13 @@ int rc_net_tcp_openSocket(int _socket, string host, Uint16 port)
 
 void rc_net_tcp_closeSocket(int _socket)
 {
+    if( _socket >= MAX_SOCKETS)
+    {
+        cout << "TCP_SocketClose Error: Maximum number of sockets available is " << MAX_SOCKETS << endl;
+        return;
+    }
     SDLNet_TCP_Close(rc_socket[_socket]);
+    rc_socket[_socket] = NULL;
 }
 
 Uint32 rc_net_tcp_remoteHost(int _socket)

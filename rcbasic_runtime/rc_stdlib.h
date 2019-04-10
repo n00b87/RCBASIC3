@@ -369,6 +369,15 @@ inline string rc_intern_hex(uint64_t n)
     return ss.str();
 }
 
+inline double rc_intern_hexInt(string n)
+{
+    uint64_t x;
+    stringstream ss;
+    ss << hex << n;
+    ss >> x;
+    return (double)x;
+}
+
 inline int64_t rc_intern_int(double n)
 {
     return (int64_t)n;
@@ -952,7 +961,7 @@ inline int rc_intern_numCommands()
 
 inline string rc_intern_env(string v)
 {
-    const char * c = getenv(v.c_str());
+    char * c = getenv(v.c_str());
     if(c != NULL)
         return (string) c;
     return "";

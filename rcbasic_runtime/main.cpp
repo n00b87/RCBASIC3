@@ -1095,6 +1095,9 @@ void func_130(uint64_t fn)
         case FN_Hex$:
             rc_push_str( rc_intern_hex( HEX$_N ) );
             break;
+        case FN_HexInt:
+            rc_push_num( rc_intern_hexInt( HEXINT_N$ ) );
+            break;
         case FN_Int:
             rc_push_num( rc_intern_int( INT_N ) );
             break;
@@ -2738,7 +2741,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.0.7" << endl;
+        cout << "RCBASIC Runtime v3.0.8" << endl;
         return 0;
     }
 
