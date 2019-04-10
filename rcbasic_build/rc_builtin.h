@@ -48,6 +48,8 @@ embed_function("Frac", ID_TYPE_FN_NUM);
 add_embedded_arg("n", ID_TYPE_NUM);
 embed_function("Hex$", ID_TYPE_FN_STR);
 add_embedded_arg("n", ID_TYPE_NUM);
+embed_function("HexInt", ID_TYPE_FN_NUM);
+add_embedded_arg("n$", ID_TYPE_STR);
 embed_function("Int", ID_TYPE_FN_NUM);
 add_embedded_arg("n", ID_TYPE_NUM);
 embed_function("Log", ID_TYPE_FN_NUM);
@@ -860,6 +862,7 @@ embed_function("ClipboardText$", ID_TYPE_FN_STR);
 embed_function("SetClipboardText", ID_TYPE_SUB);
 add_embedded_arg("txt$", ID_TYPE_STR);
 embed_function("HasClipboardText", ID_TYPE_FN_NUM);
+
 
 }
 
