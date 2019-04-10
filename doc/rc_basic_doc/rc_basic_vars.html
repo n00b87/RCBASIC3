@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC Variables and Data Types</title>
+  </head>
+  <body><span  style="text-decoration: underline;">VARIABLES AND DATA TYPES<br>
+    </span>
+    <div  style="text-align: left;"><br>
+      &nbsp;&nbsp;&nbsp; RC Basic supports&nbsp; two different types of data:
+      Numbers and Strings.&nbsp; These data types can be used to represent any
+      type of data used in a program.<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; Numbers can be either fixed point (ie. integers ) or
+      floating point.&nbsp; To designate an integer value you simply write out
+      the number where you need to use it.&nbsp; Floating point numbers are
+      similiar except that you would write a decimal point to denote the start
+      of the floating point value.&nbsp; Look at the following:<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; Fixed Point Integer Number&nbsp;&nbsp;&nbsp; -
+      &nbsp;&nbsp; 5<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; Floating Point Number&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;
+      5.5<br>
+      <br>
+      <br>
+      &nbsp;&nbsp;&nbsp; Strings are used to store and manipulate data other
+      than numbers.&nbsp; They can be used to refer to single characters, words,
+      sentences, paragraphs, etc.&nbsp; Look at the Following:<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; String&nbsp;&nbsp;&nbsp; -&nbsp;&nbsp;&nbsp; "HELLO
+      WORLD"<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; Notice that the string HELLO WORLD is surrounded by
+      quotation marks.&nbsp; When setting a strings value manually you must use
+      quotation marks.<br>
+      <br>
+      &nbsp;&nbsp;&nbsp; In order to be able to use string or number data to do
+      anything useful we have to be able to store and retrieve the data.&nbsp;
+      This is what variables are used for.&nbsp; Look at the following:<br>
+      <br>
+      <span class="code">
+      &nbsp;&nbsp;&nbsp; A = <span class="number">5</span><br>
+      <br>
+      &nbsp;&nbsp;&nbsp; B$ = <span class="string">"HELLO WORLD"</span><br>
+      </span>
+      <br>
+      &nbsp;&nbsp;&nbsp; The above example creates two variables.&nbsp; The
+      variable A stores the number 5 and the variable B$ stores the string HELLO
+      WORLD.&nbsp; Note that the variable B ends with a $.&nbsp; The $ has to be
+      used when creating a string variable to let RC BASIC know its a string and
+      to not treat it as a number.&nbsp; You only have to use the $ when you
+      first create the variable.
+      <br><br>
+      If you don't want to set the value of a variable when you create it you can
+      create the variable with the <b>DIM</b> keyword like this:<br><br>
+      <span class="code">
+      &nbsp;&nbsp;&nbsp; <b>Dim</b> A <br><br>
+      &nbsp;&nbsp;&nbsp; <b>Dim</b> B$ <br>
+      </span></div>
+  </body>
+</html>
