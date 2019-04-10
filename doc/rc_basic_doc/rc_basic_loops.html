@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC Loops</title>
+  </head>
+  <body><span  style="text-decoration: underline;">LOOPS<br>
+      <br>
+    </span> &nbsp;&nbsp;&nbsp; RC BASIC has 3 types of loops: FOR, WHILE, and
+    DO.<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; The FOR loop repeats a block of code and increments a
+    counter each time it finishes the block between FOR and NEXT.&nbsp; When the
+    counter reaches a certain value the FOR LOOP stops.<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">For</span> I = <span class="number">1</span> <span class="keyword">To</span> <span class="number">5</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> I<br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Next</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above code will output the numbers 1 to 5 to the
+    console. Optionally you could use the STEP keyword to set the number that
+    the counter will increase by.&nbsp; Look at the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">For</span> I = <span class="number">1</span> <span class="keyword">To</span> <span class="number">5</span> <span class="keyword">Step</span> <span class="number">2</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> I<br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Next</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above code will output the numbers 1, 3, and 5 to the
+    console.&nbsp; The STEP keyword increases I by 2 each time through the FOR
+    loop.<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; WHILE loops will execute a block of code while a certain
+    condition is true.<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; I = <span class="number">0</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">While</span> I &lt; <span class="number">5</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> I<br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; I = I + <span class="number">1</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Wend</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above code will output the numbers 0 to 4.&nbsp; It
+    will not output the number 5 because if ( I &lt; 5 ) is false the loop will
+    not repeat.<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; The DO loop is similar to the WHILE loop with an
+    exception.&nbsp; The WHILE loop checks for the loop condition at the start
+    of the loop but the DO loop checks for the loop condition at the end of the
+    loop.&nbsp; What this means is that a WHILE loop will never execute if the
+    condition is false at the start but the DO loop is guaranteed to execute at
+    least once before it checks if the condition was true or not.<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; The DO loop is also unique in that it has 3 different
+    forms.&nbsp; Here is the simplest form of the DO loop.<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Do</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"HELLO WORLD"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Loop</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The code above will continue to output HELLO WORLD to the
+    console infinitely.<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; I = <span class="number">0</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Do</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> I<br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; I = I + <span class="number">1</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Loop While</span> I &lt; <span class="number">5</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above code will output the numbers 0 to 4 to the
+    console.&nbsp; This form of the DO loop will continue to loop while the loop
+    condition is true.<br>
+    <br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; I = <span class="number">0</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Do</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> I<br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; I = I + <span class="number">1</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Loop Until</span> I = <span class="number">5</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above code will output the numbers 0 to 4 to the
+    console.&nbsp; This form of the DO loop will continue to loop until the loop
+    condition is true.
+  </body>
+</html>

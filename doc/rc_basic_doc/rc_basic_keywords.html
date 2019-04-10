@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC Keywords</title>
+  </head>
+  <body>
+    <table  style="width: 1449px; height: 792px;"  border="1">
+      <tbody>
+        <tr>
+          <td><span  style="font-weight: bold;"><span  style="text-decoration: underline;">KEYWORD</span><br>
+            </span></td>
+          <td><span  style="font-weight: bold;">DESCRIPTION<br>
+            </span></td>
+          <td><span  style="font-weight: bold;">USAGE<br>
+            </span></td>
+        </tr>
+        <tr>
+          <td>INCLUDE</td>
+          <td>Include code from an external file</td>
+          <td>INCLUDE&nbsp; &lt;STRING_LITERAL&gt;</td>
+        </tr>
+        <tr>
+          <td>IF | ELSEIF | ELSE | END IF</td>
+          <td>Executes a block of code if an expression is true<br>
+            NOTE: ELSEIF can be substituted for ELSE IF</td>
+          <td>IF &lt;EXPRESSION&gt; THEN<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            ELSEIF &lt;EXPRESSION&gt; THEN<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            ELSE<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            END IF</td>
+        </tr>
+        <tr>
+          <td  style="width: 200.75px;">SELECT | CASE | DEFAULT | <br>
+            END SELECT</td>
+          <td>Executes a block of code if a case is equal to the selection case</td>
+          <td>SELECT CASE &lt;EXPRESSION&gt;<br>
+            CASE &lt;EXPRESSION&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            DEFAULT<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            END SELECT</td>
+        </tr>
+        <tr>
+          <td>DO | LOOP | UNTIL | WHILE</td>
+          <td  style="width: 460.5px;">Executes a block of code while a
+            condition is true or until a condition is met</td>
+          <td  style="width: 708.017px;">DO<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            LOOP {UNTIL | WHILE}&nbsp; &lt;EXPRESSION&gt;</td>
+        </tr>
+        <tr>
+          <td>WHILE | WEND</td>
+          <td>Executes a block of code while a condition is true</td>
+          <td>WHILE&nbsp; &lt;EXPRESSION&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            WEND</td>
+        </tr>
+        <tr>
+          <td>FOR | TO | STEP | NEXT</td>
+          <td>Sets a counter variable to an initial value and executes a block
+            of code until the counter variable has reached a peak value</td>
+          <td>FOR&nbsp; &lt;ID&gt; = &lt;EXPRESSION&gt; TO &lt;EXPRESSION&gt;
+            {STEP}&nbsp; &lt;EXPRESSION&gt;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            NEXT</td>
+        </tr>
+        <tr>
+          <td>EXIT</td>
+          <td>Exits a loop</td>
+          <td>EXIT { DO | FOR | WHILE }</td>
+        </tr>
+        <tr>
+          <td>FUNCTION | RETURN |<br>
+            END FUNCTION</td>
+          <td>Creates a function</td>
+          <td>FUNCTION&nbsp; &lt;ID&gt; ( {BYREF}&lt;ID&gt;, ...)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; RETURN&nbsp; &lt;EXPRESSION&gt;<br>
+            END FUNCTION</td>
+        </tr>
+        <tr>
+          <td>SUB | RETURN | END SUB</td>
+          <td>Creates a Sub Routine</td>
+          <td>SUB&nbsp; &lt;ID&gt; ( {BYREF} &lt;ID&gt;, ...)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+            &nbsp;&nbsp;&nbsp;&nbsp; {RETURN}<br>
+            END SUB</td>
+        </tr>
+        <tr>
+          <td>PRINT</td>
+          <td>Outputs Text to a console</td>
+          <td>PRINT &lt;EXPRESSION&gt;</td>
+        </tr>
+        <tr>
+          <td>END</td>
+          <td>Ends a program</td>
+          <td>END</td>
+        </tr>
+        <tr>
+          <td>DIM</td>
+          <td>Creates a variable or array</td>
+          <td>DIM &lt;ID&gt; { [ } &lt;EXPRESSION&gt;{ ] }</td>
+        </tr>
+        <tr>
+          <td>REDIM</td>
+          <td>Resizes an array</td>
+          <td>REDIM &lt;ID&gt; { [ } &lt;EXPRESSION&gt;{ ] }</td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td>Deletes an array</td>
+          <td>DELETE&nbsp; &lt;ID&gt;</td>
+        </tr>
+        <tr>
+          <td>TRUE</td>
+          <td>Constant that evaluates to NOT 0</td>
+          <td>TRUE</td>
+        </tr>
+        <tr>
+          <td>FALSE</td>
+          <td>Constant that evaluates to 0</td>
+          <td>FALSE</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

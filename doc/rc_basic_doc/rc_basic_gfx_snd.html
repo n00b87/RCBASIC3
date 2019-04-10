@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC GRAPHICS AND SOUND</title>
+  </head>
+  <body><strong><span  style="text-decoration: underline;">GRAPHICS AND SOUND<br>
+        <br>
+      </span></strong> &nbsp;&nbsp;&nbsp; RC BASIC uses a concept used in
+    sdlbasic and borrowed from AMOS on the Amiga about using virtual render
+    targets to draw on.&nbsp; In RC BASIC these virtual render targets are
+    called canvases.&nbsp; You must have at least one canvas open in order to
+    draw anything in a window.&nbsp; Look at the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">WindowOpen</span> ( <span class="number">0</span>, <span class="string">"TEST WINDOW"</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span> )<br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">CanvasOpen</span> ( <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span> )<br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above example is a simple example of opening a window
+    and canvas so you can start drawing.&nbsp; The first line opens a 640x480
+    window at coordinate (100, 100).&nbsp; The second line opens canvas 0 as a
+    640x480 render target and sets its viewport to 640x480 area starting at (0,
+    0) in the window.&nbsp; Now that a window and canvas are open you can start
+    drawing.&nbsp; Once you are done drawing you need to call UPDATE to display
+    what you have drawn.&nbsp; Look at the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">WindowOpen</span> ( <span class="number">0</span>, <span class="string">"TEST WINDOW"</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span> )<br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">CanvasOpen</span> ( <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span> )<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">SetColor</span>( <span class="keyword">RGB</span> ( <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span> ) )<br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Box</span> ( <span class="number">20</span>, <span class="number">20</span>, <span class="number">60</span>, <span class="number">60</span> )<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Update</span> ( )<br>
+    </span><br>
+    <b>NOTE: UPDATE() ALSO UPDATES EVENTS (KEYBOARD, JOYSTICK, ETC.) FOR THE WINDOW ON EACH CALL</b><br>
+    <br>
+    &nbsp;&nbsp;&nbsp; This example draws a white rectangle to the screen.&nbsp;
+    The first two lines are pulled from the previous example.&nbsp; The third
+    line sets the color used for drawing.&nbsp; The fourth line draws a
+    rectangle from coordinate (20, 20) to coordinate(60, 60).&nbsp; And the last
+    line shows what you just drew on the screen.&nbsp; RC BASIC allows a total
+    of 8 windows and 8 canvases with a total of 4096 images that can be loaded
+    in your program.<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; Sound in RC BASIC is handled the same way as canvases or
+    images.&nbsp; You can load a sound into slot and play the sound on a
+    selected channel.&nbsp; Look at the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">LoadSound</span> ( <span class="number">0</span>, <span class="string">"MYSOUND.WAV"</span> )<br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">PlaySound</span> ( <span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span> )<br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above code will load a sound into sound slot 0.&nbsp;
+    The second line plays the sound in channel 1 for 3 loops.&nbsp; You can have
+    a total of 1024 sounds loaded in your program.&nbsp; For music and video you
+    can only load one and choose to play it or delete it from your programs
+    memory and load another.&nbsp; Look at the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">LoadMusic</span> ( <span class="string">"MYMUSIC.MP3"</span> )<br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">PlayMusic</span> ( <span class="number">-1</span> )<br>
+    </span>    
+    <br>
+    &nbsp;&nbsp;&nbsp; The above code loads a music track.&nbsp; The second line
+    tells the music to play infinitely.&nbsp; To change music tracks you would
+    first call DELETEMUSIC and then simply call LOADMUSIC again.
+  </body>
+</html>

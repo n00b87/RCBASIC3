@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC Input and Output</title>
+  </head>
+  <body><span  style="text-decoration: underline;">INPUT AND OUTPUT<br>
+    </span> <br>
+    &nbsp;&nbsp;&nbsp; RC BASIC has two ways of getting output to a text
+    console.&nbsp; The first way is the PRINT keyword shown here:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"HELLO WORLD"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="number">5</span><br>
+    </span>    
+    <br>
+    &nbsp;&nbsp;&nbsp; The above example outputs HELLO WORLD to the console,
+    goes to the next line, and outputs 5 to the console.&nbsp; Since PRINT
+    automatically adds a new line you may want to use the FPRINT function
+    instead.&nbsp; FPRINT works similiar to PRINT except it does not
+    automatically go to the next line.<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">FPrint</span>(<span class="string">"HELLO WORLD\n"</span>)<br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above line outputs HELLO WORLD to the console and the
+    uses the "\n" escape character to go to the next line.&nbsp; See the section
+    on Escape Characters for more information on how escape characters work.<br>
+    <br>
+    <br>
+    &nbsp;&nbsp;&nbsp; To get input from the user you would use the INPUT$
+    function.&nbsp; INPUT$ will display a prompt to the user and then get input
+    from the console.<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; USER_NAME$ = <span class="keyword">INPUT$</span>(<span class="string">"WHAT IS YOUR NAME? "</span>)<br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above example will ask the user WHAT IS YOUR NAME?
+    and then store whatever the user types in into the variable USER_NAME$.
+  </body>
+</html>
