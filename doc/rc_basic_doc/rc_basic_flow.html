@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC Flow Control</title>
+  </head>
+  <body><span  style="text-decoration: underline;">FLOW CONTROL<br>
+    </span> <span  style="text-decoration: underline;"><br>
+    </span>&nbsp;&nbsp;&nbsp; RC BASIC uses the same conventions of other
+    programming languages to control the flow of the program.&nbsp; There are
+    two main ways of getting your program to decide on its next course of
+    action.&nbsp; The most common way is with the IF statement block.<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">If</span> <span class="number">5</span> &gt; <span class="number">6</span> <span class="keyword">Then</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"THIS WILL NOT PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">ElseIf</span> <span class="number">5</span> &lt; <span class="number">6</span> <span class="keyword">Then</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"THIS WILL PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Else</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"THIS ALSO WILL NOT PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">End If</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above example does different comparisons and will
+    output text to a console depending on which condition is true.<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; The next method of control flow is the SELECT statement
+    block.<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Select Case</span> <span class="number">5</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Case</span> <span class="number">6</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">THIS WILL NOT PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Case</span> <span class="number">5</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"THIS WILL PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Default</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"THIS WILL NOT PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">End Select</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above example will compare each case in the block to
+    the SELECT CASE.&nbsp; If the case is equal to the select case then the code
+    in that case will be executed.
+  </body>
+</html>

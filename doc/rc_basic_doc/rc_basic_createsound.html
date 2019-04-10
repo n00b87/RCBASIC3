@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC SOUNDFROMBUFFER</title>
+  </head>
+  <body><b>SoundFromBuffer ( slot, Byref aBuf, aLen, aVol )</b><br>
+    <br>
+    Creates audio in a sound slot using the data stored in aBuf which should be
+    signed 16-Bit samples in system byte order.<br>
+    <br>
+    Note:<br>
+    aLen is the Length of the sound data in bytes<br>
+    aVol is the volume which should be 0 to 128<br>
+    <br>
+    Example:<br>
+    <span  style="font-style: italic;"><b>Dim a[<span class="number">512</span>]<br>
+      SoundFromBuffer ( <span class="number">0</span>, a, <span class="number">512</span>, <span class="number">30</span> )</b></span>
+  </body>
+</html>

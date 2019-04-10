@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC CANVASCLIP</title>
+  </head>
+  <body><b>CanvasClip ( ImgSlot, src_x, src_y, src_w, src_h, flag )</b><br>
+    <br>
+    Saves a portion of the current canvas to an image slot.<br><br>
+    <b>NOTE: THIS ROUTINE SHOULD NOT BE USED DURING <br>SPEED CRITICAL MOMENTS OF YOUR PROGRAM<br>
+	<br>Flag - If 0 then saved image will be accessible from any window at the expense of speed
+	<br>If Flag is 1 then saved image will only be accessible in the window it was created<br>    
+    <br>
+    Example:<br>
+    &nbsp;&nbsp;&nbsp; <span  style="font-style: italic;"><b>CanvasClip ( <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">1</span> )</b></span>
+  </body>
+</html>

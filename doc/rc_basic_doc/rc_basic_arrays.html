@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC Arrays</title>
+  </head>
+  <body>
+    <div  style="text-align: center;"><span  style="text-decoration: underline;">ARRAYS</span><br>
+      <span  style="text-decoration: underline;"></span></div>
+    <span  style="text-decoration: underline;"> </span> <br>
+    &nbsp;&nbsp;&nbsp; In complex programs there is often a need to be able to
+    store large amounts of data.&nbsp; It would be unreasonable to have to
+    create a variable for each piece of data we may need to store.&nbsp; This is
+    where an array can come in handy.&nbsp; Arrays are simply ways of using one
+    variable to store multiple different values.&nbsp; You can create arrays of
+    numbers or strings.&nbsp; Look at the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Dim</span>&nbsp; A[<span class="number">5</span>]<br>
+    &nbsp;&nbsp;&nbsp; <br>
+    </span>
+    &nbsp;&nbsp;&nbsp; The above example creates an array of numbers called
+    A.&nbsp; A can store five numbers which are retrieved using A[0] to
+    A[4].&nbsp; Notice that A[4] is the last element in the array and not
+    A[5].&nbsp; That is because the first index in the array is 0 and the array
+    only stores 5 numbers.&nbsp; To set the values in this array you could do
+    the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; A[<span class="number">0</span>] = <span class="number">3</span><br>
+    &nbsp;&nbsp;&nbsp; A[<span class="number">1</span>] = <span class="number">2</span><br>
+    &nbsp;&nbsp;&nbsp; A[<span class="number">2</span>] = <span class="number">7</span><br>
+    &nbsp;&nbsp;&nbsp; A[<span class="number">3</span>] = <span class="number">1</span><br>
+    &nbsp;&nbsp;&nbsp; A[<span class="number">4</span>] = <span class="number">0</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; You would access and array just like you would a
+    variable.&nbsp; Look at the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; X = A[<span class="number">0</span>] + A[<span class="number">3</span>]</span>&nbsp;&nbsp;&nbsp;&nbsp; ( Based on the
+    above example the variable X would be set to 4. )<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; <br>
+    &nbsp;&nbsp;&nbsp; To make a string variable you would do the same thing you
+    do to make a number variable except you would use the <strong>$</strong>
+    just like you would use to make a normal string variable.&nbsp; Look at the
+    following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; Dim B$[<span class="number">3</span>]<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; B[<span class="number">0</span>] = <span class="string">"ABC"</span><br>
+    &nbsp;&nbsp;&nbsp; B[<span class="number">1</span>] = <span class="string">"DEF"</span><br>
+    &nbsp;&nbsp;&nbsp; B[<span class="number">2</span>] = <span class="string">"I KNOW THE ALPHABET"</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; Arrays can have up to 3 dimensions.&nbsp; Adding more
+    dimensions to an array can make organizing data in the array easier
+    depending on the situation.&nbsp; Look at the following:<br>
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Dim</span>&nbsp; X[<span class="number">2</span>, <span class="number">3</span>]<br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Dim</span>&nbsp; Y[<span class="number">3</span>, <span class="number">4</span>, <span clas="number">5</span>]<br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above example creates a 2 dimensional array called X
+    which has 2 indices in its first dimension.&nbsp; Its second dimension has 3
+    indices.&nbsp; This means that each of the 2 indices in the first dimension
+    can store 3 different values.&nbsp; So X can store a total of 6 different
+    values.&nbsp; The second line creates a 3 dimensional array called Y.&nbsp;
+    Y has 3 indices in its first dimension.&nbsp; Each of those 3 indices has 4
+    indices in its 2nd dimension.&nbsp; Each of the 4 indices has 5 values it
+    can store.&nbsp; This means that Y can store a total of 60 different
+    values.&nbsp; Look at the following for an example on how to work with these
+    multi-dimensional arrays:<br>
+    <br>
+    &nbsp;&nbsp;&nbsp; <span class="code">X[<span class="number">0</span>, <span class="number">2</span>] = <span class="number">5</span> </span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; <br>(This line
+    sets the 3rd value in the first index to 5.&nbsp; Remember that the first
+    index is always 0 so the 3rd index
+    will be 2.)<br><br>
+    &nbsp;&nbsp;&nbsp; <span class="code">Y[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] = <span class="number">6</span></span>&nbsp;&nbsp;&nbsp; <br>(This line sets the 4th
+    value of the 3rd index in the 2nd index in the array to 6. That was a mouth full. )
+  </body>
+</html>
