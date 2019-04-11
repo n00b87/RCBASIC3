@@ -1,1 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>RCBASIC Tutorial 1</title></head><body style="color: rgb(0, 0, 0); background-color: rgb(160, 160, 255);" alink="#000099" link="#000099" vlink="#990099">
+<p class="P1"><big><big><span style="font-weight: bold;" class="T1">Introduction To Programming</span></big></big><br>This
+ tutorial is designed to introduce complete newbies to the world of 
+computer programming and specifically programming using RC Basic. This 
+tutorial will not assume any previous programming knowledge and really 
+won't even assume you know much about how a computer works. A basic 
+understanding of 6th Grade Algerbra will come in handy but is not 
+necessary. Now that I got that out of the way, lets take our first steps
+ in our journey to becoming computer programmers.<br><br>First lets go 
+over the requirements you will need to follow this tutorial. You will 
+need a computer (obviously), RC Basic (yet again obvious, but I had to 
+say it), and the will to learn (not essential but it will definitely 
+help). Ok lets begin.<br><br><big><span style="font-weight: bold;" class="T1">What Is A Computer Program?</span></big><br>It
+ seems like a stupid question but it is important to understand what a 
+program is before we go any further. A computer program is simply a list
+ of <span class="T2">detailed</span> instructions telling a computer how to perform a task. And when I say detailed I mean <span class="T2">DETAILED</span>.
+ A computer can perform several complex equations a second but still 
+does not know more than you do. If you don't know any complex equations 
+neither does the computer. To give the computer our list of instructions
+ on what we want it to do we use a computer language. There are probably
+ as many computer languages as there are spoken languages and maybe even
+ more. A computer programmer chooses a language based on the task they 
+need to perform, how complex the task is, the time it takes to write the
+ program, and personal choice. For this tutorial we will be using RC 
+Basic. RC Basic is based on the BASIC programming language, which was 
+designed to be easy to learn and use. RC Basic adds the advantage of 
+modern multimedia features and the ability to write our program once and
+ run it on multiple operating systems.<br><br><big><span style="font-weight: bold;" class="T1">Our First Program</span></big><br>Lets
+ start off with a simple computer program. We are going to make a 
+program that writes the words "Hello World" to the screen. To tell the 
+computer to write some text to the screen we will use the <span class="T2">Print</span> command. Type the following into the RC Basic Editor and click the <span class="T2">Run</span> button (the triangle button or you could go into the build menu and click Run).<br><br><span style="font-family: FreeMono;" class="Source_20_Text"><span style="font-weight: bold;">Print</span> <span style="color: rgb(0, 102, 0); font-weight: bold;">"Hello World"</span></span><br><br>You
+ should see "Hello World" in your console (the black DOS screen). 
+Congratulations, you just wrote your first computer program. So lets 
+break this program down into its individual parts. First is the <span class="T2">Print</span>
+ command. This is telling the computer to write something to the console
+ (I will be referring to the DOS screen as the console for the rest of 
+this tutorial). And then we have "Hello World". First of all, why is it 
+in quotation marks? The short answer is because it is not a number. We 
+will go over this more in depth later but for now that is all we need to
+ know for right now? Before we move on, use the Print command to write 
+some other stuff to the screen.<br><br><big><span style="font-weight: bold;" class="T1">Data Types</span></big><br>We
+ are finally going to learn why "Hello World" has quotations around it. 
+So lets talk about data types. A data type is simply the type of data 
+you are working with. RC Basic has 2 data types: <span style="font-weight: bold;">Numbers</span> and <span style="font-weight: bold;">Strings</span>. 
+Numbers are exactly what you think they are. So what are strings? Well 
+to answer this we have to understand what a character is. A character is
+ a number which is generally represented by some kind of symbol. I know 
+that doesn't make since right now so just think of a character as any 
+key on your keyboard. The A Key, B Key, and even the SPACE Key are only 
+numbers to the computer. When the computer reads a character it is 
+actually reading a number and then it outputs a symbol (like letters, 
+digits, parenthesis, space, etc.). So what then is a string? Well a 
+string is a group of characters strung together (which is why it is 
+called a string). RC Basic uses quotation marks to group characters 
+together into a string. So in the string "Hello World", H is a 
+character, e is a character, and so on. If you want to use a single 
+character you would still use quotation marks but you would only have 
+one character between the quotation marks.<br><br>Look at the following examples.<br><br><span style="font-family: FreeMono;" class="Source_20_Text"><span style="color: rgb(0, 102, 0); font-weight: bold;">"42"</span><br><span style="color: rgb(102, 0, 0); font-weight: bold;">42</span></span><br><br>The
+ first line is a string and the second line is a number. Are you 
+confused yet? The first line has the character "4" and the character "2"
+ in a string and the second line is the number 42. Yes they look the 
+same but the way you perform operations on a string is different than 
+the way you perform operations on numbers. It will make more since with 
+the examples below.<br><br>This will add the string "53" to the end of the string "42" and output 4253 to the console. Try it.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-family: FreeMono;" class="Source_20_Text"><span style="font-weight: bold;">Print</span> <span style="color: rgb(0, 102, 0); font-weight: bold;">"42" <span style="color: black;">+</span> "53"</span></span><br><br>This will will add the number 42 to the number 53 and output 95 to the console. Try it.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-family: FreeMono; font-weight: bold;" class="Source_20_Text">Print <span style="color: rgb(102, 0, 0);">42</span> + <span style="color: rgb(102, 0, 0);">53</span></span><br><br>The
+ differences between numbers and strings should be starting to clear up a
+ little by now. If you are still a little confused at this point don't 
+worry. This is only an Introduction to programming. If you are able to 
+write some text on the screen and do some simple math by the end of this
+ tutorial you will be ready to continue into the next lesson.<br><br>Now
+ we are going to get into operators. I know I said at the beginning of 
+the tutorial I did not expect you to know much but I am assuming you 
+know how to add, subtract, multiply, and divide. We got a brief 
+introduction to the "<span class="T2">+</span>" operator in the last example. It is important to note that the "<span class="T2">+</span>" operator is the only operator that works on both numbers and strings.<br><br>Here is a list of the main string operators.<br><span style="font-weight: bold;">"</span><span style="font-weight: bold;" class="T2">+</span><span style="font-weight: bold;">"</span>: Adds one string to the end of another. This example will output "batman" to the console.</p>
+<p class="P1"><span style="font-family: FreeMono; font-weight: bold;" class="Source_20_Text">Print <span style="color: rgb(0, 102, 0);">"bat"</span> + <span style="color: rgb(0, 102, 0);">"man"</span></span><br></p>
+<p class="P1"><span class="T5">Before we continue, lets break down the </span><span class="T3">PRINT</span><span class="T6">
+ statement. &nbsp;It is the simplest way to get text on the screen. &nbsp;PRINT 
+also allows us to output multiple items of different types by separating
+ them with a &#8220;;&#8221;.</span></p>
+<p class="P1"><span style="font-family: FreeMono;" class="T6"><span style="font-weight: bold;">Print </span><span style="color: rgb(0, 102, 0); font-weight: bold;">&#8220;Text&#8221;</span><span style="font-weight: bold;">; <span style="color: rgb(102, 0, 0);">5</span>+<span style="color: rgb(102, 0, 0);">4</span>; </span><span style="color: rgb(0, 102, 0); font-weight: bold;">&#8220; More Text&#8221;</span><span style="font-weight: bold;">;</span>&nbsp; <br>
+</span></p>
+<p class="P1"><span style="font-family: FreeMono;" class="T6">&#8216;Ending Print with a &#8220;;&#8221; keeps the cursor on the same line in the console.</span><br><br><br>Here is a list of the main number operators.<br><span style="font-weight: bold;">"</span><span style="font-weight: bold;" class="T2">+</span><span style="font-weight: bold;">"</span>: Adds two numbers together. This example will output 8 to the console.<br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print <span style="color: rgb(102, 0, 0);">6</span> + <span style="color: rgb(102, 0, 0);">2</span></span><br><br><span style="font-weight: bold;">"</span><span style="font-weight: bold;" class="T2">-</span><span style="font-weight: bold;">"</span>: Subtracts one number from another. This example will output 4 to the console.<br><span style="font-weight: bold;" class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print <span style="color: rgb(102, 0, 0);">6</span> - <span style="color: rgb(102, 0, 0);">2</span></span><br><br><span style="font-weight: bold;">"</span><span style="font-weight: bold;" class="T2">*</span><span style="font-weight: bold;">"</span>: Multiplies two numbers (Note: Multiplication uses an * instead of an x). This example will output 12 to the console.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print <span style="color: rgb(102, 0, 0);">6</span> * <span style="color: rgb(102, 0, 0);">2</span></span><br><br><span style="font-weight: bold;">"</span><span style="font-weight: bold;" class="T2">/</span><span style="font-weight: bold;">"</span>: Divides one number by another. This example will output 3 to the console.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print <span style="color: rgb(102, 0, 0);">6</span> / <span style="color: rgb(102, 0, 0);">2</span></span><br><br><span style="font-weight: bold;">"</span><span style="font-weight: bold;" class="T2">^</span><span style="font-weight: bold;">"</span>: Raises a number to a power. This example will output 36 (6 to the second power) to the console.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print <span style="color: rgb(102, 0, 0);">6</span> ^ <span style="color: rgb(102, 0, 0);">2</span></span><br><br><br>Both
+ string operators perform the same operation. They will place the 
+characters in the second string at the end of the first string. The 
+number operators perform the same operations they do on a calculator. 
+One more important thing to mention is that the number operators follow 
+the Order of Operations. Take a look at the example below.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print <span style="color: rgb(102, 0, 0);">4</span>+<span style="color: rgb(102, 0, 0);">3</span>*<span style="color: rgb(102, 0, 0);">2</span></span><br><br>In
+ the example above the, following the order of operations PEMDAS 
+(Parenthesis, Exponents, Multiplication, Division, Addition, and 
+Subtraction); 3 is multiplied by 2 which is 6, and then 4 is added to it
+ which is 10. So math is not necessarily done from left to right but it 
+is determined by the order of operations. There is more to the order of 
+operations but we are not going to cover that right now. We covered all 
+of the main operators so before we move on lets look at one more example
+ that uses parenthesis.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print (<span style="color: rgb(102, 0, 0);">4</span>+<span style="color: rgb(102, 0, 0);">3</span>)*<span style="color: rgb(102, 0, 0);">2</span></span><br><br>This
+ is almost the same problem as the example before it, but now it groups 4
+ plus 3 together using parenthesis which means 4 and 3 are added first 
+which will be 7. Then that 7 is multiplied by 2 which is 14. If you do 
+the same problems on a calculator you will get the same answers. Try out
+ a few math problems on your own.<br><br><big><span style="font-weight: bold;" class="T1">Interacting With The User</span></big><br>Up
+ to this point, we have been writing output to the screen. We have been 
+the user as well as the programmer so there was no reason to need to 
+accept input from the screen. But when you write programs that are meant
+ to be used by people other than yourself you will want to get input 
+from the user and process that input to perform some task. So lets dive 
+into some code. For this example we are using the function <span class="T2">Input</span>
+ to ask the user "What is your name? " and read what the user types into
+ the console (which should be there name but they can type whatever they
+ want).<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Input$(<span style="color: rgb(0, 102, 0);">"What is your name? "</span>)</span><br><br>You
+ should have seen "What is your name?" and then been able to type 
+something in. You have just received input from the user for the first 
+time. So lets break this line down. First we have the function name <span class="T2">Input$</span>.
+ Input$ is a built-in function that prompts the user with something and 
+it returns what the user typed. This is the first time I used the word 
+returns so let me clarify. In the example above lets say you type in Bob
+ for your name. The whole Input$() function call is replaced with "Bob".
+ Take a look at this example.<br><br>This line does not prompt anything and just waits for you to type something. We are going to type Bob.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">Input$(</span><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;">""</span><span style="font-weight: bold; font-family: FreeMono;">)</span> </span><br><br>After you enter "Bob" the line above will be replaced with "Bob" and the line will finish processing your commands.<br><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;" class="Source_20_Text"></span></p>
+<p class="P1"><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;" class="Source_20_Text">"Bob"</span><br><br>You
+ are probably thinking that is useless. What can we do with a line that 
+just has a string on it. And the answer is you really can't do anything 
+with a line that just has Bob on it. But if we store the string "Bob" we
+ can use it to do other stuff with.<br><br>To store "Bob" (or whatever 
+you call yourself) we use something called a variable. You might have 
+seen variables used in math class in school. A variable is just a symbol
+ that holds data. By symbol I don't mean a logo or anything. Just take a
+ look at this example.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">a = <span style="color: rgb(102, 0, 0);">2</span><br>b$ = <span style="color: rgb(0, 102, 0);">"Bob"</span><br>batman = <span style="color: rgb(102, 0, 0);">4.5</span><br>superman$ = <span style="color: rgb(0, 102, 0);">"this is just random text"</span></span><br><br>This example makes four variables: a, b$, batman, superman$ and stores some data in them. Lets do a break down.<br><br>We
+ will start with the variables a and batman. The variables are just 
+storing numbers. We can use variables that store numbers when we have 
+programs that are going to be handling values that change over time. For
+ now lets just do some simple math. Type the variables from the previous
+ example and add the following code and run it.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print a + batman</span><br><br>This
+ example just adds the values in the variables together and outputs the 
+values to the screen. You can change the value of a variable at any 
+time. This is better explained with another example.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">a = <span style="color: rgb(102, 0, 0);">5</span><br>Print a<br>a = <span style="color: rgb(102, 0, 0);">6</span><br>Print a<br>a = <span style="color: rgb(102, 0, 0);">5</span> + <span style="color: rgb(102, 0, 0);">6</span><br>Print a</span><br><br>What
+ we are doing in the example above is changing the value of a and doing 
+math and storing the value in a. We can also store the value of one 
+variable inside another. Lets Look at another example.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">a = batman<br>Print a<br>a = a + batman<br>Print a</span><br><br>The
+ example above will first store the value of batman in the variable a. 
+It will write a to the screen. Then it will add a and batman and store 
+the result in a and write that value to the screen. <br><br>Now we are 
+going to take a look at the other two variables we created: the variable
+ b$ and the variable superman$. Did you notice that both of the 
+variables end in a $. There is a reason for that. The $ at the end of 
+the variable name lets the compiler know that these variables are 
+strings. Since these two variables are strings the rules about strings 
+apply to these variables. Look at the following examples.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print b$<br>Print superman$<br>Print b$ + superman$</span><br><br>The
+ above example writes the value stored in b$ to the screen. Then it 
+writes the value stored in superman$ to the screen. Finally it adds the 
+contents of the superman$ variable to the end of the contents for the b$
+ variable and writes that to the screen.<br><br>Now that we have covered
+ variables, how do we use them with the users input. Well lets look at 
+the Input$() function again. Notice that the function ends in a $. 
+input$() returns a string so it can be used anywhere a string can. Look 
+at this example.<br><br>This line does the same thing as the last time 
+we used the Input$() function. The main Difference is now we are storing
+ the value the user enters into the variable name.</p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">name$ = Input$(<span style="color: rgb(0, 102, 0);">"What is your name?"</span>)</span><br><br>This
+ code will store "Bob" or what ever you typed in into the variable 
+name$. Now we can use the name$ as many times as we want anywhere in our
+ program. So now lets make a program that Uses <span style="font-weight: bold;">Input$()</span> along with 
+Print. We are going to ask the User for there name and then welcome the 
+User to RC Basic.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">name$ = Input$(<span style="color: rgb(0, 102, 0);">"What is your name? "</span>)<br>Print <span style="color: rgb(0, 102, 0);">"Hello "</span> + name$ + <span style="color: rgb(0, 102, 0);">". Welcome to RC Basic."</span></span></p>
+<p class="P1">Lets
+ do our break down again. In the first$ line we create a variable called
+ name$ and call Input$() in it. This will write "What is your name? " to
+ the screen. When the User Enters something, whatever the User types in 
+will replace Input$(). So name$ will be whatever the User types in. On 
+the next line we use Print to write a message to the screen. The only 
+thing different this time is we are adding a variable to our string in 
+Input$(). But remember that our variable is a string and can do anything
+ a string can, so all you are doing is saying "Hello " + the User's name
+ + ". Welcome to RC Basic.".<br><br>We have covered a lot in these first
+ few sections so I am going to take this time to challenge you. Write a 
+program that ask the User to type there favorite color in and then tell 
+them what there favorite color is on the next line.<br><br><br><big><span style="font-weight: bold;" class="T1">Flow Control</span></big><br>Flow
+ control sounds like some really complicated topic. But it will probably
+ make sense almost immediately. So what is flow control? Simply put, 
+flow control is controlling what your program does based on what 
+conditions are met. To control the flow in our programs we will use the <span class="T2">If</span>
+ statement. The If statement will allow us to execute a block of code 
+depending on what conditions are met. Let look at the last example from 
+the last segment.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">name$ = Input$(<span style="color: rgb(0, 102, 0);">"What is your name? "</span>)<br>Print <span style="color: rgb(0, 102, 0);">"Hello "</span> + name$ + <span style="color: rgb(0, 102, 0);">". Welcome to RC Basic."</span></span><br><br>To
+ give an idea of how to use the If statement we are going to extend this
+ program. So lets make the program give a special greeting if Bob is 
+typed in for the name. Look at the following example.<br><br><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">name$ = Input$(</span><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;">"What is your name? "</span><span style="font-weight: bold; font-family: FreeMono;">)</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print </span><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;">"Hello "</span><span style="font-weight: bold; font-family: FreeMono;"> + name$ + </span><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;">". Welcome to RC Basic."</span><br><br><span style="font-family: FreeMono; font-weight: bold;">If name$ = </span><span style="color: rgb(0, 102, 0); font-family: FreeMono; font-weight: bold;">"Bob"</span><span style="font-family: FreeMono; font-weight: bold;"> Then</span><br style="font-family: FreeMono; font-weight: bold;"><span style="font-family: FreeMono; font-weight: bold;">Print </span><span style="color: rgb(0, 102, 0); font-family: FreeMono; font-weight: bold;">"We have been expecting you"</span><br style="font-family: FreeMono; font-weight: bold;"><span style="font-family: FreeMono; font-weight: bold;">End If</span></span><br><br>This
+ program will do the same thing it did in the last segment but it adds 
+the use of the If statement. So lets do a quick break down.<br><br>This 
+line is saying if name$ has "Bob" stored in it, then run the following 
+code. Each If statement must end with the Then statement.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If name$ = <span style="color: rgb(0, 102, 0);">"Bob"</span> Then</span><br><br>This line is writing "We have been expecting you" to the screen.<br><span style="font-weight: bold;" class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print <span style="color: rgb(0, 102, 0);">"We have been expecting you"</span></span><br><br>This
+ line is ending the block of code that the If statement wanted the 
+program to execute and continues the rest of your program.<br><br>The 
+block of code started by the If statement can also be given different 
+conditions to check for and execute a different block of code for each 
+different condition. We are going to take a break from strings and use 
+numbers for our next few examples. We are also going to introduce a few 
+new operators. So lets start by making some number variables.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">a = <span style="color: rgb(102, 0, 0);">1</span><br>b = <span style="color: rgb(102, 0, 0);">3</span><br>c = <span style="color: rgb(102, 0, 0);">5</span></span><br><br>Now
+ that we have some variables we are going to make a program that ask the
+ User to enter a number and check if the number is equal to each 
+variable and outputs something different for each one. First I need to 
+cover one very important topic. The <span style="font-weight: bold;">Input$()</span> function only takes in a 
+string. So even number that are typed in by the User are treated as 
+strings. So we need to convert the Users input to a number to be able to
+ compare it to another number or do any kind of math with it. To do this
+ we will use the <span style="font-weight: bold;">Val()</span> function. The <span style="font-weight: bold;">Val()</span> function converts a string to
+ a number. Look at the following example real quick.<br><br>This example will convert the string "12" to the number 12. <br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">x = Val(<span style="color: rgb(0, 102, 0);">"12"</span>)</span><br><br>The
+ more programs you write, the more you will get use to converting 
+numbers to strings and strings to numbers. So how do we use Val() with 
+Input$(). Well remember that Input$() can be used anywhere a string can.
+ So instead of putting "12" in Val() like we did in the last example we 
+will simply put Input$() inside Val(). Make sure your program has the 
+variables a, b, and c we created earlier and add this.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">d = Val( Input$(<span style="color: rgb(0, 102, 0);">"Enter a number: "</span>) )</span><br><br>The
+ code above is creating a variable called d. Then it uses the Val() 
+function to convert the string returned by Input$() into a number. The 
+string returned by Input$() is what ever the User types in. Now that we 
+have gotten a number from the User lets compare that number to the 
+variables we made earlier.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If d = a Then<br>Print <span style="color: rgb(0, 102, 0);">"You typed the A value"</span><br></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">ElseIf d = b Then<br>Print <span style="color: rgb(0, 102, 0);">"That is B"</span><br></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">ElseIf d = c Then<br>Print <span style="color: rgb(0, 102, 0);">"That would be C"</span><br></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Else<br>Print <span style="color: rgb(0, 102, 0);">"You did not type any of the numbers"</span><br></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">End If</span><br><br>Lets
+ do a break down. This is starting a multi-layered If statement block. 
+It should be fairly simple to understand. We are going to go through 
+each line and examine what is happening step by step.<br><br>This line 
+is starting your If block by comparing d(which is what the User typed 
+in) to the variable a. If the two variables are equal then it will 
+output "You typed the A value" to the console.</p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If d = a Then<br>Print <span style="color: rgb(0, 102, 0);">"You typed the A value"</span></span><br><br>This
+ line will compare d and b if d wasn't equal to a. If the value stored 
+in d is equal to the value stored in b then it will output "That is B" 
+to the console.<br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">ElseIf d = b Then<br>Print <span style="color: rgb(0, 102, 0);">"That is B"</span></span><br><br>This line will compare d and c if d wasn't equal to a or b. If d is equal to c then "That would be C" is output to the console.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">ElseIf d = c Then<br>Print <span style="color: rgb(0, 102, 0);">"That would be C"</span></span><br><br>This line will output "You did not type any of the numbers" if none of the previous conditions were met.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Else<br>Print <span style="color: rgb(0, 102, 0);">"You did not type any of the numbers"</span></span><br><br>And finally this line will end the If block and finish running the rest of the program.<br><span class="Source_20_Text"></span></p>
+<p class="P1"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">End If</span><br><br>Now
+ we are going to play with a few other operators for numbers only. In 
+addition to being able to compare if two numbers are equal we can also 
+compare if one number is greater than another, less than another, not 
+equal to another, greater than or equal to another, etc. Here is a list 
+of comparisons we can do with numbers.<br><br>Given we have two number stored in variables a and b.</p>
+<ul>
+<li><p class="P3">&nbsp;</p></li><li><p class="P3" style="margin-left: 0.748cm;"><span class="Bullet_20_Symbols" style="display: block; float: left; min-width: 0.4991cm;">&#8226;.</span><span class="T2">a = b</span> : Test if a is equal to b<span class="odfLiEnd">&nbsp;</span></p></li><li><p class="P3" style="margin-left: 0.748cm;"><span class="Bullet_20_Symbols" style="display: block; float: left; min-width: 0.4991cm;">&#8226;.</span><span class="T2">a &lt; b</span> : Test if a is less than b<span class="odfLiEnd">&nbsp;</span></p></li><li><p class="P3" style="margin-left: 0.748cm;"><span class="Bullet_20_Symbols" style="display: block; float: left; min-width: 0.4991cm;">&#8226;.</span><span class="T2">a &gt; b</span> : Test if a is greater than b<span class="odfLiEnd">&nbsp;</span></p></li><li><p class="P3" style="margin-left: 0.748cm;"><span class="Bullet_20_Symbols" style="display: block; float: left; min-width: 0.4991cm;">&#8226;.</span><span class="T2">a &lt;= b</span> : Test if a is less than or equal to b<span class="odfLiEnd">&nbsp;</span></p></li><li><p class="P3" style="margin-left: 0.748cm;"><span class="Bullet_20_Symbols" style="display: block; float: left; min-width: 0.4991cm;">&#8226;.</span><span class="T2">a &gt;= b</span> : Test if a is greater than or equal to b<span class="odfLiEnd">&nbsp;</span></p></li><li><p class="P2" style="margin-left: 0.748cm;"><span class="Bullet_20_Symbols" style="display: block; float: left; min-width: 0.4991cm;">&#8226;.</span><span class="T2">a &lt;&gt; b</span> : Test if a is not equal to b<span class="odfLiEnd">&nbsp;</span></p></li>
+</ul>
+<p class="Text_20_body"><br><br>Here is a few examples of doing some of these comparisons with a If statement.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If a = b Then<br>'Code to execute<br>End If<br><br>If a &lt; b Then<br>'Code to execute<br>End If<br><br>If a &lt;&gt; b Then<br>'Code to execute<br>End If</span><br><br>These
+ other comparisons are pretty straight forward. To try these out we are 
+going to make a program that ask the User to enter a number. If the 
+number is less than or equal to 10 then "Low" will be output to the 
+console. If the number is greater than 10 then we will check if the 
+number is greater than 20. If it is then then "High" will be output to 
+the console. If neither of these conditions are true then "Mid" will be 
+output to the console. First we need to get a number from the User. 
+Remember we need to use the Val() function to convert the User's input 
+from a string to a number.<br><br>Here is where we take the User's input
+ and convert it to a number. The Input$() function will get replaced 
+with what the User types in so we simply use the Val() function to 
+convert Input$() to a number.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">user_num = Val( Input$(<span style="color: rgb(0, 102, 0);">"Enter a number: "</span>) )</span><br><br>We
+ start our If block by comparing user_num (Our input from the User in 
+the previous line) to the number 10. If the user_num variable is less 
+than or equal to 10 then we use the Print statement to write "Low" to 
+the console.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If user_num &lt;= <span style="color: rgb(102, 0, 0);">10</span> Then<br>Print <span style="color: rgb(0, 102, 0);">"Low"</span></span><br><br>If
+ the previous comparison is false then we compare the user_num variable 
+to 20. If user_num is greater than 20 then we will write "High" to the 
+console.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">ElseIf user_num &gt; <span style="color: rgb(102, 0, 0);">20</span> Then<br>Print <span style="color: rgb(0, 102, 0);">"High"</span></span><br><br>Finally, if none of the previous conditions are true we will write "Mid" to the console.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Else<br>Print <span style="color: rgb(0, 102, 0);">"Mid"</span><br></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">End If</span><br><br>Our complete program looks like this.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">user_num = Val( Input$(</span><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;">"Enter a number: "</span><span style="font-weight: bold; font-family: FreeMono;">) )</span><br><br><span style="font-weight: bold; font-family: FreeMono;">If user_num &lt;= <span style="color: rgb(102, 0, 0);">10</span> Then</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print </span><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;">"Low"</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;"></span></span></p>
+<p class="Text_20_body"><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">ElseIf user_num &gt; <span style="color: rgb(102, 0, 0);">20</span> Then</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print </span><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;">"High"</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;"></span></span></p>
+<p class="Text_20_body"><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">Else</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print </span><span style="color: rgb(0, 102, 0); font-weight: bold; font-family: FreeMono;">"Mid"</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;"></span></span></p>
+<p class="Text_20_body"><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">End If</span></span><br><br>The last thing we will cover on flow control is the keywords <span style="font-weight: bold;" class="T2">AND</span><span style="font-weight: bold;">, </span><span style="font-weight: bold;" class="T2">OR</span><span style="font-weight: bold;">, </span><span style="font-weight: bold;" class="T2">XOR</span><span style="font-weight: bold;">,</span> and <span style="font-weight: bold;" class="T2">NOT</span>.
+ These 4 keywords are actually operators that can be used for more 
+specific comparisons. We will start with the AND operator. The AND 
+operator will compare the conditions to its left and its right. If both 
+conditions are true the AND operator sets the whole expression as true. I
+ already know you didn't understand that explanation so it will probably
+ be easier to show you. Just look at this example.<br><br>This code will write "This is true" to the console because 1 is equal to 1 and 4 is greater than 2. Yes it is that simple.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If <span style="color: rgb(102, 0, 0);">1</span>=<span style="color: rgb(102, 0, 0);">1</span> AND <span style="color: rgb(102, 0, 0);">4</span>&gt;<span style="color: rgb(102, 0, 0);">2</span> Then<br>Print <span style="color: rgb(0, 102, 0);">"This is true"</span><br>End If</span><br><br>The
+ OR statement will set the whole expression it is being used in if at 
+least one of the conditions is true. Here is an example of OR.<br><br>This code will write "This is true" to the console because although 1 is not equal to 2, 5 is less than or equal to 6.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If <span style="color: rgb(102, 0, 0);">1</span>=<span style="color: rgb(102, 0, 0);">2</span> AND <span style="color: rgb(102, 0, 0);">5</span>&lt;<span style="color: rgb(102, 0, 0);">6</span> Then<br>Print <span style="color: rgb(0, 102, 0);">"This is true"</span><br>End If</span><br><br>The
+ XOR statement is like the OR statement with one major difference. With 
+XOR, one of the conditions in the expression has to be true and the 
+other has to be false. Here is an example of XOR.<br><br>This code will 
+write "This is true" to the console because 1 is equal to 1 and 2 is 
+equal to 2 ( 2 &lt;&gt; 2 is false because 2=2. Remember <span class="T2">&lt;&gt;</span>
+ is the NOT EQUAL operator). Basically one condition in the XOR 
+expression has to be true and the other has to be false otherwise the 
+whole expression is false. If this is slightly confusing don't worry. In
+ my 15+ years of programming experience I have never once used this 
+operator.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If <span style="color: rgb(102, 0, 0);">1</span>=<span style="color: rgb(102, 0, 0);">1</span> XOR <span style="color: rgb(102, 0, 0);">2</span> &lt;&gt; <span style="color: rgb(102, 0, 0);">2</span> Then<br>Print <span style="color: rgb(0, 102, 0);">"This is true"</span><br>End If</span><br style="font-weight: bold; font-family: FreeMono;"><br>The
+ last of these special operators we will cover is NOT. This one will be 
+extremely simple to understand. Basically if an expression is true it 
+becomes false and if an expression is false it becomes true.<br><br>This
+ code will write "This is true" to the screen because the expression 1=3
+ is false. The NOT statement reverses the false and makes it true.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If NOT <span style="color: rgb(102, 0, 0);"><span style="color: black;">(</span>1</span>=<span style="color: rgb(102, 0, 0);">3<span style="color: black;">)</span></span> Then<br>Print <span style="color: rgb(0, 102, 0);">"This is true"</span><br>End If</span><br style="font-weight: bold; font-family: FreeMono;"><br>Lets
+ go over one more program before we move on to the next segment. We will
+ ask the User for a number from 1 to 10. If the User enters 3 or 4 then 
+we will write "Good Answer" to the console. If the User enters a number 
+greater than 5 and less than 9 (Basically 6, 7, or 8) then we will write
+ "Choice numbers" to the console. If the User types in any other number 
+then we will write "Maybe next time" to the console.<br><br>Here we are 
+asking the User to enter a number from 1 to 10 using the Input$() 
+function. Input$() returns a string so we have to store it in a string 
+variable.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">user_in$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter a number from 1 to 10: "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><br>Then
+ we convert the string the User entered into a string using the Val() 
+function. Note: We are using a string variable inside the Val() function
+ instead of using Input$() inside it this time. I am showing it this way
+ to get you used to the idea that Val() takes a string. It can be a 
+string variable, string function, or just a regular string between 
+quotation marks.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">num = Val(user_in$)</span><br style="font-weight: bold; font-family: FreeMono;"><br>In
+ the first line of this piece of code we are comparing the variable num 
+(which is the number the User entered) to the number 3 and we compare 
+the variable num to the number 4. If the variable num is equal to the 
+number 3 or 4 then we write "Good Answer" to the console.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">If num = <span style="color: rgb(102, 0, 0);">3</span> OR num = <span style="color: rgb(102, 0, 0);">4</span> Then<br>Print <span style="color: rgb(0, 102, 0);">"Good Answer"</span></span><br style="font-weight: bold; font-family: FreeMono;"><br>This
+ block of code compares the variable num to the number 5 and the number 9
+ if the previous If condition was false. If num is greater than 5 and 
+num is less than 9 then we write "Choice numbers" to the console.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">ElseIf num &gt; <span style="color: rgb(102, 0, 0);">5</span> AND num &lt; <span style="color: rgb(102, 0, 0);">9</span> Then<br>Print <span style="color: rgb(0, 102, 0);">"Choice numbers"</span></span><br style="font-weight: bold; font-family: FreeMono;"><br>Finally
+ this last bit of code will write "Maybe next time" to the console if 
+none of the previous If conditions were true. It then ends the If block.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Else<br>Print <span style="color: rgb(0, 102, 0);">"Maybe next time"<br>
+</span><br>End If</span><br style="font-weight: bold; font-family: FreeMono;"><br><big><span style="font-weight: bold;" class="T1">Function</span></big><br>This
+ is going to be fairly short. So what is a function? A function is a 
+block of code that is labelled by some kind of name so it can be called 
+at any point in a program. I know you are confused again. But you have 
+been using two functions several times throughout this tutorial. The 
+Input$() function and the Val() function. A function has a return value 
+that is either a number or a string. The Input$() function returns a 
+string so it can be used anywhere in your program a normal string can be
+ used. The Val() function returns a number so it can be used anywhere in
+ your program a number can be used. Yes even inside a math problem. Are 
+these the only two functions available in RC Basic. Not even close. 
+There are over 200 functions available in RC Basic which allows you to 
+do various task. Here is how a function is structured.<br><br>function_name
+ ( argument1, argument2, ..etc ) - A function can have no arguments or 
+several arguments. Arguments in a function can be numbers or strings, it
+ just depends on what function you are using. So lets look at a few 
+different functions to see how other functions are used.<br><br><span style="font-weight: bold;">Abs()</span> returns the Absolute value of a number.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Abs( <span style="color: rgb(102, 0, 0);">-4</span> )</span><br><br><span style="font-weight: bold;">Date$()</span> returns the current date as a string.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Date$()</span><br><br><span style="font-weight: bold;">UCase$()</span> returns the argument you give it as an all uppercase string.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">UCase$(<span style="color: rgb(0, 102, 0);">"Hello World"</span>)</span><br><br>As
+ you can see there are different functions to accomplish different task.
+ You can learn more functions by looking in the RC Basic reference 
+manual located in the Docs folder in the rcbasic directory.<br><br><big><span style="font-weight: bold;" class="T1">Loops</span></big><br>We
+ have finally made it to the last part of this tutorial. We are already 
+fairly familiar with most of the core concepts of programming. We are 
+finishing this lesson with a brief overview of loops. Loops are exactly 
+what you think they are. They are ways of repeating blocks of code in 
+your program as much as you need them to. Why would we need to repeat 
+parts of our program? Well you will often have a program that you will 
+want to continue running until the user is done using it or you will 
+want to make a counter of some kind.<br><br>We are going to cover two types of loops. The first one we are going over is the <span class="T2">For</span> loop. For loops are used when you want to cycle through a block of code a set number of times. Lets just dive into the code.<br><br>Type this code into your editor and run it.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">For i = <span style="color: rgb(102, 0, 0);">1</span> to <span style="color: rgb(102, 0, 0);">10</span><br>Print i<br>Next</span><br style="font-weight: bold; font-family: FreeMono;"><br>The
+ code in the example above writes the numbers 1 to 10 in the console. 
+The <span style="font-weight: bold;">For loop</span> starts with a variable, which in this case is i. We set it 
+with an initial value of 1 and tell the computer to loop the code 
+between the <span class="T2">For</span> line and the <span class="T2">Next</span>
+ line until i is equal to 10. When the Next statement is reached, i is 
+increased by 1 and the program goes back to the start of the loop. That 
+is how the For loop works in a nutshell. There is some extra control we 
+can take over the For loop with the <span class="T2">Step</span> 
+statement. With the Step statement we can change the amount the variable
+ in the For line increases by. Look at the following example.<br><br>This code will write the even numbers from 2 to 10 to the console.<br><span class="Source_20_Text"></span></p>
+<p class="Text_20_body"><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">For i = <span style="color: rgb(102, 0, 0);">2</span> to <span style="color: rgb(102, 0, 0);">10</span> Step <span style="color: rgb(102, 0, 0);">2</span><br>Print i<br>Next</span><br><br>The last loop we are covering in this tutorial is the <span class="T2">While</span> loop. The <span style="font-weight: bold;">while loop</span> will loop through a block of code while a certain condition is true. Look at the following example.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">i = <span style="color: rgb(102, 0, 0);">1</span><br>While i &lt;= <span style="color: rgb(102, 0, 0);">10</span><br>Print i<br>i = i + <span style="color: rgb(102, 0, 0);">1</span><br>Wend</span><br><br>In
+ the example above we are doing a little bit more than we have been 
+doing up to this point. First we are creating a variable called i. We 
+start a While loop that compares i to the number 10. If i is less than 
+or equal to 10 then we write the value stored in i to the console. Then 
+we get to the line <span class="T4">i = i + 1</span>. This line is 
+making i equal to the value stored in i plus 1. Basically we are 
+increasing i by 1. The Wend line goes back to the start of the while 
+block where it compares i to 10 and if it is less than or equal to 10 it
+ repeats the block of code again.</p>
 
+  
+
+</body></html>

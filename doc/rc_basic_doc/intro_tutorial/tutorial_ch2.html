@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>RCBASIC Tutorial 2</title></head><body style="color: rgb(0, 0, 0); background-color: rgb(160, 160, 255);" alink="#000099" link="#000099" vlink="#990099"><big><big><span style="font-weight: bold;" class="T1">Introduction To Programming 2</span></big></big><br>
+<br>
+This 
+tutorial will assume you have read part 1 and atleast attempted the 
+challenges I presented at the end.&nbsp; If you have ever dealt with a 
+programming language before you were probably able to finish the 
+challenges without too much trouble.&nbsp; However since this is an 
+introduction to programming I am going to assume you were not able to 
+complete the challenges or had a very difficult time doing so.&nbsp; You 
+might be thinking to yourself, if simple programs like these are this 
+challenging to write then I will definitely never learn to program stuff
+ like games or any other kind of software that people could actually 
+use.&nbsp; Believe it or not, <span class="T2">EVERY</span> programmer 
+started off not knowing what a variable is or how to use a function.&nbsp; So
+ lets break these challenges down and understand how to get them to 
+work.<br>
+<br>
+The first challenge was to have the user enter a number and
+ then output every number between 1 and the number the user enters.&nbsp; If 
+you remember from the last tutorial I introduced the <span style="font-weight: bold;">Input$( )</span> function.
+ The <span style="font-weight: bold;">Input$( )</span> function looks like this:<br>
+<br>
+<br>
+<span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">Input$ ( <span style="color: rgb(0, 102, 0);">"Prompt Text"</span> )</span>&nbsp; '----- This will write the Prompt Text to the console and then wait for the user to type something in.</span><br>
+<br>
+<br>
+So to get a number from the user we could just do this:<br>
+<br>
+<br>
+<span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">Input$ ( <span style="color: rgb(0, 102, 0);">"Enter a number: "</span> )</span> '----- This will ask the user to enter a number and then wait for the user to type something in.</span><br>
+<br>
+<br>
+However
+ there is three problems with this line the way it is.&nbsp; The first 
+problem is: how will we know what number the user entered later on in 
+our program?&nbsp; The solution to this problem is we have to store that 
+number in a variable.&nbsp; If you remember from part 1, a variable is a 
+symbol such as a letter, word, or group of letters and numbers that we 
+can use to represent a value.&nbsp; There are two types of variables: numbers
+ and strings.&nbsp; Number variables hold numbers and can be used anywhere in
+ your program to do math.&nbsp; String variables can hold any kind of text 
+including numbers, however, <span style="font-weight: bold;" class="T2">NUMBERS STORED IN STRING VARIABLES CANNOT BE USED TO DO MATH</span><span style="font-weight: bold;">.</span>&nbsp;
+ Now that we know we need to store the number in a variable we get to 
+the second problem.&nbsp; The Input$( ) function is a string function so we 
+can only store the value in a string variable.&nbsp; However, if we are going
+ to count from 1 to the number the user entered we will need to be able 
+to do math with the variable.&nbsp; Fortunately RC Basic has functions built 
+in to convert between numbers and strings. So we can solve this problem 
+by doing the following.<br>
+<br>
+<br>
+<span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter a number: "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_number = Val(user_input$)</span><br></span><br>
+Lets break the code above down by each line.<br>
+<br>
+First we ask the user to enter a number and store the number in a string variable we create called user_input$.<br>
+<span class="Source_20_Text"><br>
+<span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter a number: "</span>)</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+<br>
+Next
+ we use the <span style="font-weight: bold;">Val( )</span> function to convert the text stored in the 
+user_input$ string variable to its number value and we store this number
+ in a number variable we create called user_number.<br>
+<span class="Source_20_Text"><br>
+<span style="font-weight: bold; font-family: FreeMono;">user_number = Val(user_input$)</span></span><br>
+<br>
+The
+ third problem is not really a problem right now but it will be by the 
+time we finish the program.&nbsp; But for now we have a number from the user 
+that we can use to do math so lets continue. To be able to count from 1 
+to the number we need a loop.&nbsp; The simplest way to accomplish this is 
+with the <span style="font-weight: bold;">FOR</span> loop.&nbsp; I covered the <span style="font-weight: bold;">FOR</span> loop in the last tutorial but I 
+will give a brief overview of how the <span style="font-weight: bold;">FOR</span> loop works here.&nbsp; Look at the 
+following<br>
+<br>
+<span style="font-weight: bold;" class="T2">For</span><span style="font-weight: bold;">&nbsp;&nbsp;<span style="color: rgb(153, 51, 153);"> </span></span><span style="font-weight: bold;" class="T3"><span style="color: rgb(102, 51, 102);">variable</span><span style="color: rgb(153, 51, 153);"> &nbsp;</span> =&nbsp;&nbsp; <span style="color: rgb(102, 51, 102);">initial_value</span></span><span style="font-weight: bold;">&nbsp;&nbsp; </span><span style="font-weight: bold;" class="T2">To</span><span style="font-weight: bold;">&nbsp;&nbsp; </span><span style="font-weight: bold; color: rgb(102, 51, 102);" class="T3">final_value</span><span style="font-weight: bold;">&nbsp;&nbsp; </span><span style="font-weight: bold;" class="T2">Step</span><span style="font-weight: bold;">&nbsp;&nbsp; </span><span style="font-weight: bold;" class="T3"><span style="color: rgb(102, 51, 102);">increase_amount</span><br>...Code To Loop....<br></span><span class="T2"><span style="font-weight: bold;">Next</span><br><br></span>The
+ start of the <span style="font-weight: bold;">FOR</span> loop has a variable which is set to the initial value 
+after "=". Then the keyword <span style="font-weight: bold;">TO</span> is entered following the initial value.&nbsp; 
+The <span style="font-weight: bold;">STEP</span> keyword is optional. Without <span style="font-weight: bold;">STEP</span> the variable is automatically
+ increased by 1 each time through the loop. If <span style="font-weight: bold;">STEP</span> is used, you must 
+enter an amount you want to increase the variable by each time through 
+the loop. For the purpose of our program we could just do the following 
+for now.<br>
+<br>
+<br>
+<span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">For n = <span style="color: rgb(102, 0, 0);">1</span> to user_number</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print n</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Next</span><br></span><br>
+The
+ code above sets the variable n to 1 and will loop the <span style="font-weight: bold;">PRINT</span> command 
+between the <span style="font-weight: bold;">FOR</span> and <span style="font-weight: bold;">NEXT</span> lines increasing n by 1 each time through the 
+loop until n is equal to user_number.&nbsp; So the program we have looks like
+ this.<br>
+<br>
+<br>
+<span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter a number: "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_number = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">For n = <span style="color: rgb(102, 0, 0);">1</span> to user_number</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print n</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Next</span><br></span><br>
+Run
+ this program and type a few numbers in.&nbsp; It should do what the 
+challenge wanted it to do.&nbsp; But remember the third problem I mentioned.&nbsp;
+ Well it is still in our program.&nbsp; To demonstrate what I mean, run the 
+program and type in a number less than 1.&nbsp; You should see the program 
+continuously counting.&nbsp; So what is the problem?&nbsp; Well if you remember 
+earlier when I was talking about the <span style="font-weight: bold;">FOR</span> loop I mentioned that without 
+<span style="font-weight: bold;">STEP</span> the variable will automatically increase by 1.&nbsp; So if user_number 
+is less than what n is initially set to, n will never pass the number 
+and will just keep counting too infinity. The solution to this final 
+problem is to use the <span style="font-weight: bold;">STEP</span> keyword to increase the variable n by 1 if 
+the user enters a number greater than or equal to 1 and decrease n by 1 
+if the user enters a number less than 1.&nbsp; To do this we will need to use
+ the <span style="font-weight: bold;">IF</span> block. Lets review the <span style="font-weight: bold;">IF</span> block again real quick.&nbsp; Look at the 
+following.<br>
+<br>
+<span style="font-weight: bold;" class="T2">If</span><span style="font-weight: bold;"> </span><span style="font-weight: bold; color: rgb(102, 51, 102);" class="T3">condition</span><span style="font-weight: bold;"> </span><span style="font-weight: bold;" class="T2">Then&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-weight: bold;">--- If the condition is true then the following code will be executed</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-weight: bold;" class="T3">...code to execute...</span><br style="font-weight: bold;">
+<span style="font-weight: bold;" class="T2">ElseIf</span><span style="font-weight: bold;"> <span style="color: rgb(102, 51, 102);">condition</span> </span><span style="font-weight: bold;" class="T2">Then</span><span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp; -- If the previous conditions were not true and this condition is then the following code is executed</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; </span><span style="font-weight: bold;" class="T3">...code to execute...</span><br style="font-weight: bold;">
+<span style="font-weight: bold;" class="T2">Else</span><span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+--- If none of the other conditions were true then the following code
+is executed</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; </span><span style="font-weight: bold;" class="T3">...code to execute...</span><br style="font-weight: bold;">
+<span style="font-weight: bold;" class="T2">End</span><span style="font-weight: bold;"> </span><span class="T2"><span style="font-weight: bold;">If</span><br><br></span>To
+ use the <span style="font-weight: bold;">IF</span> block with to determine whether to set <span style="font-weight: bold;">STEP</span> to 1 or -1 we 
+simply need to make one more variable.&nbsp; Lets call this variable 
+increase.&nbsp; So if user_number is greater than or equal to 1 then we will 
+set increase to 1 and if user_number is less than one then we will set 
+increase to -1.&nbsp; Here is how it looks.<br>
+<br style="font-weight: bold; font-family: FreeMono;">
+<span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">increase = <span style="color: rgb(102, 0, 0);">1</span></span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;"><br>
+If user_number &gt;= <span style="color: rgb(102, 0, 0);">1</span> Then</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">increase = <span style="color: rgb(102, 0, 0);">1</span></span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;"><br>
+Else</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">increase = <span style="color: rgb(102, 0, 0);">-1</span></span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;"><br>
+End If</span><br></span><br>
+In
+ the above code we create a variable called increase and set it to 1.&nbsp; 
+If the users number greater than or equal to 1 then increase will remain
+ 1.&nbsp; If the users number is not greater than or equal to 1 then the 
+increase variable will be set to -1.<br>
+<br>
+Now we just need to add the 
+<span style="font-weight: bold;">STEP</span> keyword to our <span style="font-weight: bold;">FOR</span> block to use the increase variable to count up 
+or down depending on what number the user types in.&nbsp; The new <span style="font-weight: bold;">FOR</span> line 
+will look like this.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">For n = <span style="color: rgb(102, 0, 0);">1</span> To user_number Step increase</span><br>
+<br>
+So the final program will look like the the program below.<br>
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter a number: "</span>)<br>user_number = Val(user_input$)<br><br>increase = <span style="color: rgb(102, 0, 0);">1</span><br><br>If user_number &gt;= <span style="color: rgb(102, 0, 0);">1</span> Then<br>increase = <span style="color: rgb(102, 0, 0);">1</span><br>
+<br>Else<br>increase = <span style="color: rgb(102, 0, 0);">-1</span><br><br>
+End If<br><br>For n = <span style="color: rgb(102, 0, 0);">1</span> To user_number Step increase<br>Print n<br>Next</span><br>
+<br style="font-weight: bold; font-family: FreeMono;">
+Try the program out with different numbers and see if you get the right output.<br>
+<br>
+<br>
+The
+ second challenge was to write a program that continues to ask the User 
+for there name until they enter "Bob". Then tell the User "Good bye 
+Bob". This program will actually be much easier as we do not have to 
+convert the text we get from the <span style="font-weight: bold;">Input$( )</span> function to a number.&nbsp; The 
+biggest difference between this challenge and the first challenge is 
+that we will be continuously getting input from the user until the user 
+enters "Bob".&nbsp; Since we need to keep getting input from the user we will
+ be getting the user input inside the loop this time.&nbsp; But we will 
+create the variable we will be storing the users input in before we 
+start the loop.&nbsp; Since we are not looping a certain number of times like
+ in the last example we will use the <span style="font-weight: bold;">WHILE</span> loop.&nbsp; Our basic setup for 
+this program is below.<br>
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">user_name$ = <span style="color: rgb(0, 102, 0);">""</span><br><br>While user_name$ &lt;&gt; <span style="color: rgb(0, 102, 0);">"Bob"</span><br><br>Wend<br></span><br>
+In
+ the above code we first create a string variable called user_name$ and 
+store an empty string in it.&nbsp; We will be using this variable to store 
+input from the user inside the loop but for right now we just want it to
+ be empty.&nbsp; Next we start a <span style="font-weight: bold;">WHILE</span> loop.&nbsp; The <span style="font-weight: bold;">WHILE</span> loop will loop while 
+the variable user_name$ is not equal to "Bob" (the <span style="font-weight: bold;">"</span><span style="font-weight: bold;" class="T2">&lt;&gt;</span><span style="font-weight: bold;">"</span> operator test whether two values are <span style="font-weight: bold;" class="T2">NOT EQUAL</span>).
+ The <span style="font-weight: bold;">WEND</span> keyword is simply telling the computer to jump back to the 
+start of the loop and test if user_name$ is not equal to "Bob". If they 
+are not equal it will repeat the code in the loop.&nbsp; So now we just need 
+to write the code we want to repeat.&nbsp; The only thing we need to repeat 
+is asking the user for there name and storing there name in the 
+user_name$ variable.&nbsp; Just like in the last challenge we will use the 
+<span style="font-weight: bold;">Input$( )</span> function.&nbsp; So our code inside our loop will look like this.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">user_name$ = Input$(<span style="color: rgb(0, 102, 0);">"What is your name? "</span>)</span><br style="font-family: FreeMono;">
+<br>
+Lastly we want to say "Good Bye Bob" if the user enters "Bob".&nbsp; For this all we need is a simple <span style="font-weight: bold;">PRINT</span> statement.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Print <span style="color: rgb(0, 102, 0);">"Good Bye Bob"</span></span><br>
+<br>
+So the final program will look like this.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">user_name$ = <span style="color: rgb(0, 102, 0);">""</span><br><br>While user_name$ &lt;&gt; <span style="color: rgb(0, 102, 0);">"Bob"</span><br>user_name$ = Input$(<span style="color: rgb(0, 102, 0);">"What is your name? "</span>)<br>Wend<br><br>Print <span style="color: rgb(0, 102, 0);">"Good Bye Bob"</span></span>
+  
+
+</body></html>

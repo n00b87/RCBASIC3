@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>RCBASIC Tutorial 3</title></head><body style="color: rgb(0, 0, 0); background-color: rgb(160, 160, 255);" alink="#000099" link="#000099" vlink="#990099">
+<p class="P1"><big><big><span style="font-weight: bold;" class="T1">Introduction to Programming 3</span></big></big><br><br>If
+ you have gotten through the first 2 lessons in this series and finished
+ all the challenges you should be fairly comfortable with variables. But
+ in a lot of situations making a single variable for each bit of data 
+that you want to store can be impractical. To demonstrate this we are 
+going to use the first challenge from the last lesson. The challenge was
+ to write a program that ask the user for 5 numbers and outputs the 
+average of the numbers they enter. Below is how I wrote the program.<br><br><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = <span style="color: rgb(0, 102, 0);">""</span></span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"Please enter 5 numbers"</span></span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number 1: "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">number1 = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number 2: "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">number2 = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number 3: "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">number3 = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number 4: "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">number4 = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number 5: "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">number5 = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">average = (number1 + number2 + number3 + number4 + number5) / <span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"The average of the numbers is "</span>; average</span><br></span><br>In
+ this program I started by creating a string variable called user_input$
+ and storing an empty string inside it. Then I used the PRINT command to
+ write "Please enter 5 numbers". &nbsp;For each number I use the INPUT$ 
+function to prompt the user to enter a number and then I store the text 
+the user enters into the user_input$ variable. &nbsp;By now you should 
+already know that the INPUT$ function returns a string so it can only be
+ stored in a string variable. &nbsp;Since we need to be able to add the 
+number the user enters we have to use the VAL function to convert the 
+string to a number and then store the number into a number variable. &nbsp;I 
+named the number variables in my program number1 to number5. &nbsp;After I 
+get all 5 numbers from the user I create a final variable called average
+ and using the Order of Operations (PEMDAS), I add all the numbers 
+together and divide the sum by 5. &nbsp;And finally I output the average to 
+the console.<br><br>This program was relatively simple since we only had
+ 5 numbers. &nbsp;But what if we wanted to get the average of 20 numbers or 
+100 numbers. &nbsp;It would be impractical to continue making that many 
+variables individually. &nbsp;In situations like this where you need to store
+ large amounts of the same type of data it is a good idea to use an 
+array. &nbsp;An <span class="T2">array</span> is a single variable that can store multiple values of the <span class="T2">SAME TYPE</span>.
+ I emphasize that an array can only hold values of the same type as it 
+is important that you realize that an array, like a variable, can either
+ be a number or string. &nbsp;Arrays are created using the <span class="T2">DIM</span> keyword with square brackets <span class="T2">"[]"</span>&nbsp; used to set the amount of data that the array can hold. &nbsp;Look at the following example.<br><br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Dim number_array[<span style="color: rgb(102, 0, 0);">5</span>]<br><br>Dim string_array$[<span style="color: rgb(102, 0, 0);">7</span>]</span></p>
+<p class="P1">The
+ first line in the above example creates a number array called 
+number_array that can hold 5 numbers. &nbsp;The next line creates a string 
+array called string_array$ that can hold 7 strings. &nbsp;Since arrays are 
+just variables you can name an array anything you could name a normal 
+variable. &nbsp;In the example above, since number_array can hold 5 numbers 
+it can be used to hold the data that we would have put in 5 separate 
+variables. &nbsp;I will be referring to the separate variables in an array as
+ indexes. &nbsp;Each index in an array can be access by entering the number 
+of the index inside the square brackets. &nbsp;Look at this example.<br><br><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">Dim x[<span style="color: rgb(102, 0, 0);">4</span>]</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">x[<span style="color: rgb(102, 0, 0);">0</span>] = <span style="color: rgb(102, 0, 0);">13</span></span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">x[<span style="color: rgb(102, 0, 0);">1</span>] = <span style="color: rgb(102, 0, 0);">15</span></span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">x[<span style="color: rgb(102, 0, 0);">2</span>] = <span style="color: rgb(102, 0, 0);">29</span></span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">x[<span style="color: rgb(102, 0, 0);">3</span>] = <span style="color: rgb(102, 0, 0);">47</span></span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print x[<span style="color: rgb(102, 0, 0);">2</span>]</span><br><br>'This will output 29 to the console since we set x[2] to 29 above</span><br>The
+ code above will output 29 to the console. Notice how I did not store a 
+number in x[4]. &nbsp;That is because in this example, the array x only goes 
+up to index 3. RCBasic starts its array indexes at 0 and since we 
+created x with 4 indexes it will have x[0] to x[3] which is a total of 4
+ indexes. &nbsp;Now that we have the basics of how arrays work lets use what 
+we have learned to rewrite the program that averages the 5 numbers the 
+user enters. &nbsp;Instead of having 5 different variables for the 5 numbers 
+we are going to have one array that stores all five numbers. Our program
+ will start off the same but we are going to create an array called 
+numbers that has 5 indexes. &nbsp;So lets start writing the program.<br><br><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">Dim numbers[<span style="color: rgb(102, 0, 0);">5</span>]</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = <span style="color: rgb(0, 102, 0);">""</span></span><br><br style="font-family: FreeMono; font-weight: bold;"><span style="font-family: FreeMono; font-weight: bold;">Print <span style="color: rgb(0, 102, 0);">"Please enter 5 numbers"</span></span></span></p>
+<p class="P1">In
+ the code above, the first line creates an array variable called numbers
+ with 5 indexes in it. &nbsp;The second line creates a string variable just 
+like in the first version of this program at the beginning of the 
+tutorial. &nbsp;And again, we output the text "Please enter 5 numbers". &nbsp;The 
+rest of this program will be pretty much the same as the previous 
+version, but we will be storing the numbers in each index in the numbers
+ array rather than create 5 different variables.<br><br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number1: "</span>)<br>numbers[<span style="color: rgb(102, 0, 0);">0</span>] = Val(user_input$)<br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number2: "</span>)<br>numbers[<span style="color: rgb(102, 0, 0);">1</span>] = Val(user_input$)<br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number3: "</span>)<br>numbers[<span style="color: rgb(102, 0, 0);">2</span>] = Val(user_input$)<br><br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number4: "</span>)<br><br>numbers[<span style="color: rgb(102, 0, 0);">3</span>] = Val(user_input$)<br><br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number5: "</span>)<br><br>numbers[<span style="color: rgb(102, 0, 0);">4</span>] = Val(user_input$)</span></p>
+<p class="P1">The
+ above example is the same as the version of this program I showed at 
+the beginning of this tutorial except that it is using the array numbers
+ instead of the 5 different number variables. &nbsp;And finally we need to 
+get the average and output it to the console.<br><br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">average = (numbers[<span style="color: rgb(102, 0, 0);">0</span>] + numbers[<span style="color: rgb(102, 0, 0);">1</span>] + numbers[<span style="color: rgb(102, 0, 0);">2</span>] + numbers[<span style="color: rgb(102, 0, 0);">3</span>] + numbers[<span style="color: rgb(102, 0, 0);">4</span>]) / <span style="color: rgb(102, 0, 0);">5</span><br><br>Print <span style="color: rgb(0, 102, 0);">"The average of the numbers is "</span>; average</span><br></p>
+<p class="P1">The
+ code above really did not change much from the last example either 
+other than using the array. &nbsp;So the final program looks like this.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">Dim numbers[<span style="color: rgb(102, 0, 0);">5</span>]<br><br>user_input$ = <span style="color: rgb(0, 102, 0);">""</span><br><br>Print <span style="color: rgb(0, 102, 0);">"Please enter 5 numbers"</span><br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number1: "</span>)<br>numbers[<span style="color: rgb(102, 0, 0);">0</span>] = Val(user_input$)<br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number2: "</span>)<br>numbers[<span style="color: rgb(102, 0, 0);">1</span>] = Val(user_input$)<br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number3: "</span>)<br>numbers[<span style="color: rgb(102, 0, 0);">2</span>] = Val(user_input$)<br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number4: "</span>)<br>numbers[<span style="color: rgb(102, 0, 0);">3</span>] = Val(user_input$)<br><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number5: "</span>)<br>numbers[<span style="color: rgb(102, 0, 0);">4</span>] = Val(user_input$)<br><br>average = (numbers[<span style="color: rgb(102, 0, 0);">0</span>] + numbers[<span style="color: rgb(102, 0, 0);">1</span>] + numbers[<span style="color: rgb(102, 0, 0);">2</span>] + numbers[<span style="color: rgb(102, 0, 0);">3</span>] + numbers[<span style="color: rgb(102, 0, 0);">4</span>]) / <span style="color: rgb(102, 0, 0);">5</span><br><br></span><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"The average of the numbers is "</span>; average</span><br></span><br>You
+ are probably asking what was the point of this. This program is 
+actually more lines of code than the other one and we still had to do 
+the same amount of work to get the numbers from the user. &nbsp;Well to 
+answer that, using an array served no point in the program we just wrote
+ because of the way we wrote it. &nbsp;If we needed to get more info from the
+ user, we would have written just as much more code doing it this way as
+ we would have doing it the way I showed at the beginning of this 
+tutorial. &nbsp;To use arrays in your programs effectively you should write 
+your program to take advantage of the fact that your data is stored in 
+an array. So lets rewrite this program one more time to demonstrate 
+this. Our program will still start off the same so here is the start of 
+the program.<br><br><span class="Source_20_Text"><span style="font-family: FreeMono; font-weight: bold;">Dim numbers[<span style="color: rgb(102, 0, 0);">5</span>]</span><br style="font-family: FreeMono; font-weight: bold;"><br style="font-family: FreeMono; font-weight: bold;"><span style="font-family: FreeMono; font-weight: bold;">user_input$ = <span style="color: rgb(0, 102, 0);">""</span></span><br style="font-family: FreeMono; font-weight: bold;"><br style="font-family: FreeMono; font-weight: bold;"><br style="font-family: FreeMono; font-weight: bold;"><span style="font-family: FreeMono; font-weight: bold;">Print <span style="color: rgb(0, 102, 0);">"Please enter 5 numbers"</span></span><br></span><br>The
+ code above is the exact same as the previous example. In the part where
+ we get the numbers from the user we are about to change the code 
+drastically. &nbsp;Instead of manually writing code to get input and convert 
+it to a number for all 5 numbers we want to get from the user we are 
+going to do all this in a loop that repeats 5 times. &nbsp;Since we know that
+ we want to loop 5 times, we might as well just use a FOR loop. &nbsp;If you 
+do not remember how a FOR loop works please reread the explanation of 
+the FOR loop in the last two lessons. &nbsp;When you are ready take a look at
+ our loop below.<br><br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">For index = <span style="color: rgb(102, 0, 0);">0</span> To <span style="color: rgb(102, 0, 0);">4</span><br>user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number"</span> + Str$(index+<span style="color: rgb(102, 0, 0);">1</span>) + <span style="color: rgb(0, 102, 0);">": "</span>)<br>numbers[index] = Val(user_input$)<br>Next</span></p>
+<p class="P1">The
+ first line in the code above starts a FOR loop, creates a number 
+variable called index and sets it to an initial value of 0, and tells 
+the computer to repeat all the code between the FOR and NEXT lines until
+ index is equal to 4. &nbsp;The second line is a little more complex than 
+what we have seen up to this point. &nbsp;But it shouldn't be too hard to 
+understand. &nbsp;We are using the INPUT$ function to ask the user to enter a
+ number. &nbsp;If you break this line down, you will find that it is 
+combining a few concepts we have already covered. &nbsp;Here is a breakdown 
+of the different parts.<br></p>
+<table style="width: 815px; height: 152px;" class="Table1" border="2" cellpadding="0" cellspacing="0">
+<colgroup><col width="88"><col width="19"><col width="143"><col width="119"><col width="19"><col width="164"><col width="19"><col width="181"><col width="18"></colgroup><tbody><tr><td style="width: 0.7958in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="Table_20_Contents">&nbsp;</p></td><td class="Table1_A1" style="width: 0.1674in; text-align: center; font-weight: bold;"><p class="Table_20_Contents">&nbsp;</p></td><td style="width: 1.2861in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P3">Use Input$ Function</p></td><td style="width: 1.0694in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P3">string</p></td><td style="width: 0.1674in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="Table_20_Contents">&nbsp;</p></td><td style="width: 1.4813in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P3">index coverted to string</p></td><td style="width: 0.1674in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="Table_20_Contents">&nbsp;</p></td><td style="width: 1.6319in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P2">Add a ":" after the number</p></td><td style="width: 0.1583in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="Table_20_Contents">&nbsp;</p></td></tr><tr><td style="width: 0.7958in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="Table_20_Contents">user_input$</p></td><td style="width: 0.1674in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P4">=</p></td><td style="width: 1.2861in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P4">Input$ (</p></td><td style="width: 1.0694in; text-align: center; font-weight: bold; color: rgb(0, 102, 0);" class="Table1_A1"><p class="Table_20_Contents">"Enter Number"</p></td><td style="width: 0.1674in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P4">+</p></td><td style="width: 1.4813in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P4">Str$( index + <span style="color: rgb(102, 0, 0);">1 </span>)</p></td><td style="width: 0.1674in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="P4">+</p></td><td style="width: 1.6319in; text-align: center; font-weight: bold; color: rgb(0, 102, 0);" class="Table1_A1"><p class="P4">": "</p></td><td style="width: 0.1583in; text-align: center; font-weight: bold;" class="Table1_A1"><p class="Table_20_Contents">&nbsp;)</p></td></tr></tbody>
+</table>
+<p class="Text_20_body"><br>The
+ reason we add 1 to index in the STR$ function is because index will 
+equal 0 to 4 and we want to output "Enter Number1" for the first number 
+and "Enter Number5" for the last number. So we just convert index + 1 to
+ a string. The reason we have to convert index + 1 to a string here is 
+because we are adding this number to another string. Once we get the 
+input from the user we store it in the string variable user_input$ just 
+like in the previous version. The next line is using the index variable 
+(which will be 0 at the start of the loop and 4 by the end of the loop) 
+to determine which index in the numbers array to store the number we got
+ from the user in. &nbsp;The NEXT line is just telling the computer to jump 
+back to the start of the FOR loop if index is not 4 yet. &nbsp;Once index is 4
+ and the last number is stored in the array we just need to output the 
+average. &nbsp;This will be the exact same as the previous version.<br><br><span style="font-weight: bold; font-family: FreeMono;" class="Source_20_Text">average = (numbers[<span style="color: rgb(102, 0, 0);">0</span>] + numbers[<span style="color: rgb(102, 0, 0);">1</span>] + numbers[<span style="color: rgb(102, 0, 0);">2</span>] + numbers[<span style="color: rgb(102, 0, 0);">3</span>] + numbers[<span style="color: rgb(102, 0, 0);">4</span>]) / <span style="color: rgb(102, 0, 0);">5</span><br><br><br>Print <span style="color: rgb(0, 102, 0);">"The average of the numbers is "</span>; average</span><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;"></span></p>
+<p class="Text_20_body"><br>
+</p>
+<p class="Text_20_body">So the final program will look like this.<br style="font-weight: bold; font-family: FreeMono;"></p>
+<p class="Text_20_body"><br style="font-weight: bold; font-family: FreeMono;"><span class="Source_20_Text"><span style="font-weight: bold; font-family: FreeMono;">Dim numbers[<span style="color: rgb(102, 0, 0);">5</span>]</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = <span style="color: rgb(0, 102, 0);">""</span></span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"Please enter 5 numbers"</span></span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">For index = <span style="color: rgb(102, 0, 0);">0</span> To <span style="color: rgb(102, 0, 0);">4</span></span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number"</span> + Str$(index+<span style="color: rgb(102, 0, 0);">1</span>) + <span style="color: rgb(0, 102, 0);">": "</span>)</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">numbers[index] = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Next</span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">average = (numbers[<span style="color: rgb(102, 0, 0);">0</span>] + numbers[<span style="color: rgb(102, 0, 0);">1</span>] + numbers[<span style="color: rgb(102, 0, 0);">2</span>] + numbers[<span style="color: rgb(102, 0, 0);">3</span>] + numbers[<span style="color: rgb(102, 0, 0);">4</span>]) / <span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><br style="font-weight: bold; font-family: FreeMono;"><span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"The average of the numbers is "</span>; average</span><br></span><br>I know arrays can be quite a bit to take in so I encourage you to read through this tutorial multiple times before moving on.</p>
+
+  
+
+</body></html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>RCBASIC Tutorial 4</title></head><body style="color: rgb(0, 0, 0); background-color: rgb(160, 160, 255);" alink="#000099" link="#000099" vlink="#990099"><big><big><span style="font-weight: bold;">Introduction to Programming Part 4</span></big></big><br>
+<br>
+This is the final lesson in my introduction to programming series of
+tutorials. If you have made it this far give yourself a pat on the
+back, you deserve it. In this lesson we are going to go a little more
+in depth on functions. If you recall from my description in the first
+lesson, a function is a block of code that is labeled by a name so it
+can be called at any point in a program. Just like variables and
+arrays, functions can be either a number or string. We have been using
+the VAL and INPUT$ functions repeatedly throughout the previous lessons
+in this series of tutorials. By now you should be fairly comfortable
+with the basic concept of functions. Lets review the INPUT$ and VAL
+functions for a quick overview.<br>
+<br>
+The <span style="font-weight: bold;">INPUT$</span> function is a string
+function that takes one argument, the prompt the user sees before the
+user starts typing there input in. Here is the basic structure:<br>
+<br>
+<span style="font-weight: bold;">Input$ ( prompt$ )</span> - prompt$ is
+the prompt the user sees. Functions return a value after they are done
+executing. In the case of INPUT$, this function returns what ever the
+user typed in. The value the function returns is basically what it is
+equal to. So you can use functions in most places a variable can be
+used. To demonstrate this, look at the following example.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">A = Abs(<span style="color: rgb(102, 0, 0);">-4</span>)</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">B = Sqrt(<span style="color: rgb(102, 0, 0);">25</span>)</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">C = A + B</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print C</span><br>
+<br>
+In the first line of the above example we are using the <span style="font-weight: bold;">ABS</span>
+function to get the absolute value of -4. So ABS will return the
+absolute value of -4 and the we are setting the variable A equal to
+what ABS(-4) is returning which will be a positive 4. In the next line
+we are using the SQRT function to get the square root of 25. <span style="font-weight: bold;">SQRT(25)</span>
+will return the square root of 25 which is 5 and then we are storing
+that return value in the variable B. Then we set a variable called C
+equal to the value stored in A plus the value stored in B. And the Last
+line just outputs the value stored in C to the console. You can view
+how these functions along with all of RCBasic's other functions by
+looking in the reference manual. Now that we have a clear understanding
+of what is going on in this example lets see if we can shorten it. Look
+at the following example.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">C = Abs(<span style="color: rgb(102, 0, 0);">-4</span>) + Sqrt(<span style="color: rgb(102, 0, 0);">25</span>)</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print C</span><br>
+<br>
+We just cut two lines out of the previous lines by just adding the
+values returned by each function and storing the result in variable C.
+Since ABS and SQRT are both number functions they can be used to do
+math just like numbers or variables can. But if we want to, we can cut
+out one more line by writing it like this.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Print Abs(<span style="color: rgb(102, 0, 0);">-4</span>) + Sqrt(<span style="color: rgb(102, 0, 0);">25</span>)</span><br>
+<br>
+We just got the 4 lines of code we started with down to one line by
+just adding the return values of ABS and SQRT and outputting them to
+the console. You will want to store values in variables or arrays most
+of the time but it is convenient to know that you don't have to.<br>
+<br>
+So far I have covered a lot of stuff I already covered in the first
+tutorial. RCBasic has a lot of built-in functions that perform
+different task like getting input from the user, getting the current
+time, opening files, and so on. In the future I may cover some of these
+other functions in more advanced tutorials but you can look at all
+these functions and how to use them in the reference manual. But now we
+are going to cover how to make our own functions.<br>
+<br>
+It is very useful to be able to create our your own functions within
+your program. It will save you having to rewrite lots of code and also
+help you error check and debug your code easier. So lets take one of
+the previous challenges to demonstrate this.<br>
+<br>
+This is the final code for the challenge from lesson 2 where I asked
+you to write a program that takes 5 numbers from the user and outputs
+the average of those numbers.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Dim numbers[<span style="color: rgb(102, 0, 0);">5</span>]</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">user_input$ = <span style="color: rgb(0, 102, 0);">""</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"Please enter 5 numbers"</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">For index = <span style="color: rgb(102, 0, 0);">0</span> To <span style="color: rgb(102, 0, 0);">4</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number"</span> + Str$(index+<span style="color: rgb(102, 0, 0);">1</span>) + <span style="color: rgb(0, 102, 0);">": "</span>)</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">numbers[index] = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Next</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">average = (numbers[<span style="color: rgb(102, 0, 0);">0</span>] + numbers[<span style="color: rgb(102, 0, 0);">1</span>] + numbers[<span style="color: rgb(102, 0, 0);">2</span>] + numbers[<span style="color: rgb(102, 0, 0);">3</span>] + numbers[<span style="color: rgb(102, 0, 0);">4</span>]) / <span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"The average of the numbers is "</span> + average</span><br>
+<br>
+Take a moment and go through each line and make sure you can understand
+what each line does. Please refer to Intro to Programming III for an
+explanation of this code if you are a little lost. We are to make a
+function that returns the average of 5 numbers and use it in this
+program to replace the variable called AVERAGE.<br>
+<br>
+To make your own function you use the <span style="font-weight: bold;">FUNCTION</span> keyword to start your function and you will have a line called <span style="font-weight: bold;">END FUNCTION</span> that ends your function. Look at the following.<br>
+<br>
+<span style="font-weight: bold;">Function MyFunc ( arg1, arg2, arg3, ... )</span><br style="font-weight: bold;">
+<br style="font-weight: bold;">
+<span style="font-weight: bold;">...Code to Execute</span><br style="font-weight: bold;">
+<br style="font-weight: bold;">
+<span style="font-weight: bold;">Return (RETURN_VALUE)</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">End Function</span><br style="font-weight: bold;">
+<br>
+Note that your function can have as few or as many arguments as you
+want. And it is also important to mention that your function name just
+like variable names and array names cannot be the same as any of
+RCBasic's built-in function names or keywords. So lets make our AVERAGE
+function.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Function Average( num1, num2, num3, num4, num5 )</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">a = (num1 + num2 + num3 + num4 + num5) / <span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Return a</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Function</span><br>
+<br>
+The first line above is creating a function called AVERAGE that takes 5
+numbers and it stores those numbers in the variables num1, num2, num3,
+num4, and num5. The second line is computing the average of those
+numbers and storing the result in a variable called A. The third line
+is returning the value of the variable A which is going to make the
+entire function equal to whatever value is in A. And the last line is
+telling RCBasic that we are through making our function.<br>
+<br>
+To use this function we would simply call it like we did the ABS or VAL functions.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Average(<span style="color: rgb(102, 0, 0);">5</span>,<span style="color: rgb(102, 0, 0);">10</span>,<span style="color: rgb(102, 0, 0);">15</span>,<span style="color: rgb(102, 0, 0);">20</span>,<span style="color: rgb(102, 0, 0);">25</span>)</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+Since our function is a number we can store it in a number variable or do math with it like we could any other number.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">x = Average(<span style="color: rgb(102, 0, 0);">2</span>,<span style="color: rgb(102, 0, 0);">5</span>,<span style="color: rgb(102, 0, 0);">8</span>,<span style="color: rgb(102, 0, 0);">3</span>,<span style="color: rgb(102, 0, 0);">5</span>)</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+To use the function inside our program we just have to make sure we
+make the function before we try to use it. After all you can use
+something before it exist. So we are going to make our function at the
+start of our program.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Function Average( num1, num2, num3, num4, num5 )</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">a = (num1 + num2 + num3 + num4 + num5) / <span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Return a</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Function</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Dim numbers[<span style="color: rgb(102, 0, 0);">5</span>]</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">user_input$ = <span style="color: rgb(0, 102, 0);">""</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"Please enter 5 numbers"</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">For index = <span style="color: rgb(102, 0, 0);">0</span> To <span style="color: rgb(102, 0, 0);">4</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">user_input$ = Input$(<span style="color: rgb(0, 102, 0);">"Enter Number"</span> + Str$(index+<span style="color: rgb(102, 0, 0);">1</span>) + <span style="color: rgb(0, 102, 0);">": "</span>)</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">numbers[index] = Val(user_input$)</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Next</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-family: FreeMono;">'HERE IS WHERE WE USE THE AVERAGE FUNCTION</span><br style="font-family: FreeMono;">
+<span style="font-family: FreeMono;">'---------------------------------------------------------</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"The average of the numbers is "</span>; Average(numbers[<span style="color: rgb(102, 0, 0);">0</span>], numbers[<span style="color: rgb(102, 0, 0);">1</span>], numbers[<span style="color: rgb(102, 0, 0);">2</span>], numbers[<span style="color: rgb(102, 0, 0);">3</span>], numbers[<span style="color: rgb(102, 0, 0);">4</span>])</span><br>
+<br>
+We used the AVERAGE function in the PRINT statement on the very last
+line of this program to get the average of the numbers. I know we only
+built a number function so far but a string function is made the exact
+same way except just like string variables and arrays you have to put a
+$ at the end of the functions name when you make it. Also WHEN MAKING A
+STRING FUNCTION YOU NEED TO MAKE SURE YOU RETURN A STRING AND NOT A
+NUMBER. Look at this simple string function example.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Function MyStringFunction$ ()</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Return <span style="color: rgb(0, 102, 0);">"HELLO WORLD"</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Function</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print MyStringFunction()</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+Before we move on I want you to take some time to play around with this code and try building some other functions.<br>
+<br>
+Sometimes you may have a function that doesn't need to return anything. For example look at this function.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Function Count_To_10()</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">For i = <span style="color: rgb(102, 0, 0);">1</span> To <span style="color: rgb(102, 0, 0);">10</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print i</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Next</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Return <span style="color: rgb(102, 0, 0);">0</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Function</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Count_To_10()</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+The function above just writes the numbers 1 to 10 to the console. We
+return 0 simply for the sake of returning something. But we don't need
+the return value of this function for anything. In cases where you have
+a function that doesn't need to return anything you can simply make a
+sub routine instead. A <span style="font-weight: bold;">SUB</span>
+routine is just like a function except it doesn't return anything.
+Since sub routines don't return anything they cannot be used like
+numbers or strings and cannot be stored in a variable. They are made
+the same way functions are except they use the SUB keyword. Here is the
+structure of a sub routine.<br>
+<br>
+<span style="font-weight: bold;">Sub MySub ( arg1, arg2, ... )</span><br style="font-weight: bold;">
+<br style="font-weight: bold;">
+<span style="font-weight: bold;">...Code to execute</span><br style="font-weight: bold;">
+<br style="font-weight: bold;">
+<span style="font-weight: bold;">End Sub</span><br style="font-weight: bold;">
+<br>
+And to use a sub routine you simply call it like a function except you
+can't store it in a variable or do math with it or anything. Here is
+the COUNT_TO_10 function we made earlier as a sub routine.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Sub Count_To_10()</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">For i = <span style="color: rgb(102, 0, 0);">1</span> To <span style="color: rgb(102, 0, 0);">10</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print i</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Next</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Sub</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Count_To_10()</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+In every function and sub routine I have shown so far we have passed
+arguments by value. When I say BY VALUE, I mean that that if we give a
+variable as an argument to the function, the function only uses the
+value stored in the variable but does not change the variable itself.
+For instance, look at this example.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Sub CoolBeans ( n )</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">n = <span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Sub</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">MyVar = <span style="color: rgb(102, 0, 0);">20</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">CoolBeans ( MyVar )</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"MyVar = "</span>; MyVar</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+Even though we give MYVAR to the COOLBEANS sub routine as argument N
+and COOLBEANS sets N equal to 5, when we output MYVAR it is still equal
+to 20. That is because MYVAR is passed to the COOLBEANS sub routine BY
+VALUE. In order to change variables passed to a function or sub
+routine, we have to accept the arguments BY REFERENCE. To accept an
+argument by reference to a sub routine or function we just use the
+BYREF keyword before the argument name in the function definition. So
+here is what the previous example looks like with the argument accepted
+by reference.<br>
+<br>
+<span style="font-family: FreeMono;">'NOTICE THAT I AM USING BYREF BEFORE THE NAME OF THE ARGUMENT</span><br>
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Sub CoolBeans ( ByRef n )</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">n = <span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Sub</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">MyVar = <span style="color: rgb(102, 0, 0);">20</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">CoolBeans ( MyVar )</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"MyVar = "</span>; MyVar</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+Now when we pass MYVAR to COOLBEANS, when COOLBEANS changes its
+argument value inside the sub routine, it will change the variable that
+is passed as an argument. So when we output MYVAR it outputs 5.<br>
+<br>
+The last thing I will cover in this tutorial is scope. Scope refers to
+where a variable can be accessed within your program. Look at this
+example.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">Sub Test()</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">A = <span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Sub</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print A</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+If you try the run the code above you will get a compile error. You get
+this compile error because you are trying to output the value of the
+variable A to the console when A doesn't exist. But you create a
+variable called A inside the sub routine TEST before you try to PRINT A
+so why are you getting this error? It is because the variable A you
+create in the sub routine is outside of the scope of the rest of your
+program. VARIABLES THAT ARE CREATED IN FUNCTIONS, SUB ROUTINES, OR
+LOOPS CANNOT BE ACCESSED OUTSIDE OF THEM. Since the variable A is
+created inside TEST it can only be seen inside TEST. But if you create
+the variable A before you create TEST then you will be able to access A
+inside of TEST as well as everywhere else in your program after you
+create A. So look at this example.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">A = <span style="color: rgb(102, 0, 0);">55</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Sub Test()</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"Test is "</span>; + A+<span style="color: rgb(102, 0, 0);">5</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Sub</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"A is "</span>; A</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Test()</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+Now not only are you able to output A in your program but your sub
+routine can use the variable A that you create as well. You can also
+change the variable A inside the sub routine as well. Look at this
+example.<br>
+<br>
+<span style="font-weight: bold; font-family: FreeMono;">A = <span style="color: rgb(102, 0, 0);">55</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Sub Test()</span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">A = A + <span style="color: rgb(102, 0, 0);">1</span></span><br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">End Sub</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"A is "</span>; A</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Test()</span><br style="font-weight: bold; font-family: FreeMono;">
+<br style="font-weight: bold; font-family: FreeMono;">
+<span style="font-weight: bold; font-family: FreeMono;">Print <span style="color: rgb(0, 102, 0);">"A is "</span>; A</span><br style="font-weight: bold; font-family: FreeMono;">
+<br>
+The code above first outputs 55. Then Test is called which sets A equal
+to A (which is 55) plus 1. So when you output A on the last line, A is
+equal to 56.<br>
+<br>
+This tutorial covered a lot of information that I don't expect everyone
+reading to easily understand completely right away. I highly encourage
+you to play around with making your own functions to do whatever you
+can think of. Also take some time to go through the reference manual
+and try out some of the built-in functions. And read the explanations
+on functions and sub routines in the reference manual as well.<br>
+
+</body></html>
