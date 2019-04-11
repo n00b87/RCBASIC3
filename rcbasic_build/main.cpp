@@ -221,6 +221,10 @@ bool rc_eval(string line)
         return false;
     }
 
+    //current_Debug
+    //cout << "-------START TOKENS--------" << endl;
+    //output_tokens();
+
     //cout << "get preprocessor" << endl;
     if(!rc_preprocessor())
     {
@@ -532,14 +536,14 @@ int main(int argc, char * argv[])
     //rcbasic_dev("embedded_functions.bas");
     //return 0;
 
-    string rc_filename = "";
+    string rc_filename = "";// = "tst.bas";
 
     if(argc > 1)
         rc_filename = argv[1];
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Compiler v3.0.7" << endl;
+        cout << "RCBASIC Compiler v3.0.8" << endl;
         return 0;
     }
 
@@ -574,7 +578,8 @@ int main(int argc, char * argv[])
         else
             rcbasic_clean();
 
-
+        //Debug
+        //return 0;
 
         //for(int i = 0; i < vm_asm.label.size(); i++)
         //    cout << vm_asm.label[i].label_name << " = " << vm_asm.label[i].label_address << endl;

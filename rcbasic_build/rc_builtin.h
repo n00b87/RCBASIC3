@@ -769,6 +769,12 @@ add_embedded_arg("x", ID_TYPE_BYREF_NUM);
 add_embedded_arg("y", ID_TYPE_BYREF_NUM);
 add_embedded_arg("pressure", ID_TYPE_BYREF_NUM);
 embed_function("NumFingers", ID_TYPE_FN_NUM);
+embed_function("CheckSockets", ID_TYPE_FN_NUM);
+add_embedded_arg("timeout_ms", ID_TYPE_NUM);
+embed_function("TCP_SocketReady", ID_TYPE_FN_NUM);
+add_embedded_arg("socket", ID_TYPE_NUM);
+embed_function("UDP_SocketReady", ID_TYPE_FN_NUM);
+add_embedded_arg("socket", ID_TYPE_NUM);
 embed_function("TCP_SocketOpen", ID_TYPE_FN_NUM);
 add_embedded_arg("socket", ID_TYPE_NUM);
 add_embedded_arg("host$", ID_TYPE_STR);
@@ -862,7 +868,6 @@ embed_function("ClipboardText$", ID_TYPE_FN_STR);
 embed_function("SetClipboardText", ID_TYPE_SUB);
 add_embedded_arg("txt$", ID_TYPE_STR);
 embed_function("HasClipboardText", ID_TYPE_FN_NUM);
-
 
 }
 

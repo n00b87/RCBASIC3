@@ -31,13 +31,15 @@ string keyWords[] = {
     "ELSE", //25
     "THEN", //26
     "DELETE", //27
-    "INCLUDE", //30 -- still need to implement include
+    "INCLUDE", //30
     "BYREF", //31
     "PRINT", //32
     "SUB", //33
     "NOT", //34
     "ELSEIF", //35
-    "REDIM", //36
+    "REDIM" //, //36
+    //"TYPE", //37
+    //"AS" //38
 };
 
 #endif // KEYWORDS_H_INCLUDED

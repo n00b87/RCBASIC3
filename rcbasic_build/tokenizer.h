@@ -88,6 +88,10 @@ bool tokens(const std::string &data)
 
         switch(ch)
         {
+            case '.':
+                inc(x, 1);
+                token.push_back("<child>");
+                break;
             case '+':
                 inc(x, 1);
                 token.push_back("<add>");
@@ -307,7 +311,7 @@ bool tokens(const std::string &data)
                     {
                         s_data.push_back(ch);
                         ch = data[inc(x, 1)];
-                    } while(isalnum(ch) || ch == '_' || ch == '$' || ch == '.');
+                    } while(isalnum(ch) || ch == '_' || ch == '$' );//|| ch == '.');
 
                     rc_builtin_constant = rc_keywordToken(StringToUpper(s_data));
 
@@ -867,17 +871,17 @@ string rc_keywordToken(string sline)
 
 void output_tokens()
 {
-//    for(int i = 0; i < token.size(); i++)
-//    {
-//        try
-//        {
-//            cout << i << ":" << token.at(i) << endl;
-//        }
-//        catch(out_of_range& e)
-//        {
-//            cout << "Token Out of Range Error: " << e.what() << endl;
-//        }
-//    }
+    for(int i = 0; i < token.size(); i++)
+    {
+        try
+        {
+            cout << i << ":" << token.at(i) << endl;
+        }
+        catch(out_of_range& e)
+        {
+            cout << "Token Out of Range Error: " << e.what() << endl;
+        }
+    }
 }
 
 void clearTokens()
