@@ -1845,6 +1845,15 @@ void func_130(uint64_t fn)
         case FN_NumFingers: //Number Function
             rc_push_num( rc_media_numFingers() );
             break;
+        case FN_CheckSockets:
+            rc_push_num( rc_net_checkSockets( CHECKSOCKETS_TIMEOUT_MS ) );
+            break;
+        case FN_TCP_SocketReady:
+            rc_push_num( rc_net_tcp_socketReady( TCP_SOCKETREADY_SOCKET ) );
+            break;
+        case FN_UDP_SocketReady:
+            rc_push_num( rc_net_udp_socketReady( UDP_SOCKETREADY_SOCKET ) );
+            break;
         case FN_TCP_SocketOpen: //Number Function
             rc_push_num( rc_net_tcp_openSocket(TCP_SOCKETOPEN_SOCKET, TCP_SOCKETOPEN_HOST$, TCP_SOCKETOPEN_PORT ) );
             break;

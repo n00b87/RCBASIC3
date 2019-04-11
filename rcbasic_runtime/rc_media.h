@@ -63,7 +63,7 @@ const int MAX_SOUNDS = 1024;
 const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
 const int MAX_FINGERS = 10;
-const int MAX_SOCKETS = 1024;
+const int MAX_SOCKETS = 256;
 #else
 
 //Screen dimension constants
@@ -78,7 +78,7 @@ const int MAX_SOUNDS = 1024;
 const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
 const int MAX_FINGERS = 10;
-const int MAX_SOCKETS = 1024;
+const int MAX_SOCKETS = 256;
 
 #endif // RC_ANDROID
 
@@ -201,9 +201,9 @@ int rc_update_flag = 0;
 Mix_Chunk * rc_sound[MAX_SOUNDS];
 Mix_Music * rc_music;
 
-TCPsocket rc_socket[1024];
+TCPsocket rc_socket[MAX_SOCKETS];
 
-UDPsocket rc_udp_socket[1024];
+UDPsocket rc_udp_socket[MAX_SOCKETS];
 UDPpacket * rc_udp_packet;
 int rc_udp_channel;
 string rc_udp_data;
@@ -212,6 +212,8 @@ int rc_udp_maxlen;
 string rc_udp_host;
 Uint16 rc_udp_port;
 int rc_packet_size = 0;
+SDLNet_SocketSet rc_socket_set;
+
 
 SDL_PixelFormat * rc_pformat;
 SDL_DisplayMode rc_displayMode[MAX_WINDOWS];
@@ -284,6 +286,13 @@ int rc_video_currentLoop = 0;
 
 bool rc_media_init()
 {
+    rc_socket_set = SDLNet_AllocSocketSet(MAX_SOCKETS*2); //*2 for udp and tcp
+
+    if(rc_socket_set == NULL)
+    {
+        cout << "Init Error: " << SDL_GetError() << endl;
+    }
+
     for(int i = 0; i < MAX_SOCKETS; i++)
     {
         rc_socket[i] = NULL;
@@ -490,6 +499,11 @@ void rc_media_quit()
     IMG_Quit();
     TTF_Quit();
     Mix_Quit();
+    if(rc_socket_set)
+    {
+        SDLNet_FreeSocketSet(rc_socket_set);
+        rc_socket_set = NULL;
+    }
     //SDLNet_FreePacket(rc_udp_packet);
 	SDLNet_Quit();
     SDL_Quit();
@@ -4376,7 +4390,10 @@ int rc_net_tcp_openSocket(int _socket, string host, Uint16 port)
     }
     rc_socket[_socket] = SDLNet_TCP_Open(&ip);
     if(rc_socket[_socket])
+    {
+        SDLNet_TCP_AddSocket(rc_socket_set, rc_socket[_socket]);
         return 1;
+    }
     return 0;
 }
 
@@ -4387,6 +4404,7 @@ void rc_net_tcp_closeSocket(int _socket)
         cout << "TCP_SocketClose Error: Maximum number of sockets available is " << MAX_SOCKETS << endl;
         return;
     }
+    SDLNet_TCP_DelSocket(rc_socket_set, rc_socket[_socket]);
     SDLNet_TCP_Close(rc_socket[_socket]);
     rc_socket[_socket] = NULL;
 }
@@ -4401,6 +4419,16 @@ Uint32 rc_net_tcp_remotePort(int _socket)
 {
     IPaddress * ip = SDLNet_TCP_GetPeerAddress(rc_socket[_socket]);
     return ip->port;
+}
+
+int rc_net_checkSockets(Uint32 m)
+{
+    return SDLNet_CheckSockets(rc_socket_set, m);
+}
+
+int rc_net_tcp_socketReady(int _socket)
+{
+    return SDLNet_SocketReady(rc_socket[_socket]);
 }
 
 int rc_net_tcp_getData(int socket, void * dst, int numBytes)
@@ -4451,7 +4479,14 @@ bool rc_net_tcp_acceptSocket(int socket_server, int socket_client)
 bool rc_net_udp_openSocket(int socket, Uint16 port)
 {
     bool rtn = (bool)(rc_udp_socket[socket] = SDLNet_UDP_Open(port));
+    if(rtn)
+        SDLNet_UDP_AddSocket(rc_socket_set, rc_udp_socket[socket]);
 	return rtn;
+}
+
+int rc_net_udp_socketReady(int socket)
+{
+    return SDLNet_SocketReady(rc_udp_socket[socket]);
 }
 
 int rc_net_udp_readStream(int socket, string * dst, string * host, double * port)
@@ -4539,6 +4574,7 @@ Uint32 rc_net_udp_getRemotePort(int socket)
 
 int rc_net_udp_closeSocket(int socket)
 {
+    SDLNet_UDP_DelSocket(rc_socket_set, rc_udp_socket[socket]);
     SDLNet_UDP_Close(rc_udp_socket[socket]);
     rc_udp_socket[socket] = NULL;
     return 0;
