@@ -2949,6 +2949,11 @@ bool check_rule()
                 select_block.pop();
                 exit_scope(1);
             }
+            else
+            {
+                rc_setError("Invalid use of END");
+                return false;
+            }
         }
         else if(token[0].compare("<function>")==0)
         {
