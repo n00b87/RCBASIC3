@@ -1293,6 +1293,9 @@ void func_130(uint64_t fn)
         case FN_Date$:
             rc_push_str( rc_intern_date() );
             break;
+        case FN_Easter$:
+            rc_push_str( rc_intern_easter(EASTER$_YEAR) );
+            break;
         case FN_Ticks:
             rc_push_num( rc_intern_ticks() );
             break;
@@ -1547,6 +1550,9 @@ void func_130(uint64_t fn)
             break;
         case FN_ImageFromBuffer_Ex: //Sub Procedure
             rc_media_createImage_Ex_hw( IMAGEFROMBUFFER_EX_SLOT, IMAGEFROMBUFFER_EX_W, IMAGEFROMBUFFER_EX_H, &IMAGEFROMBUFFER_EX_BUFFER, IMAGEFROMBUFFER_EX_COLKEY );
+            break;
+        case FN_BufferFromImage:
+            rc_media_bufferFromImage(BUFFERFROMIMAGE_SLOT, &BUFFERFROMIMAGE_BUFFER);
             break;
         case FN_ImageExists: //Number Function
             rc_push_num( rc_media_imageExist_hw( IMAGEEXISTS_SLOT ) );

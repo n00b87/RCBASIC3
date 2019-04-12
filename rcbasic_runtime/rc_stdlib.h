@@ -902,6 +902,38 @@ inline string rc_intern_date()
     return d.str();
 }
 
+string ZeroPadNumber(int num)
+{
+    stringstream ss;
+    // the number is converted to string with the help of stringstream
+    ss << num;
+    string ret;
+    ss >> ret;
+    // Append zero chars
+    int str_length = ret.length();
+    for (int i = 0; i < 2 - str_length; i++)
+        ret = "0" + ret;
+    return ret;
+}
+
+string rc_intern_easter(int X)
+{
+    stringstream ss;                             // X = year to compute
+    int K, M, S, A, D, R, OG, SZ, OE;
+    K  = X / 100;                                   // Secular number
+    M  = 15 + (3 * K + 3) / 4 - (8 * K + 13) / 25;  // Secular Moon shift
+    S  = 2 - (3 * K + 3) / 4;                       // Secular sun shift
+    A  = X % 19;                                    // Moon parameter
+    D  = (19 * A + M) % 30;                         // Seed for 1st full Moon in spring
+    R  = D / 29 + (D / 28 - D / 29) * (A / 11);     // Calendarian correction quantity
+    OG = 21 + D - R;                                // Easter limit
+    SZ = 7 - (X + X / 4 + S) % 7;                   // 1st sunday in March
+    OE = 7 - (OG - SZ) % 7;                         // Distance Easter sunday from Easter limit in days
+    //Easter = DateSerial(X, 3, OG + OE);           // Result: Easter sunday as number of days in March
+    ss << X << "-" << ZeroPadNumber(((OG + OE)>31)?4:3) << "-" << ZeroPadNumber((((OG + OE)%31)==0)?31:((OG + OE)%31));
+    return ss.str();
+}
+
 inline unsigned long rc_intern_ticks()
 {
     return clock();
