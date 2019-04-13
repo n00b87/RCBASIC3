@@ -1,0 +1,79 @@
+# For complete documentation of this file, please see Geany's main documentation
+
+[styling]
+# Edit these in the colorscheme .conf file instead
+default=default
+comment=comment_line
+commentblock=comment
+docline=comment_line_doc
+docblock=comment_doc
+dockeyword=comment_doc_keyword
+number=number_1
+word=keyword_1
+string=string_1
+preprocessor=preprocessor
+operator=operator
+identifier=identifier_1
+date=number_2
+stringeol=string_eol
+word2=keyword_2
+word3=keyword_3
+word4=keyword_4
+constant=identifier_2
+asm=type
+label=label
+error=error
+hexnumber=number_1
+binnumber=number_1
+
+[keywords]
+# all items must be in one line
+keywords=true false mod shl shr and not or xor byref case do default else elseif end exit for function if loop next return select step sub then to until wend while print dim delete fprint input arraydim stringarraydim numberarraydim arraysize stringarraysize numberarraysize asc chr insert instr lcase left length ltrim mid replace replacesubstr reverse right rtrim stringfill str tally trim ucase val abs acos andbit asin atan bin cos exp frac hex int log max min orbit randomize rand round sign sin sqrt tan xorbit fileopen fileclose readbyte writebyte readline writeline copyfile removefile fileexists movefile renamefile filelength tell seek eof freefile changedir direxists dirfirst dir dirnext makedir removedir date ticks time timer wait windowopen windowclose raisewindow window update showwindow hidewindow setwindowtitle windowtitle setwindowposition getwindowposition setwindowsize getwindowsize setwindowminsize getwindowminsize setwindowmaxsize getwindowmaxsize windowisfullscreen windowisvisible windowisbordered windowisresizable windowisminimized windowismaximized setwindowfullscreen maximizewindow minimizewindow setwindowborder canvasopen canvasclose setcanvasviewport getcanvasviewport canvas setcanvasoffset getcanvasoffset getcanvassize clearcanvas setcanvasalpha copycanvas clonecanvas setcanvasz box boxfill circle circlefill ellipse ellipsefill floodfill getpixel setcolor line poly polyfill rgb rgba pset loadimage imageexists colorkey copyimage deleteimage setimagealpha imagealpha getimagesize flipimage drawimage drawimage_blit drawimage_blit_ex drawimage_rotate drawimage_rotate_ex drawimage_zoom drawimage_zoom_ex drawimage_rotozoom drawimage_rotozoom_ex getcursor prints inputs locate fontisloaded font loadfont deletefont setfontstyle drawtext drawtext_shaded drawtext_blended inkey key waitkey hidemouse showmouse mouseisvisible getmouse getmousewheel mousex mousey mousebutton mousewheelx mousewheely numjoysticks joyaxis joybutton joyname loadsound loadmusic playsound playsoundtimed playmusic pausesound resumesound pausemusic resumemusic deletesound fademusicin fademusicout musicexists setmusicvolume musicvolume setmusicposition musicposition rewindmusic setsoundchannels numsoundchannels soundisenabled soundexists setchannelvolume channelvolume setsoundvolume soundvolume stopmusic stopsound tcp_socketopen tcp_socketclose tcp_remotehost tcp_remoteport tcp_getdata tcp_senddata tcp_acceptsocket udp_socketopen udp_socketclose udp_getdata udp_length udp_maxlength udp_remotehost udp_remoteport udp_senddata zoneinputs touchpressure gettouch getmultitouch readinput_start readinput_stop readinput_text canvasclip windowclip setcanvasvisible canvasisvisible rendertext gettextsize imagefrombuffer imagefrombuffer_ex readinput_settext gettouchfinger numfingers loadimage_ex rect rectfill os numjoybuttons numjoyaxes loadvideo playvideo pausevideo stopvideo setvideoposition resumevideo videoposition deletevideo deletemusic system videoisplaying roundrect roundrectfill videoend getvideostats setvideodrawrect getvideodrawrect getvideosize videoexists setvideoalpha soundfrombuffer command numcommands str_f str_f$ str_s str_s$ cls env env$ setenv prefpath prefpath$ numjoyhats joyhat numjoytrackballs getjoytrackball windowhasinputfocus windowhasmousefocus push_n push_s pop_n pop_s pop_s$ stack_size_n stack_size_s joystickisconnected numwindows windowexists readinput_togglebackspace windowevent_close windowevent_minimize windowevent_maximize poly polyfill setclearcolor cint32 cint64 activecanvas activewindow fps hasclipboardtext setclipboardtext clipboardtext setwindowicon hexint checksockets tcp_socketready udp_socketready easter bufferfromimage drawimage_flip drawimage_flip_ex
+preprocessor=include windowpos_centered
+# user definable keywords
+user1=
+user2=
+
+[settings]
+# default extension used when saving files
+extension=bas
+
+# the following characters are these which a "word" can contains, see documentation
+#wordchars=_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+
+# single comments, like # in this file
+comment_single='
+# multiline comments
+comment_open=
+comment_close=
+
+# set to false if a comment character/string should start at column 0 of a line, true uses any
+# indentation of the line, e.g. setting to true causes the following on pressing CTRL+d
+	#command_example();
+# setting to false would generate this
+#	command_example();
+# This setting works only for single line comments
+comment_use_indent=true
+
+# context action command (please see Geany's main documentation for details)
+context_action_cmd=
+
+[indentation]
+#width=4
+# 0 is spaces, 1 is tabs, 2 is tab & spaces
+#type=1
+
+[build_settings]
+# %f will be replaced by the complete filename
+# %e will be replaced by the filename without extension
+# (use only one of it at one time)
+compiler=rcbasic_build "%f"
+run_cmd=rcbasic "./%e"
+
+[build-menu]
+FT_00_LB=_Compile
+FT_00_CM=rcbasic_build "%f"
+FT_00_WD=
+EX_00_LB=_Execute
+EX_00_CM=rcbasic "./%e"
+EX_00_WD=
