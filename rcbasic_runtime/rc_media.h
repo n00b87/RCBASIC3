@@ -701,8 +701,8 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     SDL_RenderClear(rc_win_renderer[rc_active_window]);
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
     SDL_RenderClear(rc_win_renderer[rc_active_window]);
-    rc_win_width = w;
-    rc_win_height = h;
+    rc_win_width[win_num] = w;
+    rc_win_height[win_num] = h;
     #else
     SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 255);
     SDL_RenderClear(rc_win_renderer[win_num]);
@@ -1090,13 +1090,17 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
         if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
         {
             cout << "Something happend: " << SDL_GetError() << endl;
+            #ifndef RC_ANDROID
             rc_fullscreen_mouse_scale_x[win_num] = 1;
             rc_fullscreen_mouse_scale_y[win_num] = 1;
+            #endif // RC_ANDROID
         }
         else
         {
+            #ifndef RC_ANDROID
             rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
             rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
+            #endif // RC_ANDROID
         }
 
         SDL_PumpEvents();
@@ -1119,8 +1123,10 @@ void rc_media_maximizeWindow(int win_num)
         rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
         rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
+        #ifndef RC_ANDROID
         rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
         rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
+        #endif // RC_ANDROID
     }
     else
         cout << "MaximizeWindow Error: Window #" << win_num << " is not an active window" << endl;
@@ -1135,8 +1141,10 @@ void rc_media_minimizeWindow(int win_num)
         rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
         rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
+        #ifndef RC_ANDROID
         rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
         rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
+        #endif // RC_ANDROID
     }
     else
         cout << "MinimizeWindow Error: Window #" << win_num << " is not an active window" << endl;
@@ -1182,8 +1190,10 @@ void rc_media_restoreWindow(int win_num)
         rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
         rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
+        #ifndef RC_ANDROID
         rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
         rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
+        #endif // RC_ANDROID
     }
     else
         cout << "RestoreWindow Error: Window #" << win_num << " is not an active window" << endl;
@@ -1755,8 +1765,13 @@ Uint32 rc_media_getPixel_hw(int x, int y)
     //h = rc_displayMode[rc_active_window].h;
     Uint32 * s_pixels = (Uint32*)SDL_malloc(sizeof(Uint32));
     SDL_Rect p_rect;
+    #ifdef RC_ANDROID
+    p_rect.x = x;
+    p_rect.y = y;
+    #else
     p_rect.x = x / rc_fullscreen_mouse_scale_x[rc_active_window];
     p_rect.y = y / rc_fullscreen_mouse_scale_y[rc_active_window];
+    #endif // RC_ANDROID
     p_rect.w = 1;
     p_rect.h = 1;
     SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &p_rect, rc_pformat->format, (void*)s_pixels, 4);
@@ -3969,13 +3984,21 @@ int rc_media_mouseX()
 {
     SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     //cout << "debug: " << rc_fullscreen_mouse_scale_x[rc_active_window] << endl;
+    #ifdef RC_ANDROID
+    return rc_mouseX;
+    #else
     return rc_mouseX * rc_fullscreen_mouse_scale_x[rc_active_window];
+    #endif // RC_ANDROID
 }
 
 int rc_media_mouseY()
 {
     SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
+    #ifdef RC_ANDROID
+    return rc_mouseY;
+    #else
     return rc_mouseY * rc_fullscreen_mouse_scale_y[rc_active_window];
+    #endif // RC_ANDROID
 }
 
 int rc_media_mouseButton(int m)
@@ -3999,8 +4022,13 @@ void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, doubl
     *mb1 = rc_mbutton1;
     *mb2 = rc_mbutton2;
     *mb3 = rc_mbutton3;
+    #ifdef RC_ANDROID
+    *x = rc_mouseX;
+    *y = rc_mouseY;
+    #else
     *x = rc_mouseX * rc_fullscreen_mouse_scale_x[rc_active_window];
     *y = rc_mouseY * rc_fullscreen_mouse_scale_y[rc_active_window];
+    #endif // RC_ANDROID
     return;
 }
 
@@ -4428,6 +4456,7 @@ int rc_net_tcp_openSocket(int _socket, string host, Uint16 port)
     rc_socket[_socket] = SDLNet_TCP_Open(&ip);
     if(rc_socket[_socket])
     {
+        //cout << "Add socket to socket_set" << endl;
         SDLNet_TCP_AddSocket(rc_socket_set, rc_socket[_socket]);
         return 1;
     }
@@ -4495,8 +4524,6 @@ int rc_net_tcp_getData_dbl(int socket, double * dst, int numBytes)
 
 void rc_net_tcp_sendData(int socket, const char * data, int numBytes)
 {
-    char * s = (char *)data;
-    //cout << "data = " << s << endl;
     SDLNet_TCP_Send(rc_socket[socket], data, numBytes);
 }
 
@@ -4509,6 +4536,8 @@ bool rc_net_tcp_acceptSocket(int socket_server, int socket_client)
         return false;
     }
     bool val = (rc_socket[socket_client] = SDLNet_TCP_Accept(rc_socket[socket_server]));
+    if(val)
+        SDLNet_TCP_AddSocket(rc_socket_set, rc_socket[socket_client]);
     //cout << "cp1\n";
     return val;
 }
