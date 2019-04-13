@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC CHECKSOCKETS</title>
+  </head>
+  <body><b>CheckSockets ( timeout_ms )</b><br>
+    <br>
+    Checks all connected sockets for activity. If timeout_ms is greater than 0 than it will wait that many milliseconds. If less than 0 <br>
+    it will wait for over 49 days (hint: there is no reason what so ever to set this less than 0). <br>
+    <br>
+    Example:<br>
+    &nbsp;&nbsp;&nbsp; <span  style="font-style: italic;"><span class="keyword">CheckSockets</span> ( <span class="number">0</span> )<br>
+	<br>
+	This will return the number of sockets that have activity (ie. a connection was made or data was sent)
+  </body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC TCP_SOCKETREADY</title>
+  </head>
+  <body><b>TCP_SocketReady ( socket )</b><br>
+    <br>
+    Returns 0 for no activity and non zero for activity. You need to call CheckSockets() at some point before this otherwise it will always<br>
+    return 0.<br>
+    <br>
+    Example:<br>
+    &nbsp;&nbsp;&nbsp; <span  style="font-style: italic;">
+		<span class="keyword">If</span> <span class="keyword">TCP_SocketReady</span> ( <span class="number">0</span> ) > <span class="number">0</span> <span class="keyword">Then</.span><br>
+		'Socket has activity so we can do something here <br>
+		<span class="keyword">End If</span>
+	<br>
+	</span>
+	
+  </body>
+</html>
