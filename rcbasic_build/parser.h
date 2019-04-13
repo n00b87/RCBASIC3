@@ -4374,7 +4374,7 @@ bool check_rule()
             else
             {
                 //cout << "debug problem here" << endl;
-                output_tokens();
+                //output_tokens();
                 if(!eval_expression())
                 {
                     rc_setError("-+Could not evaluate expression");
