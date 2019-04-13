@@ -930,7 +930,7 @@ string rc_intern_easter(int X)
     SZ = 7 - (X + X / 4 + S) % 7;                   // 1st sunday in March
     OE = 7 - (OG - SZ) % 7;                         // Distance Easter sunday from Easter limit in days
     //Easter = DateSerial(X, 3, OG + OE);           // Result: Easter sunday as number of days in March
-    ss << X << "-" << ZeroPadNumber(((OG + OE)>31)?4:3) << "-" << ZeroPadNumber((((OG + OE)%31)==0)?31:((OG + OE)%31));
+    ss << ZeroPadNumber(((OG + OE)>31)?4:3) << "-" << ZeroPadNumber((((OG + OE)%31)==0)?31:((OG + OE)%31)) << "-" << X;
     return ss.str();
 }
 
