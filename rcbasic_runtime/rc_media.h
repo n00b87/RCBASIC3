@@ -4026,8 +4026,8 @@ void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, doubl
     *x = rc_mouseX;
     *y = rc_mouseY;
     #else
-    *x = rc_mouseX * rc_fullscreen_mouse_scale_x[rc_active_window];
-    *y = rc_mouseY * rc_fullscreen_mouse_scale_y[rc_active_window];
+    *x = (int)(rc_mouseX * rc_fullscreen_mouse_scale_x[rc_active_window]);
+    *y = (int)(rc_mouseY * rc_fullscreen_mouse_scale_y[rc_active_window]);
     #endif // RC_ANDROID
     return;
 }
