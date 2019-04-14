@@ -662,13 +662,14 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     rc_mouse_scale_x = (double)((double)w / (double)rc_displayMode[win_num].w);
     rc_mouse_scale_y = (double)((double)h / (double)rc_displayMode[win_num].h);
     #else
-    if(flags == SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP)
+    if(flags == (SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP))
     {
         //cout << "W = " << w << endl;
         //cout << "D.W = " << rc_displayMode[win_num].w << endl;
         rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
         //cout << "fs = " << rc_fullscreen_mouse_scale_x[win_num] << endl;
         rc_fullscreen_mouse_scale_y[win_num] = (double)((double)h / (double)rc_displayMode[win_num].h);
+        //cout << "display mode = " << rc_fullscreen_mouse_scale_x[win_num] << ", " << rc_fullscreen_mouse_scale_y[win_num] << endl;
     }
     else
     {
