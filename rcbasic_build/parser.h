@@ -2023,209 +2023,6 @@ int findFirstDelimiter(string line)
     return line.length()-1;
 }
 
-bool resolveID(string expr_id, string &rid, bool &resolve_pass)
-{
-    clearTokens();
-    resolve_pass = false;
-    cout << "EXPR_ID = " << expr_id << endl;
-    expr_id += ".";
-    int expr_base_index = getIDInScope_ByIndex(expr_id.substr(0, findFirstDelimiter(expr_id)));
-    cout << "base = " << expr_id.substr(0, findFirstDelimiter(expr_id)) << endl;
-    if(expr_base_index >= 0)
-    {
-        if(id[expr_base_index].type != ID_TYPE_USER)
-        {
-            rid = "";
-            return true;
-        }
-    }
-    else
-    {
-        cout << "SET RES_PASS TO TRUE" << endl;
-        resolve_pass = true;
-        return false;
-    }
-
-    int scope_length = expr_id.find_last_of(".");
-    vector<string> scope_items;
-    string scope = expr_id.substr(0, scope_length);
-    string eid = "";
-    if(expr_id.length() > (scope_length+1) )
-        eid = expr_id.substr(scope_length+1);
-
-    string tmp = "";
-    string tmp_scope = "main";
-    int obj_type = ID_TYPE_NUM;
-
-    int id_index = -1;
-    int id_type_index = -1;
-
-    vm_asm.push_back("clear_obj");
-
-    for(int i = 0; i < scope_length; i++)
-    {
-        if(scope.substr(i,1).compare(".")==0 || i == scope_length-1)
-        {
-            if(i == scope_length-1)
-                tmp += scope.substr(i,1);
-            //scope_items.push_back(tmp);
-            //vm_asm.push_back("solve " + tmp);
-
-            int start_block = -1;
-            int end_block = -1;
-            int block_scope = 0;
-
-            for(int n = 0; n < tmp.length(); n++)
-            {
-                if(tmp.substr(n,1).compare("[")==0 && start_block == -1)
-                {
-                    start_block = n+1;
-                    block_scope++;
-                }
-                else if(tmp.substr(n,1).compare("]")==0)
-                {
-                    block_scope--;
-                    if(block_scope == 0)
-                    {
-                        end_block = n;
-                        break;
-                    }
-                }
-            }
-
-            if(start_block != -1)
-            {
-                if(end_block > start_block)
-                {
-                    clearTokens();
-                    cout << "%%%EXP%%% = " << tmp.substr(start_block, (end_block-start_block)) << endl;
-                    if(!tokens(tmp.substr(start_block, (end_block-start_block))))
-                    {
-                        cout << "ERROR:" << rc_getError() << endl;
-                        return false;
-                    }
-
-                    //remove comma from evaluation
-                    for(int c = 0; c < token.size(); c++) //c++, no pun intended
-                    {
-                        if(token[c].compare("<comma>")==0)
-                            token[c] = "!<comma>";
-                    }
-
-                    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
-                    output_tokens();
-                    cout << ">>>>>>>>>>>>>>>>>>" << endl;
-
-                    if(!eval_expression(0,0,true))
-                    {
-                        cout << "ERROR:" << rc_getError() << endl;
-                    }
-                    cout << start_block << " , " << end_block;
-                    cout << endl << multi_arg_count << "\n+++++++++++++++++++++" << endl;
-                    output_tokens();
-                    cout << endl << "++++++++++++++++++++" << endl;
-
-                }
-            }
-            else
-            {
-                multi_arg_count = 0;
-                multi_arg[0] = "";
-                multi_arg[1] = "";
-                multi_arg[2] = "";
-            }
-
-            id_index = getIDInScope_ByIndex(tmp, tmp_scope);
-            if(start_block > 0)
-                tmp = tmp.substr(0,start_block-1);
-            id_index = getIDInScope_ByIndex(tmp, tmp_scope);
-            cout << "--------------------" << endl << tmp_scope << "->" << tmp << " id_index = " << id_index << endl;
-            if(id_index >= 0)
-            {
-                cout << "id = " << id[id_index].name << endl << "dimensions = " << id[id_index].num_args << endl;
-                cout << "multi_arg_count = " << multi_arg_count << endl;
-                if(multi_arg_count != id[id_index].num_args)
-                {
-                    cout << "--ERROR: Invalid number of dimensions in " + id[id_index].name << endl;
-                    cout << "found = " << multi_arg_count << "\nexpected = " << id[id_index].num_args << endl;
-                    rc_setError("ERROR: Invalid number of dimensions in " + id[id_index].name);
-                    return false;
-                }
-
-                string emit_out = "";
-
-                id_type_index = -1;
-
-                if(id[id_index].type == ID_TYPE_USER)
-                {
-                    emit_out = "obj_usr";
-                    obj_type = id[id_index].type;
-                    id_type_index = id[id_index].type_index;
-                }
-                else if(id[id_index].type == ID_TYPE_NUM || id[id_index].type == ID_TYPE_ARR_NUM || id[id_index].type == ID_TYPE_ARR_STR)
-                {
-                    emit_out = "obj_num";
-                    obj_type = id[id_index].type;
-                }
-                else if(id[id_index].type == ID_TYPE_STR)
-                {
-                    emit_out = "obj_str";
-                    obj_type = id[id_index].type;
-                }
-
-                if(id[id_index].num_args > 0)
-                {
-                    if(id[id_index].type == ID_TYPE_ARR_STR)
-                    {
-                        emit_out = "obj_str";
-                        obj_type == ID_TYPE_STR;
-                    }
-
-                    emit_out += rc_intToString(id[id_index].num_args);
-                }
-
-                vm_asm.push_back(emit_out + " " + rc_intToString(id[id_index].vec_pos) + " " + multi_arg[0] + " " + multi_arg[1] + " " + multi_arg[2]);
-
-            }
-            else
-            {
-                cout << "ERROR: " << tmp_scope.substr(tmp_scope.find_first_of(".")+1) << "." << tmp << " is not a valid identifier" << endl;
-                rc_setError(tmp + " is not a valid identifier");
-                return false;
-            }
-            tmp_scope += "." + tmp;
-            tmp = "";
-        }
-        else
-        {
-            tmp += scope.substr(i,1);
-        }
-    }
-
-    if(obj_type == ID_TYPE_NUM || obj_type == ID_TYPE_ARR_NUM || obj_type == ID_TYPE_USER || obj_type == ID_TYPE_ARR_STR)
-    {
-        rid = "n" + rc_intToString(n_reg);
-        vm_asm.push_back("obj_get " + rid);
-        resolveID_id_reg.push_back(rid);
-        resolveID_id_type.push_back(obj_type);
-        resolveID_id_ut_index.push_back(id_type_index);
-        inc_n(1);
-    }
-    else if(obj_type == ID_TYPE_STR)
-    {
-        rid = "s" + rc_intToString(s_reg);
-        vm_asm.push_back("obj_get$ " + rid);
-        resolveID_id_reg.push_back(rid);
-        resolveID_id_type.push_back(obj_type);
-        resolveID_id_ut_index.push_back(id_type_index);
-        inc_s(1);
-    }
-
-
-    cout << endl << "scope = " << scope << endl << "eid = " << eid << endl << endl;
-    return true;
-}
-
 bool isDelimiter(char c)
 {
     switch(c)
@@ -2253,81 +2050,6 @@ void clearRegs()
     resolveID_id_reg.clear();
     resolveID_id_type.clear();
     resolveID_id_ut_index.clear();
-}
-
-bool resolveUserIDs(string& line)
-{
-    clearRegs();
-    string tmp = "";
-    string tmp_replace = "";
-    int start_tmp = 0;
-    int end_tmp = 0;
-    bool resolve_pass = false;
-
-    line += " ";
-
-    cout << "RESOLVE[1] = " << line << endl;
-
-    for(int i = 0; i < line.length(); i++)
-    {
-        if(line.substr(i,1).compare("_")==0 || isalpha(line[i]))
-        {
-            tmp = "";
-            start_tmp = i;
-            int scope = 0; //only worried about square bracket
-            for(;i < line.length(); i++)
-            {
-                cout << "li = " << line[i] << endl;
-                if(line.substr(i,1).compare("\"")==0)
-                {
-                    tmp += "\"";
-                    i++;
-                    for(; line.substr(i,1).compare("\"") != 0 && i < line.length(); i++)
-                        tmp += line.substr(i,1);
-                }
-
-                if(line.substr(i,1).compare("[")==0)
-                    scope++;
-                else if(line.substr(i,1).compare("]")==0)
-                    scope--;
-
-                if(scope < 0)
-                    return false;
-
-                if(scope == 0 && isDelimiter(line[i]))
-                {
-                    cout << "!!!!!resolve for: " << tmp << endl;
-                    //cout << "delimit: |" << line[i] << "|" << endl;
-                    if(resolveID(tmp, tmp_replace, resolve_pass))
-                    {
-                        if(tmp_replace.compare("")==0)
-                            break;
-                        //line = tmp_replace;
-                        i = start_tmp + 2;
-                        //cout << endl << "starting at: " << "0 to " << start_tmp << "; " << end_tmp << endl << endl;
-                        line = line.substr(0,start_tmp) + "~" + tmp_replace + line.substr(end_tmp+1);
-                        //cout << "line = " << line << endl << endl;
-                        //cout << "line[i] = " << line.substr(i) << endl << endl;
-                        break;
-                    }
-                    else if(!resolve_pass)
-                    {
-                        cout << "something is wrong up in this piece" << endl;
-                        cout << "line was " << tmp << endl;
-                        return false;
-                    }
-
-                }
-                tmp += line.substr(i,1);
-                end_tmp = i;
-            }
-        }
-    }
-    clearTokens();
-
-    cout << "RESOLVE[2]=" << line << endl;
-
-    return true;
 }
 
 bool check_rule()
@@ -3965,6 +3687,15 @@ bool check_rule()
             string case_reg_type = "n";
             if(select_block.top().case_type == ID_TYPE_STR)
                 case_reg_type = "s";
+
+            string cmp_or_result = "n" + rc_intToString(n_reg);
+            inc_n(1);
+
+            string case_flag_result = "n" + rc_intToString(n_reg);
+            inc_n(1);
+
+            vm_asm.push_back("mov " + cmp_or_result + " 0");
+
             for(int i = 0; i < multi_arg_count; i++)
             {
                 if(multi_arg[i].substr(0,1).compare(case_reg_type)!=0)
@@ -3975,14 +3706,18 @@ bool check_rule()
                 if(case_reg_type.compare("s")==0)
                 {
                     vm_asm.push_back("cmp$ " + compare_case + " " + multi_arg[i]);
-                    vm_asm.push_back("jne @" + next_case_label);
+                    vm_asm.push_back("mov " + case_flag_result + " %EQUAL_FLAG");
+                    vm_asm.push_back("or " + cmp_or_result + " " + case_flag_result);
                 }
                 else
                 {
                     vm_asm.push_back("cmp " + compare_case + " " + multi_arg[i]);
-                    vm_asm.push_back("jne @" + next_case_label);
+                    vm_asm.push_back("mov " + case_flag_result + " %EQUAL_FLAG");
+                    vm_asm.push_back("or " + cmp_or_result + " " + case_flag_result);
                 }
             }
+            vm_asm.push_back("cmp " + cmp_or_result + " 0");
+            vm_asm.push_back("je @" + next_case_label);
             //vm_asm.push_back("");
         }
         else if(token[0].compare("<default>")==0)

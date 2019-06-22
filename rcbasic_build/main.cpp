@@ -88,21 +88,21 @@ bool rcbasic_loadProgram(string src_file)
 bool rc_preprocessor()
 {
     rc_src inc_file;
-    if(token.size()>0)
+    if(tmp_token.size()>0)
     {
-        if(token[0].compare("<include>")==0)
+        if(tmp_token[0].compare("<include>")==0)
         {
-            if(token.size() != 2)
+            if(tmp_token.size() != 2)
             {
                 rc_setError("Expected include file as string constant");
                 return false;
             }
-            if(token[1].substr(0,8).compare("<string>")!=0)
+            if(tmp_token[1].substr(0,8).compare("<string>")!=0)
             {
                 rc_setError("Expected include file as string constant");
                 return false;
             }
-            inc_file.filename = token[1].substr(8);
+            inc_file.filename = tmp_token[1].substr(8);
             inc_file.line_number = 0;
             inc_file.line_position = 0;
             rcbasic_file.close();
@@ -117,33 +117,33 @@ bool rc_preprocessor()
             rcbasic_program.top().line_number++;
 
             rcbasic_program.push(inc_file);
-            token.clear();
+            tmp_token.clear();
             return true;
         }
         else
         {
             uint64_t arr_id = 0;
             //int ArrayDim_id = getIDInScope_ByIndex("ArrayDim");
-            for(int i = 0; i < token.size(); i++)
+            for(int i = 0; i < tmp_token.size(); i++)
             {
-                if(token[i].substr(0,4).compare("<id>")==0)
+                if(tmp_token[i].substr(0,4).compare("<id>")==0)
                 {
-                    if(StringToLower(token[i].substr(4)).compare("arraydim")==0)
+                    if(StringToLower(tmp_token[i].substr(4)).compare("arraydim")==0)
                     {
-                        if(token[i+1].compare("<par>")!=0)
+                        if(tmp_token[i+1].compare("<par>")!=0)
                         {
                             rc_setError("Invalid use of ArrayDim");
                             return false;
                         }
-                        if(token[i+2].substr(0,4).compare("<id>")==0)
+                        if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
                         {
-                            arr_id = getIDInScope_ByIndex(token[i+2].substr(4));
+                            arr_id = getIDInScope_ByIndex(tmp_token[i+2].substr(4));
                             if(arr_id < 0)
                             {
                                 rc_setError("Identifier must be declared before call to ArrayDim");
                                 return false;
                             }
-                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || ID_TYPE_BYREF_NUM)
+                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM)
                             {
                                 id[arr_id].isArrayArg = true;
                             }
@@ -159,22 +159,22 @@ bool rc_preprocessor()
                             return false;
                         }
                     }
-                    else if(StringToLower(token[i].substr(4)).compare("arraysize")==0)
+                    else if(StringToLower(tmp_token[i].substr(4)).compare("arraysize")==0)
                     {
-                        if(token[i+1].compare("<par>")!=0)
+                        if(tmp_token[i+1].compare("<par>")!=0)
                         {
                             rc_setError("Invalid use of ArrayDim");
                             return false;
                         }
-                        if(token[i+2].substr(0,4).compare("<id>")==0)
+                        if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
                         {
-                            arr_id = getIDInScope_ByIndex(token[i+2].substr(4));
+                            arr_id = getIDInScope_ByIndex(tmp_token[i+2].substr(4));
                             if(arr_id < 0)
                             {
                                 rc_setError("Identifier must be declared before call to ArraySize");
                                 return false;
                             }
-                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || ID_TYPE_BYREF_NUM)
+                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM)
                             {
                                 id[arr_id].isArrayArg = true;
                             }
@@ -185,9 +185,9 @@ bool rc_preprocessor()
                             return false;
                         }
                         int end_token = i+2;
-                        for(end_token; end_token < token.size(); end_token++)
+                        for(end_token; end_token < tmp_token.size(); end_token++)
                         {
-                            if(token[end_token].compare("</par>")==0)
+                            if(tmp_token[end_token].compare("</par>")==0)
                                 break;
                         }
                         if(!eval_expression(i, end_token))
@@ -237,10 +237,23 @@ bool rc_eval(string line)
     //cout << "check rule" << endl;
     //cout << "token: " << token[0] << endl;
 
-    if(!check_rule())
+    int i = 0;
+    while( i < tmp_token.size())
     {
-        cout << "ERROR:" << rc_getError() << endl;
-        return false;
+        token.clear();
+        for(; i < tmp_token.size(); i++)
+        {
+            if(tmp_token[i].compare("<:>")==0)
+                break;
+            token.push_back(tmp_token[i]);
+        }
+        i++;
+
+        if(!check_rule())
+        {
+            cout << "ERROR:" << rc_getError() << endl;
+            return false;
+        }
     }
 
     return true;
@@ -543,7 +556,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Compiler v3.0.8" << endl;
+        cout << "RCBASIC Compiler v3.0.9" << endl;
         return 0;
     }
 

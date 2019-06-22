@@ -14,6 +14,7 @@
 using namespace std;
 
 vector<string> token; //stores tokens for the current source line
+vector<string> tmp_token; //stores tokens for the current source line
 string rc_keywordToken(string sline);
 bool isKeyWord(string key);
 bool tokens(const std::string &data); //reads current source line and fills token vector
@@ -32,14 +33,14 @@ bool isOperatorToken(int token_index)
     if(x < 0)
         return false;
 
-    if(token[x].compare("<add>")==0 || token[x].compare("<sub>")==0 ||
-       token[x].compare("<mul>")==0 || token[x].compare("<div>")==0 ||
-       token[x].compare("<mod>")==0 || token[x].compare("<pow>")==0 ||
-       token[x].compare("<equal>")==0 || token[x].compare("<greater>")==0 ||
-       token[x].compare("<less>")==0 || token[x].compare("<greater_equal>")==0 ||
-       token[x].compare("<less_equal")==0 || token[x].compare("<not_equal>")==0 ||
-       token[x].compare("<not>")==0 || token[x].compare("<and>")==0 ||
-       token[x].compare("<or>")==0 || token[x].compare("<xor>")==0)
+    if(tmp_token[x].compare("<add>")==0 || tmp_token[x].compare("<sub>")==0 ||
+       tmp_token[x].compare("<mul>")==0 || tmp_token[x].compare("<div>")==0 ||
+       tmp_token[x].compare("<mod>")==0 || tmp_token[x].compare("<pow>")==0 ||
+       tmp_token[x].compare("<equal>")==0 || tmp_token[x].compare("<greater>")==0 ||
+       tmp_token[x].compare("<less>")==0 || tmp_token[x].compare("<greater_equal>")==0 ||
+       tmp_token[x].compare("<less_equal>")==0 || tmp_token[x].compare("<not_equal>")==0 ||
+       tmp_token[x].compare("<not>")==0 || tmp_token[x].compare("<and>")==0 ||
+       tmp_token[x].compare("<or>")==0 || tmp_token[x].compare("<xor>")==0)
        {
            return true;
        }
@@ -52,17 +53,17 @@ bool isSubDelimToken(int token_index)
     if(token_index < 0)
         return false;
 
-    if(token[token_index].compare("<par>")==0 ||
-       token[token_index].compare("<square>")==0 ||
-       token[token_index].compare("<curly>")==0 ||
-       token[token_index].compare("<comma>")==0 ||
-       token[token_index].compare("!<par>")==0 ||
-       token[token_index].compare("!<square>")==0 ||
-       token[token_index].compare("!<curly>")==0 ||
-       token[token_index].compare("!<comma>")==0)
+    if(tmp_token[token_index].compare("<par>")==0 ||
+       tmp_token[token_index].compare("<square>")==0 ||
+       tmp_token[token_index].compare("<curly>")==0 ||
+       tmp_token[token_index].compare("<comma>")==0 ||
+       tmp_token[token_index].compare("!<par>")==0 ||
+       tmp_token[token_index].compare("!<square>")==0 ||
+       tmp_token[token_index].compare("!<curly>")==0 ||
+       tmp_token[token_index].compare("!<comma>")==0)
         return true;
 
-    string t = token[token_index].substr(1);
+    string t = tmp_token[token_index].substr(1);
     t = t.substr(0, t.find_first_of(">"));
     if(isKeyWord(StringToUpper(t)))
         return true;
@@ -88,16 +89,20 @@ bool tokens(const std::string &data)
 
         switch(ch)
         {
+            case ':':
+                inc(x, 1);
+                tmp_token.push_back("<:>");
+                break;
             case '.':
                 inc(x, 1);
-                token.push_back("<child>");
+                tmp_token.push_back("<child>");
                 break;
             case '+':
                 inc(x, 1);
-                token.push_back("<add>");
+                tmp_token.push_back("<add>");
                 break;
             case '-':
-                if(isOperatorToken(token.size()-1) || isSubDelimToken(token.size()-1) || token.size()==0)
+                if(isOperatorToken(tmp_token.size()-1) || isSubDelimToken(tmp_token.size()-1) || tmp_token.size()==0)
                 {
                     ch = data[inc(x, 1)];
                     if (isdigit(ch))
@@ -109,7 +114,7 @@ bool tokens(const std::string &data)
                             ch = data[inc(x, 1)];
                         } while(isdigit(ch) || ch == '.');
 
-                        token.push_back(s_data);
+                        tmp_token.push_back(s_data);
                     }
                     else if (isalpha(ch) || ch == '_')
                     {
@@ -131,43 +136,43 @@ bool tokens(const std::string &data)
                         {
                             s_data = "<id>"+s_data;
 
-                            token.push_back("<par>");
-                            token.push_back("<num>-1");
-                            token.push_back("<mul>");
-                            token.push_back(s_data);
-                            token.push_back("</par>");
+                            tmp_token.push_back("<par>");
+                            tmp_token.push_back("<num>-1");
+                            tmp_token.push_back("<mul>");
+                            tmp_token.push_back(s_data);
+                            tmp_token.push_back("</par>");
                         }
                     }
                 }
                 else
                 {
                     inc(x, 1);
-                    token.push_back("<sub>");
+                    tmp_token.push_back("<sub>");
                 }
                 break;
             case '*':
                 inc(x, 1);
-                token.push_back("<mul>");
+                tmp_token.push_back("<mul>");
                 break;
             case '/':
                 inc(x, 1);
-                token.push_back("<div>");
+                tmp_token.push_back("<div>");
                 break;
             case '%':
                 inc(x, 1);
-                token.push_back("<mod>");
+                tmp_token.push_back("<mod>");
                 break;
             case '^':
                 inc(x, 1);
-                token.push_back("<pow>");
+                tmp_token.push_back("<pow>");
                 break;
             case '(':
                 inc(x, 1);
-                token.push_back("<par>");
+                tmp_token.push_back("<par>");
                 break;
             case ')':
                 inc(x, 1);
-                token.push_back("</par>");
+                tmp_token.push_back("</par>");
                 break;
             //case '.':
               //  inc(x, 1);
@@ -175,27 +180,27 @@ bool tokens(const std::string &data)
                 //break;
             case ',':
                 inc(x, 1);
-                token.push_back("<comma>");
+                tmp_token.push_back("<comma>");
                 break;
             case ';':
                 inc(x, 1);
-                token.push_back("<semi>");
+                tmp_token.push_back("<semi>");
                 break;
             case '=':
                 inc(x, 1);
-                token.push_back("<equal>");
+                tmp_token.push_back("<equal>");
                 break;
             case '>':
                 ch = data[x+1];
                 if(ch == '=')
                 {
                     inc(x, 2);
-                    token.push_back("<greater_equal>");
+                    tmp_token.push_back("<greater_equal>");
                 }
                 else
                 {
                     inc(x, 1);
-                    token.push_back("<greater>");
+                    tmp_token.push_back("<greater>");
                 }
                 break;
              case '<':
@@ -203,34 +208,34 @@ bool tokens(const std::string &data)
                 if (ch == '=')
                 {
                     inc(x, 2);
-                    token.push_back("<less_equal>");
+                    tmp_token.push_back("<less_equal>");
                 }
                 else if (ch == '>')
                 {
                     inc(x, 2);
-                    token.push_back("<not_equal>");
+                    tmp_token.push_back("<not_equal>");
                 }
                 else
                 {
                     inc(x, 1);
-                    token.push_back("<less>");
+                    tmp_token.push_back("<less>");
                 }
                 break;
             case '{':
                 inc(x, 1);
-                token.push_back("<curly>");
+                tmp_token.push_back("<curly>");
                 break;
             case '}':
                 inc(x, 1);
-                token.push_back("</curly>");
+                tmp_token.push_back("</curly>");
                 break;
             case '[':
                 inc(x, 1);
-                token.push_back("<square>");
+                tmp_token.push_back("<square>");
                 break;
             case ']':
                 inc(x, 1);
-                token.push_back("</square>");
+                tmp_token.push_back("</square>");
                 break;
             case '\'':
                 return true;
@@ -284,7 +289,7 @@ bool tokens(const std::string &data)
                     }
                 }
                 if (ch == '\"')
-                    token.push_back(s_data);
+                    tmp_token.push_back(s_data);
                 else
                 {
                     rc_setError("String was not closed before end of line");
@@ -302,7 +307,7 @@ bool tokens(const std::string &data)
                         ch = data[inc(x, 1)];
                     } while(isdigit(ch) || ch == '.');
 
-                    token.push_back(s_data);
+                    tmp_token.push_back(s_data);
                 }
                 else if (isalpha(ch) || ch == '_')
                 {
@@ -329,7 +334,7 @@ bool tokens(const std::string &data)
                     {
                         s_data = "<id>"+s_data;
                     }
-                    token.push_back(s_data);
+                    tmp_token.push_back(s_data);
                 }
                 else if(ch == '~')
                 {
@@ -339,7 +344,7 @@ bool tokens(const std::string &data)
                         s_data.push_back(ch);
                         ch = data[inc(x,1)];
                     } while(isdigit(ch));
-                    token.push_back(s_data);
+                    tmp_token.push_back(s_data);
                 }
                 else if(x==data.length())
                 {
@@ -871,11 +876,11 @@ string rc_keywordToken(string sline)
 
 void output_tokens()
 {
-    for(int i = 0; i < token.size(); i++)
+    for(int i = 0; i < tmp_token.size(); i++)
     {
         try
         {
-            cout << i << ":" << token.at(i) << endl;
+            cout << i << ":" << tmp_token.at(i) << endl;
         }
         catch(out_of_range& e)
         {
@@ -886,6 +891,7 @@ void output_tokens()
 
 void clearTokens()
 {
+    tmp_token.clear();
     token.clear();
 }
 
