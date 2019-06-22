@@ -181,7 +181,7 @@ bool rc_preprocessor()
                         }
                         else
                         {
-                            rc_setError("Expected Identifier in ArrayDim");
+                            rc_setError("Expected Identifier in ArraySize");
                             return false;
                         }
                         int end_token = i+2;
