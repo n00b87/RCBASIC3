@@ -137,6 +137,10 @@ embed_function("UCase$", ID_TYPE_FN_STR);
 add_embedded_arg("src$", ID_TYPE_STR);
 embed_function("Val", ID_TYPE_FN_NUM);
 add_embedded_arg("n$", ID_TYPE_STR);
+embed_function("Stack_N", ID_TYPE_SUB);
+add_embedded_arg("n", ID_TYPE_NUM);
+embed_function("Stack_S", ID_TYPE_SUB);
+add_embedded_arg("n", ID_TYPE_NUM);
 embed_function("Push_N", ID_TYPE_SUB);
 add_embedded_arg("n", ID_TYPE_NUM);
 embed_function("Pop_N", ID_TYPE_FN_NUM);
@@ -873,6 +877,7 @@ embed_function("ClipboardText$", ID_TYPE_FN_STR);
 embed_function("SetClipboardText", ID_TYPE_SUB);
 add_embedded_arg("txt$", ID_TYPE_STR);
 embed_function("HasClipboardText", ID_TYPE_FN_NUM);
+
 
 }
 
