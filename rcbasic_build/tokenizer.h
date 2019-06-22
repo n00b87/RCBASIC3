@@ -243,7 +243,7 @@ bool tokens(const std::string &data)
             case '\"':
                 s_data = "<string>";
                 ch = data[inc(x, 1)];
-                while(ch != '\"' && ch != '\r' && ch != '\n')
+                while(ch != '\"' && ch != '\r' && ch != '\n' && ch != '\0')
                 {
                     if(ch == '\\')
                     {
