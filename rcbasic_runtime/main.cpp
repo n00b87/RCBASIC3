@@ -1203,6 +1203,18 @@ void func_130(uint64_t fn)
         case FN_Val:
             rc_push_num( rc_intern_val( VAL_N$ ) );
             break;
+        case FN_Stack_N: //Sub Procedure
+            if(STACK_N_N >= 0 && STACK_N_N <= (MAX_USER_STACKS-1))
+                rc_user_active_n_stack = STACK_N_N;
+            else
+                cout << "Stack_N Error: Exceeds available stacks" << endl;
+            break;
+        case FN_Stack_S: //Sub Procedure
+            if(STACK_S_N >= 0 && STACK_S_N <= (MAX_USER_STACKS-1))
+                rc_user_active_s_stack = STACK_S_N;
+            else
+                cout << "Stack_S Error: Exceeds available stacks" << endl;
+            break;
         case FN_Push_N:
             rc_intern_push_n( PUSH_N_N );
             break;
@@ -2756,7 +2768,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.0.8" << endl;
+        cout << "RCBASIC Runtime v3.0.9" << endl;
         return 0;
     }
 

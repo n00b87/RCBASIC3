@@ -76,8 +76,12 @@ string * rc_cmd_args;
 SDL_RWops * rc_fstream[RC_MAX_FILES];
 bool rc_eof[RC_MAX_FILES];
 
-stack<double> rc_user_n_stack;
-stack<string> rc_user_s_stack;
+#define MAX_USER_STACKS 16
+int rc_user_active_n_stack = 0;
+int rc_user_active_s_stack = 0;
+
+stack<double> rc_user_n_stack[MAX_USER_STACKS];
+stack<string> rc_user_s_stack[MAX_USER_STACKS];
 
 void rc_fprint(string txt)
 {
@@ -1011,38 +1015,38 @@ inline string rc_intern_prefPath(string org_name, string app_name)
 
 inline int rc_intern_push_n(double n)
 {
-    rc_user_n_stack.push(n);
+    rc_user_n_stack[rc_user_active_n_stack].push(n);
     return 1;
 }
 
 inline int rc_intern_push_s(string s)
 {
-    rc_user_s_stack.push(s);
+    rc_user_s_stack[rc_user_active_s_stack].push(s);
     return 1;
 }
 
 inline double rc_intern_pop_n()
 {
-    double n = rc_user_n_stack.top();
-    rc_user_n_stack.pop();
+    double n = rc_user_n_stack[rc_user_active_n_stack].top();
+    rc_user_n_stack[rc_user_active_n_stack].pop();
     return n;
 }
 
 inline string rc_intern_pop_s()
 {
-    string s = rc_user_s_stack.top();
-    rc_user_s_stack.pop();
+    string s = rc_user_s_stack[rc_user_active_s_stack].top();
+    rc_user_s_stack[rc_user_active_s_stack].pop();
     return s;
 }
 
 inline int rc_intern_n_stack_size()
 {
-    return rc_user_n_stack.size();
+    return rc_user_n_stack[rc_user_active_n_stack].size();
 }
 
 inline int rc_intern_s_stack_size()
 {
-    return rc_user_s_stack.size();
+    return rc_user_s_stack[rc_user_active_s_stack].size();
 }
 
 
