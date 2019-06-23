@@ -1,5 +1,5 @@
-#define RC_LINUX
-//#define RC_WINDOWS
+//#define RC_LINUX
+#define RC_WINDOWS
 //#define RC_ANDROID
 
 #ifdef RC_ANDROID

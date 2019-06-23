@@ -1,8 +1,8 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
-#define RC_LINUX
-//#define RC_WINDOWS
+//#define RC_LINUX
+#define RC_WINDOWS
 //#define RC_MAC
 //#define RC_ANDROID
 //#define RC_IOS
@@ -419,9 +419,9 @@ inline int rc_intern_randomize(double n)
     return 0;
 }
 
-inline double rc_intern_rand(double n)
+inline int rc_intern_rand(int n)
 {
-    return rand() % (uint64_t)n;
+    return (int)( (rand() / double(RAND_MAX))*(double(n) + ( n < 0 ? 0.001 : -0.001 )) );
 }
 
 inline double rc_intern_round(double n)
