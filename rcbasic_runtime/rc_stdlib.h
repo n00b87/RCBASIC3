@@ -1,8 +1,8 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
-//#define RC_LINUX
-#define RC_WINDOWS
+#define RC_LINUX
+//#define RC_WINDOWS
 //#define RC_MAC
 //#define RC_ANDROID
 //#define RC_IOS
@@ -253,6 +253,8 @@ inline unsigned int rc_intern_tally(string t_string, string t_substring)
 inline string rc_intern_trim(string t_string)
 {
     int i = 0;
+    if(t_string.find_first_not_of(" ")==string::npos)
+        return "";
     for(i = t_string.length()-1; i >= 0; i--)
         if(t_string.substr(i,1).compare(" ") != 0)
             break;
