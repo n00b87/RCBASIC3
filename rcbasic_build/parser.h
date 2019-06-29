@@ -1487,7 +1487,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     resolve_index = getResolveReg(args[0]);
                     if(resolve_index < 0)
                     {
-                        rc_setError("Expected Identifier in ArrayDim argument");
+                        rc_setError("Expected Identifier in ArrayDim argument: " +args[0]);
                         return false;
                     }
                     switch(resolveID_id_type[resolve_index])

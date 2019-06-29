@@ -143,7 +143,8 @@ bool rc_preprocessor()
                                 rc_setError("Identifier must be declared before call to ArrayDim");
                                 return false;
                             }
-                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM)
+                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM ||
+                               id[arr_id].type == ID_TYPE_ARR_STR || id[arr_id].type == ID_TYPE_STR || id[arr_id].type == ID_TYPE_BYREF_STR)
                             {
                                 id[arr_id].isArrayArg = true;
                             }
@@ -153,17 +154,31 @@ bool rc_preprocessor()
                             rc_setError("Expected Identifier in ArrayDim");
                             return false;
                         }
+
+                        int end_token = i+2;
+                        for(end_token; end_token < tmp_token.size(); end_token++)
+                        {
+                            if(tmp_token[end_token].compare("</par>")==0)
+                                break;
+                        }
+
+                        for(int n = i; n <= end_token; n++)
+                                token.push_back(tmp_token[n]);
+
                         if(!eval_expression(i, i+3))
                         {
                             rc_setError("Could not evaluate ArrayDim");
                             return false;
                         }
+
+                        for(int n = i; n <= end_token; n++)
+                                tmp_token[n] = token[n-i];
                     }
                     else if(StringToLower(tmp_token[i].substr(4)).compare("arraysize")==0)
                     {
                         if(tmp_token[i+1].compare("<par>")!=0)
                         {
-                            rc_setError("Invalid use of ArrayDim");
+                            rc_setError("Invalid use of ArraySize");
                             return false;
                         }
                         if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
@@ -174,8 +189,10 @@ bool rc_preprocessor()
                                 rc_setError("Identifier must be declared before call to ArraySize");
                                 return false;
                             }
-                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM)
+                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM ||
+                               id[arr_id].type == ID_TYPE_ARR_STR || id[arr_id].type == ID_TYPE_STR || id[arr_id].type == ID_TYPE_BYREF_STR)
                             {
+                                //cout << "set id arg ---> " << id[arr_id].name << endl;
                                 id[arr_id].isArrayArg = true;
                             }
                         }
@@ -190,11 +207,18 @@ bool rc_preprocessor()
                             if(tmp_token[end_token].compare("</par>")==0)
                                 break;
                         }
-                        if(!eval_expression(i, end_token))
+                        token.clear();
+                        for(int n = i; n <= end_token; n++)
+                                token.push_back(tmp_token[n]);
+                        if(!eval_expression())//i, end_token))
                         {
-                            rc_setError("Could not evaluate ArraySize expression");
+                            rc_setError("--Could not evaluate ArraySize expression");
+                            //for(int n = 0; n < token.size(); n++)
+                            //    cout << "token["<< n << "] = " << token[n] << endl;
                             return false;
                         }
+                        for(int n = i; n <= end_token; n++)
+                                tmp_token[n] = token[n-i];
                     }
                 }
             }
@@ -285,10 +309,14 @@ bool rc_eval_embedded(string line)
         return false;
     }
 
-    if(token.size()==0)
+    if(tmp_token.size()==0)
         return true;
     //cout << "-------START TOKENS--------" << endl;
     //output_tokens();
+
+    token.clear();
+    for(int i = 0; i < tmp_token.size(); i++)
+        token.push_back(tmp_token[i]);
 
     if(!check_rule_embedded())
     {
