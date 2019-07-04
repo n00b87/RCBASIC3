@@ -122,7 +122,7 @@ bool rc_preprocessor()
         }
         else
         {
-            uint64_t arr_id = 0;
+            int64_t arr_id = 0;
             //int ArrayDim_id = getIDInScope_ByIndex("ArrayDim");
             for(int i = 0; i < tmp_token.size(); i++)
             {
@@ -143,11 +143,13 @@ bool rc_preprocessor()
                                 rc_setError("Identifier must be declared before call to ArrayDim");
                                 return false;
                             }
+
                             if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM ||
                                id[arr_id].type == ID_TYPE_ARR_STR || id[arr_id].type == ID_TYPE_STR || id[arr_id].type == ID_TYPE_BYREF_STR)
                             {
                                 id[arr_id].isArrayArg = true;
                             }
+
                         }
                         else
                         {

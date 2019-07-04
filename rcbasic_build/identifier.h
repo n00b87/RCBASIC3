@@ -416,6 +416,7 @@ int getIDInScope_ByIndex2(string id_name, string check_scope="")
 int getIDInScope_ByIndex(string id_name, string check_scope="")
 {
     int id_index = getIDInScope_ByIndex2(id_name, check_scope);
+
     if(id_index < 0)
     {
         if(id_name.substr(id_name.length()-1,1).compare("$")==0)
