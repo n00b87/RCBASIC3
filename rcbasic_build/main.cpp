@@ -618,6 +618,35 @@ int main(int argc, char * argv[])
             rcbasic_clean();
             return 0;
         }
+        else if(current_block_state != BLOCK_STATE_MAIN)
+        {
+            switch(current_block_state)
+            {
+            case BLOCK_STATE_DO:
+                cout << "Compile Error: Failed to close DO loop" << endl;
+                break;
+            case BLOCK_STATE_WHILE:
+                cout << "Compile Error: Failed to close WHILE loop" << endl;
+                break;
+            case BLOCK_STATE_FOR:
+                cout << "Compile Error: Failed to close WHILE loop" << endl;
+                break;
+            case BLOCK_STATE_FUNCTION:
+                cout << "Compile Error: Failed to close FUNCTION" << endl;
+                break;
+            case BLOCK_STATE_SUB:
+                cout << "Compile Error: Failed to close SUB" << endl;
+                break;
+            case BLOCK_STATE_SELECT:
+                cout << "Compile Error: Failed to close SELECT" << endl;
+                break;
+            case BLOCK_STATE_IF:
+                cout << "Compile Error: Failed to close IF" << endl;
+                break;
+            }
+            cout << "Compile Failed" << endl;
+            return 0;
+        }
         else
             rcbasic_clean();
 
