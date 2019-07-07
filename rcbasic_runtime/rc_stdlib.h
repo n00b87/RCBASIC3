@@ -1,8 +1,8 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
-#define RC_LINUX
-//#define RC_WINDOWS
+//#define RC_LINUX
+#define RC_WINDOWS
 //#define RC_MAC
 //#define RC_ANDROID
 //#define RC_IOS
@@ -253,8 +253,6 @@ inline unsigned int rc_intern_tally(string t_string, string t_substring)
 inline string rc_intern_trim(string t_string)
 {
     int i = 0;
-    if(t_string.find_first_not_of(" ")==string::npos)
-        return "";
     for(i = t_string.length()-1; i >= 0; i--)
         if(t_string.substr(i,1).compare(" ") != 0)
             break;
@@ -802,7 +800,13 @@ inline int rc_intern_dirChange(string dpath)
         cout << "Error: Could not change directory\n";
         return 2;
     }
-    rc_dir_path = dpath;
+
+    DWORD nBufferLength = MAX_PATH;
+    char szCurrentDirectory[MAX_PATH + 1];
+    GetCurrentDirectory(nBufferLength, szCurrentDirectory);
+    szCurrentDirectory[MAX_PATH] = '\0';
+
+    rc_dir_path = (string)szCurrentDirectory;
     return 0;
 }
 
@@ -829,9 +833,13 @@ WIN32_FIND_DATA ffd;
 string rc_intern_dirFirst()
 {
     char* path = (char*)rc_dir_path.c_str();
+
+    cout << "path = " << path << endl;
     if (path[_tcslen(path) - 1] != '\\')
         _tcscat(path, _T("\\"));
     _tcscat(path, _T("*.*"));
+
+    cout << "path2 = " << path << endl;
 
     hFind = FindFirstFile(path, &ffd);
     if (hFind == INVALID_HANDLE_VALUE)
