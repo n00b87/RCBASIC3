@@ -1,10 +1,10 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
-#define RC_LINUX
+//#define RC_LINUX
 //#define RC_WINDOWS
 //#define RC_MAC
-//#define RC_ANDROID
+#define RC_ANDROID
 //#define RC_IOS
 
 #include <iostream>
@@ -663,17 +663,6 @@ inline int rc_intern_freeFile()
 
 
 #ifndef RC_WINDOWS
-inline int rc_intern_dirChange(string ch_path)
-{
-    if(chdir(ch_path.c_str())!=0)
-    {
-        cout << "Error: Could not change directory\n";
-        return 2;
-    }
-    rc_dir_path = get_current_dir_name();
-    return 0;
-}
-
 inline int rc_intern_dirExist(string d_path)
 {
     struct stat info;
@@ -716,6 +705,17 @@ string getcwd_str()
     }
 }
 
+inline int rc_intern_dirChange(string ch_path)
+{
+    if(chdir(ch_path.c_str())!=0)
+    {
+        cout << "Error: Could not change directory\n";
+        return 2;
+    }
+    rc_dir_path = getcwd_str();
+    return 0;
+}
+
 inline string rc_intern_dir()
 {
     string d = getcwd_str();
@@ -730,6 +730,16 @@ inline string rc_intern_dir()
 }
 
 #else
+inline int rc_intern_dirChange(string ch_path)
+{
+    if(chdir(ch_path.c_str())!=0)
+    {
+        cout << "Error: Could not change directory\n";
+        return 2;
+    }
+    rc_dir_path = get_current_dir_name();
+    return 0;
+}
 
 inline string rc_intern_dir()
 {
