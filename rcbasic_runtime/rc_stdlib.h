@@ -1,8 +1,8 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
-//#define RC_LINUX
-#define RC_WINDOWS
+#define RC_LINUX
+//#define RC_WINDOWS
 //#define RC_MAC
 //#define RC_ANDROID
 //#define RC_IOS
@@ -670,7 +670,7 @@ inline int rc_intern_dirChange(string ch_path)
         cout << "Error: Could not change directory\n";
         return 2;
     }
-    rc_dir_path = ch_path;
+    rc_dir_path = get_current_dir_name();
     return 0;
 }
 
