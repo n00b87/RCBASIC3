@@ -1,5 +1,5 @@
-//#define RC_LINUX
-#define RC_WINDOWS
+#define RC_LINUX
+//#define RC_WINDOWS
 //#define RC_ANDROID
 
 #ifdef RC_ANDROID
@@ -2768,7 +2768,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.0.9" << endl;
+        cout << "RCBASIC Runtime v3.1" << endl;
         return 0;
     }
 

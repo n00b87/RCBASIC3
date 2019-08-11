@@ -1,10 +1,10 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
-//#define RC_LINUX
+#define RC_LINUX
 //#define RC_WINDOWS
 //#define RC_MAC
-#define RC_ANDROID
+//#define RC_ANDROID
 //#define RC_IOS
 
 #include <iostream>
@@ -142,7 +142,9 @@ inline int rc_intern_length(string l_string)
 
 inline string rc_intern_ltrim(string l_string)
 {
-    return l_string.substr(l_string.find_first_not_of(" "));
+    if(l_string.find_first_not_of(" ") != string::npos)
+        return l_string.substr(l_string.find_first_not_of(" "));
+    return "";
 }
 
 inline string rc_intern_mid(string m_string, int m_start, int n)
@@ -174,12 +176,15 @@ inline string rc_intern_replace(string src, string rpc, int pos)
 
 inline string rc_intern_replaceSubstr(string src, string tgt, string rpc)
 {
-    unsigned int found = 0;
+    if(tgt.length()==0)
+        return src;
+    int found_inc = rpc.length() > 0 ? rpc.length() : 1;
+    int found = 0;
     found = src.find(tgt);
-    while( ((int)found) != -1)
+    while( ((int)found) != -1 && found < src.length())
     {
         src = src.substr(0,found) + rpc + src.substr(found + tgt.length());
-        found = src.find(tgt,found+1);
+        found = src.find(tgt,found+found_inc);
     }
     return src;
 }
@@ -237,7 +242,7 @@ inline string rc_intern_str_s(double n)
 
 inline unsigned int rc_intern_tally(string t_string, string t_substring)
 {
-    unsigned int found = 0;
+    int found = 0;
     string t_str = t_string;
     string t_substr = t_substring;
     found = t_str.find(t_substr);
@@ -252,12 +257,7 @@ inline unsigned int rc_intern_tally(string t_string, string t_substring)
 
 inline string rc_intern_trim(string t_string)
 {
-    int i = 0;
-    for(i = t_string.length()-1; i >= 0; i--)
-        if(t_string.substr(i,1).compare(" ") != 0)
-            break;
-    t_string = t_string.substr(0,i+1);
-    return t_string.substr(t_string.find_first_not_of(" "));
+    return rc_intern_ltrim(rc_intern_rtrim(t_string));
 }
 
 inline string rc_intern_ucase(string u_string)
@@ -663,6 +663,20 @@ inline int rc_intern_freeFile()
 
 
 #ifndef RC_WINDOWS
+
+#ifdef RC_LINUX
+inline int rc_intern_dirChange(string ch_path)
+{
+    if(chdir(ch_path.c_str())!=0)
+    {
+        cout << "Error: Could not change directory\n";
+        return 2;
+    }
+    rc_dir_path = get_current_dir_name();
+    return 0;
+}
+#endif // RC_LINUX
+
 inline int rc_intern_dirExist(string d_path)
 {
     struct stat info;
@@ -705,6 +719,7 @@ string getcwd_str()
     }
 }
 
+
 inline int rc_intern_dirChange(string ch_path)
 {
     if(chdir(ch_path.c_str())!=0)
@@ -730,16 +745,6 @@ inline string rc_intern_dir()
 }
 
 #else
-inline int rc_intern_dirChange(string ch_path)
-{
-    if(chdir(ch_path.c_str())!=0)
-    {
-        cout << "Error: Could not change directory\n";
-        return 2;
-    }
-    rc_dir_path = get_current_dir_name();
-    return 0;
-}
 
 inline string rc_intern_dir()
 {
