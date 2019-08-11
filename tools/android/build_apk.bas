@@ -8,6 +8,8 @@ key_alias$ = "key.alias="
 key_store_pass$ = "key.store.password="
 key_alias_pass$ = "key.alias.password="
 
+app_name$ = ""
+
 ant_build = 1
 
 If NumCommands >= 2 Then
@@ -22,6 +24,9 @@ If NumCommands >= 2 Then
 			key_alias_pass$ = key_alias_pass$ + Command$(i+1)
 		ElseIf Command$(i) = "-release" Then
 			ant_build = 2
+		ElseIf Command$(i) = "-app_name" Then
+			app_name$ = Command$(i+1)
+			Print "app_name = ";app_name$
 		End If
 	Next
 Else
@@ -108,10 +113,18 @@ If OS$()="LINUX" Then
 		Next
 		FileClose(f)
 	End If
+	
+	If FileExists(Dir$ + "/rcbasic_android/bin/rcbasic-debug.apk") Then
+		RemoveFile(Dir$ + "/rcbasic_android/bin/rcbasic-debug.apk")
+	End If
+	
+	If FileExists(Dir$ + "/rcbasic_android/bin/rcbasic-release.apk") Then
+		RemoveFile(Dir$ + "/rcbasic_android/bin/rcbasic-release.apk")
+	End If
+	
 
 	System("chmod u+x rc_build.sh")
 	System("./rc_build.sh")
-
 	RemoveFile(dir$()+"/rc_build.sh")
 	
 	
@@ -121,7 +134,7 @@ If OS$()="LINUX" Then
 			System("rcbasic msg_cmp release_build_fail")
 			ChangeDir("../")
 		Else
-			CopyFile("./rcbasic_android/bin/rcbasic-release.apk", "./APK/rcbasic_release.apk")
+			CopyFile("./rcbasic_android/bin/rcbasic-release.apk", "./APK/" + app_name$ + "-release.apk")
 			ChangeDir("./script")
 			System("rcbasic msg_cmp release_build_complete")
 			ChangeDir("../")
@@ -132,7 +145,7 @@ If OS$()="LINUX" Then
 			System("rcbasic msg_cmp debug_build_fail")
 			ChangeDir("../")
 		Else
-			CopyFile("./rcbasic_android/bin/rcbasic-debug.apk", "./APK/rcbasic_debug.apk")
+			CopyFile("./rcbasic_android/bin/rcbasic-debug.apk", "./APK/" + app_name$ + "-debug.apk")
 			ChangeDir("./script")
 			System("rcbasic msg_cmp debug_build_complete")
 			ChangeDir("../")
@@ -147,9 +160,9 @@ ElseIf OS$()="WINDOWS" Then
 		FileClose(f)
 	End If
 
-	System("./rc_build.bat")
+	System(".\\rc_build.bat")
 
-	RemoveFile(dir$()+"/rc_build.bat")
+	RemoveFile(dir$()+"\\rc_build.bat")
 	
 	If ant_build = 2 Then
 		If Not FileExists(".\\rcbasic_android\\bin\\rcbasic-release.apk") Then
@@ -157,9 +170,20 @@ ElseIf OS$()="WINDOWS" Then
 			System("rcbasic .\\script\\msg_cmp release_build_fail")
 			ChangeDir("..\\")
 		Else
-			CopyFile(".\\rcbasic_android\\bin\\rcbasic-release.apk", ".\\APK\\rc.apk")
+			CopyFile(".\\rcbasic_android\\bin\\rcbasic-release.apk", ".\\APK\\" + app_name$ + "-release.apk")
 			ChangeDir(".\\script")
 			System("rcbasic .\\script\\msg_cmp release_build_complete")
+			ChangeDir("..\\")
+		End If
+	Else
+		If Not FileExists(".\\rcbasic_android\\bin\\rcbasic-debug.apk") Then
+			ChangeDir(".\\script")
+			System("rcbasic .\\script\\msg_cmp debug_build_fail")
+			ChangeDir("..\\")
+		Else
+			CopyFile(".\\rcbasic_android\\bin\\rcbasic-debug.apk", ".\\APK\\" + app_name$ + "-debug.apk")
+			ChangeDir(".\\script")
+			System("rcbasic .\\script\\msg_cmp debug_build_complete")
 			ChangeDir("..\\")
 		End If
 	End If

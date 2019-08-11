@@ -2,13 +2,18 @@ To build an apk for android follow these steps.
 
 Prior to building for android you will need the to install the following:
 *Java ( On Linux it needs to be OpenJDK 8)
-*Ant
+*Ant ( Only if on Linux. It should be bundled in this package if you are on Windows.)
 
-SETUP
-------------------------------
-API_VERSION = the specific API you want to target. You must install this through android sdk manager before you can target it. Just go inside the tools_r25.2.5 folder, open a terminal/DOS Window, and type the command android.
 
-Once the Window comes up, you will need to select the SDK tools and Platform tools for the version of Android you want to target.
+CHANGING ICON
+------------------------------------------
+Go in the rcbasic_android/res folder. Inside the folders below replace ic_launcher.png with a png that is the following sizes listed by folder.
+
+drawable-hdpi - 72 x 72
+drawable-mdpi - 48 x 48
+drawable-xhdpi - 96 x 96
+drawable-hdpi - 144 x 144
+
 
 
 BUILD INSTRUCTIONS
@@ -16,13 +21,6 @@ BUILD INSTRUCTIONS
 1. Rename your compiled *.cbc file to main.cbc and put it in the RCBASIC_PROJECT_DIR folder along with all the assets for your program (ie. music, graphics, etc.)
 
 2. Open the build.properties file and set the path for your java installation (You can disregard this step on linux). On the last line set the API version you want to use.
-
-3. In the rcbasic_android folder, open AndroidManifest.xml. Inside that file look for this line:
-
-	<uses-sdk android:minSdkVersion="22" android:targetSdkVersion="22" />
-
-Change the SDK Version to the version number of the API you want to use.
-
 
 Here is an explanation of the Java path on Windows.
 
@@ -36,14 +34,6 @@ Here is an explanation of the Java path on Windows.
 PUBLISHING
 ----------------------------------
 To be able to publish your app on Google Play you will need to build a release build. To do that you will need to make a keystore. If you don't already have one you can run the gen_key program to go through the process of making one.
-
-
-CHANGING APP ICONS, SCREEN ORIENTATION, ETC.
--------------------------------------------------
-To change your icons you will need to go into the rcbasic_android/res folder. There is multiple folders for multiple resolution displays. You will need to have an appropriately scaled icon for each one.
-
-To change other attributes in your app such as screen orientation and permissions, you will need to edit the AndroidManifest.xml with your appropriate changes.
-
 
 
 If you have any problems with any of the instructions written here, feel free to ask for help at rcbasic.freeforums.net.
