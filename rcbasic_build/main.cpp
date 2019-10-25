@@ -164,12 +164,16 @@ bool rc_preprocessor()
                                 break;
                         }
 
+                        token.clear();
                         for(int n = i; n <= end_token; n++)
                                 token.push_back(tmp_token[n]);
 
-                        if(!eval_expression(i, i+3))
+                        //cout << "<---- DEBUG ---->" << i << endl;
+                        //output_tokens();
+
+                        if(!eval_expression())
                         {
-                            rc_setError("Could not evaluate ArrayDim");
+                            rc_setError("?Could not evaluate ArrayDim");
                             return false;
                         }
 
@@ -248,7 +252,7 @@ bool rc_eval(string line)
     }
 
     //current_Debug
-    //cout << "-------START TOKENS--------" << endl;
+    //cout << "-------BEFORE PP START TOKENS--------" << endl;
     //output_tokens();
 
     //cout << "get preprocessor" << endl;
@@ -257,7 +261,7 @@ bool rc_eval(string line)
         return false;
     }
 
-    //cout << "-------START TOKENS--------" << endl;
+    //cout << "-------AFTER PP START TOKENS--------" << endl;
     //output_tokens();
 
     //cout << "check rule" << endl;
