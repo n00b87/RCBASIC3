@@ -1,6 +1,23 @@
 #define RC_LINUX
 //#define RC_WINDOWS
 //#define RC_ANDROID
+//#define RC_MAC
+//#define RC_IOS
+
+#ifdef RC_IOS
+#define RC_GETCWD
+#include <sys/param.h>
+#endif
+
+#ifdef RC_MAC
+#define RC_GETCWD
+#include <sys/param.h>
+#endif
+
+#ifdef RC_ANDROID
+#define RC_GETCWD
+#endif
+
 
 #ifdef RC_ANDROID
     #include <jni.h>
@@ -73,7 +90,7 @@ struct rc_numId
 {
     n_value * nid_value;
     int dimensions;
-    int dim[3];
+    uint64_t dim[3];
     uint64_t addr;
 };
 
@@ -81,7 +98,7 @@ struct rc_strId
 {
     s_value * sid_value;
     int dimensions;
-    int dim[3];
+    uint64_t dim[3];
 };
 
 struct rc_loop
@@ -325,7 +342,7 @@ void movS_37(int s1, uint64_t str_addr)
 {
     vm_s[s1].value.clear();
     char c = segment[DATA_SEGMENT][str_addr];
-    int i = str_addr;
+    uint64_t i = str_addr;
     while(c != '\0')
     {
         vm_s[s1].value.push_back(c);
@@ -2712,6 +2729,7 @@ bool rcbasic_run()
                 return 0;
         }
     }
+    return 1;
 }
 
 void rcbasic_init()
@@ -2740,7 +2758,7 @@ int main(int argc, char * argv[])
         GetCurrentDirectory(MAX_PATH, buf);
         rc_dir_path = buf;
     #else
-		#ifdef RC_ANDROID
+		#ifdef RC_GETCWD
 			char buf[2048];
 			getcwd(buf, 2048);
 			rc_dir_path = (string)buf;
@@ -2782,9 +2800,18 @@ int main(int argc, char * argv[])
 
     rcbasic_init();
 
-    #ifdef RC_ANDROID
-		rc_filename = "main.cbc";
-	#endif
+#ifdef RC_ANDROID
+    rc_filename = "main.cbc";
+#endif
+
+#ifdef RC_IOS
+    if( rc_intern_dirChange("assets")!=0)
+    {
+        cout << "could not set path" << endl;
+        return 0;
+    }
+    rc_filename = "main.cbc";
+#endif
 
     //cout << "starting: " << rc_filename << endl;
 
