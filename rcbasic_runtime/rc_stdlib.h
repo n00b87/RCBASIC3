@@ -7,6 +7,15 @@
 //#define RC_ANDROID
 //#define RC_IOS
 
+#ifdef RC_MAC
+#define RC_GETCWD
+#include <sys/param.h>
+#endif
+
+#ifdef RC_ANDROID
+#define RC_GETCWD
+#endif
+
 #include <iostream>
 #include <stdio.h>
 #include <iomanip>
@@ -114,7 +123,7 @@ inline string rc_intern_insert(string src, string tgt, int pos)
     return src.substr(0, pos) + tgt + src.substr(pos);
 }
 
-inline int rc_intern_instr(string in_string, string in_substring)
+inline unsigned long rc_intern_instr(string in_string, string in_substring)
 {
     //cout << "Cant find " << rc_sid[INSTR_SUBSTR][0] << " in " << rc_sid[INSTR_STR][0] << endl;
     return in_string.find(in_substring);
@@ -134,7 +143,7 @@ inline string rc_intern_left(string l_string, int n)
     return l_string.substr(0,n);
 }
 
-inline int rc_intern_length(string l_string)
+inline unsigned long rc_intern_length(string l_string)
 {
     //cout << "DBG_LEN" << endl;
     return l_string.length();
@@ -178,10 +187,10 @@ inline string rc_intern_replaceSubstr(string src, string tgt, string rpc)
 {
     if(tgt.length()==0)
         return src;
-    int found_inc = rpc.length() > 0 ? rpc.length() : 1;
-    int found = 0;
+    unsigned long found_inc = rpc.length() > 0 ? rpc.length() : 1;
+    size_t found = 0;
     found = src.find(tgt);
-    while( ((int)found) != -1 && found < src.length())
+    while( found != string::npos && found < src.length())
     {
         src = src.substr(0,found) + rpc + src.substr(found + tgt.length());
         found = src.find(tgt,found+found_inc);
@@ -192,7 +201,7 @@ inline string rc_intern_replaceSubstr(string src, string tgt, string rpc)
 inline string rc_intern_reverse(string rpc_string)
 {
     string n_str = "";
-    for(int i = rpc_string.length()-1; i >= 0; i--)
+    for(unsigned long i = rpc_string.length()-1; i >= 0; i--)
         n_str += rpc_string[i];
     return n_str;
 }
@@ -204,7 +213,7 @@ inline string rc_intern_right(string src, int n)
 
 inline string rc_intern_rtrim(string src)
 {
-    int i = 0;
+    unsigned long i = 0;
     for(i = src.length()-1; i >= 0; i--)
         if(src.substr(i,1).compare(" ") != 0)
             break;
@@ -240,14 +249,14 @@ inline string rc_intern_str_s(double n)
     return ss.str();
 }
 
-inline unsigned int rc_intern_tally(string t_string, string t_substring)
+inline unsigned long rc_intern_tally(string t_string, string t_substring)
 {
-    int found = 0;
+    size_t found = 0;
     string t_str = t_string;
     string t_substr = t_substring;
     found = t_str.find(t_substr);
-    unsigned int tally_count = 0;
-    while( ((int)found) != -1)
+    unsigned long tally_count = 0;
+    while( found != string::npos)
     {
         tally_count++;
         found = t_str.find(t_substr,found+1);
@@ -535,8 +544,8 @@ inline int rc_intern_fileClose(int fc_stream)
 inline int rc_intern_fileReadByte(int f_stream)
 {
     unsigned char buf;
-    unsigned char rb = SDL_RWread(rc_fstream[f_stream], &buf, 1, 1);
-    int t = SDL_RWtell(rc_fstream[f_stream]);
+    SDL_RWread(rc_fstream[f_stream], &buf, 1, 1);
+    SDL_RWtell(rc_fstream[f_stream]);
     return (int)buf;
 }
 
@@ -628,7 +637,7 @@ inline unsigned long rc_intern_fileLength(string filename)
 {
     //struct stat st;
     SDL_RWops * fl_file = SDL_RWFromFile(filename.c_str(), "r");
-    int fl_size = SDL_RWsize(fl_file);
+    Sint64 fl_size = SDL_RWsize(fl_file);
     SDL_RWclose(fl_file);
     return fl_size;
 }
@@ -702,7 +711,7 @@ inline string rc_intern_dirFirst ()
     return "";
 }
 
-#ifdef RC_ANDROID
+#ifdef RC_GETCWD
 string getcwd_str()
 {
     char *buffer = new char[MAXPATHLEN];
@@ -1003,7 +1012,11 @@ inline void rc_intern_wait(double m_sec)
 
 inline int rc_intern_system(string rc_sys_cmd)
 {
+#ifdef RC_IOS
+    return 0;
+#else
     return system(rc_sys_cmd.c_str());
+#endif
 }
 
 inline string rc_intern_command(int num)
@@ -1064,12 +1077,12 @@ inline string rc_intern_pop_s()
     return s;
 }
 
-inline int rc_intern_n_stack_size()
+inline unsigned long rc_intern_n_stack_size()
 {
     return rc_user_n_stack[rc_user_active_n_stack].size();
 }
 
-inline int rc_intern_s_stack_size()
+inline unsigned long rc_intern_s_stack_size()
 {
     return rc_user_s_stack[rc_user_active_s_stack].size();
 }
