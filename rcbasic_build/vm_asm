@@ -200,8 +200,8 @@ OBJ_CURRENT_TYPE
 132 - println
 133 - mov	n#	%CMP_FLAG
 134 - cmp	n#	raw_number
-135 - mov_arr n#	n#
-136 - mov_arr$ s#	s#
+135 - mov_arr n#	!id
+136 - mov_arr$ s#	!id
 137 - pop_ptr	n#
 138 - preset !id
 139 - preset$ !id

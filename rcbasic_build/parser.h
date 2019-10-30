@@ -1398,6 +1398,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 string args[1024];
                 args[0] = "";
                 int num_args = 0;
+                int arg_size = 0; //this variable counts the number of tokens in a argument; used to fix multiple tokens in 1 argument (ie. abs(5 7) should not compile)
                 if( (i+1) <= end_token)
                 {
                     //cout << "DBG #1: " << id[expr_id].name << endl;
@@ -1423,11 +1424,21 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                             else if(token[i].compare("!<par>")==0)
                                 s_scope++;
                             else if(token[i].compare("!<comma>")==0)
+                            {
                                 num_args++;
+                                arg_size = 0;
+                            }
                             else if(token[i].substr(0,1).compare("n")==0 || token[i].substr(0,1).compare("s")==0 || token[i].substr(0,4).compare("<id>")==0)
                             {
-                                //cout << "DBG #3:" << num_args << "  " << token[i] << endl;
+                                //cout << id[expr_id].name << "->DBG #3:" << num_args << "  " << token[i] << endl;
                                 args[num_args] = token[i];
+
+                                arg_size++;
+                                if(arg_size > 1)
+                                {
+                                    cout << "Expected Operator in expression" << endl;
+                                    return false;
+                                }
                             }
                             else if(token[i].compare("")!=0)
                             {

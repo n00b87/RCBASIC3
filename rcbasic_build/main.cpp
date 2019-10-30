@@ -144,10 +144,14 @@ bool rc_preprocessor()
                                 return false;
                             }
 
-                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM ||
-                               id[arr_id].type == ID_TYPE_ARR_STR || id[arr_id].type == ID_TYPE_STR || id[arr_id].type == ID_TYPE_BYREF_STR)
+                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_ARR_STR)
                             {
                                 id[arr_id].isArrayArg = true;
+                            }
+                            else
+                            {
+                                rc_setError("Expected Array in ArrayDim");
+                                return false;
                             }
 
                         }
@@ -195,11 +199,15 @@ bool rc_preprocessor()
                                 rc_setError("Identifier must be declared before call to ArraySize");
                                 return false;
                             }
-                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_NUM || id[arr_id].type == ID_TYPE_BYREF_NUM ||
-                               id[arr_id].type == ID_TYPE_ARR_STR || id[arr_id].type == ID_TYPE_STR || id[arr_id].type == ID_TYPE_BYREF_STR)
+                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_ARR_STR)
                             {
                                 //cout << "set id arg ---> " << id[arr_id].name << endl;
                                 id[arr_id].isArrayArg = true;
+                            }
+                            else
+                            {
+                                rc_setError("Expected Array in ArraySize");
+                                return false;
                             }
                         }
                         else
@@ -590,7 +598,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Compiler v3.1" << endl;
+        cout << "RCBASIC Compiler v3.11" << endl;
         return 0;
     }
 
