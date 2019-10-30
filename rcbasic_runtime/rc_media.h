@@ -104,7 +104,6 @@ const int SCREEN_HEIGHT = 480;
 const int MAX_WINDOWS = 8;  //8
 const int MAX_SCREENS = 8; //32
 const int MAX_IMAGES = 4096; //65536;
-const int MAX_SPRITES = 32; //1024;
 const int MAX_SOUNDS = 1024;
 const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
@@ -1465,6 +1464,108 @@ void rc_media_setScreenAlpha_hw(int s_num, Uint8 alpha)
     }
 }
 
+Uint32 rc_media_ScreenAlpha_hw(int s_num)
+{
+    Uint8 alpha = 0;
+    if(rc_screenCheck(s_num))
+    {
+        SDL_GetTextureAlphaMod(rc_hscreen[rc_active_window][s_num], &alpha);
+    }
+    return (Uint32)alpha;
+}
+
+int rc_media_setScreenBlendMode_hw(int s_num, int blend_mode)
+{
+    if(!rc_screenCheck(s_num))
+    {
+        return -1;
+    }
+    int rslt = -1;
+    SDL_BlendMode b = SDL_BLENDMODE_NONE;
+    switch(blend_mode)
+    {
+    case 0: //SDL_BLENDMODE_NONE
+        b = SDL_BLENDMODE_NONE;
+        break;
+    case 1: //SDL_BLENDMODE_BLEND
+        b = SDL_BLENDMODE_BLEND;
+        break;
+    case 2: //SDL_BLENDMODE_ADD
+        b = SDL_BLENDMODE_ADD;
+        break;
+    case 4: //SDL_BLENDMODE_MOD
+        b = SDL_BLENDMODE_MOD;
+        break;
+    default:
+        return rslt;
+    }
+    rslt = SDL_SetTextureBlendMode(rc_hscreen[rc_active_window][s_num], b);
+
+    return rslt;
+}
+
+int rc_media_screenBlendMode_hw(int s_num)
+{
+    if(!rc_screenCheck(s_num))
+    {
+        return -1;
+    }
+    SDL_BlendMode blend_mode = SDL_BLENDMODE_NONE;
+    int rslt = SDL_GetTextureBlendMode(rc_hscreen[rc_active_window][s_num], &blend_mode);
+    if(rslt < 0)
+    {
+        cout << "CanvasBlendMode Error: " << SDL_GetError() << endl;
+        return rslt;
+    }
+    return blend_mode;
+}
+
+int rc_media_setScreenColorMod_hw(int s_num, Uint32 c)
+{
+    if(!rc_screenCheck(s_num))
+    {
+        return -1;
+    }
+    int rslt = -1;
+
+    Uint8 r = c>>16;
+    Uint8 g = c>>8;
+    Uint8 b = c;
+
+    //cout << "C = " << c << endl;
+    //cout << "RGB = " << (Uint32)r << ", " << (Uint32)g << ", " << (Uint32)b << endl;
+
+    rslt = SDL_SetTextureColorMod(rc_hscreen[rc_active_window][s_num], r, g, b);
+    return rslt;
+}
+
+int rc_media_screenColorMod_hw(int s_num)
+{
+    if(!rc_screenCheck(s_num))
+    {
+        return -1;
+    }
+
+    Uint8 r = 0;
+    Uint8 g = 0;
+    Uint8 b = 0;
+    int rslt = SDL_GetTextureColorMod(rc_hscreen[rc_active_window][s_num], &r, &g, &b);
+
+    if(rslt < 0)
+    {
+        cout << "CanvasColorMode Error: " << SDL_GetError() << endl;
+        return rslt;
+    }
+
+    Uint32 c_mod = (Uint32)SDL_MapRGBA(rc_pformat,r,g,b,255);
+
+    //cout << "-RGB = " << (int)r << ", " << (int)g << ", " << (int)b << endl;
+
+    return c_mod;
+}
+//----------------
+
+
 void rc_media_copyScreen_hw(int src_screen, int sx, int sy, int sw, int sh, int dst_screen, int dx, int dy)
 {
     if(rc_screenCheck(src_screen) && rc_screenCheck(dst_screen))
@@ -2587,6 +2688,133 @@ void rc_media_getImageSize_hw(int slot, double * w, double * h)
     SDL_QueryTexture(rc_himage[slot][rc_active_window], &format, &access, &width, &height);
     *w = width;
     *h = height;
+}
+
+int rc_media_setImageBlendMode_hw(int slot, int blend_mode)
+{
+    if(slot < 0 || slot >= MAX_IMAGES)
+    {
+        cout << "SetImageBlendMode Error: Image Slot must be in the range of 0 to " << MAX_IMAGES-1 << endl;
+        return -1;
+    }
+    if(rc_himage[slot][rc_active_window]==NULL)
+    {
+        cout << "SetImageBlendMode Error: Image Slot is empty" << endl;
+        return -1;
+    }
+    int rslt = -1;
+    SDL_BlendMode b = SDL_BLENDMODE_NONE;
+    switch(blend_mode)
+    {
+    case 0: //SDL_BLENDMODE_NONE
+        b = SDL_BLENDMODE_NONE;
+        break;
+    case 1: //SDL_BLENDMODE_BLEND
+        b = SDL_BLENDMODE_BLEND;
+        break;
+    case 2: //SDL_BLENDMODE_ADD
+        b = SDL_BLENDMODE_ADD;
+        break;
+    case 4: //SDL_BLENDMODE_MOD
+        b = SDL_BLENDMODE_MOD;
+        break;
+    default:
+        return rslt;
+    }
+    for(int i = 0; i < MAX_WINDOWS; i++)
+    {
+        if(rc_himage[slot][i] != NULL)
+        {
+
+            rslt = SDL_SetTextureBlendMode(rc_himage[slot][i], b);
+        }
+    }
+    return rslt;
+}
+
+int rc_media_imageBlendMode_hw(int slot)
+{
+    if(slot < 0 || slot >= MAX_IMAGES)
+    {
+        cout << "ImageBlendMode Error: Image Slot must be in the range of 0 to " << MAX_IMAGES-1 << endl;
+        return -1;
+    }
+    if(rc_himage[slot][rc_active_window]==NULL)
+    {
+        cout << "ImageBlendMode Error: Image Slot is empty" << endl;
+        return -1;
+    }
+    SDL_BlendMode blend_mode = SDL_BLENDMODE_NONE;
+    int rslt = SDL_GetTextureBlendMode(rc_himage[slot][rc_active_window], &blend_mode);
+    if(rslt < 0)
+    {
+        cout << "ImageBlendMode Error: " << SDL_GetError() << endl;
+        return rslt;
+    }
+    return blend_mode;
+}
+
+int rc_media_setImageColorMod_hw(int slot, Uint32 c)
+{
+    if(slot < 0 || slot >= MAX_IMAGES)
+    {
+        cout << "SetImageColorMod Error: Image Slot must be in the range of 0 to " << MAX_IMAGES-1 << endl;
+        return -1;
+    }
+    if(rc_himage[slot][rc_active_window]==NULL)
+    {
+        cout << "SetImageColorMod Error: Image Slot is empty" << endl;
+        return -1;
+    }
+    int rslt = -1;
+
+    Uint8 r = c>>16;
+    Uint8 g = c>>8;
+    Uint8 b = c;
+
+    //cout << "C = " << c << endl;
+    //cout << "RGB = " << (Uint32)r << ", " << (Uint32)g << ", " << (Uint32)b << endl;
+
+    for(int i = 0; i < MAX_WINDOWS; i++)
+    {
+        if(rc_himage[slot][i] != NULL)
+        {
+
+            rslt = SDL_SetTextureColorMod(rc_himage[slot][i], r, g, b);
+        }
+    }
+    return rslt;
+}
+
+int rc_media_imageColorMod_hw(int slot)
+{
+    if(slot < 0 || slot >= MAX_IMAGES)
+    {
+        cout << "ImageColorMod Error: Image Slot must be in the range of 0 to " << MAX_IMAGES-1 << endl;
+        return -1;
+    }
+    if(rc_himage[slot][rc_active_window]==NULL)
+    {
+        cout << "ImageColorMod Error: Image Slot is empty" << endl;
+        return -1;
+    }
+
+    Uint8 r = 0;
+    Uint8 g = 0;
+    Uint8 b = 0;
+    int rslt = SDL_GetTextureColorMod(rc_himage[slot][rc_active_window], &r, &g, &b);
+
+    if(rslt < 0)
+    {
+        cout << "ImageColorMode Error: " << SDL_GetError() << endl;
+        return rslt;
+    }
+
+    Uint32 c_mod = (Uint32)SDL_MapRGBA(rc_pformat,r,g,b,255);
+
+    //cout << "-RGB = " << (int)r << ", " << (int)g << ", " << (int)b << endl;
+
+    return c_mod;
 }
 
 void rc_media_copyImage_hw(int src_slot, int dst_slot)

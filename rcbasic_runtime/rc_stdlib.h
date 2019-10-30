@@ -1,6 +1,8 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
+#define RC_PI 3.14159265359
+
 #define RC_LINUX
 //#define RC_WINDOWS
 //#define RC_MAC
@@ -118,27 +120,29 @@ inline string rc_intern_chr(int n)
     return s;
 }
 
-inline string rc_intern_insert(string src, string tgt, int pos)
+inline string rc_intern_insert(string src, string tgt, unsigned long pos)
 {
     return src.substr(0, pos) + tgt + src.substr(pos);
 }
 
-inline unsigned long rc_intern_instr(string in_string, string in_substring)
+inline double rc_intern_instr(string in_string, string in_substring)
 {
     //cout << "Cant find " << rc_sid[INSTR_SUBSTR][0] << " in " << rc_sid[INSTR_STR][0] << endl;
-    return in_string.find(in_substring);
+    unsigned long n = in_string.find(in_substring);
+    return (n == string::npos ? (double)(-1) : n);
 }
 
-inline string rc_intern_lcase(string lc_string)
+inline string rc_intern_lcase(string u_string)
 {
-   for(unsigned int i=0;i<lc_string.length();i++)
-   {
-      lc_string = tolower(lc_string[i]);
-   }
-   return lc_string;
+    string u_string_out = "";
+    for(unsigned long i=0;i<u_string.length();i++)
+    {
+        u_string_out += tolower(u_string[i]);
+    }
+   return u_string_out;
 }
 
-inline string rc_intern_left(string l_string, int n)
+inline string rc_intern_left(string l_string, unsigned long n)
 {
     return l_string.substr(0,n);
 }
@@ -156,7 +160,7 @@ inline string rc_intern_ltrim(string l_string)
     return "";
 }
 
-inline string rc_intern_mid(string m_string, int m_start, int n)
+inline string rc_intern_mid(string m_string, unsigned long m_start, unsigned long n)
 {
     //cout << "DBG_MID" << endl;
     if(m_string.length() <= m_start)
@@ -166,11 +170,11 @@ inline string rc_intern_mid(string m_string, int m_start, int n)
     return m_string.substr(m_start, n);
 }
 
-inline string rc_intern_replace(string src, string rpc, int pos)
+inline string rc_intern_replace(string src, string rpc, unsigned long pos)
 {
-    int rpc_i = 0;
+    unsigned long rpc_i = 0;
     string n_str = src.substr(0,pos);
-    for(int i = pos; i < src.length(); i++)
+    for(unsigned long i = pos; i < src.length(); i++)
     {
         if(rpc_i < rpc.length())
             n_str += rpc.substr(rpc_i,1);
@@ -201,29 +205,42 @@ inline string rc_intern_replaceSubstr(string src, string tgt, string rpc)
 inline string rc_intern_reverse(string rpc_string)
 {
     string n_str = "";
-    for(unsigned long i = rpc_string.length()-1; i >= 0; i--)
+    if(rpc_string.length()==0)
+        return "";
+    for(unsigned long i = rpc_string.length()-1;; i--)
+    {
         n_str += rpc_string[i];
+        if(i==0)
+            break;
+    }
     return n_str;
 }
 
-inline string rc_intern_right(string src, int n)
+inline string rc_intern_right(string src, unsigned long n)
 {
+    if(n > src.length())
+        return src;
     return src.substr(src.length()-n);
 }
 
 inline string rc_intern_rtrim(string src)
 {
+    if(src.length()==0)
+        return "";
+
     unsigned long i = 0;
-    for(i = src.length()-1; i >= 0; i--)
-        if(src.substr(i,1).compare(" ") != 0)
+    for(i = src.length()-1; ; i--)
+    {
+        if(src.substr(i,1).compare(" ") != 0 || i == 0)
             break;
+    }
     return src.substr(0,i+1);
 }
 
-inline string rc_intern_stringfill(string f_string, int n)
+inline string rc_intern_stringfill(string f_string, unsigned long n)
 {
     string f = "";
-    for(int i = 0; i < n; i++)
+    for(unsigned long i = 0; i < n; i++)
         f += f_string;
     return f;
 }
@@ -422,6 +439,16 @@ inline double rc_intern_orBit(uint64_t a, uint64_t b)
     return (a | b);
 }
 
+inline double rc_intern_radians(double degrees)
+{
+    return degrees * (RC_PI/180);
+}
+
+inline double rc_intern_degrees(double radians)
+{
+    return radians * (180/RC_PI);
+}
+
 inline int rc_intern_randomize(double n)
 {
     srand(n);
@@ -545,7 +572,7 @@ inline int rc_intern_fileReadByte(int f_stream)
 {
     unsigned char buf;
     SDL_RWread(rc_fstream[f_stream], &buf, 1, 1);
-    SDL_RWtell(rc_fstream[f_stream]);
+    //SDL_RWtell(rc_fstream[f_stream]);
     return (int)buf;
 }
 
@@ -592,7 +619,13 @@ inline int rc_intern_fileCopy(string src_file, string dst_file)
     std::ifstream  src(src_file.c_str(), std::ios::binary);
     std::ofstream  dst(dst_file.c_str(), std::ios::binary);
     if(!(src.is_open() && dst.is_open()))
+    {
+        if(src.is_open())
+            src.close();
+        if(dst.is_open())
+            dst.close();
         return 0;
+    }
     dst << src.rdbuf();
     src.close();
     dst.close();

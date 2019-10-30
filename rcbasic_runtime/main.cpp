@@ -665,6 +665,8 @@ void dim_num1_94(uint64_t nid, int n1)
     num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value);
     num_var[nid].dimensions = 1;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
+    num_var[nid].dim[1] = 0;
+    num_var[nid].dim[2] = 0;
 }
 
 void dim_num2_95(uint64_t nid, int n1, int n2)
@@ -673,6 +675,7 @@ void dim_num2_95(uint64_t nid, int n1, int n2)
     num_var[nid].dimensions = 2;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
     num_var[nid].dim[1] = (uint64_t)vm_n[n2].value;
+    num_var[nid].dim[2] = 0;
 }
 
 void dim_num3_96(uint64_t nid, int n1, int n2, int n3)
@@ -689,6 +692,8 @@ void dim_str1_97(uint64_t sid, int n1)
     str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value);
     str_var[sid].dimensions = 1;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
+    str_var[sid].dim[1] = 0;
+    str_var[sid].dim[2] = 0;
 }
 
 void dim_str2_98(uint64_t sid, int n1, int n2)
@@ -697,6 +702,7 @@ void dim_str2_98(uint64_t sid, int n1, int n2)
     str_var[sid].dimensions = 2;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
     str_var[sid].dim[1] = (uint64_t)vm_n[n2].value;
+    str_var[sid].dim[2] = 0;
 }
 
 void dim_str3_99(uint64_t sid, int n1, int n2, int n3)
@@ -1103,6 +1109,9 @@ void func_130(uint64_t fn)
         case FN_Cos:
             rc_push_num( rc_intern_cos( COS_N ) );
             break;
+        case FN_Degrees:
+            rc_push_num( rc_intern_degrees(DEGREES_R));
+            break;
         case FN_Exp:
             rc_push_num( rc_intern_exp( EXP_N ) );
             break;
@@ -1129,6 +1138,9 @@ void func_130(uint64_t fn)
             break;
         case FN_OrBit:
             rc_push_num( rc_intern_orBit( ORBIT_A, ORBIT_B ) );
+            break;
+        case FN_Radians:
+            rc_push_num( rc_intern_radians(RADIANS_D));
             break;
         case FN_Randomize:
             rc_push_num( rc_intern_randomize( RANDOMIZE_N ) );
@@ -1171,6 +1183,9 @@ void func_130(uint64_t fn)
             break;
         case FN_Left$:
             rc_push_str( rc_intern_left( LEFT$_SRC$, LEFT$_N ) );
+            break;
+        case FN_Len:
+            rc_push_num( rc_intern_length( LEN_SRC$ ) );
             break;
         case FN_Length:
             rc_push_num( rc_intern_length( LENGTH_SRC$ ) );
@@ -1495,6 +1510,21 @@ void func_130(uint64_t fn)
         case FN_SetCanvasAlpha: //Sub Procedure
             rc_media_setScreenAlpha_hw( SETCANVASALPHA_C_NUM, SETCANVASALPHA_A );
             break;
+        case FN_CanvasAlpha:
+            rc_push_num(rc_media_ScreenAlpha_hw(CANVASALPHA_C_NUM));
+            break;
+        case FN_SetCanvasBlendMode:
+            rc_push_num(rc_media_setScreenBlendMode_hw(SETCANVASBLENDMODE_C_NUM, SETCANVASBLENDMODE_BLEND_MODE));
+            break;
+        case FN_CanvasBlendMode:
+            rc_push_num(rc_media_screenBlendMode_hw(CANVASBLENDMODE_C_NUM));
+            break;
+        case FN_SetCanvasColorMod:
+            rc_push_num(rc_media_setScreenColorMod_hw(SETCANVASCOLORMOD_C_NUM, SETCANVASCOLORMOD_C));
+            break;
+        case FN_CanvasColorMod:
+            rc_push_num(rc_media_screenColorMod_hw(CANVASCOLORMOD_C_NUM));
+            break;
         case FN_CopyCanvas: //Sub Procedure
             rc_media_copyScreen_hw( COPYCANVAS_SRC, COPYCANVAS_X, COPYCANVAS_Y, COPYCANVAS_W, COPYCANVAS_H, COPYCANVAS_DST, COPYCANVAS_DX, COPYCANVAS_DY );
             break;
@@ -1603,6 +1633,18 @@ void func_130(uint64_t fn)
             break;
         case FN_GetImageSize: //Sub Procedure
             rc_media_getImageSize_hw( GETIMAGESIZE_SLOT, &GETIMAGESIZE_W, &GETIMAGESIZE_H );
+            break;
+        case FN_SetImageBlendMode:
+            rc_push_num(rc_media_setImageBlendMode_hw(SETIMAGEBLENDMODE_SLOT, SETIMAGEBLENDMODE_BLEND_MODE));
+            break;
+        case FN_ImageBlendMode:
+            rc_push_num(rc_media_imageBlendMode_hw(IMAGEBLENDMODE_SLOT));
+            break;
+        case FN_SetImageColorMod:
+            rc_push_num(rc_media_setImageColorMod_hw(SETIMAGECOLORMOD_SLOT, SETIMAGECOLORMOD_C));
+            break;
+        case FN_ImageColorMod:
+            rc_push_num(rc_media_imageColorMod_hw(IMAGECOLORMOD_SLOT));
             break;
         case FN_DrawImage: //Sub Procedure
             rc_media_drawImage_hw( DRAWIMAGE_SLOT, DRAWIMAGE_X, DRAWIMAGE_Y );
@@ -2786,7 +2828,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.1" << endl;
+        cout << "RCBASIC Runtime v3.11" << endl;
         return 0;
     }
 
