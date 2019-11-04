@@ -1767,6 +1767,15 @@ void rc_media_setScreenZ(int s_num, int z)
     }
 }
 
+int rc_media_screenZ(int s_num)
+{
+    if(rc_screenCheck(s_num))
+    {
+        return rc_screen_z[rc_active_window][s_num];
+    }
+    return -1;
+}
+
 void rc_media_box_hw(int x1, int y1, int x2, int y2)
 {
 	Sint16 vx[4], vy[4];
@@ -4751,6 +4760,26 @@ void rc_media_stopMusic()
 void rc_media_stopSound(int channel)
 {
     Mix_HaltChannel(channel);
+}
+
+int rc_media_channelIsPlaying(int channel)
+{
+    return Mix_Playing(channel);
+}
+
+int rc_media_channelIsPaused(int channel)
+{
+    return Mix_Paused(channel);
+}
+
+int rc_media_setChannelDistance(int channel, Uint8 dist)
+{
+    return Mix_SetDistance(channel, dist);
+}
+
+int rc_media_setChannelPanning(int channel, Uint8 l, Uint8 r)
+{
+    return Mix_SetPanning(channel, l, r);
 }
 
 //NETWORKING

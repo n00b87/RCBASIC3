@@ -1121,8 +1121,8 @@ void func_130(uint64_t fn)
         case FN_Hex$:
             rc_push_str( rc_intern_hex( HEX$_N ) );
             break;
-        case FN_HexInt:
-            rc_push_num( rc_intern_hexInt( HEXINT_N$ ) );
+        case FN_HexVal:
+            rc_push_num( rc_intern_hexInt( HEXVAL_N$ ) );
             break;
         case FN_Int:
             rc_push_num( rc_intern_int( INT_N ) );
@@ -1534,6 +1534,9 @@ void func_130(uint64_t fn)
         case FN_SetCanvasZ: //Sub Procedure
             rc_media_setScreenZ( SETCANVASZ_C_NUM, SETCANVASZ_Z );
             break;
+        case FN_CanvasZ:
+            rc_push_num( rc_media_screenZ( CANVASZ_C_NUM) );
+            break;
         case FN_CanvasClip: //Sub Procedure
             rc_media_getScreenClip2_hw( CANVASCLIP_SLOT, CANVASCLIP_X, CANVASCLIP_Y, CANVASCLIP_W, CANVASCLIP_H, CANVASCLIP_FLAG );
             break;
@@ -1814,6 +1817,18 @@ void func_130(uint64_t fn)
         case FN_StopSound: //Sub Procedure
             rc_media_stopSound( STOPSOUND_CHANNEL );
             break;
+        case FN_ChannelIsPlaying:
+            rc_push_num( rc_media_channelIsPlaying( CHANNELISPLAYING_CHANNEL ));
+            break;
+        case FN_ChannelIsPaused:
+            rc_push_num( rc_media_channelIsPaused( CHANNELISPAUSED_CHANNEL ));
+            break;
+        case FN_SetChannelDistance:
+            rc_push_num( rc_media_setChannelDistance( SETCHANNELDISTANCE_CHANNEL, SETCHANNELDISTANCE_DIST_VALUE ) );
+            break;
+        case FN_SetChannelPanning:
+            rc_push_num( rc_media_setChannelPanning( SETCHANNELPANNING_CHANNEL, SETCHANNELPANNING_LEFT_VALUE, SETCHANNELPANNING_RIGHT_VALUE ) );
+            break;
         case FN_NumJoysticks: //Number Function
             rc_push_num( rc_media_numJoysticks() );
             break;
@@ -2053,6 +2068,21 @@ void func_130(uint64_t fn)
             break;
         case FN_HasClipboardText:
             rc_push_num( rc_media_hasClipboardText() );
+            break;
+        case FN_Android_GetExternalStoragePath$:
+            rc_push_str( rc_intern_android_getExternalStoragePath() );
+            break;
+        case FN_Android_GetExternalStorageState:
+            rc_push_num( rc_intern_android_getExternalStorageState() );
+            break;
+        case FN_Android_GetInternalStoragePath$:
+            rc_push_str( rc_intern_android_getInternalStoragePath() );
+            break;
+        case FN_RCBasic_Android_Interface$:
+            rc_push_str( rc_intern_android_interface( RCBASIC_ANDROID_INTERFACE$_ARG$ ));
+            break;
+        case FN_RCBasic_IOS_Interface$:
+            rc_push_str( rc_intern_ios_interface( RCBASIC_IOS_INTERFACE$_ARG$ ));
             break;
     }
 }

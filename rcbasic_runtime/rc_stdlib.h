@@ -34,6 +34,7 @@
 #include <dirent.h>
 #ifdef RC_ANDROID
 	#include "SDL.h"
+	#include <jni.h>
 #else
 	#include <SDL2/SDL.h>
 #endif
@@ -1120,5 +1121,77 @@ inline unsigned long rc_intern_s_stack_size()
     return rc_user_s_stack[rc_user_active_s_stack].size();
 }
 
+
+//MOBILE OS STUFF
+inline string rc_intern_android_getInternalStoragePath()
+{
+    #ifdef RC_ANDROID
+        return SDL_AndroidGetInternalStoragePath();
+    #else
+        return "";
+    #endif
+}
+
+inline string rc_intern_android_getExternalStoragePath()
+{
+    #ifdef RC_ANDROID
+        return SDL_AndroidGetExternalStoragePath();
+    #else
+        return "";
+    #endif
+}
+
+inline int rc_intern_android_getExternalStorageState()
+{
+    #ifdef RC_ANDROID
+        return SDL_AndroidGetExternalStorageState();
+    #else
+        return 0;
+    #endif
+}
+
+string rc_intern_android_interface(string arg_c)
+{
+    #ifdef RC_ANDROID
+
+    // retrieve the JNI environment.
+    JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
+
+    // retrieve the Java instance of the SDLActivity
+    jobject activity = (jobject)SDL_AndroidGetActivity();
+
+    // find the Java class of the activity. It should be SDLActivity or a subclass of it.
+    jclass clazz(env->GetObjectClass(activity));
+
+    jmethodID rcbasic_android_method = env->GetStaticMethodID(clazz, "rcbasic_android_interface", "(Ljava/lang/String;)Ljava/lang/String;");
+
+	jstring arg = env->NewStringUTF(arg_c.c_str());
+
+    jstring rv = (jstring)env->CallStaticObjectMethod(clazz, rcbasic_android_method, arg);
+    const char * strReturn = env->GetStringUTFChars( rv, 0);
+
+
+    env->ReleaseStringUTFChars(rv, strReturn);
+
+
+    // clean up the local references.
+    env->DeleteLocalRef(activity);
+    env->DeleteLocalRef(clazz);
+
+    return (string)strReturn;
+
+    #else
+        return "";
+    #endif
+}
+
+#ifdef RC_IOS
+    #include "rcbasic_ios_native.h"
+#else
+    string rc_intern_ios_interface(string arg)
+    {
+        return "";
+    }
+#endif
 
 #endif // RC_STDLIB_H_INCLUDED
