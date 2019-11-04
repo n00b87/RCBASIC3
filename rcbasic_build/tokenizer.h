@@ -870,6 +870,18 @@ string rc_keywordToken(string sline)
         return "<num>" + rc_intToString(SDL_HAT_RIGHTDOWN);
     else if(sline.compare("HAT_CENTERED")==0)
         return "<num>" + rc_intToString(SDL_HAT_CENTERED);
+    else if(sline.compare("BLENDMODE_NONE")==0)
+        return "<num>" + rc_intToString(SDL_BLENDMODE_NONE);
+    else if(sline.compare("BLENDMODE_BLEND")==0)
+        return "<num>" + rc_intToString(SDL_BLENDMODE_BLEND);
+    else if(sline.compare("BLENDMODE_ADD")==0)
+        return "<num>" + rc_intToString(SDL_BLENDMODE_ADD);
+    else if(sline.compare("BLENDMODE_MOD")==0)
+        return "<num>" + rc_intToString(SDL_BLENDMODE_MOD);
+    else if(sline.compare("ANDROID_EXTERNAL_STORAGE_READ")==0)
+        return "<num>1";
+    else if(sline.compare("ANDROID_EXTERNAL_STORAGE_WRITE")==0)
+        return "<num>2";
 
     return "";
 }
