@@ -233,6 +233,7 @@ namespace rc_cbc_assembler
                 line_arg[line_arg_count] += line.substr(i,1);
             }
         }
+        return true;
     }
 
     bool LABEL_NOT_FOUND = false;

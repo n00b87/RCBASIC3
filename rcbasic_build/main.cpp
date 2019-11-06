@@ -562,6 +562,7 @@ bool rcbasic_embedded()
 
     cout << endl << "VM Code" << endl << "---------------------" << endl;
     debug_output_VMASM();
+    return true;
 }
 
 void rcbasic_clean()
