@@ -1,8 +1,8 @@
-#define RC_LINUX
-//#define RC_WINDOWS
-//#define RC_ANDROID
-//#define RC_MAC
-//#define RC_IOS
+#include "rc_os_defines.h"
+
+#ifdef RC_WEB
+#include <emscripten.h>
+#endif
 
 #ifdef RC_IOS
 #define RC_GETCWD
@@ -1365,8 +1365,12 @@ void func_130(uint64_t fn)
             rc_media_setActiveWindow( WINDOW_WIN );
             break;
         case FN_Update: //Sub Procedure
+            //cout << "update call" << endl;
             rc_events();
             rc_media_updateWindow_hw();
+            #ifdef RC_WEB
+                emscripten_sleep(5);
+            #endif // RC_WEB
             break;
         case FN_Cls: //Sub Procedure
             rc_media_cls();
@@ -2083,6 +2087,29 @@ void func_130(uint64_t fn)
             break;
         case FN_RCBasic_IOS_Interface$:
             rc_push_str( rc_intern_ios_interface( RCBASIC_IOS_INTERFACE$_ARG$ ));
+            break;
+        case FN_GetDesktopDisplayMode: //Sub Procedure
+            rc_media_getDesktopDisplayMode( GETDESKTOPDISPLAYMODE_INDEX, &GETDESKTOPDISPLAYMODE_W, &GETDESKTOPDISPLAYMODE_H, &GETDESKTOPDISPLAYMODE_FREQ);
+            break;
+        case FN_DrawImage_Transform: //Sub Procedure
+            rc_media_drawImage_Transform(DRAWIMAGE_TRANSFORM_SLOT, DRAWIMAGE_TRANSFORM_X, DRAWIMAGE_TRANSFORM_Y, DRAWIMAGE_TRANSFORM_W, DRAWIMAGE_TRANSFORM_H,
+                                         DRAWIMAGE_TRANSFORM_SRC_X, DRAWIMAGE_TRANSFORM_SRC_Y, DRAWIMAGE_TRANSFORM_W, DRAWIMAGE_TRANSFORM_H, DRAWIMAGE_TRANSFORM_ANGLE,
+                                         DRAWIMAGE_TRANSFORM_CENTER_X, DRAWIMAGE_TRANSFORM_CENTER_Y, DRAWIMAGE_TRANSFORM_FLIP_H, DRAWIMAGE_TRANSFORM_FLIP_V);
+            break;
+        case FN_GetPowerInfo: //Sub Procedure
+            rc_intern_getPowerInfo(&GETPOWERINFO_STATUS, &GETPOWERINFO_SECS, &GETPOWERINFO_PCT);
+            break;
+        case FN_SystemRam: //Number Function
+            rc_push_num( rc_intern_systemRam() );
+            break;
+        case FN_SetRenderScaleQuality: //Number Function
+            rc_push_num( rc_media_setRenderScaleQuality((int)SETRENDERSCALEQUALITY_N) );
+            break;
+        case FN_EvalJS$: //String Function
+            rc_push_str( rc_intern_evalJS( EVALJS$_JS_CODE$) );
+            break;
+        case FN_GetRenderScaleQuality: //Number Function
+            rc_push_num( rc_media_getRenderScaleQuality() );
             break;
     }
 }
@@ -2858,7 +2885,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.11" << endl;
+        cout << "RCBASIC Runtime v3.12" << endl;
         return 0;
     }
 
@@ -2887,6 +2914,10 @@ int main(int argc, char * argv[])
 
     //cout << "starting: " << rc_filename << endl;
 
+    #ifdef RC_WEB
+        rc_filename = "main.cbc";
+    #endif
+
     if(rcbasic_load(rc_filename))
     {
         //cout << "n_count = " << n_count << endl;
@@ -2904,7 +2935,7 @@ int main(int argc, char * argv[])
         rcbasic_run();
     }
     else
-        cout << "Could not load rcbasic program" << endl;
+        cout << "++Could not load rcbasic program" << endl;
 
     rcbasic_clean();
     //cout << "Hello world!" << endl;

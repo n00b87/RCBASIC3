@@ -1,8 +1,4 @@
-//#define RC_WINDOWS
-#define RC_LINUX
-//#define RC_ANDROID
-//#define RC_MAC
-//#define RC_IOS
+#include "rc_os_defines.h"
 
 #ifdef RC_ANDROID
 #define RC_MOBILE
@@ -757,6 +753,34 @@ inline void rc_media_closeWindow_hw(int win_num)
         SDL_DestroyWindow(rc_win[win_num]);
     rc_win_renderer[win_num] = NULL;
     rc_win[win_num] = NULL;
+}
+
+inline int rc_media_setRenderScaleQuality(int n)
+{
+    stringstream s;
+    s << n;
+
+    if(SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, s.str().c_str()))
+       return 1;
+    return 0;
+}
+
+inline int rc_media_getRenderScaleQuality()
+{
+    string hint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY) == NULL ? "" : SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
+    int hint_val = 0;
+    if(hint.compare("")!=0)
+        hint_val = stoi(hint);
+    return hint_val;
+}
+
+inline void rc_media_getDesktopDisplayMode(int index, double * w, double * h, double * freq)
+{
+    SDL_DisplayMode dm;
+    SDL_GetDesktopDisplayMode(index, &dm);
+    *w = (double)dm.w;
+    *h = (double)dm.h;
+    *freq = (double)dm.refresh_rate;
 }
 
 inline void rc_media_setActiveWindow(int win_num)
@@ -2075,7 +2099,8 @@ void rc_media_floodFill_hw(int x, int y)
             //cout << "pitch = " << pitch << endl;
             //cout << "w = " << w << endl;
             //string bs=""; cin>>bs;
-            rc_media_floodFill_sw(x,y,s_pixels, pitch, w);
+            if(s_pixels[y*w+x] != rc_ink)
+				rc_media_floodFill_sw(x,y,s_pixels, pitch, w);
             //cout << "DEBUG_FLOOD CP 4" << endl;
             SDL_Texture * tmp_tex = SDL_CreateTextureFromSurface(rc_win_renderer[rc_active_window], rc_sscreen[rc_active_window][rc_active_screen]);
             //cout << "DEBUG_FLOOD CP 5" << endl;
@@ -3067,6 +3092,33 @@ void rc_media_drawImage_Blit_hw(int slot, int screen_x, int screen_y, int scale_
     dst.w = scale_w;
     dst.h = scale_h;
     SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_himage[slot][rc_active_window], &src, &dst);
+}
+
+void rc_media_drawImage_Transform(int slot, int x, int y, int w, int h, int src_x, int src_y, int src_w, int src_h, double angle, int center_x, int center_y, int flipH, int flipV)
+{
+    SDL_RendererFlip rf = SDL_FLIP_NONE;
+    if(flipH!=0)
+        rf = (SDL_RendererFlip)(rf | SDL_FLIP_HORIZONTAL);
+    if(flipV!=0)
+        rf = (SDL_RendererFlip)(rf | SDL_FLIP_VERTICAL);
+
+    SDL_Rect dst;
+    dst.x = x;
+    dst.y = y;
+    dst.w = w;
+    dst.h = h;
+
+    SDL_Rect src;
+    src.x = src_x;
+    src.y = src_y;
+    src.w = src_w;
+    src.h = src_h;
+
+    SDL_Point center;
+    center.x = center_x;
+    center.y = center_y;
+
+    SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window], &src, &dst, angle, &center, rf);
 }
 
 void rc_media_getCursor(double * x, double * y)

@@ -1,13 +1,9 @@
 #ifndef RC_STDLIB_H_INCLUDED
 #define RC_STDLIB_H_INCLUDED
 
-#define RC_PI 3.14159265359
+#include "rc_os_defines.h"
 
-#define RC_LINUX
-//#define RC_WINDOWS
-//#define RC_MAC
-//#define RC_ANDROID
-//#define RC_IOS
+#define RC_PI 3.14159265359
 
 #ifdef RC_MAC
 #define RC_GETCWD
@@ -1120,6 +1116,44 @@ inline unsigned long rc_intern_s_stack_size()
 {
     return rc_user_s_stack[rc_user_active_s_stack].size();
 }
+
+inline void rc_intern_getPowerInfo(double * status, double * secs, double * pct)
+{
+    int s = 0;
+    int p = 0;
+    SDL_PowerState p_state = SDL_GetPowerInfo(&s, &p);
+    *secs = (double)s;
+    *pct = (double)p;
+    if(p_state == SDL_POWERSTATE_UNKNOWN)
+        *status = 0;
+    else if(p_state == SDL_POWERSTATE_ON_BATTERY)
+        *status = 1;
+    else if(p_state == SDL_POWERSTATE_NO_BATTERY)
+        *status = 2;
+    else if(p_state == SDL_POWERSTATE_CHARGING)
+        *status = 3;
+    else if(p_state == SDL_POWERSTATE_CHARGED)
+        *status = 4;
+    else
+        *status = -1;
+}
+
+int rc_intern_systemRam()
+{
+    return SDL_GetSystemRAM();
+}
+
+#ifdef RC_WEB
+string rc_intern_evalJS(string js_code)
+{
+    return emscripten_run_script_string(js_code.c_str());
+}
+#else
+string rc_intern_evalJS(string js_code)
+{
+    return "ONLY IN WEB";
+}
+#endif
 
 
 //MOBILE OS STUFF
