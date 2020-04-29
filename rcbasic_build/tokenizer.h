@@ -882,6 +882,16 @@ string rc_keywordToken(string sline)
         return "<num>1";
     else if(sline.compare("ANDROID_EXTERNAL_STORAGE_WRITE")==0)
         return "<num>2";
+    else if(sline.compare("POWERSTATE_UNKNOWN")==0)
+        return "<num>0";
+    else if(sline.compare("POWERSTATE_ON_BATTERY")==0)
+        return "<num>1";
+    else if(sline.compare("SDL_POWERSTATE_NO_BATTERY")==0)
+        return "<num>2";
+    else if(sline.compare("POWERSTATE_CHARGING")==0)
+        return "<num>3";
+    else if(sline.compare("POWERSTATE_CHARGED")==0)
+        return "<num>4";
 
     return "";
 }

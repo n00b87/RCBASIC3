@@ -599,7 +599,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Compiler v3.11" << endl;
+        cout << "RCBASIC Compiler v3.12" << endl;
         return 0;
     }
 
@@ -642,7 +642,7 @@ int main(int argc, char * argv[])
                 cout << "Compile Error: Failed to close WHILE loop" << endl;
                 break;
             case BLOCK_STATE_FOR:
-                cout << "Compile Error: Failed to close WHILE loop" << endl;
+                cout << "Compile Error: Failed to close FOR loop" << endl;
                 break;
             case BLOCK_STATE_FUNCTION:
                 cout << "Compile Error: Failed to close FUNCTION" << endl;

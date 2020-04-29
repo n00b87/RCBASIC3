@@ -362,3 +362,11 @@ function ClipboardText$()
 sub SetClipboardText(txt$)
 function HasClipboardText()
 
+'v3.12
+Sub GetDesktopDisplayMode(index, ByRef w, ByRef h, ByRef freq)
+Sub DrawImage_Transform(slot, x, y, w, h, src_x, src_y, src_w, src_h, angle, center_x, center_y, flip_h, flip_v)
+Sub GetPowerInfo(ByRef status, ByRef secs, ByRef pct)
+Function SystemRam()
+Function SetRenderScaleQuality(n)
+Function EvalJS$(js_code$) 'Only useable in Emscripten
+Function GetRenderScaleQuality()
