@@ -2059,7 +2059,7 @@ void func_130(uint64_t fn)
             rc_push_str( rc_intern_env( ENV$_V$ ) );
             break;
         case FN_SetEnv: //Sub Procedure
-            rc_intern_setEnv( SETENV_V$ );
+            rc_intern_setEnv( SETENV_VAR$, SETENV_VALUE$, SETENV_OVERWRITE );
             break;
         case FN_PrefPath$: //String Function
             rc_push_str( rc_intern_prefPath( PREFPATH$_ORG_NAME$, PREFPATH$_APP_NAME$ ) );

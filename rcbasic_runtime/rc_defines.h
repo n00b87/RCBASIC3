@@ -904,7 +904,9 @@
 #define FN_Env$ 326
 #define ENV$_V$ str_var[0].sid_value[0].value[0]
 #define FN_SetEnv 327
-#define SETENV_V$ str_var[0].sid_value[0].value[0]
+#define SETENV_VAR$ str_var[0].sid_value[0].value[0]
+#define SETENV_VALUE$ str_var[1].sid_value[0].value[0]
+#define SETENV_OVERWRITE num_var[0].nid_value[0].value[0]
 #define FN_PrefPath$ 328
 #define PREFPATH$_ORG_NAME$ str_var[0].sid_value[0].value[0]
 #define PREFPATH$_APP_NAME$ str_var[1].sid_value[0].value[0]

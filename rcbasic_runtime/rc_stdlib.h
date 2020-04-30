@@ -28,6 +28,7 @@
 #include <sys/types.h>  //file system stuff
 #include <unistd.h>   //file system stuff
 #include <dirent.h>
+#include <stdlib.h>
 #ifdef RC_ANDROID
 	#include "SDL.h"
 	#include <jni.h>
@@ -1071,9 +1072,9 @@ inline string rc_intern_env(string v)
     return "";
 }
 
-inline int rc_intern_setEnv(string v)
+inline int rc_intern_setEnv(string name, string value, int overwrite)
 {
-    return putenv((char *)v.c_str());
+    return setenv(name.c_str(), value.c_str(), overwrite);
 }
 
 inline string rc_intern_prefPath(string org_name, string app_name)
