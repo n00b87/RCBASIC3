@@ -2899,6 +2899,16 @@ int main(int argc, char * argv[])
 
     rcbasic_init();
 
+    if(rc_filename.length()>=4)
+    {
+        if(rc_filename.substr(rc_filename.length()-4, 4).compare(".cbc")!=0)
+            rc_filename += ".cbc";
+    }
+    else
+    {
+        rc_filename += ".cbc";
+    }
+
 #ifdef RC_ANDROID
     rc_filename = "main.cbc";
 #endif
