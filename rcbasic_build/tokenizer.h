@@ -886,7 +886,7 @@ string rc_keywordToken(string sline)
         return "<num>0";
     else if(sline.compare("POWERSTATE_ON_BATTERY")==0)
         return "<num>1";
-    else if(sline.compare("SDL_POWERSTATE_NO_BATTERY")==0)
+    else if(sline.compare("POWERSTATE_NO_BATTERY")==0)
         return "<num>2";
     else if(sline.compare("POWERSTATE_CHARGING")==0)
         return "<num>3";

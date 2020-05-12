@@ -910,7 +910,9 @@ void init_embedded()
     embed_function("Env$", ID_TYPE_FN_STR);
     add_embedded_arg("v$", ID_TYPE_STR);
     embed_function("SetEnv", ID_TYPE_SUB);
-    add_embedded_arg("v$", ID_TYPE_STR);
+    add_embedded_arg("var$", ID_TYPE_STR);
+    add_embedded_arg("value$", ID_TYPE_STR);
+    add_embedded_arg("overwrite", ID_TYPE_NUM);
     embed_function("PrefPath$", ID_TYPE_FN_STR);
     add_embedded_arg("org_name$", ID_TYPE_STR);
     add_embedded_arg("app_name$", ID_TYPE_STR);
