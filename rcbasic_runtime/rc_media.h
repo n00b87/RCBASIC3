@@ -770,7 +770,17 @@ inline int rc_media_getRenderScaleQuality()
     string hint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY) == NULL ? "" : SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
     int hint_val = 0;
     if(hint.compare("")!=0)
-        hint_val = stoi(hint);
+    {
+        #ifdef RC_WINDOWS
+        hint_val = atoi(hint.c_str());
+        #else
+            #ifdef RC_ANDROID
+            hint_val = atoi(hint.c_str());
+            #else
+            hint_val = stoi(hint);
+            #endif
+        #endif
+    }
     return hint_val;
 }
 

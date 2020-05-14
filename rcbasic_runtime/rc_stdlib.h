@@ -42,7 +42,7 @@
 
 #include <tchar.h>
 #include <windows.h>
-
+#include <winbase.h>
 #endif // RC_WINDOWS
 
 using namespace std;
@@ -700,7 +700,7 @@ inline int rc_intern_freeFile()
     return -1;
 }
 
-
+#define RC_WINDOWS
 
 #ifndef RC_WINDOWS
 
@@ -887,16 +887,23 @@ WIN32_FIND_DATA ffd;
 
 string rc_intern_dirFirst()
 {
-    char* path = (char*)rc_dir_path.c_str();
+    char* path = new char[rc_dir_path.length()+1];
+    //*path = rc_dir_path.c_str();
 
-    cout << "path = " << path << endl;
+    for(int i = 0; i < rc_dir_path.length(); i++)
+        path[i] = rc_dir_path[i];
+    path[rc_dir_path.length()] = '\0';
+
+    //cout << "path = " << path << endl;
     if (path[_tcslen(path) - 1] != '\\')
         _tcscat(path, _T("\\"));
     _tcscat(path, _T("*.*"));
 
-    cout << "path2 = " << path << endl;
+    //cout << "path2 = " << path << endl;
 
     hFind = FindFirstFile(path, &ffd);
+    delete path;
+    path = NULL;
     if (hFind == INVALID_HANDLE_VALUE)
     {
         cerr << _T("Invalid handle value.") << GetLastError() << endl;
@@ -1066,15 +1073,31 @@ inline int rc_intern_numCommands()
 
 inline string rc_intern_env(string v)
 {
+    #ifdef RC_WINDOWS
+    char * val = new char[32767];
+    int n = GetEnvironmentVariable(v.c_str(), val, 32767);
+    string rtn = "";
+    if (n>0)
+        rtn = (string)val;
+    delete val;
+    return rtn;
+    #else
     char * c = getenv(v.c_str());
     if(c != NULL)
         return (string) c;
     return "";
+    #endif
 }
 
 inline int rc_intern_setEnv(string name, string value, int overwrite)
 {
+    #ifdef RC_WINDOWS
+    //string env_cmd = name + "=" + value;
+    return SetEnvironmentVariable(name.c_str(), value.c_str()) ? 1 : 0;
+    //return _putenv(name.c_str());
+    #else
     return setenv(name.c_str(), value.c_str(), overwrite);
+    #endif
 }
 
 inline string rc_intern_prefPath(string org_name, string app_name)
