@@ -700,8 +700,6 @@ inline int rc_intern_freeFile()
     return -1;
 }
 
-#define RC_WINDOWS
-
 #ifndef RC_WINDOWS
 
 #ifdef RC_LINUX
