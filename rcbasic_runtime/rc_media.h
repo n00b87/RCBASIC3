@@ -913,13 +913,24 @@ void rc_media_setWindowSize(int win_num, int w, int h)
     if(rc_winCheck(win_num))
     {
         SDL_SetWindowSize(rc_win[win_num], w, h);
+        rc_win_renderer[win_num] = SDL_GetRenderer(rc_win[win_num]);
+
         rc_bb_rect[win_num].w = w;
         rc_bb_rect[win_num].h = h;
         #ifdef RC_MOBILE
         rc_mouse_scale_x = 1;
         rc_mouse_scale_y = 1;
         #else
-        if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
+
+        Uint32 wflags = SDL_GetWindowFlags(rc_win[win_num]);
+        Uint32 wflags_cmp1 = wflags & SDL_WINDOW_FULLSCREEN;
+        Uint32 wflags_cmp2 = wflags & SDL_WINDOW_FULLSCREEN_DESKTOP;
+        if(!(wflags_cmp1 || wflags_cmp2))
+        {
+            rc_fullscreen_mouse_scale_x[win_num] = 1;
+            rc_fullscreen_mouse_scale_y[win_num] = 1;
+        }
+        else if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
         {
             cout << "Something happend: " << SDL_GetError() << endl;
             rc_fullscreen_mouse_scale_x[win_num] = 1;
@@ -1154,7 +1165,15 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
             return;
         }
 
-        if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
+        Uint32 wflags = SDL_GetWindowFlags(rc_win[win_num]);
+        Uint32 wflags_cmp1 = wflags & SDL_WINDOW_FULLSCREEN;
+        Uint32 wflags_cmp2 = wflags & SDL_WINDOW_FULLSCREEN_DESKTOP;
+        if(!(wflags_cmp1 || wflags_cmp2))
+        {
+            rc_fullscreen_mouse_scale_x[win_num] = 1;
+            rc_fullscreen_mouse_scale_y[win_num] = 1;
+        }
+        else if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
         {
             cout << "Something happend: " << SDL_GetError() << endl;
             #ifndef RC_MOBILE
