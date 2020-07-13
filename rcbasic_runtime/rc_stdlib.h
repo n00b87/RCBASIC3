@@ -365,14 +365,26 @@ inline string rc_intern_bin(uint64_t n)
 
 #endif // RC_ANDROID
 
-int64_t rc_intern_cint64(int32_t i)
+union rc_cint_u
 {
-    return (int64_t)i;
+    int64_t i64;
+    int32_t i32[2];
+};
+double rc_intern_cint64(double n)
+{
+    rc_cint_u num;
+    num.i32[0] = (int32_t)n;
+    //cout << "dbg: " << num.i64 << endl;
+    return num.i64;
 }
 
-int32_t rc_intern_cint32(int64_t i)
+double rc_intern_cint32(double n)
 {
-    return (int32_t)i;
+    rc_cint_u num;
+    num.i64 = (int64_t)n;
+    //cout << "dbg1: " << num.i32[0] << endl;
+    //cout << "dbg2: " << num.i32[1] << endl;
+    return num.i32[0];
 }
 
 inline double rc_intern_cos(double angle)
@@ -699,6 +711,8 @@ inline int rc_intern_freeFile()
         return i;
     return -1;
 }
+
+#define RC_WINDOWS
 
 #ifndef RC_WINDOWS
 
