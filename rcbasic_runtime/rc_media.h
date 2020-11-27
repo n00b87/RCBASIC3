@@ -5604,7 +5604,7 @@ static bool cycleVideo()
                 } // if
                 else
                 {
-                    SDL_RenderPresent(rc_win_renderer[rc_active_window]);
+                    //SDL_RenderPresent(rc_win_renderer[rc_active_window]);
                     //cout << "window drawn" << endl;
                 }
             } // else
@@ -5628,52 +5628,6 @@ static bool cycleVideo()
     return false;
 
 } // playfile
-
-Uint32 rc_media_videoPosition()
-{
-    return rc_video_position;
-}
-
-void rc_media_setVideoPosition(Uint32 vpos)
-{
-    //cout << "epic" << endl;
-    //if (overlay) SDL_DestroyTexture(overlay);
-    if (video) THEORAPLAY_freeVideo(video);
-    if (audio) THEORAPLAY_freeAudio(audio);
-    if (decoder) THEORAPLAY_stopDecode(decoder);
-    //cout  << "bubble wrap" << endl;
-    //SDL_ClearQueuedAudio(0);
-    //while(SDL_GetQueuedAudioSize(0)>0){}
-
-    video = NULL;
-    audio = NULL;
-    decoder = NULL;
-    decoder = THEORAPLAY_startDecodeFile(rc_video_file.c_str(), 30, THEORAPLAY_VIDFMT_RGBA);
-    while(!audio && !video && THEORAPLAY_isDecoding(decoder))
-    {
-        audio = THEORAPLAY_getAudio(decoder);
-        video = THEORAPLAY_getVideo(decoder);
-        if(audio)
-        {
-            if(audio->playms < vpos)
-            {
-                THEORAPLAY_freeAudio(audio);
-                audio = NULL;
-            }
-        }
-
-        if(video)
-        {
-            if(video->playms < vpos)
-            {
-                THEORAPLAY_freeVideo(video);
-                video = NULL;
-            }
-        }
-    }
-    rc_video_pauseTicks = vpos;
-    //cout << "bankai" << endl;
-}
 
 void rc_media_deleteVideo()
 {
@@ -5813,6 +5767,20 @@ void rc_media_resumeVideo()
     if (!quit)
         SDL_PauseAudio(0);
 
+}
+
+Uint32 rc_media_videoPosition()
+{
+    return rc_video_position;
+}
+
+void rc_media_setVideoPosition(Uint32 vpos)
+{
+    bool is_playing = rc_video_isPlaying;
+    if(is_playing) rc_media_pauseVideo();
+    rc_video_pauseTicks = vpos;
+    rc_video_position = vpos;
+    if(is_playing) rc_media_resumeVideo();
 }
 
 bool rc_media_videoIsPlaying()
