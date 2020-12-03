@@ -286,7 +286,6 @@ const THEORAPLAY_AudioPacket *audio = NULL;
 SDL_Texture * overlay = NULL;
 void * overlay_pixels;
 int pitch;
-SDL_AudioSpec spec;
 SDL_Event event;
 Uint32 framems = 0;
 int initfailed = 0;
@@ -1170,8 +1169,10 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
         Uint32 wflags_cmp2 = wflags & SDL_WINDOW_FULLSCREEN_DESKTOP;
         if(!(wflags_cmp1 || wflags_cmp2))
         {
+            #ifndef RC_MOBILE
             rc_fullscreen_mouse_scale_x[win_num] = 1;
             rc_fullscreen_mouse_scale_y[win_num] = 1;
+            #endif // RC_MOBILE
         }
         else if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
         {
@@ -1957,7 +1958,17 @@ void rc_media_ellipseFill_hw(int xc, int yc, int width, int height)
 Uint32 rc_media_getPixel_hw(int x, int y)
 {
     //Uint32 * s_pixels = (Uint32*) rc_win_surface[rc_active_window]->pixels;
+    #ifdef RC_MOBILE
+    SDL_Texture * tmp_buf = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, rc_win_width[rc_active_window], rc_win_height[rc_active_window]);
+    if(tmp_buf==NULL)
+        return 0;
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], tmp_buf);
+    SDL_RendererFlip rf = SDL_FLIP_VERTICAL;
+    SDL_RenderCopyEx(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window], NULL, NULL, 0, NULL, rf);
+    #else
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    #endif // RC_MOBILE
+
     //cout << "surface = ( " << rc_win_surface[rc_active_window]->w << ", " << rc_win_surface[rc_active_window]->h << " ) " << endl;
     //int w = 0;
     //int h = 0;
@@ -1977,16 +1988,17 @@ Uint32 rc_media_getPixel_hw(int x, int y)
     p_rect.h = 1;
     SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &p_rect, rc_pformat->format, (void*)s_pixels, 4);
 
+    Uint32 p_color =  s_pixels[0];
+
     #ifdef RC_MOBILE
-    y = y * rc_mouse_scale_y;
-    x = x * rc_mouse_scale_x;
-    #else
-    //int sy = y * rc_fullscreen_mouse_scale_y[rc_active_window];
-    //int sx = x * rc_fullscreen_mouse_scale_x[rc_active_window];
-    //cout << "sm dbg = " << sx << ", " << sy << ", " << w << ", " << h << endl;
+    SDL_DestroyTexture(tmp_buf);
+    int r = p_color & 255;
+    int g = (p_color >> 8) & 255;
+    int b = (p_color >> 16) & 255;
+    int a = (p_color >> 24) & 255;
+    p_color = SDL_MapRGBA(rc_pformat, r, g, b, a);
     #endif // RC_MOBILE
 
-    Uint32 p_color =  s_pixels[0];
     //cout << "color = " << p_color << endl;
     SDL_free(s_pixels);
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
@@ -5151,9 +5163,60 @@ string rc_net_myLocalIP()
 
 //#################VIDEO PLAYBACK#####################################################################
 
+#ifdef RC_ANDROID
+void videoPlayer_audio_callback(void *userdata, Uint8 *stream, int len)
+{
+    // !!! FIXME: this should refuse to play if item->playms is in the future.
+    //const Uint32 now = SDL_GetTicks() - baseticks;
+    Sint16 *dst = (Sint16 *) stream;
 
+    while (audio_queue && (len > 0))
+    {
+        volatile AudioQueue *item = audio_queue;
+        AudioQueue *next = item->next;
+        const int channels = item->audio->channels;
 
-static void SDLCALL audio_callback(void *userdata, Uint8 *stream, int len)
+        const Sint32 *src = item->audio->samples + (item->offset * channels);
+
+        int cpy = (item->audio->frames - item->offset) * channels;
+        int i;
+
+        if (cpy > (len / sizeof (Sint16)))
+            cpy = len / sizeof (Sint16);
+
+        for (i = 0; i < cpy; i++)
+        {
+            const Sint32 val = *(src++);
+
+            if (val < -32768)
+                *(dst++) = -32768;
+            else if (val > 32767)
+                *(dst++) = 32767;
+            else
+            {
+                *(dst++) = (Sint16) (val);
+            }
+        } // for
+
+        item->offset += (cpy / channels);
+        len -= cpy * sizeof (Sint16);
+
+        if (item->offset >= item->audio->frames)
+        {
+            THEORAPLAY_freeAudio(item->audio);
+            free((void *) item);
+            audio_queue = next;
+        } // if
+    } // while
+
+    if (!audio_queue)
+        audio_queue_tail = NULL;
+
+    if (len > 0)
+        memset(dst, '\0', len);
+} // audio_callback
+#else
+void videoPlayer_audio_callback(void *userdata, Uint8 *stream, int len)
 {
     // !!! FIXME: this should refuse to play if item->playms is in the future.
     //const Uint32 now = SDL_GetTicks() - baseticks;
@@ -5200,9 +5263,9 @@ static void SDLCALL audio_callback(void *userdata, Uint8 *stream, int len)
     if (len > 0)
         memset(dst, '\0', len);
 } // audio_callback
+#endif
 
-
-static void queue_audio(const THEORAPLAY_AudioPacket *audio)
+static void videoPlayer_queue_audio(const THEORAPLAY_AudioPacket *audio)
 {
     AudioQueue *item = (AudioQueue *) malloc(sizeof (AudioQueue));
     if (!item)
@@ -5215,13 +5278,13 @@ static void queue_audio(const THEORAPLAY_AudioPacket *audio)
     item->offset = 0;
     item->next = NULL;
 
-    SDL_LockAudio();
+    //SDL_LockAudio();
     if (audio_queue_tail)
         audio_queue_tail->next = item;
     else
         audio_queue = item;
     audio_queue_tail = item;
-    SDL_UnlockAudio();
+    //SDL_UnlockAudio();
 } // queue_audio
 
 void rc_media_loadVideo(string fname)
@@ -5262,6 +5325,7 @@ void rc_media_loadVideo(string fname)
 
     initfailed = quit = (!overlay);
     rc_video_end = false;
+
 
     //fprintf(stderr, "b_debug 3.5\n");
 }
@@ -5405,28 +5469,15 @@ void rc_media_playVideo(int loops)
         rc_video_reset = false;
     }
 
-    //cout << "debug 1" << endl;
     Mix_CloseAudio();
+    rc_video_currentLoop = 0;
     rc_video_loops = loops;
     rc_video_isPlaying = true;
-    //cout << "debug 2" << endl;
 
-    memset(&spec, '\0', sizeof (SDL_AudioSpec));
-    //cout << "debug 2.5" << endl;
-    spec.freq = audio->freq;
-    //cout << "debug 2.6" << endl;
-    spec.format = AUDIO_S16SYS;
-    spec.channels = audio->channels;
-    spec.samples = 2048;
-    spec.callback = audio_callback;
-    //cout << "quit = " << initfailed << endl;
-    //initfailed = quit = (initfailed || (SDL_OpenAudio(&spec, NULL) != 0));
-    //cout << "quit = " << quit << endl;
-    //cout<< "debug 3" << endl;
-    if(SDL_OpenAudio(&spec, NULL) < 0)
+    if(Mix_OpenAudio(audio->freq, AUDIO_S16SYS, audio->channels, 2048) < 0)
     {
         rc_audio_isOpen = false;
-        cout << "Open Audio Error: " << SDL_GetError() <<endl;
+        cout << "Open Audio Error: " << Mix_GetError() <<endl;
         if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
         {
             cout << "Open Audio Error: " << Mix_GetError() << endl;
@@ -5434,15 +5485,16 @@ void rc_media_playVideo(int loops)
         quit = 1;
         return;
     }
+
+    Mix_HookMusic(videoPlayer_audio_callback, NULL);
+
     rc_audio_isOpen = true;
-    //cout << "debug 4" << endl;
 
     if(!rc_video_isLoaded)
     {
-        //cout << "GILLITEEN" <<endl;
         while (audio)
         {
-            queue_audio(audio);
+            videoPlayer_queue_audio(audio);
             audio = THEORAPLAY_getAudio(decoder);
         } // while
     }
@@ -5450,16 +5502,15 @@ void rc_media_playVideo(int loops)
     baseticks = SDL_GetTicks();
     rc_video_isLoaded = true;
 
-    //fprintf(stderr, "b_debug 3\n");
-
     if (!quit)
-        SDL_PauseAudio(0);
+        Mix_Pause(-1);
 }
 
 void rc_media_stopVideo()
 {
-    if(!rc_video_isPlaying)
-        return;
+    //if(!rc_video_isPlaying)
+    //    return;
+
     //cout << "baking soda" << endl;
     //if (overlay) SDL_DestroyTexture(overlay);
     if (video) THEORAPLAY_freeVideo(video);
@@ -5471,17 +5522,20 @@ void rc_media_stopVideo()
     SDL_Delay(1500);
     if(rc_audio_isOpen)
     {
-        SDL_CloseAudio();
+        Mix_CloseAudio();
         if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
         {
             cout << "OpenAudio Error: " << Mix_GetError() << endl;
         }
+        Mix_HookMusic(NULL, NULL);
         rc_audio_isOpen = false;
     }
     rc_video_isPlaying = false;
     rc_video_loops = 0;
+    rc_video_currentLoop = 0;
     rc_video_position = 0;
     rc_video_reset = true;
+    rc_video_end = false;
     video = NULL;
     audio = NULL;
     decoder = NULL;
@@ -5503,7 +5557,7 @@ static bool cycleVideo()
     else
     {
         rc_video_currentLoop++;
-        if((rc_video_currentLoop < rc_video_loops) || (rc_video_loops < 0))
+        if((rc_video_currentLoop <= rc_video_loops) || (rc_video_loops < 0))
         {
             rc_media_stopVideo();
             rc_media_playVideo(rc_video_loops);
@@ -5620,8 +5674,7 @@ static bool cycleVideo()
 
         //fprintf(stderr, "b_debug F\n");
         while ((audio = THEORAPLAY_getAudio(decoder)) != NULL)
-            queue_audio(audio);
-        //fprintf(stderr, "b_debug G\n");
+            videoPlayer_queue_audio(audio);
 
         return true;
     } // while
@@ -5643,12 +5696,13 @@ void rc_media_deleteVideo()
     //cout  << "bubble wrap" << endl;
     if(rc_audio_isOpen)
     {
-        SDL_CloseAudio();
+        Mix_CloseAudio();
         if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
         {
             cout << "OpenAudio Error: " << Mix_GetError() << endl;
         }
         rc_audio_isOpen = false;
+        Mix_HookMusic(NULL, NULL);
     }
     rc_video_file = "";
     rc_video_isLoaded = false;
@@ -5667,16 +5721,16 @@ void rc_media_deleteVideo()
 
 void rc_media_pauseVideo()
 {
-    if(rc_video_isPaused)
-        return;
+    //if(rc_video_isPaused)
+    //    return;
     rc_video_isPlaying = false;
     if (video) THEORAPLAY_freeVideo(video);
     if (audio) THEORAPLAY_freeAudio(audio);
-    SDL_PauseAudio(0);
+    Mix_Pause(-1);
     SDL_Delay(1500);
     if(rc_audio_isOpen)
     {
-        SDL_CloseAudio();
+        Mix_CloseAudio();
         if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
         {
             cout << "OpenAudio Error: " << Mix_GetError() << endl;
@@ -5720,23 +5774,11 @@ void rc_media_resumeVideo()
     rc_video_isPlaying = true;
     //fprintf(stderr,"debug 2\n");
 
-    memset(&spec, '\0', sizeof (SDL_AudioSpec));
-    //cout << "debug 2.5" << endl;
-    spec.freq = audio->freq;
-    //cout << "debug 2.6" << endl;
-    spec.format = AUDIO_S16SYS;
-    spec.channels = audio->channels;
-    spec.samples = 2048;
-    spec.callback = audio_callback;
-    //cout << "quit = " << initfailed << endl;
-    //initfailed = quit = (initfailed || (SDL_OpenAudio(&spec, NULL) != 0));
-    //cout << "quit = " << quit << endl;
-    //fprintf(stderr,"debug 3\n");
     if(!rc_audio_isOpen)
     {
-        if(SDL_OpenAudio(&spec, NULL) < 0)
+        if(Mix_OpenAudio(audio->freq, AUDIO_S16SYS, audio->channels, 2048) < 0)
         {
-            cout << "Open Audio Error: " << SDL_GetError() <<endl;
+            cout << "Open Audio Error: " << Mix_GetError() <<endl;
             if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
             {
                 cout << "OpenAudio Error: " << Mix_GetError() << endl;
@@ -5753,7 +5795,7 @@ void rc_media_resumeVideo()
         //cout << "GILLITEEN" <<endl;
         while (audio)
         {
-            queue_audio(audio);
+            videoPlayer_queue_audio(audio);
             audio = THEORAPLAY_getAudio(decoder);
         } // while
     }
@@ -5765,7 +5807,7 @@ void rc_media_resumeVideo()
     //fprintf(stderr, "b_debug x\n");
 
     if (!quit)
-        SDL_PauseAudio(0);
+        Mix_Pause(-1);
 
 }
 
