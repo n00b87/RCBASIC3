@@ -1082,6 +1082,9 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 int arr_token_end = i;
                 string args[512];
                 int num_args = 0;
+
+                int p_scope = 0;
+
                 if( (i+1) <= end_token)
                 {
                     if(token[i+1].compare("!<square>")==0)
@@ -1104,11 +1107,25 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                                 num_args++;
                             else if(token[i].substr(0,1).compare("n")==0)
                                 args[num_args] = token[i];
+                            else if(token[i].compare("!<par>")==0)
+                                p_scope++;
+                            else if(token[i].compare("!</par>")==0)
+                                p_scope--;
                             else if(token[i].compare("")!=0)
                             {
                                 rc_setError("Expected number");
                                 return false;
                             }
+                        }
+                        if(p_scope > 0)
+                        {
+                            rc_setError("Parenthesis Block was not closed");
+                            return false;
+                        }
+                        else if(p_scope < 0)
+                        {
+                            rc_setError("Parenthesis Block was not opened");
+                            return false;
                         }
                         if(s_scope != 0)
                         {
@@ -1200,6 +1217,9 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 int arr_token_end = i;
                 string args[3];
                 int num_args = 0;
+
+                int p_scope = 0;
+
                 if( (i+1) <= end_token)
                 {
                     if(token[i+1].compare("!<square>")==0)
@@ -1222,11 +1242,25 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                                 num_args++;
                             else if(token[i].substr(0,1).compare("n")==0)
                                 args[num_args] = token[i];
+                            else if(token[i].compare("!<par>")==0)
+                                p_scope++;
+                            else if(token[i].compare("!</par>")==0)
+                                p_scope--;
                             else if(token[i].compare("")!=0)
                             {
                                 rc_setError("Expected number");
                                 return false;
                             }
+                        }
+                        if(p_scope > 0)
+                        {
+                            rc_setError("Parenthesis Block was not closed");
+                            return false;
+                        }
+                        else if(p_scope < 0)
+                        {
+                            rc_setError("Parenthesis Block was not opened");
+                            return false;
                         }
                     }
                 }
@@ -4042,6 +4076,10 @@ bool check_rule()
                         if(s_scope == 0)
                         {
                             end_token = i;
+
+                            for(int i2 = start_token; i2 <= end_token; i2++)
+                                cout << "token: " << i2 << token[i2] << endl;
+
                             break;
                         }
                     }
