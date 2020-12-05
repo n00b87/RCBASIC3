@@ -4984,8 +4984,9 @@ int rc_net_tcp_getData(int socket, void * dst, int numBytes)
 
 int rc_net_tcp_getData_str(int socket, string * dst, int numBytes)
 {
-    char c[numBytes];
+    char c[numBytes+1];
     int rtn = rc_net_tcp_getData(socket, c, numBytes);
+    c[numBytes] = '\0';
     dst[0] = c;
     return rtn;
 }
