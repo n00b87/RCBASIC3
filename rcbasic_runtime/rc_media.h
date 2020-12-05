@@ -549,6 +549,9 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
         cout << "Window #" << win_num << " is currently open" << endl;
         return false;
     }
+
+    bool vsync = true;
+
     if(flags == 0)
         flags = SDL_WINDOW_SHOWN;
     else if(flags == 1)
@@ -557,6 +560,23 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
         flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
     else if(flags == 3)
         flags = SDL_WINDOW_HIDDEN;
+    else
+    {
+        vsync = false;
+        if(flags == 4)
+            flags = SDL_WINDOW_SHOWN;
+        else if(flags == 5)
+            flags = SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP;
+        else if(flags == 6)
+            flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
+        else if(flags == 7)
+            flags = SDL_WINDOW_HIDDEN;
+        else
+        {
+            cout << "WindowOpen Error: Flag is not a supported mode" << endl;
+            return false;
+        }
+    }
     rc_win[win_num] = SDL_CreateWindow(caption.c_str(), x, y, w, h, flags);
     if(rc_win[win_num] == NULL)
     {
@@ -584,7 +604,10 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     }
 #endif // RC_MOBILE
 
-    rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+    if(vsync)
+        rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+    else
+        rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 
     if(rc_win_renderer[win_num] == NULL)
     {
@@ -598,7 +621,11 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
         }
         SDL_DestroyRenderer(rc_win_renderer[win_num]);
         rc_win_renderer[win_num] = NULL;
-        rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+        if(vsync)
+            rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+        else
+            rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+
         if(rc_win_renderer[win_num] == NULL)
         {
             __android_log_write(ANDROID_LOG_ERROR, "Renderer Error2: ", SDL_GetError());
@@ -5163,7 +5190,7 @@ string rc_net_myLocalIP()
 
 //#################VIDEO PLAYBACK#####################################################################
 
-#ifdef RC_ANDROID
+#ifdef RC_USE_TREMOR
 void videoPlayer_audio_callback(void *userdata, Uint8 *stream, int len)
 {
     // !!! FIXME: this should refuse to play if item->playms is in the future.
@@ -5356,14 +5383,16 @@ int rc_media_getVideoStats(string fname, double * v_len, double * v_fps, double 
             THEORAPLAY_freeVideo(video);
             video = NULL;
         }
-        while((audio=THEORAPLAY_getAudio(decoder))!=NULL)
+
+        if(!audio)
+            audio = THEORAPLAY_getAudio(decoder);
+        if(audio)
         {
-            if(audio)
-            {
-                THEORAPLAY_freeAudio(audio);
-                audio = NULL;
-            }
+            THEORAPLAY_freeAudio(audio);
+            audio = NULL;
         }
+
+        SDL_Delay(1);
     }
 
     THEORAPLAY_stopDecode(decoder);
