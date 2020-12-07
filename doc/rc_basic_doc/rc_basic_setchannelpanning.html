@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>SETCHANNELPANNING</title>
+  </head>
+  <body><strong><span  style="text-decoration: underline;">SetChannelPanning( channel, left_value, right_value )</span></strong><br>
+        <br>
+        
+Set Panning effect for channel. left_value and right_value must be a value between 0 and 255. Returns 0 on error.
+<br>
+<br>
+<b>NOTE:<b> Setting both left and right to 255 will cancel the pan effect
+<br><br>
+<u>Example:</u>
+<p><span class="code"><br>
+<span class="keyword">If</span> <span class="keyword">SetChannelPanning</span>(<span class="number">1</span>, <span class="number">255</span>, <span class="number">127</span>) = <span class="number">0</span> Then<br>
+   <span class="keyword">Print</span> <span class="string">"Effect did not register"</span><br>
+<span class="keyword">End</span> If<br>
+</span></p>
+
+        <br>
+  </body>
+</html>
+
