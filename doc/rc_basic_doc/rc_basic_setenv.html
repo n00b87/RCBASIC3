@@ -5,13 +5,14 @@
     <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
     <title>RC BASIC SETENV</title>
   </head>
-  <body> <b>SetEnv$ ( var$ )</b><br>
+  <body> <b>SetEnv ( var$, value$, overwrite )</b><br>
     <br>
-    Sets an environment variable.<br>
-    <br>
+    Sets an environment variable named var$ to value$.<br>
+    overwrite will determine if the call to this function should overwrite the variable if it exists
+    <br><br>
     Example:<br><b>
-    &nbsp;&nbsp;&nbsp; SetEnv$ (<span class="string">"PATH=%PATH%"</span>)</b><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">SetEnv$</span> (<span class="string">"TEST_VAR"</span>,<span class="string">"HELLO WORLD"</span>, <span class="number">1</span> )</b><br>
     <br>
-    This example sets the PATH equal to itself in windows.<br>
+    This example sets the TEST_VAR environment variable to the value "HELLO WORLD". It will overwrite TEST_VAR if it already exists.<br>
   </body>
 </html>
