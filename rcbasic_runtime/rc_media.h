@@ -4241,7 +4241,11 @@ int rc_getEvents()
             rc_touch = 1;
             rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
             rc_touchY = event.tfinger.y * rc_win_height[rc_active_window];
+#ifdef RC_IOS
+            rc_pressure = 1; //FIXME: On IOS pressure is always getting reported as 0 on finger down so I am just setting it to 1 until I figure this out
+#else
             rc_pressure = event.tfinger.pressure;
+#endif
             rc_setTouchFingerEvent(event.tfinger.fingerId, rc_touchX, rc_touchY, rc_pressure);
             break;
         case SDL_FINGERUP:
@@ -4258,7 +4262,11 @@ int rc_getEvents()
             rc_touchY = event.tfinger.y * rc_win_height[rc_active_window];
             rc_motionX = event.tfinger.dx * rc_win_width[rc_active_window];
             rc_motionY = event.tfinger.dy * rc_win_height[rc_active_window];
+#ifdef RC_IOS
+            rc_pressure = 1;
+#else
             rc_pressure = event.tfinger.pressure;
+#endif
             rc_setTouchFingerEvent(event.tfinger.fingerId, rc_touchX, rc_touchY, rc_pressure);
             break;
         case SDL_MULTIGESTURE:
@@ -4269,7 +4277,11 @@ int rc_getEvents()
             rc_mt_numFingers = event.mgesture.numFingers;
             rc_mt_dist = event.mgesture.dDist;
             rc_mt_theta = event.mgesture.dTheta;
+#ifdef RC_IOS
+            rc_pressure = 1;
+#else
             rc_pressure = event.tfinger.pressure;
+#endif
             break;
     }
     //cout << "end_event" << endl;
