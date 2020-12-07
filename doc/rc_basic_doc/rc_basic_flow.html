@@ -42,5 +42,21 @@
     &nbsp;&nbsp;&nbsp; The above example will compare each case in the block to
     the SELECT CASE.&nbsp; If the case is equal to the select case then the code
     in that case will be executed.
+    
+    &nbsp;&nbsp;&nbsp; You can also add multiple values to compare to each CASE.
+    <br>
+    <span class="code">
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Select Case</span> <span class="number">5</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Case</span> <span class="number">6</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">THIS WILL NOT PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Case</span> <span class="number">4</span>, <span class="number">5</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"THIS WILL PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">Default</span><br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span class="keyword">Print</span> <span class="string">"THIS WILL NOT PRINT"</span><br>
+    &nbsp;&nbsp;&nbsp; <span class="keyword">End Select</span><br>
+    </span>
+    <br>
+    &nbsp;&nbsp;&nbsp; The above example is mostly the same as the previous example. The difference is that in our second CASE we are comparing
+    both 4 and 5. If either of them are equal to our SELECT argument then the code inside the CASE block will execute.
   </body>
 </html>

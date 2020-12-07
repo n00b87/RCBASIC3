@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>GETPOWERINFO</title>
+  </head>
+  <body><strong><span  style="text-decoration: underline;">GetPowerInfo(ByRef status, ByRef secs, ByRef pct)</span></strong><br>
+        <br>
+        
+Gets the charging status of the device the program is running on.<br><br>
+<b>status</b> - the charging status of the battery. Look below for the different statuses that can be returned.<br>
+<b>secs</b> - the approximate time in seconds until the battery looses its charge.<br>
+<b>pct</b> - the percentage of the battery charged.<br><br>
+<b><u>STATUS</u></b><br>
+POWERSTATE_UNKNOWN<br>
+POWERSTATE_ON_BATTERY<br>
+POWERSTATE_NO_BATTERY<br>
+POWERSTATE_CHARGING<br>
+POWERSTATE_CHARGED<br>
+<br><br>
+<u>Example:</u>
+<p><span class="code">
+status=<span class="number">0</span><br>
+secs=<span class="number">0</span><br>
+pct=<span class="number">0</span><br>
+<span class="keyword">GetPowerInfo</span>(status, secs, pct)<br>
+</span></p>
+
+        <br>
+  </body>
+</html>
+

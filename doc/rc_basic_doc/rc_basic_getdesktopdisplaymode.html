@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>GETDESKTOPDISPLAYMODE</title>
+  </head>
+  <body><strong><span  style="text-decoration: underline;">GetDesktopDisplayMode(index, ByRef w, ByRef h, ByRef freq)<br></span></strong><br>
+        <br>
+        Gets the resolution and refresh rate of a display<br><br>
+<b>index</b> - The display index (ie. if you have 3 displays then index could be 0, 1, or 2)<br>
+<b>w, h</b> - The width and height of the display will be stored in these variables<br>
+<b>freq</b> - The refresh rate will be stored in this variable
+<br><br>
+<u>Example:</u>
+<p><span class="code">
+w = <span class="number">0</span><br>
+h = <span class="number">0</span><br>
+f = <span class="number">0</span><br>
+<span class="keyword">GetDesktopDisplayMode</span>(<span class="number">0</span>, w, h, f)<br>
+</span></p>
+
+        <br>
+  </body>
+</html>
+

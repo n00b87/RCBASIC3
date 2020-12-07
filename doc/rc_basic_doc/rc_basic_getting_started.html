@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>GETTING STARTED</title>
+  </head>
+  <body><strong><span  style="text-decoration: underline;">GETTING STARTED</span></strong><br>
+        <br>
+        <br>
+RCBasic comes with 2 command-line tools for creating programs. The first is rcbasic_build which takes your
+sourcecode in your *.bas file and compiles it into a *.cbc.  The *.cbc file contains intermediate bytecode
+which can be ran with the rcbasic (rcbasic.exe on windows) application. To distribute your program you will
+need to package your *.cbc file with a copy of the rcbasic executable which needs to be renamed to the name of
+your *.cbc file.
+
+For Example:
+If you have myprogram.cbc then rcbasic needs to be renamed to myprogram (myprogram.exe on windows).
+<br><br>
+<b>NOTE:</b>On Windows, you need to include all the 32-bit dlls with the 32-bit executable and all the 64-bit
+dlls with the 64-bit executable. The rcbasic package tool will automatically do all of this for you as well as package for
+other systems as well.
+
+<br><br>
+<b><u>RUN PROGRAMS FROM GEANY</u></b>
+<br><br><u>LINUX</u><br>
+In the installer directory there is a folder called geany_files. Inside the folder there is a file named
+filetypes.rcbasic. You can override the geany *.bas configuration by replacing the freeBasic configuration
+with this file. Just copy this file to the geany filedefs path, which on most linux distibutions should be
+(/home/.config/geany/filedefs), and rename the file to filetypes.freebasic.
+<br><br>
+Once you have rcbasic set up with geany you just need to create a new file and save it as *.bas. Then you can
+compile your program by going to Build->Compile. Once your program is compiled you can run it by going to
+Build->Execute.
+<br><br>
+<b>NOTE:</b> If you want to use a different file extension for rcbasic programs you can still use this file and just set
+it up for a different extension. Refer to the geany documentation on how to set up different file types.
+
+<br><br><br><u>WINDOWS</u><br>
+Geany comes preconfigured with rcbasic on windows. Just run the start_editor.bat file and create a new *.bas
+file. Select the File->New with Template option in the menu to start with a simple template program. Once you
+have created a new *.bas file goto Build->Compile to compile your program to a *.cbc file. Then goto Build->Execute
+to run your program.
+
+
+<br><br><br>
+<b><u>USING RCBASIC FROM THE COMMAND-LINE</u></b><br>
+RCBasic will be added to path on install on linux. On Windows you will need to add the rcbasic folder to your path.
+Either (rcbasic/rcbasic_32) or (rcbasic/rcbasic_64) depending on your operating system.
+
+Once rcbasic is in your path you can simple pass a source file to rcbasic_build to create a *.cbc file.
+<p><span class="code"><br>
+rcbasic_build myprogram.bas<br>
+</span></p>
+<br>
+Once you have a *.cbc file you can pass it to rcbasic to run it.
+<p><span class="code"><br>
+rcbasic myprogram.cbc<br>
+</span></p>
+<br>
+Both tools also except the -v argument which will simply output the version of rcbasic you are using.
+<p><span class="code"><br>
+rcbasic_build -v<br>
+rcbasic -v<br>
+</span></p>
+<br>
+
+        <br>
+  </body>
+</html>
+
