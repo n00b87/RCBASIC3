@@ -2532,7 +2532,7 @@ void rc_media_colorKey_hw(int slot, double color)
         //SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL);
         SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
 
-        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, rc_pformat->format,tmp_surf->pixels,tmp_surf->pitch);
+        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, SDL_PIXELFORMAT_ABGR8888,tmp_surf->pixels,tmp_surf->pitch);
         //cout << "Colorkey = " << (Uint32)r << ", " << (Uint32)g << ", " << (Uint32)b << ", " << (Uint32)a << endl;
         SDL_SetColorKey(tmp_surf,SDL_TRUE,c);
 
