@@ -868,12 +868,13 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
 void next_118(uint64_t f_addr)
 {
     //int l_index = current_loop_stack_count-1;
-    if(loop_stack.top().isNegative && (loop_stack.top().counter[0].nid_value[0].value[0] + loop_stack.top().f_step) >= loop_stack.top().f_end)
+    double next_step = loop_stack.top().counter[0].nid_value[0].value[0] + loop_stack.top().f_step;
+    if(loop_stack.top().isNegative && next_step <= loop_stack.top().counter[0].nid_value[0].value[0] && next_step >= loop_stack.top().f_end)
     {
         loop_stack.top().counter[0].nid_value[0].value[0] += loop_stack.top().f_step;
         current_address = f_addr;
     }
-    else if( (!loop_stack.top().isNegative) && (loop_stack.top().counter[0].nid_value[0].value[0] + loop_stack.top().f_step) <= loop_stack.top().f_end)
+    else if( (!loop_stack.top().isNegative) && next_step >= loop_stack.top().counter[0].nid_value[0].value[0] && next_step <= loop_stack.top().f_end)
     {
         loop_stack.top().counter[0].nid_value[0].value[0] += loop_stack.top().f_step;
         //cout << "current counter = " << loop_stack.top().counter[0].value[0] << "       step = " << loop_stack.top().f_step << endl;
@@ -2885,7 +2886,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.12" << endl;
+        cout << "RCBASIC Runtime v3.13" << endl;
         return 0;
     }
 
