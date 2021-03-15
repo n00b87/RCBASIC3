@@ -637,6 +637,8 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
 #endif
     }
 
+    SDL_SetRenderDrawBlendMode(rc_win_renderer[win_num], SDL_BLENDMODE_BLEND);
+
     //cout << "booty" << endl;
 
 #ifndef RC_MOBILE
@@ -1809,18 +1811,23 @@ void rc_media_cloneScreen_hw(int src_screen, int dst_screen)
     }
 }
 
-void rc_sortZ()
+void rc_sortZ(int priority_screen)
 {
     int aw  = rc_active_window;
-    int z = 0;
-    for(int i = 0; i < MAX_SCREENS; i++)
+    int draw_order = 0;
+    for(int z = 0; z < MAX_SCREENS; z++)
     {
+        if(rc_screen_z[aw][priority_screen] == z)
+        {
+            rc_screen_zOrder[aw][draw_order] = priority_screen;
+            draw_order++;
+        }
         for(int n = 0; n < MAX_SCREENS; n++)
         {
-			if(rc_screen_z[aw][n] == i)
+			if(rc_screen_z[aw][n] == z && n != priority_screen)
 			{
-				rc_screen_zOrder[aw][z] = n;
-				z++;
+				rc_screen_zOrder[aw][draw_order] = n;
+				draw_order++;
 			}
 		}
     }
@@ -1841,7 +1848,7 @@ void rc_media_setScreenZ(int s_num, int z)
 
         rc_screen_z[rc_active_window][s_num] = z;
 
-        rc_sortZ();
+        rc_sortZ(s_num);
 
         //for(int i = 0; i < MAX_SCREENS; i++)
             //cout << "z: " << rc_screen_zOrder[rc_active_window][i] << endl;
@@ -1897,89 +1904,54 @@ void rc_media_boxFill_hw(int x1, int y1, int x2, int y2)
 
 void rc_media_rectangle(int x, int y, int w, int h)
 {
-	Sint16 vx[4], vy[4];
+	SDL_Rect rect_dim;
+    rect_dim.x = x;
+    rect_dim.y = y;
+    rect_dim.w = w;
+    rect_dim.h = h;
 
-    vx[0] = (Sint16)x;
-    vy[0] = (Sint16)y;
-
-    vx[1] = (Sint16)x + w;
-    vy[1] = (Sint16)y;
-
-    vx[2] = (Sint16)x + w;
-    vy[2] = (Sint16)y + h;
-
-    vx[3] = (Sint16)x;
-    vy[3] = (Sint16)y + h;
-
-    polygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
+    SDL_RenderDrawRect(rc_win_renderer[rc_active_window], &rect_dim);
 }
 
 void rc_media_rectangleFill(int x, int y, int w, int h)
 {
-	Sint16 vx[4], vy[4];
+    SDL_Rect rect_dim;
+    rect_dim.x = x;
+    rect_dim.y = y;
+    rect_dim.w = w;
+    rect_dim.h = h;
 
-    vx[0] = (Sint16)x;
-    vy[0] = (Sint16)y;
-
-    vx[1] = (Sint16)x + w;
-    vy[1] = (Sint16)y;
-
-    vx[2] = (Sint16)x + w;
-    vy[2] = (Sint16)y + h;
-
-    vx[3] = (Sint16)x;
-    vy[3] = (Sint16)y + h;
-
-    filledPolygonRGBA(rc_win_renderer[rc_active_window], vx, vy, 4, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
+    SDL_RenderFillRect(rc_win_renderer[rc_active_window], &rect_dim);
 }
 
 void rc_media_roundRect(int x, int y, int w, int h, int r)
 {
-    if(rc_screenCheck())
-    {
-        roundedRectangleRGBA(rc_win_renderer[rc_active_window], x, y, x+w, y+h, r, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
-    }
+    roundedRectangleRGBA(rc_win_renderer[rc_active_window], x, y, x+(w-1), y+(h-1), r, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_roundRectFill(int x, int y, int w, int h, int r)
 {
-    if(rc_screenCheck())
-    {
-        roundedBoxRGBA(rc_win_renderer[rc_active_window], x, y, x+w, y+h, r, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
-    }
+    roundedBoxRGBA(rc_win_renderer[rc_active_window], x, y, x+(w-1), y+(h-1), r, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_circle_hw(int xc, int yc, int r)
 {
-    if(rc_screenCheck())
-    {
-        circleRGBA(rc_win_renderer[rc_active_window], xc, yc, r, rc_ink >> 16, rc_ink >> 8, rc_ink, rc_ink >> 24);
-    }
+    circleRGBA(rc_win_renderer[rc_active_window], xc, yc, r, rc_ink >> 16, rc_ink >> 8, rc_ink, rc_ink >> 24);
 }
 
 void rc_media_circleFill_hw(int xc, int yc, int r)
 {
-    if(rc_screenCheck())
-    {
-        //cout << "cf_color = " << (int)rc_ink_color.r << ", " << (int)rc_ink_color.g << ", " << (int)rc_ink_color.b << ", " << (int)rc_ink_color.a << endl;
-        filledCircleRGBA(rc_win_renderer[rc_active_window], xc, yc, r, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
-    }
+    filledCircleRGBA(rc_win_renderer[rc_active_window], xc, yc, r, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_ellipse_hw(int xc, int yc, int width, int height)
 {
-    if(rc_screenCheck())
-    {
-        ellipseRGBA(rc_win_renderer[rc_active_window], xc, yc, width, height, rc_ink >> 16, rc_ink >> 8, rc_ink, rc_ink>>24);
-    }
+    ellipseRGBA(rc_win_renderer[rc_active_window], xc, yc, width, height, rc_ink >> 16, rc_ink >> 8, rc_ink, rc_ink>>24);
 }
 
 void rc_media_ellipseFill_hw(int xc, int yc, int width, int height)
 {
-    if(rc_screenCheck())
-    {
-        filledEllipseRGBA(rc_win_renderer[rc_active_window], xc, yc, width, height, rc_ink >> 16, rc_ink >> 8, rc_ink, rc_ink>>24);
-    }
+    filledEllipseRGBA(rc_win_renderer[rc_active_window], xc, yc, width, height, rc_ink >> 16, rc_ink >> 8, rc_ink, rc_ink>>24);
 }
 
 Uint32 rc_media_getPixel_hw(int x, int y)
@@ -2067,11 +2039,7 @@ Uint32 rc_media_rgba(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 
 void rc_media_line_hw(int x1, int y1, int x2, int y2)
 {
-    //cout << "line_rcv = " << x1 << ", " << y1 << ", " << x2 << ", " << y2 << endl;
-    if(rc_screenCheck())
-    {
-        lineRGBA(rc_win_renderer[rc_active_window], x1, y1, x2, y2, rc_ink >> 16, rc_ink >> 8, rc_ink, rc_ink >> 24);
-    }
+    lineRGBA(rc_win_renderer[rc_active_window], x1, y1, x2, y2, rc_ink >> 16, rc_ink >> 8, rc_ink, rc_ink >> 24);
 }
 
 void rc_getPrevColor(int x, int y)
@@ -2085,119 +2053,111 @@ void rc_getPrevColor(int x, int y)
 
 void rc_media_floodFill_sw(int x, int y, Uint32* s_pixels, int pitch, int w)
 {
-    if(rc_screenCheck())
+    int s_lock = 0;
+    //cout << "u1" << endl;
+    if(SDL_MUSTLOCK(rc_sscreen[rc_active_window][rc_active_screen]))
     {
-        int s_lock = 0;
-        //cout << "u1" << endl;
-        if(SDL_MUSTLOCK(rc_sscreen[rc_active_window][rc_active_screen]))
-        {
-            //cout << "u2" << endl;
-            s_lock = 1;
-            SDL_LockSurface(rc_sscreen[rc_active_window][rc_active_screen]);
-        }
-        //cout << "u3" << endl;
-        //Uint32 * s_pixels = (Uint32*) rc_sscreen[rc_active_window][rc_active_screen]->pixels;
-        //cout << "u4" << endl;
-        //int pitch = rc_sscreen[rc_active_window][rc_active_screen]->pitch;
-        //cout << "u5" << endl;
-        //int w = rc_sscreen[rc_active_window][rc_active_screen]->pitch/4;
-        //cout << "u6" << endl;
+        //cout << "u2" << endl;
+        s_lock = 1;
+        SDL_LockSurface(rc_sscreen[rc_active_window][rc_active_screen]);
+    }
+    //cout << "u3" << endl;
+    //Uint32 * s_pixels = (Uint32*) rc_sscreen[rc_active_window][rc_active_screen]->pixels;
+    //cout << "u4" << endl;
+    //int pitch = rc_sscreen[rc_active_window][rc_active_screen]->pitch;
+    //cout << "u5" << endl;
+    //int w = rc_sscreen[rc_active_window][rc_active_screen]->pitch/4;
+    //cout << "u6" << endl;
 
-        // Base cases
-        if (x < 0 || x >= rc_screen_width[rc_active_window][rc_active_screen] || y < 0 || y >= rc_screen_height[rc_active_window][rc_active_screen])
-            return;
-        //cout << "u7" << endl;
-        if (s_pixels[y*w+x] != prev_color)
-            return;
-        //cout << "u8" << endl;
+    // Base cases
+    if (x < 0 || x >= rc_screen_width[rc_active_window][rc_active_screen] || y < 0 || y >= rc_screen_height[rc_active_window][rc_active_screen])
+        return;
+    //cout << "u7" << endl;
+    if (s_pixels[y*w+x] != prev_color)
+        return;
+    //cout << "u8" << endl;
 
-        // Replace the color at (x, y)
-        s_pixels[y*w+x] = rc_ink;
+    // Replace the color at (x, y)
+    s_pixels[y*w+x] = rc_ink;
 
-        //cout << "u8-1" << endl; cout << "x = " << x << "; y = " << y << endl;
+    //cout << "u8-1" << endl; cout << "x = " << x << "; y = " << y << endl;
 
-        // Recur for north, east, south and west
-        rc_media_floodFill_sw(x+1, y, s_pixels, pitch, w);
-        rc_media_floodFill_sw(x-1, y, s_pixels, pitch, w);
-        rc_media_floodFill_sw(x, y+1, s_pixels, pitch, w);
-        rc_media_floodFill_sw(x, y-1, s_pixels, pitch, w);
+    // Recur for north, east, south and west
+    rc_media_floodFill_sw(x+1, y, s_pixels, pitch, w);
+    rc_media_floodFill_sw(x-1, y, s_pixels, pitch, w);
+    rc_media_floodFill_sw(x, y+1, s_pixels, pitch, w);
+    rc_media_floodFill_sw(x, y-1, s_pixels, pitch, w);
 
-        //cout << "u8-2" << endl;
+    //cout << "u8-2" << endl;
 
-        if(s_lock == 1)
-        {
-            //cout << "u9" << endl;
-            SDL_UnlockSurface(rc_sscreen[rc_active_window][rc_active_screen]);
-            //cout << "u10" << endl;
-        }
+    if(s_lock == 1)
+    {
+        //cout << "u9" << endl;
+        SDL_UnlockSurface(rc_sscreen[rc_active_window][rc_active_screen]);
+        //cout << "u10" << endl;
     }
 }
 
 void rc_media_floodFill_hw(int x, int y)
 {
-    if(rc_screenCheck())
+    rc_sscreen[rc_active_window][rc_active_screen] = SDL_CreateRGBSurface(0, rc_screen_width[rc_active_window][rc_active_screen], rc_screen_height[rc_active_window][rc_active_screen], 32, 0, 0, 0, 0);
+    SDL_Rect c_screen;
+    c_screen.x = 0;
+    c_screen.y = 0;
+    c_screen.w = rc_screen_width[rc_active_window][rc_active_screen];
+    c_screen.h = rc_screen_height[rc_active_window][rc_active_screen];
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window],NULL);
+    SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen],NULL,&c_screen);
+    //SDL_RendererFlip rf = (SDL_RendererFlip)SDL_FLIP_VERTICAL;
+    //SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen],NULL,NULL,0,NULL,rf);
+
+    //cout << "DEBUG_FLOOD CP 1" << endl;
+
+    if(SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &c_screen, rc_pformat->format,rc_sscreen[rc_active_window][rc_active_screen]->pixels,rc_sscreen[rc_active_window][rc_active_screen]->pitch) < 0)
     {
-        rc_sscreen[rc_active_window][rc_active_screen] = SDL_CreateRGBSurface(0, rc_screen_width[rc_active_window][rc_active_screen], rc_screen_height[rc_active_window][rc_active_screen], 32, 0, 0, 0, 0);
-        SDL_Rect c_screen;
-        c_screen.x = 0;
-        c_screen.y = 0;
-        c_screen.w = rc_screen_width[rc_active_window][rc_active_screen];
-        c_screen.h = rc_screen_height[rc_active_window][rc_active_screen];
-        SDL_SetRenderTarget(rc_win_renderer[rc_active_window],NULL);
-        SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen],NULL,&c_screen);
-        //SDL_RendererFlip rf = (SDL_RendererFlip)SDL_FLIP_VERTICAL;
-        //SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_hscreen[rc_active_window][rc_active_screen],NULL,NULL,0,NULL,rf);
+        cout << "ReadPixel Error: " << SDL_GetError() << endl;
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
 
-        //cout << "DEBUG_FLOOD CP 1" << endl;
+    }
+    else
+    {
+        //cout << "DEBUG_FLOOD CP 2" << endl;
+        rc_getPrevColor(x, y);
+        //cout << "DEBUG_FLOOD CP 3" << endl;
+        Uint32 * s_pixels = (Uint32*) rc_sscreen[rc_active_window][rc_active_screen]->pixels;
+        int pitch = rc_sscreen[rc_active_window][rc_active_screen]->pitch;
+        int w = rc_sscreen[rc_active_window][rc_active_screen]->pitch/4;
+        //cout << "pitch = " << pitch << endl;
+        //cout << "w = " << w << endl;
+        //string bs=""; cin>>bs;
+        if(s_pixels[y*w+x] != rc_ink)
+            rc_media_floodFill_sw(x,y,s_pixels, pitch, w);
+        //cout << "DEBUG_FLOOD CP 4" << endl;
+        SDL_Texture * tmp_tex = SDL_CreateTextureFromSurface(rc_win_renderer[rc_active_window], rc_sscreen[rc_active_window][rc_active_screen]);
+        //cout << "DEBUG_FLOOD CP 5" << endl;
 
-        if(SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &c_screen, rc_pformat->format,rc_sscreen[rc_active_window][rc_active_screen]->pixels,rc_sscreen[rc_active_window][rc_active_screen]->pitch) < 0)
+        if(tmp_tex==NULL)
         {
-            cout << "ReadPixel Error: " << SDL_GetError() << endl;
+            cout << "FloodFill Error: Canvas Buffer could not be created" << endl;
             SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
 
         }
         else
         {
-            //cout << "DEBUG_FLOOD CP 2" << endl;
-            rc_getPrevColor(x, y);
-            //cout << "DEBUG_FLOOD CP 3" << endl;
-            Uint32 * s_pixels = (Uint32*) rc_sscreen[rc_active_window][rc_active_screen]->pixels;
-            int pitch = rc_sscreen[rc_active_window][rc_active_screen]->pitch;
-            int w = rc_sscreen[rc_active_window][rc_active_screen]->pitch/4;
-            //cout << "pitch = " << pitch << endl;
-            //cout << "w = " << w << endl;
-            //string bs=""; cin>>bs;
-            if(s_pixels[y*w+x] != rc_ink)
-				rc_media_floodFill_sw(x,y,s_pixels, pitch, w);
-            //cout << "DEBUG_FLOOD CP 4" << endl;
-            SDL_Texture * tmp_tex = SDL_CreateTextureFromSurface(rc_win_renderer[rc_active_window], rc_sscreen[rc_active_window][rc_active_screen]);
-            //cout << "DEBUG_FLOOD CP 5" << endl;
-
-            if(tmp_tex==NULL)
-            {
-                cout << "FloodFill Error: Canvas Buffer could not be created" << endl;
-                SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
-
-            }
-            else
-            {
-                SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
-                SDL_RenderCopy(rc_win_renderer[rc_active_window],tmp_tex,NULL,NULL);
-            }
-            SDL_DestroyTexture(tmp_tex);
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
+            SDL_RenderCopy(rc_win_renderer[rc_active_window],tmp_tex,NULL,NULL);
         }
-
-        SDL_FreeSurface(rc_sscreen[rc_active_window][rc_active_screen]);
-        rc_sscreen[rc_active_window][rc_active_screen] = NULL;
+        SDL_DestroyTexture(tmp_tex);
     }
+
+    SDL_FreeSurface(rc_sscreen[rc_active_window][rc_active_screen]);
+    rc_sscreen[rc_active_window][rc_active_screen] = NULL;
+
 }
 
 void rc_media_drawPixel_hw(int x, int y)
 {
-    if(rc_screenCheck())
-    {
-        pixelRGBA(rc_win_renderer[rc_active_window], x, y, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
-    }
+    pixelRGBA(rc_win_renderer[rc_active_window], x, y, rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 }
 
 void rc_media_poly(unsigned int n, double* vx_d, double* vy_d)
