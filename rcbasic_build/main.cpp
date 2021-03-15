@@ -260,8 +260,8 @@ bool rc_eval(string line)
     }
 
     //current_Debug
-    //cout << "-------BEFORE PP START TOKENS--------" << endl;
-    //output_tokens();
+    cout << "-------BEFORE PP START TOKENS--------" << endl;
+    output_tokens();
 
     //cout << "get preprocessor" << endl;
     if(!rc_preprocessor())

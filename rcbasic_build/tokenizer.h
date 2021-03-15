@@ -76,6 +76,9 @@ bool tokens(const std::string &data)
     string::size_type x = 0;
     bool esc_char = false;
 
+    string arg_data = "";
+    int arg_data_scope = 0;
+
     while(x < data.length())
     {
         char ch = data[x];
@@ -125,6 +128,41 @@ bool tokens(const std::string &data)
                             ch = data[inc(x, 1)];
                         } while(isalnum(ch) || ch == '_');
 
+                        if(ch=='(')
+                        {
+                            arg_data = "";
+                            arg_data_scope = 0;
+                            do
+                            {
+                                arg_data.push_back(ch);
+
+                                if(ch=='(')
+                                    arg_data_scope++;
+                                else if(ch==')')
+                                    arg_data_scope--;
+
+                                ch = data[inc(x, 1)];
+
+                            } while(arg_data_scope > 0 && x < data.length());
+                        }
+                        else if(ch=='[')
+                        {
+                            arg_data = "";
+                            arg_data_scope = 0;
+                            do
+                            {
+                                arg_data.push_back(ch);
+
+                                if(ch=='[')
+                                    arg_data_scope++;
+                                else if(ch==']')
+                                    arg_data_scope--;
+
+                                ch = data[inc(x, 1)];
+
+                            } while(arg_data_scope > 0 && x < data.length());
+                        }
+
                         if(isKeyWord(StringToUpper(s_data)))
                         {
                             //s_data  = "<"+s_data+">";
@@ -140,8 +178,15 @@ bool tokens(const std::string &data)
                             tmp_token.push_back("<num>-1");
                             tmp_token.push_back("<mul>");
                             tmp_token.push_back(s_data);
+                            if(arg_data.compare("")!=0)
+                                tokens(arg_data);
                             tmp_token.push_back("</par>");
                         }
+                    }
+                    else
+                    {
+                        rc_setError("Invalid Syntax: Missing a number or variable to negate");
+                        return false;
                     }
                 }
                 else
