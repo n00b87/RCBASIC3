@@ -91,7 +91,7 @@ struct rc_numId
     n_value * nid_value;
     int dimensions;
     uint64_t dim[3];
-    uint64_t addr;
+    uint64_t byref_offset;
 };
 
 struct rc_strId
@@ -99,6 +99,7 @@ struct rc_strId
     s_value * sid_value;
     int dimensions;
     uint64_t dim[3];
+    uint64_t byref_offset;
 };
 
 struct rc_loop
@@ -129,6 +130,7 @@ struct addr_entry
 };
 
 stack<addr_entry> byref_addr_table;
+stack<uint64_t> byref_var_byref_offset;
 
 uint64_t n_count = 0;
 uint64_t s_count = 0;
@@ -236,6 +238,7 @@ bool rcbasic_load(string filename)
         num_var[i].nid_value = new n_value;
         num_var[i].nid_value[0].value.resize(1);
         num_var[i].dimensions = 0;
+        num_var[i].byref_offset = 0;
     }
 
     str_var = new rc_strId[strID_count];
@@ -244,6 +247,7 @@ bool rcbasic_load(string filename)
         str_var[i].sid_value = new s_value;
         str_var[i].sid_value[0].value.resize(1);
         str_var[i].dimensions = 0;
+        str_var[i].byref_offset = 0;
     }
 
     segment = new unsigned char*[2];
@@ -320,7 +324,8 @@ void mov_33(int n1, double val)
 
 void mov_34(int n1, uint64_t nid)
 {
-    vm_n[n1].value = num_var[nid].nid_value[0].value[0];
+    int byref_offset = num_var[nid].byref_offset;
+    vm_n[n1].value = num_var[nid].nid_value[0].value[byref_offset];
     vm_n[n1].r = num_var[nid].nid_value;
     vm_n[n1].r_index = 0;
     //cout << "n" << n1 << " = " << vm_n[n1].value << endl;
@@ -328,7 +333,8 @@ void mov_34(int n1, uint64_t nid)
 
 void mov_35(uint64_t nid, int n1)
 {
-    num_var[nid].nid_value[0].value[0] = vm_n[n1].value;
+    int byref_offset = num_var[nid].byref_offset;
+    num_var[nid].nid_value[0].value[byref_offset] = vm_n[n1].value;
     //cout << "n" << n1 << " = " << vm_n[n1].value << endl;
     //cout << "nvar[" << nid << "] = " << num_var[nid].nid_value[0].value[0] << endl;
 }
@@ -353,14 +359,16 @@ void movS_37(int s1, uint64_t str_addr)
 
 void movS_38(int s1, uint64_t sid)
 {
-    vm_s[s1].value = str_var[sid].sid_value[0].value[0];
+    int byref_offset = str_var[sid].byref_offset;
+    vm_s[s1].value = str_var[sid].sid_value[0].value[byref_offset];
     vm_s[s1].r = &str_var[sid].sid_value[0];
     vm_s[s1].r_index = 0;
 }
 
 void movS_39(uint64_t sid, int s1)
 {
-    str_var[sid].sid_value[0].value[0] = vm_s[s1].value;
+    int byref_offset = str_var[sid].byref_offset;
+    str_var[sid].sid_value[0].value[byref_offset] = vm_s[s1].value;
 }
 
 void mov_r_40(int n1, int n2)
@@ -547,13 +555,15 @@ void jle_72(uint64_t jmp_addr)
 void obj_num_73(uint64_t nid)
 {
     num_object.obj_val = &num_var[nid].nid_value[0];
-    num_object.index = 0;
+    int byref_offset = num_var[nid].byref_offset;
+    num_object.index = byref_offset;
 }
 
 void obj_num1_74(uint64_t nid, int n1)
 {
     num_object.obj_val = num_var[nid].nid_value;
-    num_object.index = (uint64_t)vm_n[n1].value;
+    int byref_offset = num_var[nid].byref_offset;
+    num_object.index = (uint64_t)vm_n[n1].value + byref_offset;
     //cout << "obj_num index = " << num_object.index << endl;
 }
 
@@ -561,40 +571,46 @@ void obj_num2_75(uint64_t nid, int n1, int n2)
 {
     uint64_t arr_pos = (uint64_t)vm_n[n1].value * num_var[nid].dim[1] + (uint64_t)vm_n[n2].value;
     num_object.obj_val = &num_var[nid].nid_value[0];
-    num_object.index = arr_pos;
+    int byref_offset = num_var[nid].byref_offset;
+    num_object.index = arr_pos + byref_offset;
 }
 
 void obj_num3_76(uint64_t nid, int n1, int n2, int n3)
 {
     uint64_t arr_pos = ( (uint64_t)vm_n[n1].value * num_var[nid].dim[1] * num_var[nid].dim[2] ) + ((uint64_t)vm_n[n2].value * num_var[nid].dim[2]) + (uint64_t)vm_n[n3].value;
     num_object.obj_val = &num_var[nid].nid_value[0];
-    num_object.index = arr_pos;
+    int byref_offset = num_var[nid].byref_offset;
+    num_object.index = arr_pos + byref_offset;
 }
 
 void obj_str_77(uint64_t sid)
 {
     str_object.obj_val = &str_var[sid].sid_value[0];
-    str_object.index = 0;
+    int byref_offset = str_var[sid].byref_offset;
+    str_object.index = byref_offset;
 }
 
 void obj_str1_78(uint64_t sid, int n1)
 {
     str_object.obj_val = &str_var[sid].sid_value[0];
-    str_object.index = (uint64_t)vm_n[n1].value;
+    int byref_offset = str_var[sid].byref_offset;
+    str_object.index = (uint64_t)vm_n[n1].value + byref_offset;
 }
 
 void obj_str2_79(uint64_t sid, int n1, int n2)
 {
     uint64_t arr_pos = (uint64_t)vm_n[n1].value * str_var[sid].dim[1] + (uint64_t)vm_n[n2].value;
     str_object.obj_val = &str_var[sid].sid_value[0];
-    str_object.index = arr_pos;
+    int byref_offset = str_var[sid].byref_offset;
+    str_object.index = arr_pos + byref_offset;
 }
 
 void obj_str3_80(uint64_t sid, int n1, int n2, int n3)
 {
     uint64_t arr_pos = ( (uint64_t)vm_n[n1].value * str_var[sid].dim[1] * str_var[sid].dim[2] ) + ((uint64_t)vm_n[n2].value * str_var[sid].dim[2]) + (uint64_t)vm_n[n3].value;
     str_object.obj_val = &str_var[sid].sid_value[0];
-    str_object.index = arr_pos;
+    int byref_offset = str_var[sid].byref_offset;
+    str_object.index = arr_pos + byref_offset;
 }
 
 void obj_usr_81()
@@ -744,7 +760,8 @@ void push_103(uint64_t nid)
     //n_stack[current_n_stack_count] = num_var[nid].value[0];
     //current_n_stack_count++;
     rc_vm_n n;
-    n.value = num_var[nid].nid_value[0].value[0];
+    int byref_offset = num_var[nid].byref_offset;
+    n.value = num_var[nid].nid_value[0].value[byref_offset];
     n_stack.push(n);
 }
 
@@ -760,7 +777,8 @@ void pushS_105(uint64_t sid)
     //s_stack[current_s_stack_count] = str_var[sid].value[0];
     //current_s_stack_count++;
     rc_vm_s s;
-    s.value = str_var[sid].sid_value[0].value[0];
+    int byref_offset = str_var[sid].byref_offset;
+    s.value = str_var[sid].sid_value[0].value[byref_offset];
     s_stack.push(s);
 }
 
@@ -787,7 +805,8 @@ void pop_108(uint64_t nid)
 {
     //current_n_stack_count--;
     //num_var[nid].value[0] = n_stack[current_n_stack_count];
-    num_var[nid].nid_value[0].value[0] = n_stack.top().value;
+    int byref_offset = num_var[nid].byref_offset;
+    num_var[nid].nid_value[0].value[byref_offset] = n_stack.top().value;
     n_stack.pop();
 }
 
@@ -805,7 +824,8 @@ void popS_110(uint64_t sid)
 {
     //current_s_stack_count--;
     //str_var[sid].value[0] = s_stack[current_s_stack_count];
-    str_var[sid].sid_value[0].value[0] = s_stack.top().value;
+    int byref_offset = str_var[sid].byref_offset;
+    str_var[sid].sid_value[0].value[byref_offset] = s_stack.top().value;
     s_stack.pop();
 }
 
@@ -845,7 +865,8 @@ void wend_116(uint64_t jmp_addr)
 
 void for_117(uint64_t nid, int n1, int n2, int n3)
 {
-    num_var[nid].nid_value[0].value[0] = vm_n[n1].value;
+    int byref_offset = num_var[nid].byref_offset;
+    num_var[nid].nid_value[0].value[byref_offset] = vm_n[n1].value;
     rc_loop for_loop;
     for_loop.counter = &num_var[nid];
     for_loop.f_end = vm_n[n2].value;
@@ -868,15 +889,16 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
 void next_118(uint64_t f_addr)
 {
     //int l_index = current_loop_stack_count-1;
-    double next_step = loop_stack.top().counter[0].nid_value[0].value[0] + loop_stack.top().f_step;
-    if(loop_stack.top().isNegative && next_step <= loop_stack.top().counter[0].nid_value[0].value[0] && next_step >= loop_stack.top().f_end)
+    int byref_offset = loop_stack.top().counter[0].byref_offset;
+    double next_step = loop_stack.top().counter[0].nid_value[0].value[byref_offset] + loop_stack.top().f_step;
+    if(loop_stack.top().isNegative && next_step <= loop_stack.top().counter[0].nid_value[0].value[byref_offset] && next_step >= loop_stack.top().f_end)
     {
-        loop_stack.top().counter[0].nid_value[0].value[0] += loop_stack.top().f_step;
+        loop_stack.top().counter[0].nid_value[0].value[byref_offset] += loop_stack.top().f_step;
         current_address = f_addr;
     }
-    else if( (!loop_stack.top().isNegative) && next_step >= loop_stack.top().counter[0].nid_value[0].value[0] && next_step <= loop_stack.top().f_end)
+    else if( (!loop_stack.top().isNegative) && next_step >= loop_stack.top().counter[0].nid_value[0].value[byref_offset] && next_step <= loop_stack.top().f_end)
     {
-        loop_stack.top().counter[0].nid_value[0].value[0] += loop_stack.top().f_step;
+        loop_stack.top().counter[0].nid_value[0].value[byref_offset] += loop_stack.top().f_step;
         //cout << "current counter = " << loop_stack.top().counter[0].value[0] << "       step = " << loop_stack.top().f_step << endl;
         current_address = f_addr;
     }
@@ -955,6 +977,8 @@ void ptr_126(uint64_t nid, int n1)
     byref_id.type = BYREF_TYPE_NUM;
     byref_addr_table.push(byref_id);
     num_var[nid].nid_value = vm_n[n1].r;
+    num_var[nid].byref_offset = vm_n[n1].r_index;
+    byref_var_byref_offset.push(num_var[nid].byref_offset);
 }
 
 void ptrS_127(uint64_t sid, int s1)
@@ -964,6 +988,8 @@ void ptrS_127(uint64_t sid, int s1)
     byref_id.type = BYREF_TYPE_STR;
     byref_addr_table.push(byref_id);
     str_var[sid].sid_value = vm_s[s1].r;
+    str_var[sid].byref_offset = vm_s[s1].r_index;
+    byref_var_byref_offset.push(str_var[sid].byref_offset);
 }
 
 void rc_print_num(double n)
@@ -2187,12 +2213,15 @@ void pop_ptr_137(uint64_t n)
         {
             case BYREF_TYPE_NUM:
                 num_var[byref_addr_table.top().ptr_id].nid_value = (n_value*)byref_addr_table.top().ptr_addr;
+                num_var[byref_addr_table.top().ptr_id].byref_offset = byref_var_byref_offset.top();
                 break;
             case BYREF_TYPE_STR:
                 str_var[byref_addr_table.top().ptr_id].sid_value = (s_value*)byref_addr_table.top().ptr_addr;
+                str_var[byref_addr_table.top().ptr_id].byref_offset = byref_var_byref_offset.top();
                 break;
         }
         byref_addr_table.pop();
+        byref_var_byref_offset.pop();
     }
 }
 
@@ -2886,9 +2915,13 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.13" << endl;
+        cout << "RCBASIC Runtime v3.14 alpha" << endl;
         return 0;
     }
+
+    //DEBUG START
+    //rc_filename = "/home/n00b/Projects/RCBASIC3/rcbasic_build/tst.cbc";
+    //DEBUG END
 
     if(argc >1)
     {

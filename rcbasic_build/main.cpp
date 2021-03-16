@@ -594,12 +594,16 @@ int main(int argc, char * argv[])
 
     string rc_filename = "";// = "tst.bas";
 
+    //DEBUG START
+    //rc_filename = "tst.bas";
+    //DEBUG END
+
     if(argc > 1)
         rc_filename = argv[1];
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Compiler v3.13" << endl;
+        cout << "RCBASIC Compiler v3.14 alpha" << endl;
         return 0;
     }
 
