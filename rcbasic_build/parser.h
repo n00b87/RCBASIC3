@@ -3368,7 +3368,7 @@ bool check_rule()
                         return false;
                     }
                 }
-                else if(id[counter_id].type != ID_TYPE_NUM)
+                else if(id[counter_id].type != ID_TYPE_NUM && id[counter_id].type != ID_TYPE_BYREF_NUM)
                 {
                     rc_setError("Expected number identifier in for");
                     return false;

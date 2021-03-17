@@ -762,6 +762,7 @@ void push_103(uint64_t nid)
     rc_vm_n n;
     int byref_offset = num_var[nid].byref_offset;
     n.value = num_var[nid].nid_value[0].value[byref_offset];
+    n.r_index = byref_offset;
     n_stack.push(n);
 }
 
@@ -779,6 +780,7 @@ void pushS_105(uint64_t sid)
     rc_vm_s s;
     int byref_offset = str_var[sid].byref_offset;
     s.value = str_var[sid].sid_value[0].value[byref_offset];
+    s.r_index = byref_offset;
     s_stack.push(s);
 }
 
@@ -805,8 +807,9 @@ void pop_108(uint64_t nid)
 {
     //current_n_stack_count--;
     //num_var[nid].value[0] = n_stack[current_n_stack_count];
-    int byref_offset = num_var[nid].byref_offset;
+    int byref_offset = n_stack.top().r_index;
     num_var[nid].nid_value[0].value[byref_offset] = n_stack.top().value;
+    num_var[nid].byref_offset = byref_offset;
     n_stack.pop();
 }
 
@@ -824,8 +827,9 @@ void popS_110(uint64_t sid)
 {
     //current_s_stack_count--;
     //str_var[sid].value[0] = s_stack[current_s_stack_count];
-    int byref_offset = str_var[sid].byref_offset;
+    int byref_offset = s_stack.top().r_index;
     str_var[sid].sid_value[0].value[byref_offset] = s_stack.top().value;
+    str_var[sid].byref_offset = byref_offset;
     s_stack.pop();
 }
 
@@ -976,9 +980,9 @@ void ptr_126(uint64_t nid, int n1)
     byref_id.ptr_addr = &num_var[nid].nid_value[0];
     byref_id.type = BYREF_TYPE_NUM;
     byref_addr_table.push(byref_id);
+    byref_var_byref_offset.push(num_var[nid].byref_offset);
     num_var[nid].nid_value = vm_n[n1].r;
     num_var[nid].byref_offset = vm_n[n1].r_index;
-    byref_var_byref_offset.push(num_var[nid].byref_offset);
 }
 
 void ptrS_127(uint64_t sid, int s1)
@@ -987,9 +991,9 @@ void ptrS_127(uint64_t sid, int s1)
     byref_id.ptr_addr = &str_var[sid].sid_value[0];
     byref_id.type = BYREF_TYPE_STR;
     byref_addr_table.push(byref_id);
+    byref_var_byref_offset.push(str_var[sid].byref_offset);
     str_var[sid].sid_value = vm_s[s1].r;
     str_var[sid].byref_offset = vm_s[s1].r_index;
-    byref_var_byref_offset.push(str_var[sid].byref_offset);
 }
 
 void rc_print_num(double n)
