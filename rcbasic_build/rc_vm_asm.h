@@ -1,6 +1,8 @@
 #ifndef RC_VM_ASM_H_INCLUDED
 #define RC_VM_ASM_H_INCLUDED
 
+#define RC_CLEAN_AFTER_BUILD true
+#define RC_NO_CLEAN_AFTER_BUILD false
 
 #include <iostream>
 #include <fstream>
@@ -1128,7 +1130,7 @@ namespace rc_cbc_assembler
             remove("main.rc_asm");
     }
 
-    int rc_assemble(string cbc_file)
+    int rc_assemble(string cbc_file, bool clean_after_build=RC_CLEAN_AFTER_BUILD)
     {
 
         if(is_file_exist(cbc_file.c_str()))
@@ -1137,19 +1139,19 @@ namespace rc_cbc_assembler
         if(!loadData("main.rc_data", "main_str_data.sdata"))
         {
             cout << "Error loading compiler data" << endl;
-            rc_clean();
+            if(clean_after_build) rc_clean();
             return 0;
         }
         if(!genByteCode("main.rc_asm"))
         {
             cout << "Error generating bytecode" << endl;
-            rc_clean();
+            if(clean_after_build) rc_clean();
             return 0;
         }
         if(!compileCBC(cbc_file))
         {
             cout << "Error generating CBC file" << endl;
-            rc_clean();
+            if(clean_after_build) rc_clean();
             return 0;
         }
         cout << "RCBasic Binary Program compiled" << endl;
@@ -1166,7 +1168,7 @@ namespace rc_cbc_assembler
 
         //f.close();
         //end debug
-        rc_clean();
+        if(clean_after_build) rc_clean();
         return 0;
     }
 }

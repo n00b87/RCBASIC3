@@ -1555,6 +1555,32 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     }
                 }
 
+                bool local_state_is_pushed = false; //this variable checks will be set to true if the following function call is recursive
+                if(block_state.size() > 0)
+                {
+                    if(current_scope.substr(0, ("main."+id[expr_id].name).length()).compare("main."+id[expr_id].name)==0)
+                    {
+                        local_state_is_pushed = true;
+                        cout << "DEBUG: local_state_is_pushed=" << (local_state_is_pushed ? "TRUE":"FALSE") << endl;
+                        //push all variables that were made in current function
+                        for(uint32_t fn_var_id = current_fn_index+1; fn_var_id < id.size(); fn_var_id++)
+                        {
+                            switch(id[fn_var_id].type)
+                            {
+                                case ID_TYPE_NUM:
+                                    vm_asm.push_back("push !" + rc_intToString(id[fn_var_id].vec_pos));
+                                    n_tmp.push_back("!" + rc_intToString(id[fn_var_id].vec_pos) );
+                                    cout << "push -- " << id[fn_var_id].name << endl;
+                                    break;
+                                case ID_TYPE_STR:
+                                    vm_asm.push_back("push$ !" + rc_intToString(id[fn_var_id].vec_pos));
+                                    s_tmp.push_back("!" + rc_intToString(id[fn_var_id].vec_pos) );
+                                    break;
+                            }
+                        }
+                    }
+                }
+
 
                 for(int n = 0; n < id[expr_id].num_args; n++)
                 {
@@ -1678,6 +1704,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                         vm_asm.push_back("push$ s" + rc_intToString(n));
                         s_tmp.push_back("s" + rc_intToString(n));
                     }
+
                     vm_asm.push_back("gosub @" + id[expr_id].name);
                 }
 
