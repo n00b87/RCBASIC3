@@ -956,6 +956,22 @@ namespace rc_cbc_assembler
             {
                 writeSegment(145);
             }
+            else if(line_arg[0].compare("for_offset_arr1")==0)
+            {
+                writeSegment(146);
+            }
+            else if(line_arg[0].compare("for_offset_arr2")==0)
+            {
+                writeSegment(147);
+            }
+            else if(line_arg[0].compare("for_offset_arr3")==0)
+            {
+                writeSegment(148);
+            }
+            else if(line_arg[0].compare("for_offset_0")==0)
+            {
+                writeSegment(149);
+            }
             else
             {
                 cout << "unrecognized cmd: " << line_arg[0] << endl;

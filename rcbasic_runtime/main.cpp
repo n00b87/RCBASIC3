@@ -108,7 +108,11 @@ struct rc_loop
     double f_end;
     double f_step;
     bool isNegative;
+    uint64_t counter_offset;
 };
+
+uint64_t for_offset_index[3];
+int for_offset_dimensions = 0;
 
 union rc_double
 {
@@ -869,12 +873,29 @@ void wend_116(uint64_t jmp_addr)
 
 void for_117(uint64_t nid, int n1, int n2, int n3)
 {
-    int byref_offset = num_var[nid].byref_offset;
-    num_var[nid].nid_value[0].value[byref_offset] = vm_n[n1].value;
     rc_loop for_loop;
     for_loop.counter = &num_var[nid];
     for_loop.f_end = vm_n[n2].value;
     for_loop.f_step = vm_n[n3].value;
+
+    switch(for_offset_dimensions)
+    {
+        case 1:
+            for_loop.counter_offset = for_offset_index[0];
+            break;
+        case 2:
+            for_loop.counter_offset = for_offset_index[0] * num_var[nid].dim[1] + for_offset_index[1];
+            break;
+        case 3:
+            for_loop.counter_offset = ( for_offset_index[0] * num_var[nid].dim[1] * num_var[nid].dim[2] ) + (for_offset_index[1] * num_var[nid].dim[2]) + for_offset_index[2];
+            break;
+        default:
+            for_loop.counter_offset = 0;
+    }
+
+    int byref_offset = num_var[nid].byref_offset;
+    num_var[nid].nid_value[0].value[byref_offset + for_loop.counter_offset] = vm_n[n1].value;
+
 
     if( vm_n[n2].value < vm_n[n1].value )
         for_loop.isNegative = true;
@@ -893,7 +914,7 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
 void next_118(uint64_t f_addr)
 {
     //int l_index = current_loop_stack_count-1;
-    int byref_offset = loop_stack.top().counter[0].byref_offset;
+    int byref_offset = loop_stack.top().counter[0].byref_offset + loop_stack.top().counter_offset;
     double next_step = loop_stack.top().counter[0].nid_value[0].value[byref_offset] + loop_stack.top().f_step;
     if(loop_stack.top().isNegative && next_step <= loop_stack.top().counter[0].nid_value[0].value[byref_offset] && next_step >= loop_stack.top().f_end)
     {
@@ -2317,6 +2338,32 @@ void redimS_145(uint64_t sid, int n1, int n2, int n3)
     str_var[sid].dim[2] = (uint64_t)vm_n[n3].value;
 }
 
+void for_offset_arr1_146(int n1)
+{
+    for_offset_index[0] = vm_n[n1].value;
+    for_offset_dimensions = 1;
+}
+
+void for_offset_arr2_147(int n1, int n2)
+{
+    for_offset_index[0] = vm_n[n1].value;
+    for_offset_index[1] = vm_n[n2].value;
+    for_offset_dimensions = 2;
+}
+
+void for_offset_arr3_148(int n1, int n2, int n3)
+{
+    for_offset_index[0] = vm_n[n1].value;
+    for_offset_index[1] = vm_n[n2].value;
+    for_offset_index[2] = vm_n[n3].value;
+    for_offset_dimensions = 3;
+}
+
+void for_offset_0_149()
+{
+    for_offset_dimensions = 0;
+}
+
 bool rcbasic_run()
 {
     unsigned char rcbasic_cmd;
@@ -2856,6 +2903,24 @@ bool rcbasic_run()
                 i[2] = readInt();
                 i[3] = readInt();
                 redimS_145(i[0], i[1], i[2], i[3]);
+                break;
+            case 146:
+                i[0] = readInt();
+                for_offset_arr1_146(i[0]);
+                break;
+            case 147:
+                i[0] = readInt();
+                i[1] = readInt();
+                for_offset_arr2_147(i[0], i[1]);
+                break;
+            case 148:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                for_offset_arr3_148(i[0], i[1], i[2]);
+                break;
+            case 149:
+                for_offset_0_149();
                 break;
             default:
                 cout << "invalid cmd: " << rcbasic_cmd << endl;
