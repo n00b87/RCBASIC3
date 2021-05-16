@@ -214,10 +214,8 @@ OBJ_CURRENT_TYPE
 144 - redim2$	!id	n#	n#
 145 - redim3$	!id n#	n#	n#
 
+146 - for_offset_arr1   n#
+147 - for_offset_arr2   n#  n#
+148 - for_offset_arr3   n#  n#  n#
 
-
-
-146 - get_arr_offset2  n#  !id  n#  n#   	'First arg stores value of array offset based on !id [ n#, n#]
-147 - get_arr_offset3  n#  !id  n#  n#  n#   'First arg stores value of array offset based on !id [ n#, n#, n#]
-
-148 - set_offset  n#   'Sets the offset index of the next ptr call
+149 - for_offset_0
