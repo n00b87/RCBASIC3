@@ -108,7 +108,11 @@ struct rc_loop
     double f_end;
     double f_step;
     bool isNegative;
+    uint64_t counter_offset;
 };
+
+uint64_t for_offset_index[3];
+int for_offset_dimensions = 0;
 
 union rc_double
 {
@@ -869,12 +873,29 @@ void wend_116(uint64_t jmp_addr)
 
 void for_117(uint64_t nid, int n1, int n2, int n3)
 {
-    int byref_offset = num_var[nid].byref_offset;
-    num_var[nid].nid_value[0].value[byref_offset] = vm_n[n1].value;
     rc_loop for_loop;
     for_loop.counter = &num_var[nid];
     for_loop.f_end = vm_n[n2].value;
     for_loop.f_step = vm_n[n3].value;
+
+    switch(for_offset_dimensions)
+    {
+        case 1:
+            for_loop.counter_offset = for_offset_index[0];
+            break;
+        case 2:
+            for_loop.counter_offset = for_offset_index[0] * num_var[nid].dim[1] + for_offset_index[1];
+            break;
+        case 3:
+            for_loop.counter_offset = ( for_offset_index[0] * num_var[nid].dim[1] * num_var[nid].dim[2] ) + (for_offset_index[1] * num_var[nid].dim[2]) + for_offset_index[2];
+            break;
+        default:
+            for_loop.counter_offset = 0;
+    }
+
+    int byref_offset = num_var[nid].byref_offset;
+    num_var[nid].nid_value[0].value[byref_offset + for_loop.counter_offset] = vm_n[n1].value;
+
 
     if( vm_n[n2].value < vm_n[n1].value )
         for_loop.isNegative = true;
@@ -893,7 +914,7 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
 void next_118(uint64_t f_addr)
 {
     //int l_index = current_loop_stack_count-1;
-    int byref_offset = loop_stack.top().counter[0].byref_offset;
+    int byref_offset = loop_stack.top().counter[0].byref_offset + loop_stack.top().counter_offset;
     double next_step = loop_stack.top().counter[0].nid_value[0].value[byref_offset] + loop_stack.top().f_step;
     if(loop_stack.top().isNegative && next_step <= loop_stack.top().counter[0].nid_value[0].value[byref_offset] && next_step >= loop_stack.top().f_end)
     {
@@ -2142,6 +2163,42 @@ void func_130(uint64_t fn)
         case FN_GetRenderScaleQuality: //Number Function
             rc_push_num( rc_media_getRenderScaleQuality() );
             break;
+        case FN_WindowOpen_Ex: //Sub Procedure
+            rc_media_openWindow_ex_hw(WINDOWOPEN_EX_WIN, WINDOWOPEN_EX_TITLE$, WINDOWOPEN_EX_X, WINDOWOPEN_EX_Y, WINDOWOPEN_EX_W, WINDOWOPEN_EX_H, WINDOWOPEN_EX_FLAG, WINDOWOPEN_EX_VSYNC);
+            break;
+        case FN_GetGlobalMouse: //Sub Procedure
+            rc_media_getGlobalMouse(&GETGLOBALMOUSE_X, &GETGLOBALMOUSE_Y, &GETGLOBALMOUSE_MB1, &GETGLOBALMOUSE_MB2, &GETGLOBALMOUSE_MB3);
+            break;
+        case FN_GlobalMouseX: //Number Function
+            rc_push_num( rc_media_globalMouseX() );
+            break;
+        case FN_GlobalMouseY: //Number Function
+            rc_push_num( rc_media_globalMouseY() );
+            break;
+        case FN_GetAccel: //Sub Procedure
+            rc_media_getAccel( GETACCEL_ACCEL_NUM, &GETACCEL_X, &GETACCEL_Y, &GETACCEL_Z );
+            break;
+        case FN_AccelName$: //String Function
+            rc_push_str( rc_media_accelName( ACCELNAME$_ACCEL_NUM ) );
+            break;
+        case FN_NumAccels: //Number Function
+            rc_push_num( rc_media_numAccels() );
+            break;
+        case FN_GetGyro: //Sub Procedure
+            rc_media_getGyro( GETGYRO_GYRO_NUM, &GETGYRO_X, &GETGYRO_Y, &GETGYRO_Z );
+            break;
+        case FN_GyroName$: //String Function
+            rc_push_str( rc_media_gyroName( GYRONAME$_GYRO_NUM ));
+            break;
+        case FN_NumGyros: //Number Function
+            rc_push_num( rc_media_numGyros() );
+            break;
+        case FN_JoyRumblePlay: //Sub Procedure
+            rc_media_joyRumblePlay( JOYRUMBLEPLAY_JOY_NUM, JOYRUMBLEPLAY_STRENGTH, JOYRUMBLEPLAY_DURATION );
+            break;
+        case FN_JoyRumbleStop: //Sub Procedure
+            rc_media_joyRumbleStop( JOYRUMBLESTOP_JOY_NUM );
+            break;
     }
 }
 
@@ -2315,6 +2372,32 @@ void redimS_145(uint64_t sid, int n1, int n2, int n3)
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
     str_var[sid].dim[1] = (uint64_t)vm_n[n2].value;
     str_var[sid].dim[2] = (uint64_t)vm_n[n3].value;
+}
+
+void for_offset_arr1_146(int n1)
+{
+    for_offset_index[0] = vm_n[n1].value;
+    for_offset_dimensions = 1;
+}
+
+void for_offset_arr2_147(int n1, int n2)
+{
+    for_offset_index[0] = vm_n[n1].value;
+    for_offset_index[1] = vm_n[n2].value;
+    for_offset_dimensions = 2;
+}
+
+void for_offset_arr3_148(int n1, int n2, int n3)
+{
+    for_offset_index[0] = vm_n[n1].value;
+    for_offset_index[1] = vm_n[n2].value;
+    for_offset_index[2] = vm_n[n3].value;
+    for_offset_dimensions = 3;
+}
+
+void for_offset_0_149()
+{
+    for_offset_dimensions = 0;
 }
 
 bool rcbasic_run()
@@ -2856,6 +2939,24 @@ bool rcbasic_run()
                 i[2] = readInt();
                 i[3] = readInt();
                 redimS_145(i[0], i[1], i[2], i[3]);
+                break;
+            case 146:
+                i[0] = readInt();
+                for_offset_arr1_146(i[0]);
+                break;
+            case 147:
+                i[0] = readInt();
+                i[1] = readInt();
+                for_offset_arr2_147(i[0], i[1]);
+                break;
+            case 148:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                for_offset_arr3_148(i[0], i[1], i[2]);
+                break;
+            case 149:
+                for_offset_0_149();
                 break;
             default:
                 cout << "invalid cmd: " << rcbasic_cmd << endl;

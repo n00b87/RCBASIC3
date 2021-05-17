@@ -91,6 +91,9 @@ const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
 const int MAX_FINGERS = 10;
 const int MAX_SOCKETS = 256;
+const int MAX_ACCELS = 20;
+const int MAX_GYROS = 20;
+const int MAX_JOYSTICKS = 8;
 #else
 
 //Screen dimension constants
@@ -105,7 +108,9 @@ const int MAX_MUSIC = 1;
 const int MAX_FONTS = 32;
 const int MAX_FINGERS = 10;
 const int MAX_SOCKETS = 256;
-
+const int MAX_ACCELS = 20;
+const int MAX_GYROS = 20;
+const int MAX_JOYSTICKS = 8;
 #endif // RC_MOBILE
 
 SDL_Window * rc_win[MAX_WINDOWS];
@@ -192,15 +197,17 @@ bool rc_media_isActive = false;
 
 const Uint8 * keyState = NULL;
 
-SDL_Joystick * rc_joystick[8];
-int rc_joy_axis[8][100];
+SDL_Joystick * rc_joystick[MAX_JOYSTICKS];
+int rc_joy_axis[MAX_JOYSTICKS][100];
 int rc_numJoysticks = 0;
-int rc_joybutton[8][100];
-SDL_JoystickID rc_joyID[8];
+int rc_joybutton[MAX_JOYSTICKS][100];
+SDL_JoystickID rc_joyID[MAX_JOYSTICKS];
 
 SDL_Joystick * tmp_joy;
 SDL_JoystickID tmp_joy_id;
 int tmp_joy_flag = 0;
+
+SDL_Haptic * rc_haptic[MAX_JOYSTICKS]; //1 for each joystick
 
 double rc_pressure = 0;
 int rc_touchX = 0;
@@ -216,6 +223,12 @@ double rc_mt_theta = 0;
 double rc_mt_dist = 0;
 SDL_TouchID rc_touchDevice;
 SDL_Finger rc_finger[10];
+
+SDL_Sensor * rc_accel[MAX_ACCELS];
+int num_accels = 0;
+
+SDL_Sensor * rc_gyro[MAX_GYROS];
+int num_gyros = 0;
 
 int rc_win_width[MAX_WINDOWS];
 int rc_win_height[MAX_WINDOWS];
@@ -369,7 +382,7 @@ bool rc_media_init()
     rc_ink_color.g = 0;
     rc_ink_color.b = 0;
     rc_ink_color.a = 0;
-    if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
+    if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_SENSOR) < 0)
     {
         cout << "Init Error: " << SDL_GetError() << endl;
         return false;
@@ -414,6 +427,23 @@ bool rc_media_init()
         rc_finger[i].pressure = 0;
     }
 
+    for(int i = 0; i < SDL_NumSensors(); i++)
+    {
+        rc_accel[num_accels] =  NULL;
+        rc_gyro[num_gyros] =    NULL;
+        switch(SDL_SensorGetDeviceType(i))
+        {
+            case SDL_SENSOR_ACCEL:
+                rc_accel[num_accels] = SDL_SensorOpen(i);
+                num_accels++;
+                break;
+            case SDL_SENSOR_GYRO:
+                rc_gyro[num_gyros] = SDL_SensorOpen(i);
+                num_gyros++;
+                break;
+        }
+    }
+
 	rc_pformat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 
 	//rc_active_font = -1;
@@ -427,7 +457,7 @@ bool rc_media_init()
     rc_console_pen.a = 0;
     rc_media_isActive = true;
 
-    for(int i = 0; i < 8; i++)
+    for(int i = 0; i < MAX_JOYSTICKS; i++)
     {
         if(i < SDL_NumJoysticks())
         {
@@ -437,11 +467,13 @@ bool rc_media_init()
                 cout << "Joystick " << i << " could not be opened: " << SDL_GetError() << endl;
             }
             rc_joyID[i] = SDL_JoystickInstanceID(rc_joystick[i]);
+            rc_haptic[i] = SDL_HapticOpenFromJoystick(rc_joystick[i]);
             rc_numJoysticks++;
         }
         else
         {
             rc_joystick[i] = NULL;
+            rc_haptic[i] =  NULL;
             rc_joyID[i] = -1;
         }
     }
@@ -464,6 +496,12 @@ void rc_media_quit()
     }
     Mix_FreeMusic(rc_music);
     rc_music = NULL;
+
+    for(int i = 0; i < MAX_JOYSTICKS; i++)
+    {
+        SDL_JoystickClose(rc_joystick[i]);
+        SDL_HapticClose(rc_haptic[i]);
+    }
 
     //cout << "Music Closed" << endl;
 
@@ -559,23 +597,13 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     else if(flags == 2)
         flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
     else if(flags == 3)
+        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+    else if(flags == 4)
         flags = SDL_WINDOW_HIDDEN;
     else
     {
-        vsync = false;
-        if(flags == 4)
-            flags = SDL_WINDOW_SHOWN;
-        else if(flags == 5)
-            flags = SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP;
-        else if(flags == 6)
-            flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
-        else if(flags == 7)
-            flags = SDL_WINDOW_HIDDEN;
-        else
-        {
-            cout << "WindowOpen Error: Flag is not a supported mode" << endl;
-            return false;
-        }
+        cout << "WindowOpen Error: Flag is not a supported mode" << endl;
+        return false;
     }
     rc_win[win_num] = SDL_CreateWindow(caption.c_str(), x, y, w, h, flags);
     if(rc_win[win_num] == NULL)
@@ -604,7 +632,231 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     }
 #endif // RC_MOBILE
 
-    if(vsync)
+    rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+
+
+    if(rc_win_renderer[win_num] == NULL)
+    {
+#ifdef RC_ANDROID
+        __android_log_write(ANDROID_LOG_ERROR, "My Ass Error: ", SDL_GetError());
+        rc_win_renderer[win_num] = SDL_GetRenderer(rc_win[win_num]);
+        if(rc_win_renderer[win_num] == NULL)
+        {
+            __android_log_write(ANDROID_LOG_ERROR, "Renderer Error: ", SDL_GetError());
+            exit(0);
+        }
+        SDL_DestroyRenderer(rc_win_renderer[win_num]);
+        rc_win_renderer[win_num] = NULL;
+        if(vsync)
+            rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+        else
+            rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+
+        if(rc_win_renderer[win_num] == NULL)
+        {
+            __android_log_write(ANDROID_LOG_ERROR, "Renderer Error2: ", SDL_GetError());
+            exit(0);
+        }
+#else
+        cout << "WindowOpen Error: " << SDL_GetError() << endl;
+        exit(0);
+#endif
+    }
+
+    SDL_SetRenderDrawBlendMode(rc_win_renderer[win_num], SDL_BLENDMODE_BLEND);
+
+    //cout << "booty" << endl;
+
+#ifndef RC_MOBILE
+
+    for(int i = 0; i < MAX_IMAGES; i++)
+    {
+        if(rc_image_isLoaded[i])
+        {
+            for(int w = 0; w < MAX_WINDOWS; w++)
+            {
+                if(rc_win[w] != NULL && rc_himage[i][w]==NULL)
+                {
+                    SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[i], rc_image_height[i], 32, 0, 0, 0, 0);
+                    //cout << "ColorKey = " << (Uint32)rc_image_colorKey_r[i] << ", ";
+                    //cout << (Uint32)rc_image_colorKey_g[i] << ", ";
+                    //cout << (Uint32)rc_image_colorKey_b[i] << ", ";
+                    //cout << (Uint32)rc_image_colorKey_a[i] << endl;
+                    SDL_FillRect(tmp_surf, NULL, rc_image_colorKey[i]);
+                    SDL_SetRenderTarget(rc_win_renderer[w], NULL);
+                    SDL_Rect t_rect;
+                    t_rect.x = 0;
+                    t_rect.y = 0;
+                    t_rect.w = tmp_surf->w;
+                    t_rect.h = tmp_surf->h;
+                    Uint8 r, g, b, a;
+                    SDL_GetRenderDrawColor(rc_win_renderer[w], &r, &g, &b, &a);
+                    SDL_SetRenderDrawColor(rc_win_renderer[w], rc_image_colorKey_r[i], rc_image_colorKey_g[i], rc_image_colorKey_b[i], 255);
+                    SDL_RenderFillRect(rc_win_renderer[w], NULL);
+                    SDL_SetRenderDrawColor(rc_win_renderer[w], r, g, b, a);
+                    SDL_RenderCopy(rc_win_renderer[w], rc_himage[i][w], NULL, &t_rect);
+                    SDL_RenderReadPixels(rc_win_renderer[w],&t_rect,tmp_surf->format->format,tmp_surf->pixels,tmp_surf->pitch);
+                    SDL_SetColorKey(tmp_surf, SDL_TRUE, rc_image_colorKey[i]);
+                    rc_himage[i][w] = SDL_CreateTextureFromSurface(rc_win_renderer[w], tmp_surf);
+                    SDL_FreeSurface(tmp_surf);
+                    break;
+                }
+            }
+        }
+    }
+
+#endif // RC_ANDROID
+
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    //SDL_RenderSetLogicalSize(rc_win_renderer[win_num], w, h);
+
+    //cout << "boobs" << endl;
+
+    rc_backBuffer[win_num] = SDL_CreateTexture(rc_win_renderer[win_num], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, w, h);
+    //cout << "dbg 1" << endl;
+
+#ifdef RC_MOBILE
+
+    if(SDL_GetDesktopDisplayMode(0, &rc_displayMode[win_num])<0)
+    {
+        cout << "Something happend: " << SDL_GetError() << endl;
+    }
+
+#else
+
+    if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
+    {
+        cout << "Something happend: " << SDL_GetError() << endl;
+    }
+
+#endif // RC_ANDROID
+    //cout << "dbg 2" << endl;
+    rc_bb_rect[win_num].x = 0;
+    rc_bb_rect[win_num].y = 0;
+    //cout << "dbg 3" << endl;
+    rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
+    //cout << "dbg 4" << endl;
+    rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
+
+    //cout << "cunt" << endl;
+
+#ifdef RC_MOBILE
+    rc_mouse_scale_x = (double)((double)w / (double)rc_displayMode[win_num].w);
+    rc_mouse_scale_y = (double)((double)h / (double)rc_displayMode[win_num].h);
+#else
+    if(flags == (SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP))
+    {
+        //cout << "W = " << w << endl;
+        //cout << "D.W = " << rc_displayMode[win_num].w << endl;
+        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
+        //cout << "fs = " << rc_fullscreen_mouse_scale_x[win_num] << endl;
+        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)h / (double)rc_displayMode[win_num].h);
+        //cout << "display mode = " << rc_fullscreen_mouse_scale_x[win_num] << ", " << rc_fullscreen_mouse_scale_y[win_num] << endl;
+    }
+    else
+    {
+        rc_fullscreen_mouse_scale_x[win_num] = 1;
+        rc_fullscreen_mouse_scale_y[win_num] = 1;
+    }
+#endif // RC_ANDROID
+
+    //#ifndef RC_ANDROID
+    rc_hconsole[win_num] = SDL_CreateTexture(rc_win_renderer[win_num],rc_pformat->format,SDL_TEXTUREACCESS_TARGET,w,h);
+    SDL_SetTextureBlendMode(rc_hconsole[win_num], SDL_BLENDMODE_BLEND);
+    SDL_SetRenderTarget(rc_win_renderer[win_num], rc_hconsole[win_num]);
+    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 0);
+    SDL_RenderClear(rc_win_renderer[win_num]);
+    SDL_SetRenderTarget(rc_win_renderer[win_num], NULL);
+    //#endif // RC_ANDROID
+
+    //cout << "wtf" << endl;
+
+    rc_console_width[win_num] = w/8;
+    rc_console_height[win_num] = h/8;
+    rc_sConsole_x[win_num] = 0;
+    rc_sConsole_y[win_num] = 0;
+
+    //cout << "cdi" << endl;
+
+#ifdef RC_MOBILE
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window]);
+    SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 255);
+    SDL_RenderClear(rc_win_renderer[rc_active_window]);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+    SDL_RenderClear(rc_win_renderer[rc_active_window]);
+    rc_win_width[win_num] = w;
+    rc_win_height[win_num] = h;
+#else
+    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 255);
+    SDL_RenderClear(rc_win_renderer[win_num]);
+#endif // RC_ANDROID
+
+    SDL_RenderPresent(rc_win_renderer[win_num]);
+
+    //cout << "open complete" << endl;
+
+    return true;
+}
+
+inline bool rc_media_openWindow_ex_hw(int win_num, string caption, int x, int y, int w, int h, Uint32 flags, int vsync)
+{
+    //cout << "start windowOpen" << endl;
+    if(win_num < 0 || win_num >= MAX_WINDOWS)
+    {
+        cout << "Window #" << win_num << " is not an available Window Slot" << endl;
+        return false;
+    }
+    if(rc_win[win_num] != NULL)
+    {
+        cout << "Window #" << win_num << " is currently open" << endl;
+        return false;
+    }
+
+
+    if(flags == 0)
+        flags = SDL_WINDOW_SHOWN;
+    else if(flags == 1)
+        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP;
+    else if(flags == 2)
+        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
+    else if(flags == 3)
+        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+    else if(flags == 4)
+        flags = SDL_WINDOW_HIDDEN;
+    else
+    {
+        cout << "WindowOpen Error: Flag is not a supported mode" << endl;
+        return false;
+    }
+
+    rc_win[win_num] = SDL_CreateWindow(caption.c_str(), x, y, w, h, flags);
+    if(rc_win[win_num] == NULL)
+    {
+        cout << "Error: " << SDL_GetError() << endl;
+        return false;
+    }
+
+    if(rc_active_window == -1)
+        rc_active_window = win_num;
+
+    //rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
+    rc_win_id[win_num] = SDL_GetWindowID(rc_win[win_num]);
+
+    rc_win_width[win_num] = w;
+    rc_win_height[win_num] = h;
+    //SDL_SetSurfaceRLE(rc_win_surface[win_num],1);
+    //rc_console = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+    //SDL_SetColorKey(rc_console, SDL_TRUE, rc_clearColor);
+    //cout << "boob physics" << endl;
+
+#ifdef RC_MOBILE
+    if(rc_win_renderer[win_num] != NULL)
+    {
+        SDL_DestroyRenderer(rc_win_renderer[win_num]);
+    }
+#endif // RC_MOBILE
+
+    if(vsync != 0)
         rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
     else
         rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
@@ -4330,6 +4582,50 @@ void rc_media_getMultiTouch(double * status, double * x, double * y, double * nu
     return;
 }
 
+void rc_media_getAccel(uint32_t accel_num, double * x, double * y, double * z)
+{
+    float sensor_data[4];
+    if(accel_num < num_accels)
+        SDL_SensorGetData(rc_accel[accel_num], &sensor_data[0], 3);
+    *x = sensor_data[0];
+    *y = sensor_data[1];
+    *z = sensor_data[2];
+}
+
+string rc_media_accelName(uint32_t accel_num)
+{
+    if(accel_num < num_accels)
+        return (string)SDL_SensorGetName(rc_accel[accel_num]);
+    return "";
+}
+
+int rc_media_numAccels()
+{
+    return num_accels;
+}
+
+void rc_media_getGyro(uint32_t gyro_num, double * x, double * y, double * z)
+{
+    float sensor_data[4];
+    if(gyro_num < num_gyros)
+        SDL_SensorGetData(rc_gyro[gyro_num], &sensor_data[0], 3);
+    *x = sensor_data[0];
+    *y = sensor_data[1];
+    *z = sensor_data[2];
+}
+
+string rc_media_gyroName(uint32_t gyro_num)
+{
+    if(gyro_num < num_gyros)
+        return (string)SDL_SensorGetName(rc_gyro[gyro_num]);
+    return "";
+}
+
+int rc_media_numGyros()
+{
+    return num_gyros;
+}
+
 void rc_media_ReadInput_Start()
 {
     SDL_StartTextInput();
@@ -4463,6 +4759,30 @@ void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, doubl
     return;
 }
 
+int rc_media_globalMouseX()
+{
+    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    return rc_mouseX;
+}
+
+int rc_media_globalMouseY()
+{
+    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    return rc_mouseY;
+}
+
+void rc_media_getGlobalMouse(double * x, double * y, double * mb1, double * mb2, double * mb3)
+{
+    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_PumpEvents();
+    *mb1 = rc_mbutton1;
+    *mb2 = rc_mbutton2;
+    *mb3 = rc_mbutton3;
+    *x = rc_mouseX;
+    *y = rc_mouseY;
+    return;
+}
+
 int rc_media_mouseWheelX()
 {
     return rc_mwheelx;
@@ -4535,96 +4855,66 @@ int rc_media_numJoysticks()
 
 int rc_media_joyAxis(int joy_num, int axis)
 {
-    return SDL_JoystickGetAxis(rc_joystick[joy_num], axis);
-    //return rc_joy_axis[joy_num][axis];
-//    int jaxis_status = rc_joy_axis[joy_num][axis];
-//    while(rc_getEvents())
-//    {
-//        if(event.type == SDL_JOYAXISMOTION)
-//        {
-//            if(event.jaxis.which == joy_num)
-//            {
-//                if(event.jaxis.axis == axis)
-//                {
-//                    jaxis_status = event.jaxis.value;
-//                    return jaxis_status;
-//                }
-//            }
-//        }
-//    }
-//    return jaxis_status;
+    if(joy_num >= 0 && joy_num < 8)
+        return SDL_JoystickGetAxis(rc_joystick[joy_num], axis);
+    return 0;
 }
 
 int rc_media_joyButton(int joy_num, int jbutton)
 {
-    return SDL_JoystickGetButton(rc_joystick[joy_num], jbutton);
-    //return rc_joybutton[joy_num][jbutton];
-//    int jbutton_status = rc_joybutton[joy_num][jbutton];
-//    while(rc_getEvents())
-//    {
-//        if(event.type == SDL_JOYBUTTONDOWN)// || event.type == SDL_JOYBUTTONUP)
-//        {
-//            if(event.jbutton.which == joy_num)
-//            {
-//                if(event.jbutton.button == jbutton)
-//                {
-//                    rc_joybutton[joy_num][jbutton] = 1;
-//                    return 1;
-//                }
-//            }
-//        }
-//        else if(event.type == SDL_JOYBUTTONDOWN)// || event.type == SDL_JOYBUTTONUP)
-//        {
-//            if(event.jbutton.which == joy_num)
-//            {
-//                if(event.jbutton.button == jbutton)
-//                {
-//                    rc_joybutton[joy_num][jbutton] = 0;
-//                    return 0;
-//                }
-//            }
-//        }
-//    }
-//    return jbutton_status;
+    if(joy_num >= 0 && joy_num < 8)
+        return SDL_JoystickGetButton(rc_joystick[joy_num], jbutton);
+    return 0;
 }
 
 string rc_media_joystickName(int joy_num)
 {
-    string jname = (string)SDL_JoystickName(rc_joystick[joy_num]);
-    return jname;
+    if(joy_num >= 0 && joy_num < 8)
+        return (string)SDL_JoystickName(rc_joystick[joy_num]);
+    return "";
 }
 
 int rc_media_numJoyButtons(int joy_num)
 {
-    return SDL_JoystickNumButtons(rc_joystick[joy_num]);
+    if(joy_num >= 0 && joy_num < 8)
+        return SDL_JoystickNumButtons(rc_joystick[joy_num]);
+    return 0;
 }
 
 int rc_media_numJoyAxes(int joy_num)
 {
-    return SDL_JoystickNumAxes(rc_joystick[joy_num]);
+    if(joy_num >= 0 && joy_num < 8)
+        return SDL_JoystickNumAxes(rc_joystick[joy_num]);
+    return 0;
 }
 
 int rc_media_numJoyHats(int joy_num)
 {
-    return SDL_JoystickNumHats(rc_joystick[joy_num]);
+    if(joy_num >= 0 && joy_num < 8)
+        return SDL_JoystickNumHats(rc_joystick[joy_num]);
+    return 0;
 }
 
 int rc_media_joyHat(int joy_num, int hat)
 {
-    return SDL_JoystickGetHat(rc_joystick[joy_num], hat);
-    //return SDL_JoystickGetHat(rc_joystick[joy_num], hat);
+    if(joy_num >= 0 && joy_num < 8)
+        return SDL_JoystickGetHat(rc_joystick[joy_num], hat);
+    return 0;
 }
 
 int rc_media_numJoyTrackBalls(int joy_num)
 {
-    return SDL_JoystickNumBalls(rc_joystick[joy_num]);
+    if(joy_num >= 0 && joy_num < 8)
+        return SDL_JoystickNumBalls(rc_joystick[joy_num]);
+    return 0;
 }
 
 void rc_media_getJoyTrackBall(int joy_num, int ball, double * dx, double * dy)
 {
     int x = 0;
     int y = 0;
-    SDL_JoystickGetBall(rc_joystick[joy_num], ball, &x, &y);
+    if(joy_num >= 0 && joy_num < 8)
+        SDL_JoystickGetBall(rc_joystick[joy_num], ball, &x, &y);
     *dx = x;
     *dy = y;
 }
@@ -4638,6 +4928,18 @@ bool rc_media_joystickIsConnected( int joy_num )
         return false;
     }
     return false;
+}
+
+void rc_media_joyRumblePlay(int joy_num, double strength, double duration)
+{
+    if(joy_num >= 0 && joy_num < 8)
+        SDL_HapticRumblePlay(rc_haptic[joy_num], strength, (Uint32)duration);
+}
+
+void rc_media_joyRumbleStop(int joy_num)
+{
+    if(joy_num >= 0 && joy_num < 8)
+        SDL_HapticRumbleStop(rc_haptic[joy_num]);
 }
 
 void rc_media_loadSound(int slot, string fname)

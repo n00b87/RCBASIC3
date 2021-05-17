@@ -957,7 +957,45 @@ void init_embedded()
     embed_function("EvalJS$", ID_TYPE_FN_STR);
     add_embedded_arg("js_code$", ID_TYPE_STR);
     embed_function("GetRenderScaleQuality", ID_TYPE_FN_NUM);
-
+    embed_function("WindowOpen_Ex", ID_TYPE_SUB);
+    add_embedded_arg("win", ID_TYPE_NUM);
+    add_embedded_arg("title$", ID_TYPE_STR);
+    add_embedded_arg("x", ID_TYPE_NUM);
+    add_embedded_arg("y", ID_TYPE_NUM);
+    add_embedded_arg("w", ID_TYPE_NUM);
+    add_embedded_arg("h", ID_TYPE_NUM);
+    add_embedded_arg("flag", ID_TYPE_NUM);
+    add_embedded_arg("vsync", ID_TYPE_NUM);
+    embed_function("GetGlobalMouse", ID_TYPE_SUB);
+    add_embedded_arg("x", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("y", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("mb1", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("mb2", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("mb3", ID_TYPE_BYREF_NUM);
+    embed_function("GlobalMouseX", ID_TYPE_FN_NUM);
+    embed_function("GlobalMouseY", ID_TYPE_FN_NUM);
+    embed_function("GetAccel", ID_TYPE_SUB);
+    add_embedded_arg("accel_num", ID_TYPE_NUM);
+    add_embedded_arg("x", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("y", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("z", ID_TYPE_BYREF_NUM);
+    embed_function("AccelName$", ID_TYPE_FN_STR);
+    add_embedded_arg("accel_num", ID_TYPE_NUM);
+    embed_function("NumAccels", ID_TYPE_FN_NUM);
+    embed_function("GetGyro", ID_TYPE_SUB);
+    add_embedded_arg("gyro_num", ID_TYPE_NUM);
+    add_embedded_arg("x", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("y", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("z", ID_TYPE_BYREF_NUM);
+    embed_function("GyroName$", ID_TYPE_FN_STR);
+    add_embedded_arg("gyro_num", ID_TYPE_NUM);
+    embed_function("NumGyros", ID_TYPE_FN_NUM);
+    embed_function("JoyRumblePlay", ID_TYPE_SUB);
+    add_embedded_arg("joy_num", ID_TYPE_NUM);
+    add_embedded_arg("strength", ID_TYPE_NUM);
+    add_embedded_arg("duration", ID_TYPE_NUM);
+    embed_function("JoyRumbleStop", ID_TYPE_SUB);
+    add_embedded_arg("joy_num", ID_TYPE_NUM);
 }
 
 

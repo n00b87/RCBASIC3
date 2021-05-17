@@ -370,3 +370,17 @@ Function SystemRam()
 Function SetRenderScaleQuality(n)
 Function EvalJS$(js_code$) 'Only useable in Emscripten
 Function GetRenderScaleQuality()
+
+'v3.14
+sub WindowOpen_Ex(win, title$, x, y, w, h, flag, vsync)
+sub GetGlobalMouse(ByRef x, ByRef y, ByRef mb1, ByRef mb2, ByRef mb3)
+function GlobalMouseX()
+function GlobalMouseY()
+sub GetAccel(accel_num, ByRef x, ByRef y, ByRef z)
+function AccelName$(accel_num)
+function NumAccels()
+sub GetGyro(gyro_num, ByRef x, ByRef y, ByRef z)
+function GyroName$(gyro_num)
+function NumGyros()
+sub JoyRumblePlay(joy_num, strength, duration)
+sub JoyRumbleStop(joy_num)
