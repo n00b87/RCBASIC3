@@ -1550,7 +1550,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     }
                     if(expr_id < 0)
                     {
-                        rc_setError("Debug ERROR HERE");
+                        rc_setError("ArraySize Syntax Error");
                         return false;
                     }
                 }
@@ -1561,7 +1561,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     if(current_scope.substr(0, ("main."+id[expr_id].name).length()).compare("main."+id[expr_id].name)==0)
                     {
                         local_state_is_pushed = true;
-                        cout << "DEBUG: local_state_is_pushed=" << (local_state_is_pushed ? "TRUE":"FALSE") << endl;
+                        //cout << "DEBUG: local_state_is_pushed=" << (local_state_is_pushed ? "TRUE":"FALSE") << endl;
                         //push all variables that were made in current function
                         for(uint32_t fn_var_id = current_fn_index+1; fn_var_id < id.size(); fn_var_id++)
                         {
@@ -1570,7 +1570,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                                 case ID_TYPE_NUM:
                                     vm_asm.push_back("push !" + rc_intToString(id[fn_var_id].vec_pos));
                                     n_tmp.push_back("!" + rc_intToString(id[fn_var_id].vec_pos) );
-                                    cout << "push -- " << id[fn_var_id].name << endl;
+                                    //cout << "push -- " << id[fn_var_id].name << endl;
                                     break;
                                 case ID_TYPE_STR:
                                     vm_asm.push_back("push$ !" + rc_intToString(id[fn_var_id].vec_pos));
@@ -3395,9 +3395,14 @@ bool check_rule()
                         return false;
                     }
                 }
-                else if(id[counter_id].type != ID_TYPE_NUM && id[counter_id].type != ID_TYPE_BYREF_NUM)
+                else if(id[counter_id].type != ID_TYPE_NUM && id[counter_id].type != ID_TYPE_BYREF_NUM && id[counter_id].type != ID_TYPE_ARR_NUM)
                 {
                     rc_setError("Expected number identifier in for");
+                    return false;
+                }
+                else if(id[counter_id].type == ID_TYPE_ARR_NUM && token[2].compare("<square>") != 0)
+                {
+                    rc_setError("Expected \"[\" in array");
                     return false;
                 }
                 counter_id = getIDInScope_ByIndex(counter_var);
@@ -3410,14 +3415,88 @@ bool check_rule()
                 return false;
             }
 
-            if(token[2].compare("<equal>")!=0)
+            int for_equal_op_offset = 2;
+            int for_counter_args = 0;
+
+            if(id[counter_id].type == ID_TYPE_ARR_NUM || id[counter_id].type == ID_TYPE_BYREF_NUM)
+            {
+                if(token[2].compare("<square>") == 0)
+                {
+                    int f_scope = 1;
+                    int token_start = 2;
+                    int token_end = 3;
+                    multi_arg[0] = "";
+                    multi_arg[1] = "";
+                    multi_arg[2] = "";
+                    multi_arg_count = 0;
+                    for(int i = 3; i < token.size(); i++)
+                    {
+                        if(token[i].compare("<square>")==0)
+                            f_scope++;
+                        else if(token[i].compare("</square>")==0)
+                            f_scope--;
+                        if(f_scope == 0)
+                        {
+                            token_end = i;
+                            for_equal_op_offset = i+1;
+                            if(token[for_equal_op_offset].compare("<equal>")==0)
+                                break;
+                            else
+                            {
+                                rc_setError("Expected \"=\" in FOR");
+                                return false;
+                            }
+                        }
+                    }
+                    if(!eval_expression(token_start, token_end, true))
+                    {
+                        rc_setError("Error evaluating counter in FOR");
+                        return false;
+                    }
+
+                    if(id[counter_id].type == ID_TYPE_ARR_NUM && id[counter_id].num_args != multi_arg_count)
+                    {
+                        rc_setError("Invalid number of dimensions in FOR counter array");
+                        return false;
+                    }
+                    else if(id[counter_id].type == ID_TYPE_BYREF_NUM && multi_arg_count != 1)
+                    {
+                        rc_setError("Expected 1 argument in FOR counter ByRef array");
+                        return false;
+                    }
+
+                    switch(multi_arg_count)
+                    {
+                        case 1:
+                            vm_asm.push_back("for_offset_arr1 " + multi_arg[0]);
+                            break;
+                        case 2:
+                            vm_asm.push_back("for_offset_arr2 " + multi_arg[0] + " " + multi_arg[1]);
+                            break;
+                        case 3:
+                            vm_asm.push_back("for_offset_arr3 " + multi_arg[0] + " " + multi_arg[1] + " " + multi_arg[2]);
+                            break;
+                    }
+
+                    for(int i = token_start; i <= token_end; i++)
+                    {
+                        //cout << "remove token: " << token[i] << endl;
+                        token[i] = "";
+                    }
+
+                }
+                else
+                    vm_asm.push_back("for_offset_0");
+            }
+
+            if(token[for_equal_op_offset].compare("<equal>")!=0)
             {
                 rc_setError("Expected = in FOR");
                 return false;
             }
             int ft_count = 0;
             string ftokens[] = {"", ""};
-            for(int i = 3; i < token.size(); i++)
+            for(int i = for_equal_op_offset+1; i < token.size(); i++)
             {
                 if(token[i].compare("<to>")==0 || token[i].compare("<step>")==0)
                 {
@@ -3442,7 +3521,7 @@ bool check_rule()
                 return false;
             }
 
-            if(!eval_expression(3, token.size()-1, true))
+            if(!eval_expression(for_equal_op_offset+1, token.size()-1, true))
             {
                 rc_setError("Could not evaluate expression");
                 return false;
@@ -4104,8 +4183,8 @@ bool check_rule()
                         {
                             end_token = i;
 
-                            for(int i2 = start_token; i2 <= end_token; i2++)
-                                cout << "token: " << i2 << token[i2] << endl;
+                            //for(int i2 = start_token; i2 <= end_token; i2++)
+                            //    cout << "token: " << i2 << token[i2] << endl;
 
                             break;
                         }
