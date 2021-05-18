@@ -331,7 +331,7 @@ void mov_34(int n1, uint64_t nid)
     int byref_offset = num_var[nid].byref_offset;
     vm_n[n1].value = num_var[nid].nid_value[0].value[byref_offset];
     vm_n[n1].r = num_var[nid].nid_value;
-    vm_n[n1].r_index = 0;
+    vm_n[n1].r_index = byref_offset;
     //cout << "n" << n1 << " = " << vm_n[n1].value << endl;
 }
 
@@ -366,7 +366,7 @@ void movS_38(int s1, uint64_t sid)
     int byref_offset = str_var[sid].byref_offset;
     vm_s[s1].value = str_var[sid].sid_value[0].value[byref_offset];
     vm_s[s1].r = &str_var[sid].sid_value[0];
-    vm_s[s1].r_index = 0;
+    vm_s[s1].r_index = byref_offset;
 }
 
 void movS_39(uint64_t sid, int s1)
