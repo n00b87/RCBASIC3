@@ -3020,7 +3020,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.14 alpha" << endl;
+        cout << "RCBASIC Runtime v3.14" << endl;
         return 0;
     }
 

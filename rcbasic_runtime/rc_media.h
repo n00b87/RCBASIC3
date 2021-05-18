@@ -468,6 +468,8 @@ bool rc_media_init()
             }
             rc_joyID[i] = SDL_JoystickInstanceID(rc_joystick[i]);
             rc_haptic[i] = SDL_HapticOpenFromJoystick(rc_joystick[i]);
+            SDL_HapticRumbleInit(rc_haptic[i]);
+            //if(rc_haptic[i] == NULL){ cout << "HAP NULL: " << SDL_GetError() << endl; }
             rc_numJoysticks++;
         }
         else
@@ -4855,56 +4857,56 @@ int rc_media_numJoysticks()
 
 int rc_media_joyAxis(int joy_num, int axis)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         return SDL_JoystickGetAxis(rc_joystick[joy_num], axis);
     return 0;
 }
 
 int rc_media_joyButton(int joy_num, int jbutton)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         return SDL_JoystickGetButton(rc_joystick[joy_num], jbutton);
     return 0;
 }
 
 string rc_media_joystickName(int joy_num)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         return (string)SDL_JoystickName(rc_joystick[joy_num]);
     return "";
 }
 
 int rc_media_numJoyButtons(int joy_num)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         return SDL_JoystickNumButtons(rc_joystick[joy_num]);
     return 0;
 }
 
 int rc_media_numJoyAxes(int joy_num)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         return SDL_JoystickNumAxes(rc_joystick[joy_num]);
     return 0;
 }
 
 int rc_media_numJoyHats(int joy_num)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         return SDL_JoystickNumHats(rc_joystick[joy_num]);
     return 0;
 }
 
 int rc_media_joyHat(int joy_num, int hat)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         return SDL_JoystickGetHat(rc_joystick[joy_num], hat);
     return 0;
 }
 
 int rc_media_numJoyTrackBalls(int joy_num)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         return SDL_JoystickNumBalls(rc_joystick[joy_num]);
     return 0;
 }
@@ -4913,7 +4915,7 @@ void rc_media_getJoyTrackBall(int joy_num, int ball, double * dx, double * dy)
 {
     int x = 0;
     int y = 0;
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         SDL_JoystickGetBall(rc_joystick[joy_num], ball, &x, &y);
     *dx = x;
     *dy = y;
@@ -4921,7 +4923,7 @@ void rc_media_getJoyTrackBall(int joy_num, int ball, double * dx, double * dy)
 
 bool rc_media_joystickIsConnected( int joy_num )
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
     {
         if(rc_joystick[joy_num])
             return true;
@@ -4932,13 +4934,15 @@ bool rc_media_joystickIsConnected( int joy_num )
 
 void rc_media_joyRumblePlay(int joy_num, double strength, double duration)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
+    {
         SDL_HapticRumblePlay(rc_haptic[joy_num], strength, (Uint32)duration);
+    }
 }
 
 void rc_media_joyRumbleStop(int joy_num)
 {
-    if(joy_num >= 0 && joy_num < 8)
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         SDL_HapticRumbleStop(rc_haptic[joy_num]);
 }
 

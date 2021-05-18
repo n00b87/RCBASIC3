@@ -602,7 +602,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Compiler v3.14 alpha" << endl;
+        cout << "RCBASIC Compiler v3.14" << endl;
         return 0;
     }
 
