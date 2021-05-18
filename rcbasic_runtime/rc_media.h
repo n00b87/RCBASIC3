@@ -4248,6 +4248,70 @@ void rc_setTouchFingerEvent(SDL_FingerID fingerID, double x, double y, double pr
     }
 }
 
+void rc_onResize(int win_num)
+{
+    SDL_Texture * current_tgt = SDL_GetRenderTarget(rc_win_renderer[win_num]);
+    int w = 0;
+    int h = 0;
+    SDL_DestroyTexture(rc_backBuffer[win_num]);
+    rc_backBuffer[win_num] = NULL;
+    SDL_GetWindowSize(rc_win[win_num], &w, &h);
+    rc_backBuffer[win_num] = SDL_CreateTexture(rc_win_renderer[win_num], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, w, h);
+
+#ifdef RC_MOBILE
+
+    if(SDL_GetDesktopDisplayMode(0, &rc_displayMode[win_num])<0)
+    {
+        cout << "Something happend: " << SDL_GetError() << endl;
+    }
+
+#else
+
+    if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
+    {
+        cout << "Something happend: " << SDL_GetError() << endl;
+    }
+
+#endif // RC_ANDROID
+
+    rc_bb_rect[win_num].x = 0;
+    rc_bb_rect[win_num].y = 0;
+    rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
+    rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
+
+    Uint32 flags = SDL_GetWindowFlags(rc_win[win_num]);
+
+#ifdef RC_MOBILE
+    rc_mouse_scale_x = (double)((double)w / (double)rc_displayMode[win_num].w);
+    rc_mouse_scale_y = (double)((double)h / (double)rc_displayMode[win_num].h);
+#else
+    if(flags == (SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP))
+    {
+        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
+        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)h / (double)rc_displayMode[win_num].h);
+    }
+    else
+    {
+        rc_fullscreen_mouse_scale_x[win_num] = 1;
+        rc_fullscreen_mouse_scale_y[win_num] = 1;
+    }
+#endif // RC_ANDROID
+
+    SDL_DestroyTexture(rc_hconsole[win_num]);
+    rc_hconsole[win_num] = SDL_CreateTexture(rc_win_renderer[win_num],rc_pformat->format,SDL_TEXTUREACCESS_TARGET,w,h);
+    SDL_SetTextureBlendMode(rc_hconsole[win_num], SDL_BLENDMODE_BLEND);
+    SDL_SetRenderTarget(rc_win_renderer[win_num], rc_hconsole[win_num]);
+    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 0);
+    SDL_RenderClear(rc_win_renderer[win_num]);
+    SDL_SetRenderTarget(rc_win_renderer[win_num], current_tgt);
+
+    rc_console_width[win_num] = w/8;
+    rc_console_height[win_num] = h/8;
+    rc_sConsole_x[win_num] = 0;
+    rc_sConsole_y[win_num] = 0;
+
+}
+
 int rc_getEvents()
 {
     SDL_Event event;
@@ -4268,6 +4332,8 @@ int rc_getEvents()
                     if(rc_win_id[i] == event.window.windowID)
                     {
                         rc_active_window = i;
+                        rc_win_event[i] = 4;
+                        rc_onResize(rc_active_window);
                         break;
                     }
                 }
@@ -4413,8 +4479,10 @@ int rc_getEvents()
                 if(event.jdevice.which == rc_joyID[i] && rc_joystick[i])
                 {
                     //cout << "Joystick [" << i << "] was removed" << endl;
+                    SDL_HapticClose(rc_haptic[i]);
                     SDL_JoystickClose(rc_joystick[i]);
                     rc_joystick[i] = NULL;
+                    rc_haptic[i] = NULL;
                     rc_joyID[i] = -1;
                     rc_numJoysticks--;
                     break;
@@ -4444,6 +4512,8 @@ int rc_getEvents()
                     {
                         //cout << "Assigned " << i << endl;
                         rc_joystick[i] = tmp_joy;
+                        rc_haptic[i] = SDL_HapticOpenFromJoystick(rc_joystick[i]);
+                        SDL_HapticRumbleInit(rc_haptic[i]);
                         rc_joyID[i] = tmp_joy_id;
                         rc_numJoysticks++;
                         break;
@@ -4534,6 +4604,18 @@ bool rc_media_windowEvent_Maximize(int win_num)
     if(rc_winCheck(win_num))
     {
         if(rc_win_event[win_num]==3)
+            return true;
+        else
+            return false;
+    }
+    return false;
+}
+
+bool rc_media_windowEvent_Resize(int win_num)
+{
+    if(rc_winCheck(win_num))
+    {
+        if(rc_win_event[win_num]==4)
             return true;
         else
             return false;

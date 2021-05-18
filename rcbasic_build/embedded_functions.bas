@@ -384,3 +384,6 @@ function GyroName$(gyro_num)
 function NumGyros()
 sub JoyRumblePlay(joy_num, strength, duration)
 sub JoyRumbleStop(joy_num)
+sub WriteByteBuffer(stream, ByRef buf, buf_size)
+sub ReadByteBuffer(stream, ByRef buf, buf_size)
+

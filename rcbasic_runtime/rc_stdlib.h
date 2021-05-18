@@ -586,15 +586,25 @@ inline int rc_intern_fileReadByte(int f_stream)
     return (int)buf;
 }
 
-inline void rc_intern_fileReadByteBuffer(int f_stream, double * buf, uint64_t buf_size) //size is in bytes
+inline uint64_t rc_intern_fileReadByteBuffer(int f_stream, double * buf, uint64_t buf_size) //size is in bytes
 {
-    unsigned char c_buf;
+    uint8_t c_buf[buf_size];
+    uint64_t actual_size = SDL_RWread(rc_fstream[f_stream], &c_buf, 1, buf_size);
+
+    for(uint64_t i = 0; i < actual_size; i ++)
+        buf[i] = (double)c_buf[i];
+
+    return actual_size;
+}
+
+inline uint64_t rc_intern_fileWriteByteBuffer(int f_stream, double * buf, uint64_t buf_size) //size is in bytes
+{
+    uint8_t c_buf[buf_size];
     for(uint64_t i = 0; i < buf_size; i++)
     {
-        SDL_RWread(rc_fstream[f_stream], &c_buf, 1, 1);
-        //buf[i]
+        c_buf[i] = (uint8_t)buf[i];
     }
-    //SDL_RWtell(rc_fstream[f_stream]);
+    return SDL_RWwrite(rc_fstream[f_stream], &c_buf, 1, buf_size);
 }
 
 inline int rc_intern_fileWriteByte(int f_stream, char wb)
