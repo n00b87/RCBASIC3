@@ -120,6 +120,7 @@ SDL_Rect rc_bb_rect[MAX_WINDOWS];
 SDL_Surface * rc_win_surface[MAX_WINDOWS];
 SDL_Renderer * rc_win_renderer[MAX_WINDOWS];
 Uint32 rc_win_id[MAX_WINDOWS];
+bool rc_win_exitOnClose[MAX_WINDOWS];
 
 Uint32 rc_screen_format[MAX_WINDOWS];
 
@@ -591,6 +592,7 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     }
 
     bool vsync = true;
+    rc_win_exitOnClose[win_num] = true;
 
     if(flags == 0)
         flags = SDL_WINDOW_SHOWN;
@@ -832,6 +834,7 @@ inline bool rc_media_openWindow_ex_hw(int win_num, string caption, int x, int y,
     }
 
     rc_win[win_num] = SDL_CreateWindow(caption.c_str(), x, y, w, h, flags);
+    rc_win_exitOnClose[win_num] = true;
     if(rc_win[win_num] == NULL)
     {
         cout << "Error: " << SDL_GetError() << endl;
@@ -1028,6 +1031,11 @@ inline bool rc_media_openWindow_ex_hw(int win_num, string caption, int x, int y,
 
 inline void rc_media_closeWindow_hw(int win_num)
 {
+    if(win_num < 0 && win_num >= MAX_WINDOWS)
+    {
+        cout << "Window Index is out of Range" << endl;
+        return;
+    }
     SDL_DestroyTexture(rc_hconsole[win_num]);
     SDL_DestroyTexture(rc_backBuffer[win_num]);
     SDL_DestroyRenderer(rc_win_renderer[win_num]);
@@ -4349,7 +4357,17 @@ int rc_getEvents()
                         if(win_id == event.window.windowID)
                         {
                             rc_win_event[i] = 1;
-                            //rc_media_closeWindow_hw(i);
+                            if(SDL_QuitRequested() != 0)
+                            {
+                                //SDL_PumpEvents();
+                                SDL_FlushEvent(SDL_QUIT);
+                            }
+                            if(rc_win_exitOnClose[i])
+                            {
+                                rc_media_closeWindow_hw(i);
+                                return 0;
+                                //rc_win_event[i] = 0;
+                            }
                             break;
                         }
                         win_id = -1;
@@ -4623,6 +4641,11 @@ bool rc_media_windowEvent_Resize(int win_num)
     return false;
 }
 
+void rc_media_windowEvent_setExitOnClose(int win_num, int exitOnClose)
+{
+    rc_win_exitOnClose[win_num] = (exitOnClose != 0) ? true : false;
+}
+
 void rc_media_getTouchFinger(int finger, double * x, double * y, double * pressure)
 {
     if(finger < MAX_FINGERS)
@@ -4886,6 +4909,8 @@ void rc_media_getMouseWheel(double * x_axis, double * y_axis)
 
 void rc_media_updateWindow_hw()
 {
+    if(!rc_win[rc_active_window])
+        return;
     int s_num = 0;
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window]);
     SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_clearColor >> 16, rc_clearColor >> 8, rc_clearColor, 255);
@@ -5026,6 +5051,16 @@ void rc_media_joyRumbleStop(int joy_num)
 {
     if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
         SDL_HapticRumbleStop(rc_haptic[joy_num]);
+}
+
+int rc_media_joystickIsHaptic( int joy_num )
+{
+    if(joy_num >= 0 && joy_num < MAX_JOYSTICKS)
+    {
+        if(rc_haptic[joy_num])
+            return 1;
+    }
+    return 0;
 }
 
 void rc_media_loadSound(int slot, string fname)

@@ -110,11 +110,11 @@ void init_embedded()
     add_embedded_arg("src$", ID_TYPE_STR);
     add_embedded_arg("start", ID_TYPE_NUM);
     add_embedded_arg("n", ID_TYPE_NUM);
-    embed_function("Replace$", ID_TYPE_FN_STR);
+    embed_function("ReplaceSubstr$", ID_TYPE_FN_STR);
     add_embedded_arg("src$", ID_TYPE_STR);
     add_embedded_arg("rpc$", ID_TYPE_STR);
     add_embedded_arg("pos", ID_TYPE_NUM);
-    embed_function("ReplaceSubstr$", ID_TYPE_FN_STR);
+    embed_function("Replace$", ID_TYPE_FN_STR);
     add_embedded_arg("src$", ID_TYPE_STR);
     add_embedded_arg("tgt$", ID_TYPE_STR);
     add_embedded_arg("rpc$", ID_TYPE_STR);
@@ -996,6 +996,23 @@ void init_embedded()
     add_embedded_arg("duration", ID_TYPE_NUM);
     embed_function("JoyRumbleStop", ID_TYPE_SUB);
     add_embedded_arg("joy_num", ID_TYPE_NUM);
+    embed_function("JoystickIsHaptic", ID_TYPE_FN_NUM);
+    add_embedded_arg("joy_num", ID_TYPE_NUM);
+    embed_function("WriteByteBuffer", ID_TYPE_FN_NUM);
+    add_embedded_arg("stream", ID_TYPE_NUM);
+    add_embedded_arg("buf", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("buf_size", ID_TYPE_NUM);
+    embed_function("ReadByteBuffer", ID_TYPE_FN_NUM);
+    add_embedded_arg("stream", ID_TYPE_NUM);
+    add_embedded_arg("buf", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("buf_size", ID_TYPE_NUM);
+    embed_function("WindowEvent_Resize", ID_TYPE_FN_NUM);
+    add_embedded_arg("win", ID_TYPE_NUM);
+    embed_function("WindowEvent_SetExitOnClose", ID_TYPE_SUB);
+    add_embedded_arg("win", ID_TYPE_NUM);
+    add_embedded_arg("exit_on_close", ID_TYPE_NUM);
+
+
 }
 
 

@@ -1248,11 +1248,11 @@ void func_130(uint64_t fn)
         case FN_Mid$:
             rc_push_str( rc_intern_mid( MID$_SRC$, MID$_START, MID$_N ) );
             break;
-        case FN_Replace$:
-            rc_push_str( rc_intern_replace( REPLACE$_SRC$, REPLACE$_RPC$, REPLACE$_POS) );
-            break;
         case FN_ReplaceSubstr$:
-            rc_push_str( rc_intern_replaceSubstr( REPLACESUBSTR$_SRC$, REPLACESUBSTR$_TGT$, REPLACESUBSTR$_RPC$ ) );
+            rc_push_str( rc_intern_replaceSubstr( REPLACESUBSTR$_SRC$, REPLACESUBSTR$_RPC$, REPLACESUBSTR$_POS) );
+            break;
+        case FN_Replace$:
+            rc_push_str( rc_intern_replace( REPLACE$_SRC$, REPLACE$_TGT$, REPLACE$_RPC$ ) );
             break;
         case FN_Reverse$:
             rc_push_str( rc_intern_reverse( REVERSE$_SRC$ ) );
@@ -2199,6 +2199,23 @@ void func_130(uint64_t fn)
         case FN_JoyRumbleStop: //Sub Procedure
             rc_media_joyRumbleStop( JOYRUMBLESTOP_JOY_NUM );
             break;
+        case FN_JoystickIsHaptic: //Number Function
+            rc_push_num( rc_media_joystickIsHaptic( JOYSTICKISHAPTIC_JOY_NUM ) );
+            break;
+        case FN_WriteByteBuffer: //Number Function
+            rc_push_num( rc_intern_fileWriteByteBuffer( WRITEBYTEBUFFER_STREAM, &WRITEBYTEBUFFER_BUF, WRITEBYTEBUFFER_BUF_SIZE ) );
+            break;
+        case FN_ReadByteBuffer: //Number Function
+            rc_push_num( rc_intern_fileReadByteBuffer( READBYTEBUFFER_STREAM, &READBYTEBUFFER_BUF, READBYTEBUFFER_BUF_SIZE ) );
+            break;
+        case FN_WindowEvent_Resize: //Number Function
+            rc_push_num( rc_media_windowEvent_Resize( WINDOWEVENT_RESIZE_WIN ) );
+            break;
+        case FN_WindowEvent_SetExitOnClose: //Sub Procedure
+            rc_media_windowEvent_setExitOnClose( WINDOWEVENT_SETEXITONCLOSE_WIN, WINDOWEVENT_SETEXITONCLOSE_EXIT_ON_CLOSE );
+            break;
+
+
     }
 }
 

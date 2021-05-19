@@ -104,14 +104,14 @@
 #define MID$_SRC$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
 #define MID$_START num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define MID$_N num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
-#define FN_Replace$ 46
-#define REPLACE$_SRC$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
-#define REPLACE$_RPC$ str_var[1].sid_value[0].value[ str_var[1].byref_offset ]
-#define REPLACE$_POS num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define FN_ReplaceSubstr$ 47
+#define FN_ReplaceSubstr$ 46
 #define REPLACESUBSTR$_SRC$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
-#define REPLACESUBSTR$_TGT$ str_var[1].sid_value[0].value[ str_var[1].byref_offset ]
-#define REPLACESUBSTR$_RPC$ str_var[2].sid_value[0].value[ str_var[2].byref_offset ]
+#define REPLACESUBSTR$_RPC$ str_var[1].sid_value[0].value[ str_var[1].byref_offset ]
+#define REPLACESUBSTR$_POS num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_Replace$ 47
+#define REPLACE$_SRC$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define REPLACE$_TGT$ str_var[1].sid_value[0].value[ str_var[1].byref_offset ]
+#define REPLACE$_RPC$ str_var[2].sid_value[0].value[ str_var[2].byref_offset ]
 #define FN_Reverse$ 48
 #define REVERSE$_SRC$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
 #define FN_Right$ 49
@@ -990,3 +990,18 @@
 #define JOYRUMBLEPLAY_DURATION num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
 #define FN_JoyRumbleStop 355
 #define JOYRUMBLESTOP_JOY_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_JoystickIsHaptic 356
+#define JOYSTICKISHAPTIC_JOY_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_WriteByteBuffer 357
+#define WRITEBYTEBUFFER_STREAM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define WRITEBYTEBUFFER_BUF num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define WRITEBYTEBUFFER_BUF_SIZE num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_ReadByteBuffer 358
+#define READBYTEBUFFER_STREAM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define READBYTEBUFFER_BUF num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define READBYTEBUFFER_BUF_SIZE num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_WindowEvent_Resize 359
+#define WINDOWEVENT_RESIZE_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_WindowEvent_SetExitOnClose 360
+#define WINDOWEVENT_SETEXITONCLOSE_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define WINDOWEVENT_SETEXITONCLOSE_EXIT_ON_CLOSE num_var[1].nid_value[0].value[ num_var[1].byref_offset ]

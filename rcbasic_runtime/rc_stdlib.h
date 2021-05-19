@@ -168,7 +168,7 @@ inline string rc_intern_mid(string m_string, unsigned long m_start, unsigned lon
     return m_string.substr(m_start, n);
 }
 
-inline string rc_intern_replace(string src, string rpc, unsigned long pos)
+inline string rc_intern_replaceSubstr(string src, string rpc, unsigned long pos)
 {
     unsigned long rpc_i = 0;
     string n_str = src.substr(0,pos);
@@ -185,7 +185,7 @@ inline string rc_intern_replace(string src, string rpc, unsigned long pos)
     return n_str;
 }
 
-inline string rc_intern_replaceSubstr(string src, string tgt, string rpc)
+inline string rc_intern_replace(string src, string tgt, string rpc)
 {
     if(tgt.length()==0)
         return src;
