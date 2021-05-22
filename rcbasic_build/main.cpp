@@ -276,9 +276,43 @@ bool rc_eval(string line)
     //cout << "token: " << token[0] << endl;
 
     int i = 0;
+
+    int dim_scope = 0;
+    bool is_dim_expr = false;
+    string dim_token = "";
+
+    for(i = 0; i < tmp_token.size(); i++)
+    {
+        if(tmp_token[i].compare("<dim>")==0 || tmp_token[i].compare("<redim>")==0)
+        {
+            dim_token = tmp_token[i];
+            dim_scope = 0;
+            is_dim_expr = true;
+            continue;
+        }
+
+        if(tmp_token[i].compare("<par>")==0 || tmp_token[i].compare("<square>")==0)
+            dim_scope++;
+
+        if(tmp_token[i].compare("</par>")==0 || tmp_token[i].compare("</square>")==0)
+            dim_scope--;
+
+        if(is_dim_expr==true && dim_scope==0 && tmp_token[i].compare("<comma>")==0)
+        {
+            tmp_token[i] = "<:>";
+            tmp_token.insert(tmp_token.begin()+ (i+1), dim_token);
+        }
+
+        if(tmp_token[i].compare("<:>")==0)
+            is_dim_expr = false;
+    }
+
+    i = 0;
+
     while( i < tmp_token.size())
     {
         token.clear();
+
         for(; i < tmp_token.size(); i++)
         {
             if(tmp_token[i].compare("<:>")==0)
