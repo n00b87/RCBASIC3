@@ -331,7 +331,7 @@ void mov_34(int n1, uint64_t nid)
     int byref_offset = num_var[nid].byref_offset;
     vm_n[n1].value = num_var[nid].nid_value[0].value[byref_offset];
     vm_n[n1].r = num_var[nid].nid_value;
-    vm_n[n1].r_index = 0;
+    vm_n[n1].r_index = byref_offset;
     //cout << "n" << n1 << " = " << vm_n[n1].value << endl;
 }
 
@@ -366,7 +366,7 @@ void movS_38(int s1, uint64_t sid)
     int byref_offset = str_var[sid].byref_offset;
     vm_s[s1].value = str_var[sid].sid_value[0].value[byref_offset];
     vm_s[s1].r = &str_var[sid].sid_value[0];
-    vm_s[s1].r_index = 0;
+    vm_s[s1].r_index = byref_offset;
 }
 
 void movS_39(uint64_t sid, int s1)
@@ -1248,11 +1248,11 @@ void func_130(uint64_t fn)
         case FN_Mid$:
             rc_push_str( rc_intern_mid( MID$_SRC$, MID$_START, MID$_N ) );
             break;
-        case FN_Replace$:
-            rc_push_str( rc_intern_replace( REPLACE$_SRC$, REPLACE$_RPC$, REPLACE$_POS) );
-            break;
         case FN_ReplaceSubstr$:
-            rc_push_str( rc_intern_replaceSubstr( REPLACESUBSTR$_SRC$, REPLACESUBSTR$_TGT$, REPLACESUBSTR$_RPC$ ) );
+            rc_push_str( rc_intern_replaceSubstr( REPLACESUBSTR$_SRC$, REPLACESUBSTR$_RPC$, REPLACESUBSTR$_POS) );
+            break;
+        case FN_Replace$:
+            rc_push_str( rc_intern_replace( REPLACE$_SRC$, REPLACE$_TGT$, REPLACE$_RPC$ ) );
             break;
         case FN_Reverse$:
             rc_push_str( rc_intern_reverse( REVERSE$_SRC$ ) );
@@ -2163,6 +2163,59 @@ void func_130(uint64_t fn)
         case FN_GetRenderScaleQuality: //Number Function
             rc_push_num( rc_media_getRenderScaleQuality() );
             break;
+        case FN_WindowOpen_Ex: //Sub Procedure
+            rc_media_openWindow_ex_hw(WINDOWOPEN_EX_WIN, WINDOWOPEN_EX_TITLE$, WINDOWOPEN_EX_X, WINDOWOPEN_EX_Y, WINDOWOPEN_EX_W, WINDOWOPEN_EX_H, WINDOWOPEN_EX_FLAG, WINDOWOPEN_EX_VSYNC);
+            break;
+        case FN_GetGlobalMouse: //Sub Procedure
+            rc_media_getGlobalMouse(&GETGLOBALMOUSE_X, &GETGLOBALMOUSE_Y, &GETGLOBALMOUSE_MB1, &GETGLOBALMOUSE_MB2, &GETGLOBALMOUSE_MB3);
+            break;
+        case FN_GlobalMouseX: //Number Function
+            rc_push_num( rc_media_globalMouseX() );
+            break;
+        case FN_GlobalMouseY: //Number Function
+            rc_push_num( rc_media_globalMouseY() );
+            break;
+        case FN_GetAccel: //Sub Procedure
+            rc_media_getAccel( GETACCEL_ACCEL_NUM, &GETACCEL_X, &GETACCEL_Y, &GETACCEL_Z );
+            break;
+        case FN_AccelName$: //String Function
+            rc_push_str( rc_media_accelName( ACCELNAME$_ACCEL_NUM ) );
+            break;
+        case FN_NumAccels: //Number Function
+            rc_push_num( rc_media_numAccels() );
+            break;
+        case FN_GetGyro: //Sub Procedure
+            rc_media_getGyro( GETGYRO_GYRO_NUM, &GETGYRO_X, &GETGYRO_Y, &GETGYRO_Z );
+            break;
+        case FN_GyroName$: //String Function
+            rc_push_str( rc_media_gyroName( GYRONAME$_GYRO_NUM ));
+            break;
+        case FN_NumGyros: //Number Function
+            rc_push_num( rc_media_numGyros() );
+            break;
+        case FN_JoyRumblePlay: //Sub Procedure
+            rc_media_joyRumblePlay( JOYRUMBLEPLAY_JOY_NUM, JOYRUMBLEPLAY_STRENGTH, JOYRUMBLEPLAY_DURATION );
+            break;
+        case FN_JoyRumbleStop: //Sub Procedure
+            rc_media_joyRumbleStop( JOYRUMBLESTOP_JOY_NUM );
+            break;
+        case FN_JoystickIsHaptic: //Number Function
+            rc_push_num( rc_media_joystickIsHaptic( JOYSTICKISHAPTIC_JOY_NUM ) );
+            break;
+        case FN_WriteByteBuffer: //Number Function
+            rc_push_num( rc_intern_fileWriteByteBuffer( WRITEBYTEBUFFER_STREAM, &WRITEBYTEBUFFER_BUF, WRITEBYTEBUFFER_BUF_SIZE ) );
+            break;
+        case FN_ReadByteBuffer: //Number Function
+            rc_push_num( rc_intern_fileReadByteBuffer( READBYTEBUFFER_STREAM, &READBYTEBUFFER_BUF, READBYTEBUFFER_BUF_SIZE ) );
+            break;
+        case FN_WindowEvent_Resize: //Number Function
+            rc_push_num( rc_media_windowEvent_Resize( WINDOWEVENT_RESIZE_WIN ) );
+            break;
+        case FN_WindowEvent_SetExitOnClose: //Sub Procedure
+            rc_media_windowEvent_setExitOnClose( WINDOWEVENT_SETEXITONCLOSE_WIN, WINDOWEVENT_SETEXITONCLOSE_EXIT_ON_CLOSE );
+            break;
+
+
     }
 }
 
@@ -2947,9 +3000,30 @@ void rcbasic_clean()
     gosub_return_addr.empty();
 }
 
+void rcbasic_test()
+{
+    SDL_Init(SDL_INIT_EVERYTHING);
+
+    SDL_Window * win = SDL_CreateWindow("test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN);
+    SDL_Renderer * ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Rect src;
+    src.x = 50;
+    src.y = 50;
+    src.w = 100;
+    src.h = 100;
+    SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
+    SDL_RenderFillRect(ren, &src);
+    SDL_RenderPresent(ren);
+    SDL_Delay(5000);
+    SDL_DestroyRenderer(ren);
+    SDL_DestroyWindow(win);
+}
 
 int main(int argc, char * argv[])
 {
+    //rcbasic_test();
+    //return 0;
+
     //cout << "RCBASIC RUNTIME START" << endl;
     #ifdef RC_WINDOWS
         TCHAR buf[MAX_PATH];
@@ -2984,7 +3058,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("-v")==0)
     {
-        cout << "RCBASIC Runtime v3.14 alpha" << endl;
+        cout << "RCBASIC Runtime v3.14" << endl;
         return 0;
     }
 

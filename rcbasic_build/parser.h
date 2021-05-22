@@ -1550,7 +1550,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     }
                     if(expr_id < 0)
                     {
-                        rc_setError("Debug ERROR HERE");
+                        rc_setError("ArraySize Syntax Error");
                         return false;
                     }
                 }
@@ -1561,7 +1561,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     if(current_scope.substr(0, ("main."+id[expr_id].name).length()).compare("main."+id[expr_id].name)==0)
                     {
                         local_state_is_pushed = true;
-                        cout << "DEBUG: local_state_is_pushed=" << (local_state_is_pushed ? "TRUE":"FALSE") << endl;
+                        //cout << "DEBUG: local_state_is_pushed=" << (local_state_is_pushed ? "TRUE":"FALSE") << endl;
                         //push all variables that were made in current function
                         for(uint32_t fn_var_id = current_fn_index+1; fn_var_id < id.size(); fn_var_id++)
                         {
@@ -1570,7 +1570,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                                 case ID_TYPE_NUM:
                                     vm_asm.push_back("push !" + rc_intToString(id[fn_var_id].vec_pos));
                                     n_tmp.push_back("!" + rc_intToString(id[fn_var_id].vec_pos) );
-                                    cout << "push -- " << id[fn_var_id].name << endl;
+                                    //cout << "push -- " << id[fn_var_id].name << endl;
                                     break;
                                 case ID_TYPE_STR:
                                     vm_asm.push_back("push$ !" + rc_intToString(id[fn_var_id].vec_pos));
@@ -4183,8 +4183,8 @@ bool check_rule()
                         {
                             end_token = i;
 
-                            for(int i2 = start_token; i2 <= end_token; i2++)
-                                cout << "token: " << i2 << token[i2] << endl;
+                            //for(int i2 = start_token; i2 <= end_token; i2++)
+                            //    cout << "token: " << i2 << token[i2] << endl;
 
                             break;
                         }

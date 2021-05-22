@@ -168,7 +168,7 @@ inline string rc_intern_mid(string m_string, unsigned long m_start, unsigned lon
     return m_string.substr(m_start, n);
 }
 
-inline string rc_intern_replace(string src, string rpc, unsigned long pos)
+inline string rc_intern_replaceSubstr(string src, string rpc, unsigned long pos)
 {
     unsigned long rpc_i = 0;
     string n_str = src.substr(0,pos);
@@ -185,7 +185,7 @@ inline string rc_intern_replace(string src, string rpc, unsigned long pos)
     return n_str;
 }
 
-inline string rc_intern_replaceSubstr(string src, string tgt, string rpc)
+inline string rc_intern_replace(string src, string tgt, string rpc)
 {
     if(tgt.length()==0)
         return src;
@@ -584,6 +584,27 @@ inline int rc_intern_fileReadByte(int f_stream)
     SDL_RWread(rc_fstream[f_stream], &buf, 1, 1);
     //SDL_RWtell(rc_fstream[f_stream]);
     return (int)buf;
+}
+
+inline uint64_t rc_intern_fileReadByteBuffer(int f_stream, double * buf, uint64_t buf_size) //size is in bytes
+{
+    uint8_t c_buf[buf_size];
+    uint64_t actual_size = SDL_RWread(rc_fstream[f_stream], &c_buf, 1, buf_size);
+
+    for(uint64_t i = 0; i < actual_size; i ++)
+        buf[i] = (double)c_buf[i];
+
+    return actual_size;
+}
+
+inline uint64_t rc_intern_fileWriteByteBuffer(int f_stream, double * buf, uint64_t buf_size) //size is in bytes
+{
+    uint8_t c_buf[buf_size];
+    for(uint64_t i = 0; i < buf_size; i++)
+    {
+        c_buf[i] = (uint8_t)buf[i];
+    }
+    return SDL_RWwrite(rc_fstream[f_stream], &c_buf, 1, buf_size);
 }
 
 inline int rc_intern_fileWriteByte(int f_stream, char wb)
