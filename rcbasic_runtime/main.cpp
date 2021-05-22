@@ -3000,9 +3000,30 @@ void rcbasic_clean()
     gosub_return_addr.empty();
 }
 
+void rcbasic_test()
+{
+    SDL_Init(SDL_INIT_EVERYTHING);
+
+    SDL_Window * win = SDL_CreateWindow("test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN);
+    SDL_Renderer * ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Rect src;
+    src.x = 50;
+    src.y = 50;
+    src.w = 100;
+    src.h = 100;
+    SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
+    SDL_RenderFillRect(ren, &src);
+    SDL_RenderPresent(ren);
+    SDL_Delay(5000);
+    SDL_DestroyRenderer(ren);
+    SDL_DestroyWindow(win);
+}
 
 int main(int argc, char * argv[])
 {
+    //rcbasic_test();
+    //return 0;
+
     //cout << "RCBASIC RUNTIME START" << endl;
     #ifdef RC_WINDOWS
         TCHAR buf[MAX_PATH];
