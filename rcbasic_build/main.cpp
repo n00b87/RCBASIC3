@@ -688,7 +688,7 @@ int main(int argc, char * argv[])
     string rc_filename = "";// = "tst.bas";
 
     //DEBUG START
-    rc_filename = "tst.bas";
+    //rc_filename = "tst.bas";
     //DEBUG END
 
     if(argc > 1)
