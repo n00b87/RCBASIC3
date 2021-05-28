@@ -120,125 +120,173 @@ bool rc_preprocessor()
             tmp_token.clear();
             return true;
         }
-        else
+    }
+    return true;
+}
+
+bool Array_Macros(int tmp_start_token)
+{
+    //returning true is just saying there were no syntax errors found
+    if(tmp_token[tmp_start_token].length() < 5)
+        return true;
+    if(StringToLower(tmp_token[tmp_start_token].substr(4)).compare("arraydim")!=0 && StringToLower(tmp_token[tmp_start_token].substr(4)).compare("arraysize")!=0)
+        return true;
+
+    int64_t arr_id = 0;
+    vector<string> tmp_macro_token;
+    vector<string> tmp_current_token;
+    //int ArrayDim_id = getIDInScope_ByIndex("ArrayDim");
+    for(int i = tmp_start_token; i < tmp_token.size(); i++)
+    {
+        if(tmp_token[i].substr(0,4).compare("<id>")==0)
         {
-            int64_t arr_id = 0;
-            //int ArrayDim_id = getIDInScope_ByIndex("ArrayDim");
-            for(int i = 0; i < tmp_token.size(); i++)
+            if(StringToLower(tmp_token[i].substr(4)).compare("arraydim")==0)
             {
-                if(tmp_token[i].substr(0,4).compare("<id>")==0)
+                if(tmp_token[i+1].compare("<par>")!=0)
                 {
-                    if(StringToLower(tmp_token[i].substr(4)).compare("arraydim")==0)
-                    {
-                        if(tmp_token[i+1].compare("<par>")!=0)
-                        {
-                            rc_setError("Invalid use of ArrayDim");
-                            return false;
-                        }
-                        if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
-                        {
-                            arr_id = getIDInScope_ByIndex(tmp_token[i+2].substr(4));
-                            if(arr_id < 0)
-                            {
-                                rc_setError("Identifier must be declared before call to ArrayDim");
-                                return false;
-                            }
-
-                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_ARR_STR)
-                            {
-                                id[arr_id].isArrayArg = true;
-                            }
-                            else
-                            {
-                                rc_setError("Expected Array in ArrayDim");
-                                return false;
-                            }
-
-                        }
-                        else
-                        {
-                            rc_setError("Expected Identifier in ArrayDim");
-                            return false;
-                        }
-
-                        int end_token = i+2;
-                        for(end_token; end_token < tmp_token.size(); end_token++)
-                        {
-                            if(tmp_token[end_token].compare("</par>")==0)
-                                break;
-                        }
-
-                        token.clear();
-                        for(int n = i; n <= end_token; n++)
-                                token.push_back(tmp_token[n]);
-
-                        //cout << "<---- DEBUG ---->" << i << endl;
-                        //output_tokens();
-
-                        if(!eval_expression())
-                        {
-                            rc_setError("?Could not evaluate ArrayDim");
-                            return false;
-                        }
-
-                        for(int n = i; n <= end_token; n++)
-                                tmp_token[n] = token[n-i];
-                    }
-                    else if(StringToLower(tmp_token[i].substr(4)).compare("arraysize")==0)
-                    {
-                        if(tmp_token[i+1].compare("<par>")!=0)
-                        {
-                            rc_setError("Invalid use of ArraySize");
-                            return false;
-                        }
-                        if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
-                        {
-                            arr_id = getIDInScope_ByIndex(tmp_token[i+2].substr(4));
-                            if(arr_id < 0)
-                            {
-                                rc_setError("Identifier must be declared before call to ArraySize");
-                                return false;
-                            }
-                            if(id[arr_id].type == ID_TYPE_ARR_NUM || id[arr_id].type == ID_TYPE_ARR_STR)
-                            {
-                                //cout << "set id arg ---> " << id[arr_id].name << endl;
-                                id[arr_id].isArrayArg = true;
-                            }
-                            else
-                            {
-                                rc_setError("Expected Array in ArraySize");
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            rc_setError("Expected Identifier in ArraySize");
-                            return false;
-                        }
-                        int end_token = i+2;
-                        for(end_token; end_token < tmp_token.size(); end_token++)
-                        {
-                            if(tmp_token[end_token].compare("</par>")==0)
-                                break;
-                        }
-                        token.clear();
-                        for(int n = i; n <= end_token; n++)
-                                token.push_back(tmp_token[n]);
-                        if(!eval_expression())//i, end_token))
-                        {
-                            rc_setError("--Could not evaluate ArraySize expression");
-                            //for(int n = 0; n < token.size(); n++)
-                            //    cout << "token["<< n << "] = " << token[n] << endl;
-                            return false;
-                        }
-                        for(int n = i; n <= end_token; n++)
-                                tmp_token[n] = token[n-i];
-                    }
+                    rc_setError("Invalid use of ArrayDim");
+                    return false;
                 }
+                if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
+                {
+                    arr_id = getIDInScope_ByIndex(tmp_token[i+2].substr(4));
+                    if(arr_id < 0)
+                    {
+                        rc_setError("Identifier must be declared before call to ArrayDim");
+                        return false;
+                    }
+
+                    id[arr_id].isArrayArg = true;
+
+                }
+                else
+                {
+                    rc_setError("Expected Identifier in ArrayDim");
+                    return false;
+                }
+
+                int end_token = i+2;
+                int expr_scope = 1;
+                for(end_token; end_token < tmp_token.size(); end_token++)
+                {
+                    if(tmp_token[end_token].compare("<par>")==0 || tmp_token[end_token].compare("<square>")==0)
+                        expr_scope++;
+                    else if(tmp_token[end_token].compare("</par>")==0 || tmp_token[end_token].compare("</square>")==0)
+                        expr_scope--;
+
+                    if(expr_scope==0 && tmp_token[end_token].compare("</par>")==0)
+                        break;
+                }
+
+                tmp_macro_token.clear();
+                for(int n = i; n <= end_token; n++)
+                        tmp_macro_token.push_back(tmp_token[n]);
+
+                //cout << "<---- DEBUG ---->" << i << endl;
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"token[" << n << "] = " << token[n] << endl;
+
+                tmp_current_token.clear();
+                for(int n = 0; n < token.size(); n++)
+                    tmp_current_token.push_back(token[n]);
+
+                token.clear();
+                for(int n = 0; n < tmp_macro_token.size(); n++)
+                    token.push_back(tmp_macro_token[n]);
+
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"new token[" << n << "] = " << token[n] << endl;
+
+
+                if(!eval_expression())
+                {
+                    rc_setError("Could not evaluate ArrayDim");
+                    return false;
+                }
+
+                for(int n = i; n <= end_token; n++)
+                        tmp_token[n] = token[n-i];
+
+                token.clear();
+                for(int n = 0; n < tmp_current_token.size(); n++)
+                    token.push_back(tmp_current_token[n]);
+
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"final token[" << n << "] = " << token[n] << endl;
+                return true;
+
+            }
+            else if(StringToLower(tmp_token[i].substr(4)).compare("arraysize")==0)
+            {
+                if(tmp_token[i+1].compare("<par>")!=0)
+                {
+                    rc_setError("Invalid use of ArraySize");
+                    return false;
+                }
+                if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
+                {
+                    arr_id = getIDInScope_ByIndex(tmp_token[i+2].substr(4));
+                    if(arr_id < 0)
+                    {
+                        rc_setError("Identifier must be declared before call to ArraySize");
+                        return false;
+                    }
+
+                    id[arr_id].isArrayArg = true;
+
+                }
+                else
+                {
+                    rc_setError("Expected Identifier in ArraySize");
+                    return false;
+                }
+
+                int end_token = i+2;
+                int expr_scope = 1;
+                for(end_token; end_token < tmp_token.size(); end_token++)
+                {
+                    if(tmp_token[end_token].compare("<par>")==0 || tmp_token[end_token].compare("<square>")==0)
+                        expr_scope++;
+                    else if(tmp_token[end_token].compare("</par>")==0 || tmp_token[end_token].compare("</square>")==0)
+                        expr_scope--;
+
+                    if(expr_scope==0 && tmp_token[end_token].compare("</par>")==0)
+                        break;
+                }
+
+                tmp_macro_token.clear();
+                for(int n = i; n <= end_token; n++)
+                        tmp_macro_token.push_back(tmp_token[n]);
+
+
+                tmp_current_token.clear();
+                for(int n = 0; n < token.size(); n++)
+                    tmp_current_token.push_back(token[n]);
+
+                token.clear();
+                for(int n = 0; n < tmp_macro_token.size(); n++)
+                    token.push_back(tmp_macro_token[n]);
+
+                if(!eval_expression(0, token.size()-1, true))//i, end_token))
+                {
+                    rc_setError("--Could not evaluate ArraySize expression");
+                    //for(int n = 0; n < token.size(); n++)
+                    //    cout << "token["<< n << "] = " << token[n] << endl;
+                    return false;
+                }
+
+                for(int n = i; n <= end_token; n++)
+                        tmp_token[n] = token[n-i];
+
+                token.clear();
+                for(int n = 0; n < tmp_current_token.size(); n++)
+                    token.push_back(tmp_current_token[n]);
+
+                return true;
             }
         }
     }
-    return true;
+    return false;
 }
 
 bool rc_eval(string line)
@@ -315,11 +363,22 @@ bool rc_eval(string line)
 
         for(; i < tmp_token.size(); i++)
         {
+            //cout << "start tmp_token loop :: ";
+            //cout << "i = " << i << "     tmp_token_size = " << tmp_token.size() << endl;
             if(tmp_token[i].compare("<:>")==0)
                 break;
+            else if(!Array_Macros(i))
+            {
+                cout << "ERROR:" << rc_getError() << endl;
+                return false;
+            }
+            //cout << "### tmp_token[" << i << "] = ";
+            //cout << tmp_token[i] << endl;
             token.push_back(tmp_token[i]);
         }
         i++;
+
+        //cout << "start rule" << endl;
 
         if(!check_rule())
         {

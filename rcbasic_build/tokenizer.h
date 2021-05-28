@@ -943,6 +943,7 @@ string rc_keywordToken(string sline)
 
 void output_tokens()
 {
+    return;
     for(int i = 0; i < tmp_token.size(); i++)
     {
         try

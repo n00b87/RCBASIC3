@@ -166,6 +166,7 @@ int getResolveReg(string arg)
 {
     for(int i = 0; i < resolveID_id_reg.size(); i++)
     {
+        //cout << "compare (" << arg << " to " << resolveID_id_reg[i] << endl;
         if(resolveID_id_reg[i].compare(arg)==0)
             return i;
     }
