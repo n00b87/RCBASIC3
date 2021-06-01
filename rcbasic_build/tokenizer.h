@@ -25,6 +25,7 @@ bool isDigit(char ch); //returns whether or not the current character is a digit
 bool isOperatorToken(int token_index); //returns whether or not the token at the given index is an operator
 void output_tokens(); //outputs the last set of tokens generated
 void clearTokens();
+bool multi_line_comment=false;
 
 bool isOperatorToken(int token_index)
 {
@@ -78,6 +79,16 @@ bool tokens(const std::string &data)
 
     string arg_data = "";
     int arg_data_scope = 0;
+
+    if(multi_line_comment)
+    {
+        x = data.find("'/");
+        if(x == string::npos)
+            return true;
+
+        multi_line_comment = false;
+        x += 2;
+    }
 
     while(x < data.length())
     {
@@ -200,8 +211,28 @@ bool tokens(const std::string &data)
                 tmp_token.push_back("<mul>");
                 break;
             case '/':
-                inc(x, 1);
-                tmp_token.push_back("<div>");
+                ch = data[x+1];
+                if(ch == '\'')
+                {
+                    //start multi-line comment
+                    multi_line_comment = true;
+                    inc(x, 1);
+                    size_t end_comment = data.find("'/");
+                    if(end_comment == string::npos)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        x = end_comment+2;
+                        multi_line_comment = false;
+                    }
+                }
+                else
+                {
+                    inc(x, 1);
+                    tmp_token.push_back("<div>");
+                }
                 break;
             case '%':
                 inc(x, 1);
