@@ -291,6 +291,10 @@ bool Array_Macros(int tmp_start_token)
 
 bool rc_eval(string line)
 {
+    //adding an extra character to line to avoid a memory leak
+    line += "  ";
+
+
     ERROR_MSG = "";
     clearRegs();
     clearTokens();
@@ -402,6 +406,10 @@ bool rc_eval(string line)
 
 bool rc_eval_embedded(string line)
 {
+    //adding an extra character to line to avoid a memory leak
+    line += "   ";
+
+
     ERROR_MSG = "";
     clearRegs();
     clearTokens();
