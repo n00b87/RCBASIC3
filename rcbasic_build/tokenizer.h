@@ -216,15 +216,15 @@ bool tokens(const std::string &data)
                 {
                     //start multi-line comment
                     multi_line_comment = true;
-                    inc(x, 1);
-                    size_t end_comment = data.find("'/");
+                    size_t end_comment = data.substr(x+2).find("'/");
                     if(end_comment == string::npos)
                     {
                         return true;
                     }
                     else
                     {
-                        x = end_comment+2;
+                        x += end_comment+4;
+                        //cout << "data[" << x << "] = " << data[x] << endl;
                         multi_line_comment = false;
                     }
                 }
