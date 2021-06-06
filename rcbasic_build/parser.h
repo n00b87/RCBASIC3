@@ -2654,7 +2654,7 @@ bool check_rule()
                 current_scope = "main";
                 current_fn_index++;
             }
-            else if(token[1].compare("<sub>")==0)
+            else if(token[1].compare("<subp>")==0)
             {
                 if(token.size()>2)
                 {
@@ -2874,7 +2874,7 @@ bool check_rule()
             }
 
         }
-        else if(token[0].compare("<sub>")==0)
+        else if(token[0].compare("<subp>")==0)
         {
             if(isInFunctionScope)
             {
@@ -4416,7 +4416,7 @@ bool check_rule_embedded()
             }
 
         }
-        else if(token[0].compare("<sub>")==0)
+        else if(token[0].compare("<subp>")==0)
         {
             if(token.size()<2)
             {

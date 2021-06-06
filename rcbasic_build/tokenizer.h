@@ -396,9 +396,10 @@ bool tokens(const std::string &data)
 
                     rc_builtin_constant = rc_keywordToken(StringToUpper(s_data));
 
-                    if(isKeyWord(StringToUpper(s_data)))
+                    string kw_s_data = StringToUpper(s_data);
+                    if(isKeyWord(kw_s_data))
                     {
-                        s_data  = "<"+StringToLower(s_data)+">";
+                        s_data  = "<"+StringToLower(kw_s_data.compare("SUB")==0 ? "subp" : s_data)+">";
                         //keyword = s_data;
                     }
                     else if(rc_builtin_constant.compare("")!=0)

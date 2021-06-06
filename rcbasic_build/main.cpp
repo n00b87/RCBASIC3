@@ -454,6 +454,8 @@ bool rc_eval_embedded(string line)
     //cout << "F_Error: " << rc_getError() << endl;
 }
 
+rc_src rc_last_line;
+
 bool rc_getline(string &line)
 {
     line = "";
@@ -479,6 +481,8 @@ bool rc_getline(string &line)
         }
         else
         {
+            if(rcbasic_program.size()==1)
+                rc_last_line = rcbasic_program.top();
             rcbasic_program.pop();
             rcbasic_file.close();
             return false;
@@ -544,6 +548,14 @@ bool rcbasic_compile()
 //            f.close();
 //            data_segment.clear();
 //        }
+    }
+
+    if(!rc_eval(line))
+    {
+        cout << "Error on Line " << rc_last_line.line_number << " in " << rc_last_line.filename << ": " << rc_getError() << endl;
+        //output_tokens();
+        cout << endl;
+        return false;
     }
 
     vm_asm.push_back("end");
