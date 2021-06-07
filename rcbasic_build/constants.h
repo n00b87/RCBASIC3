@@ -29,7 +29,7 @@ int create_constant(string c_name)
 
 void add_const_token(int c_id, string c_token)
 {
-    rc_constants[i].const_tokens.push_back(c_token);
+    rc_constants[c_id].const_tokens.push_back(c_token);
 }
 
 #endif // CONSTANTS_H_INCLUDED
