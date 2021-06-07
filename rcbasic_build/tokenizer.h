@@ -10,6 +10,7 @@
 #include "rc_utility.h"
 #include "rc_debug.h"
 #include "keywords.h"
+#include "constants.h"
 
 using namespace std;
 
@@ -396,9 +397,10 @@ bool tokens(const std::string &data)
 
                     rc_builtin_constant = rc_keywordToken(StringToUpper(s_data));
 
-                    if(isKeyWord(StringToUpper(s_data)))
+                    string kw_s_data = StringToUpper(s_data);
+                    if(isKeyWord(kw_s_data))
                     {
-                        s_data  = "<"+StringToLower(s_data)+">";
+                        s_data  = "<"+StringToLower(kw_s_data.compare("SUB")==0 ? "subp" : s_data)+">";
                         //keyword = s_data;
                     }
                     else if(rc_builtin_constant.compare("")!=0)
@@ -410,7 +412,9 @@ bool tokens(const std::string &data)
                     {
                         s_data = "<id>"+s_data;
                     }
-                    tmp_token.push_back(s_data);
+
+                    if(s_data.compare("<user_const>")!=0)
+                        tmp_token.push_back(s_data);
                 }
                 else if(ch == '~')
                 {
@@ -968,6 +972,19 @@ string rc_keywordToken(string sline)
         return "<num>3";
     else if(sline.compare("POWERSTATE_CHARGED")==0)
         return "<num>4";
+    else
+    {
+        for(int i = 0; i < rc_constants.size(); i++)
+        {
+            if(rc_constants[i].const_name.compare(sline)==0)
+            {
+                for(int c_token_index=0; c_token_index < rc_constants[i].const_tokens.size(); c_token_index++)
+                    tmp_token.push_back(rc_constants[i].const_tokens[c_token_index]);
+
+                return "<user_const>";
+            }
+        }
+    }
 
     return "";
 }

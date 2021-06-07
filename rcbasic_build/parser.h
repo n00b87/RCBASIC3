@@ -4,6 +4,7 @@
 #include "tokenizer.h"
 #include "identifier.h"
 #include "rc_global.h"
+#include "constants.h"
 #include <inttypes.h>
 
 using namespace std;
@@ -2128,7 +2129,47 @@ bool check_rule()
 {
     if(token.size()>0)
     {
-        if(token[0].compare("<dim>")==0)
+        if(token[0].compare("<const>")==0)
+        {
+            if(token.size() < 3)
+            {
+                rc_setError("Incomplete Constant Expression");
+                return false;
+            }
+
+            if(token[1].substr(0,4).compare("<id>")!=0)
+            {
+                rc_setError("Expected Identifier after CONST");
+                return false;
+            }
+
+            string id_name = token[1].substr(4);
+
+            if(!isValidIDName(id_name))
+            {
+                rc_setError("Invalid Identifier after CONST");
+                return false;
+            }
+
+            if(token[2].compare("<equal>")!=0)
+            {
+                rc_setError("Expected \"=\" in CONST expression");
+                return false;
+            }
+
+            int c_id = create_constant(StringToUpper(id_name));
+            if(c_id < 0)
+            {
+                rc_setError("CONST identifier already exists");
+                return false;
+            }
+
+            for(int i = 3; i < token.size(); i++)
+                add_const_token(c_id, token[i]);
+
+            return true;
+        }
+        else if(token[0].compare("<dim>")==0)
         {
             //cout << "DIM RULE FOUND" << endl;  //'DIM' [ID]; '[' #; #; # ']' ; 'AS' [TYPE]; '=' (VALUE)
 
@@ -2654,7 +2695,7 @@ bool check_rule()
                 current_scope = "main";
                 current_fn_index++;
             }
-            else if(token[1].compare("<sub>")==0)
+            else if(token[1].compare("<subp>")==0)
             {
                 if(token.size()>2)
                 {
@@ -2874,7 +2915,7 @@ bool check_rule()
             }
 
         }
-        else if(token[0].compare("<sub>")==0)
+        else if(token[0].compare("<subp>")==0)
         {
             if(isInFunctionScope)
             {
@@ -4416,7 +4457,7 @@ bool check_rule_embedded()
             }
 
         }
-        else if(token[0].compare("<sub>")==0)
+        else if(token[0].compare("<subp>")==0)
         {
             if(token.size()<2)
             {
