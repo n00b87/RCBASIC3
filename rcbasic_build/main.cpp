@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stack>
+#include <vector>
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
@@ -8,6 +9,7 @@
 #include "parser.h"
 #include "rc_builtin.h"
 #include "rc_vm_asm.h"
+#include "file_directory.h"
 
 using namespace std;
 
@@ -21,6 +23,7 @@ struct rc_src
 stack<rc_src> rcbasic_program;
 fstream rcbasic_file;
 
+vector<string> inc_once;
 
 void rcbasic_init()
 {
@@ -94,15 +97,39 @@ bool rc_preprocessor()
         {
             if(tmp_token.size() != 2)
             {
-                rc_setError("Expected include file as string constant");
+                rc_setError("Expected string literal or flag in INCLUDE");
                 return false;
             }
+
+            //cout << "tmp_token[1] == " << tmp_token[1] << endl;
+
+            if(tmp_token[1].compare("<once>")==0)
+            {
+                tmp_token.clear();
+                inc_once.push_back(rcbasic_program.top().filename);
+                return true;
+            }
+
             if(tmp_token[1].substr(0,8).compare("<string>")!=0)
             {
                 rc_setError("Expected include file as string constant");
                 return false;
             }
+
             inc_file.filename = tmp_token[1].substr(8);
+            inc_file.filename = rc_absFilePath(inc_file.filename);
+
+            for(int i = 0; i < inc_once.size(); i++)
+            {
+                if(inc_once[i].compare(inc_file.filename)==0)
+                {
+                    tmp_token.clear();
+                    //cout << "DEBUG INC_ONCE: " << inc_file.filename << " can only be included once" << endl;
+                    return true;
+                }
+            }
+
+            //cout << "\nDEBUG INCLUDE ABS_PATH:" << inc_file.filename << endl << endl;
             inc_file.line_number = 0;
             inc_file.line_position = 0;
             rcbasic_file.close();
@@ -469,6 +496,15 @@ bool rc_getline(string &line)
         }
         else if(rcbasic_program.size()>1)
         {
+            //execute last line in included file
+            if(!rc_eval(line))
+            {
+                cout << "Error on Line " << rcbasic_program.top().line_number << " in " << rcbasic_program.top().filename << ": " << rc_getError() << endl;
+                //output_tokens();
+                cout << endl;
+                return false;
+            }
+
             rcbasic_program.pop();
             rcbasic_file.close();
             rcbasic_file.open(rcbasic_program.top().filename.c_str(), fstream::in);
