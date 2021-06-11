@@ -38,9 +38,10 @@ string keyWords[] = {
     "NOT", //34
     "ELSEIF", //35
     "REDIM", //, //36
-    "CONST" //37
-    //"TYPE", //38
-    //"AS" //39
+    "CONST", //37
+    "ONCE" //38
+    //"TYPE", //39
+    //"AS" //40
 };
 
 #endif // KEYWORDS_H_INCLUDED
