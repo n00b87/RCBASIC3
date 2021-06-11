@@ -206,7 +206,9 @@ string rc_absFilePath(string file_path)
         #endif // RC_WINDOWS
     }
 
-    end_index = (bs_index > fs_index && bs_index != string::npos) ? bs_index : fs_index;
+    end_index = ( (bs_index > fs_index || fs_index == string::npos) && bs_index != string::npos) ? bs_index : fs_index;
+
+
     if(rc_intern_dirExist(file_path.substr(0, end_index)))
     {
         rc_intern_dirChange(file_path.substr(0, end_index));
