@@ -22,7 +22,7 @@
 #include <iostream>
 #include "SDL_mixer.h"
 #include "SDL_net.h"
-#include "../SDL/src/core/android/SDL_android.h"
+//#include "../SDL/src/core/android/SDL_android.h"
 
 //#include "../SDL/src/dynapi/SDL_dynapi_overrides.h"
 
