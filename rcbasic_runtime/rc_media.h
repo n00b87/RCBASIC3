@@ -5608,7 +5608,7 @@ void videoPlayer_audio_callback(void *userdata, Uint8 *stream, int len)
         AudioQueue *next = item->next;
         const int channels = item->audio->channels;
 
-        const Sint32 *src = item->audio->samples + (item->offset * channels);
+        const Sint32 *src = (Sint32 *) (item->audio->samples + (item->offset * channels));
 
         int cpy = (item->audio->frames - item->offset) * channels;
         int i;
