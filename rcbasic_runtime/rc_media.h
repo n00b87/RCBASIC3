@@ -609,6 +609,11 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
         cout << "WindowOpen Error: Flag is not a supported mode" << endl;
         return false;
     }
+
+    #ifdef RC_MOBILE
+		flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP;
+	#endif // RC_MOBILE
+
     rc_win[win_num] = SDL_CreateWindow(caption.c_str(), x, y, w, h, flags);
     if(rc_win[win_num] == NULL)
     {
@@ -832,6 +837,10 @@ inline bool rc_media_openWindow_ex_hw(int win_num, string caption, int x, int y,
         cout << "WindowOpen Error: Flag is not a supported mode" << endl;
         return false;
     }
+
+    #ifdef RC_MOBILE
+		flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP;
+	#endif // RC_MOBILE
 
     rc_win[win_num] = SDL_CreateWindow(caption.c_str(), x, y, w, h, flags);
     rc_win_exitOnClose[win_num] = true;
@@ -4923,7 +4932,7 @@ void rc_media_updateWindow_hw()
         if(rc_hscreen[rc_active_window][s_num] != NULL && rc_screen_visible[rc_active_window][s_num])
         {
             //cout << "draw canvas " << s_num << endl;
-            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], &rc_screen_rect[rc_active_window][s_num]);
+            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], &rc_bb_rect[rc_active_window]);
         }
     }
     //#ifndef RC_ANDROID
