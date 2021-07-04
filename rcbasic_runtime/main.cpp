@@ -282,6 +282,8 @@ void rc_events()
     cycleVideo();
     if(rc_checkEvent())
     {
+        rc_fingers_pressed.clear();
+        
         rc_mwheelx = 0;
         rc_mwheely = 0;
         for(int i = 0; i < MAX_WINDOWS; i++)
@@ -291,7 +293,7 @@ void rc_events()
         #ifndef RC_WINDOWS
             SDL_PumpEvents();
         #endif // RC_WINDOWS
-        //SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
+        //SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);//
     }
 }
 

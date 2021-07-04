@@ -966,7 +966,7 @@ string rc_intern_dirNext()
 
 inline int rc_intern_dirCreate(string dpath)
 {
-    if(CreateDirectory(dpath.c_str(),NULL)!=0)
+    if(CreateDirectory(dpath.c_str(),NULL)==0)
     {
         cout << "ERROR: Could not make directory" << endl;
         return 0;
@@ -1252,6 +1252,8 @@ string rc_intern_android_interface(string arg_c)
     // find the Java class of the activity. It should be SDLActivity or a subclass of it.
     jclass clazz(env->GetObjectClass(activity));
 
+    //return "### what the balls :-) ";
+
     jmethodID rcbasic_android_method = env->GetStaticMethodID(clazz, "rcbasic_android_interface", "(Ljava/lang/String;)Ljava/lang/String;");
 
 	jstring arg = env->NewStringUTF(arg_c.c_str());
@@ -1259,9 +1261,7 @@ string rc_intern_android_interface(string arg_c)
     jstring rv = (jstring)env->CallStaticObjectMethod(clazz, rcbasic_android_method, arg);
     const char * strReturn = env->GetStringUTFChars( rv, 0);
 
-
     env->ReleaseStringUTFChars(rv, strReturn);
-
 
     // clean up the local references.
     env->DeleteLocalRef(activity);

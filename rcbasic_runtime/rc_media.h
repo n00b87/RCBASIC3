@@ -75,6 +75,8 @@
 
 //#include "soft_render/SDL_rotate.c"
 
+#include <set>
+
 using namespace std;
 
 #ifdef RC_MOBILE
@@ -223,7 +225,8 @@ int rc_mt_numFingers = 0;
 double rc_mt_theta = 0;
 double rc_mt_dist = 0;
 SDL_TouchID rc_touchDevice;
-SDL_Finger rc_finger[10];
+SDL_Finger rc_finger[MAX_FINGERS];
+set<int> rc_fingers_pressed;
 
 SDL_Sensor * rc_accel[MAX_ACCELS];
 int num_accels = 0;
@@ -337,6 +340,10 @@ bool rc_media_init()
         rc_socket[i] = NULL;
         rc_udp_socket[i] = NULL;
     }
+
+    for(int i = 0; i < MAX_FONTS; i++)
+        rc_draw_font[i] = NULL;
+
     for(int i = 0; i < MAX_SOUNDS; i++)
         rc_sound[i] = NULL;
 
@@ -411,15 +418,6 @@ bool rc_media_init()
 		exit(EXIT_FAILURE);
 	}
 
-
-	for(int i = 0; i < SDL_GetNumTouchDevices(); i++)
-    {
-        rc_touchDevice = SDL_GetTouchDevice(i);
-
-        if(rc_touchDevice != 0)
-            break;
-    }
-
     for(int i = 0; i < MAX_FINGERS; i++)
     {
         rc_finger[i].id = -1;
@@ -488,16 +486,21 @@ bool rc_media_init()
 void rc_media_quit()
 {
     for(int i = 0; i < MAX_FONTS; i++)
-        TTF_CloseFont(rc_draw_font[i]);
+    {
+        if(rc_draw_font[i] != NULL)
+            TTF_CloseFont(rc_draw_font[i]);
+    }
 
     //cout << "Font closed" << endl;
 
     for(int i = 0; i < MAX_SOUNDS; i++)
     {
-        Mix_FreeChunk(rc_sound[i]);
+        if(rc_sound[i] != NULL)
+            Mix_FreeChunk(rc_sound[i]);
         rc_sound[i] = NULL;
     }
-    Mix_FreeMusic(rc_music);
+    if(rc_music != NULL)
+        Mix_FreeMusic(rc_music);
     rc_music = NULL;
 
     for(int i = 0; i < MAX_JOYSTICKS; i++)
@@ -532,7 +535,8 @@ void rc_media_quit()
 
         for(int j = 0; j < MAX_IMAGES; j++)
         {
-            SDL_DestroyTexture(rc_himage[j][i]);
+            if(rc_himage[j][i] != NULL)
+                SDL_DestroyTexture(rc_himage[j][i]);
             rc_himage[j][i] = NULL;
         }
 
@@ -575,6 +579,49 @@ void rc_media_quit()
     //SDLNet_FreePacket(rc_udp_packet);
 	SDLNet_Quit();
     SDL_Quit();
+}
+
+int rc_debug_msg(string msg)
+{
+    const SDL_MessageBoxButtonData buttons[] = {
+        { /* .flags, .buttonid, .text */        0, 0, "no" },
+        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" },
+        { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" },
+    };
+    const SDL_MessageBoxColorScheme colorScheme = {
+        { /* .colors (.r, .g, .b) */
+            /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
+            { 255,   0,   0 },
+            /* [SDL_MESSAGEBOX_COLOR_TEXT] */
+            {   0, 255,   0 },
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_BORDER] */
+            { 255, 255,   0 },
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
+            {   0,   0, 255 },
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
+            { 255,   0, 255 }
+        }
+    };
+    const SDL_MessageBoxData messageboxdata = {
+        SDL_MESSAGEBOX_INFORMATION, /* .flags */
+        NULL, /* .window */
+        msg.c_str(), /* .title */
+        "select a button", /* .message */
+        SDL_arraysize(buttons), /* .numbuttons */
+        buttons, /* .buttons */
+        &colorScheme /* .colorScheme */
+    };
+    int buttonid;
+    if (SDL_ShowMessageBox(&messageboxdata, &buttonid) < 0) {
+        SDL_Log("error displaying message box");
+        return 1;
+    }
+    if (buttonid == -1) {
+        SDL_Log("no selection");
+    } else {
+        SDL_Log("selection was %s", buttons[buttonid].text);
+    }
+    return 0;
 }
 
 inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, int w, int h, Uint32 flags)
@@ -635,6 +682,7 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     //cout << "boob physics" << endl;
 
 #ifdef RC_MOBILE
+    rc_win_renderer[win_num] = SDL_GetRenderer(rc_win[win_num]);
     if(rc_win_renderer[win_num] != NULL)
     {
         SDL_DestroyRenderer(rc_win_renderer[win_num]);
@@ -647,7 +695,8 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     if(rc_win_renderer[win_num] == NULL)
     {
 #ifdef RC_ANDROID
-        __android_log_write(ANDROID_LOG_ERROR, "My Ass Error: ", SDL_GetError());
+        //rc_debug_msg("No Renderer");
+        __android_log_write(ANDROID_LOG_ERROR, "This is crazy: ", SDL_GetError());
         rc_win_renderer[win_num] = SDL_GetRenderer(rc_win[win_num]);
         if(rc_win_renderer[win_num] == NULL)
         {
@@ -714,7 +763,7 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
         }
     }
 
-#endif // RC_ANDROID
+#endif // RC_MOBILE
 
     //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     //SDL_RenderSetLogicalSize(rc_win_renderer[win_num], w, h);
@@ -803,6 +852,8 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     SDL_RenderPresent(rc_win_renderer[win_num]);
 
     //cout << "open complete" << endl;
+
+    //rc_debug_msg("Window Creation Successful");
 
     return true;
 }
@@ -2488,14 +2539,16 @@ void rc_media_loadImage_hw(int slot, string img_file)
     }
 
     #ifdef RC_MOBILE
-    SDL_DestroyTexture(rc_himage[slot][rc_active_window]);
+    if(rc_himage[slot][rc_active_window] != NULL)
+        SDL_DestroyTexture(rc_himage[slot][rc_active_window]);
     rc_himage[slot][rc_active_window] = SDL_CreateTextureFromSurface(rc_win_renderer[rc_active_window], image_cv);
     SDL_SetTextureBlendMode(rc_himage[slot][rc_active_window], SDL_BLENDMODE_BLEND);
     #else
 
     for(int i = 0; i < MAX_WINDOWS; i++)
     {
-        SDL_DestroyTexture(rc_himage[slot][i]);
+        if(rc_himage[slot][i] != NULL)
+            SDL_DestroyTexture(rc_himage[slot][i]);
         rc_himage[slot][i] = SDL_CreateTextureFromSurface(rc_win_renderer[i], image_cv);
         SDL_SetTextureBlendMode(rc_himage[slot][i], SDL_BLENDMODE_BLEND);
         if(i == rc_active_window && rc_himage[slot][rc_active_window] == NULL)
@@ -2557,14 +2610,16 @@ void rc_media_loadImage_ex_hw(int slot, string img_file, double color)
     }
 
     #ifdef RC_MOBILE
-    SDL_DestroyTexture(rc_himage[slot][rc_active_window]);
+    if(rc_himage[slot][rc_active_window] != NULL)
+        SDL_DestroyTexture(rc_himage[slot][rc_active_window]);
     rc_himage[slot][rc_active_window] = SDL_CreateTextureFromSurface(rc_win_renderer[rc_active_window], image_cv);
     SDL_SetTextureBlendMode(rc_himage[slot][rc_active_window], SDL_BLENDMODE_BLEND);
     #else
 
     for(int i = 0; i < MAX_WINDOWS; i++)
     {
-        SDL_DestroyTexture(rc_himage[slot][i]);
+        if(rc_himage[slot][i] != NULL)
+            SDL_DestroyTexture(rc_himage[slot][i]);
         rc_himage[slot][i] = SDL_CreateTextureFromSurface(rc_win_renderer[i], image_cv);
         SDL_SetTextureBlendMode(rc_himage[slot][i], SDL_BLENDMODE_BLEND);
         if(i == rc_active_window && rc_himage[slot][rc_active_window] == NULL)
@@ -2755,7 +2810,7 @@ void rc_media_colorKey_hw(int slot, double color)
     if(color > 0)
     {
         //return;
-        SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_VERTICAL);
+        SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_NONE);
 
         SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[slot], rc_image_height[slot], 32, 0, 0, 0, 0);
         SDL_Texture * tmp_tex = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, rc_image_width[slot], rc_image_height[slot]);
@@ -2778,7 +2833,7 @@ void rc_media_colorKey_hw(int slot, double color)
     }
     else
     {
-        SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_VERTICAL);
+        SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_NONE);
 
         SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[slot], rc_image_height[slot], 32, 0, 0, 0, 0);
         //SDL_Surface * tmp_surf = SDL_ConvertSurfaceFormat(tmp_psurf, rc_pformat->format, 0);
@@ -2788,7 +2843,7 @@ void rc_media_colorKey_hw(int slot, double color)
         //SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL);
         SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
 
-        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, SDL_PIXELFORMAT_ABGR8888,tmp_surf->pixels,tmp_surf->pitch);
+        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, rc_pformat->format,tmp_surf->pixels,tmp_surf->pitch);
         //cout << "Colorkey = " << (Uint32)r << ", " << (Uint32)g << ", " << (Uint32)b << ", " << (Uint32)a << endl;
         Uint32 * gcolor = (Uint32*)tmp_surf->pixels;
         c = gcolor[0];
@@ -2851,7 +2906,7 @@ void rc_media_colorKey_hw(int slot, double color)
         //SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL);
         SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
 
-        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, SDL_PIXELFORMAT_ARGB8888,tmp_surf->pixels,tmp_surf->pitch);
+        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, rc_pformat->format,tmp_surf->pixels,tmp_surf->pitch);
         //cout << "Colorkey = " << (Uint32)r << ", " << (Uint32)g << ", " << (Uint32)b << ", " << (Uint32)a << endl;
         Uint32 * gcolor = (Uint32*)tmp_surf->pixels;
         c = gcolor[0];
@@ -4260,6 +4315,10 @@ void rc_setTouchFingerEvent(SDL_FingerID fingerID, double x, double y, double pr
             rc_finger[i].x = x;
             rc_finger[i].y = y;
             rc_finger[i].pressure = pressure;
+            if(rc_finger[i].pressure > 0)
+            {
+                rc_fingers_pressed.insert(i);
+            }
             return;
         }
     }
@@ -4667,9 +4726,10 @@ void rc_media_getTouchFinger(int finger, double * x, double * y, double * pressu
 
 int rc_media_numFingers()
 {
-    if(rc_touchDevice)
-        return SDL_GetNumTouchFingers(rc_touchDevice);
-    return 0;
+    return rc_fingers_pressed.size();
+    //if(rc_touchDevice)
+    //    return SDL_GetNumTouchFingers(rc_touchDevice);
+    //return 0;
 }
 
 double rc_media_touchPressure()
