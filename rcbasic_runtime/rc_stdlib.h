@@ -636,11 +636,21 @@ inline string rc_intern_fileReadLine(int f_stream)
     return rline;
 }
 
-inline int rc_intern_fileWriteLine(int f_stream, string line)
+inline int rc_intern_fileWrite(int f_stream, string line)
 {
     //cout << "DEBUG: WRITELINE" << endl;
     if(rc_fstream[f_stream]!=NULL)
         SDL_RWwrite(rc_fstream[f_stream], line.c_str(), line.length(), 1);
+    //cout << "WRITELINE_END" << endl;
+    return 1;
+}
+
+inline int rc_intern_fileWriteLine(int f_stream, string line)
+{
+    //cout << "DEBUG: WRITELINE" << endl;
+    string line_out = line + "\n";
+    if(rc_fstream[f_stream]!=NULL)
+        SDL_RWwrite(rc_fstream[f_stream], line_out.c_str(), line_out.length(), 1);
     //cout << "WRITELINE_END" << endl;
     return 1;
 }
@@ -1239,7 +1249,7 @@ inline int rc_intern_android_getExternalStorageState()
     #endif
 }
 
-string rc_intern_android_interface(string arg_c)
+string rc_intern_android_jni_message(string arg_c)
 {
     #ifdef RC_ANDROID
 
@@ -1277,7 +1287,7 @@ string rc_intern_android_interface(string arg_c)
 #ifdef RC_IOS
     #include "rcbasic_ios_native.h"
 #else
-    string rc_intern_ios_interface(string arg)
+    string rc_intern_runtime_utility(string arg)
     {
         return "";
     }
