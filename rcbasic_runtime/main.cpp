@@ -283,7 +283,7 @@ void rc_events()
     if(rc_checkEvent())
     {
         rc_fingers_pressed.clear();
-        
+
         rc_mwheelx = 0;
         rc_mwheely = 0;
         for(int i = 0; i < MAX_WINDOWS; i++)
@@ -1334,6 +1334,9 @@ void func_130(uint64_t fn)
         case FN_ReadLine$:
             rc_push_str( rc_intern_fileReadLine( READLINE$_STREAM ) );
             break;
+        case FN_Write:
+            rc_intern_fileWrite( WRITE_STREAM, WRITE_TXT$ );
+            break;
         case FN_WriteLine:
             rc_intern_fileWriteLine( WRITELINE_STREAM, WRITELINE_TXT$ );
             break;
@@ -2136,11 +2139,11 @@ void func_130(uint64_t fn)
         case FN_Android_GetInternalStoragePath$:
             rc_push_str( rc_intern_android_getInternalStoragePath() );
             break;
-        case FN_RCBasic_Android_Interface$:
-            rc_push_str( rc_intern_android_interface( RCBASIC_ANDROID_INTERFACE$_ARG$ ));
+        case FN_Android_JNI_Message$:
+            rc_push_str( rc_intern_android_jni_message( ANDROID_JNI_MESSAGE$_ARG$ ));
             break;
-        case FN_RCBasic_IOS_Interface$:
-            rc_push_str( rc_intern_ios_interface( RCBASIC_IOS_INTERFACE$_ARG$ ));
+        case FN_Runtime_Utility_Message$:
+            rc_push_str( rc_intern_runtime_utility( RUNTIME_UTILITY_MESSAGE$_ARG$ ));
             break;
         case FN_GetDesktopDisplayMode: //Sub Procedure
             rc_media_getDesktopDisplayMode( GETDESKTOPDISPLAYMODE_INDEX, &GETDESKTOPDISPLAYMODE_W, &GETDESKTOPDISPLAYMODE_H, &GETDESKTOPDISPLAYMODE_FREQ);
@@ -2213,8 +2216,8 @@ void func_130(uint64_t fn)
         case FN_WindowEvent_Resize: //Number Function
             rc_push_num( rc_media_windowEvent_Resize( WINDOWEVENT_RESIZE_WIN ) );
             break;
-        case FN_WindowEvent_SetExitOnClose: //Sub Procedure
-            rc_media_windowEvent_setExitOnClose( WINDOWEVENT_SETEXITONCLOSE_WIN, WINDOWEVENT_SETEXITONCLOSE_EXIT_ON_CLOSE );
+        case FN_SetWindowAutoClose: //Sub Procedure
+            rc_media_windowEvent_setExitOnClose( SETWINDOWAUTOCLOSE_WIN, SETWINDOWAUTOCLOSE_EXIT_ON_CLOSE );
             break;
 
 

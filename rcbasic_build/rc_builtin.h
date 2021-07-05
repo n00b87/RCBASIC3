@@ -168,6 +168,9 @@ void init_embedded()
     add_embedded_arg("byte", ID_TYPE_NUM);
     embed_function("ReadLine$", ID_TYPE_FN_STR);
     add_embedded_arg("stream", ID_TYPE_NUM);
+    embed_function("Write", ID_TYPE_SUB);
+    add_embedded_arg("stream", ID_TYPE_NUM);
+    add_embedded_arg("txt$", ID_TYPE_STR);
     embed_function("WriteLine", ID_TYPE_SUB);
     add_embedded_arg("stream", ID_TYPE_NUM);
     add_embedded_arg("txt$", ID_TYPE_STR);
@@ -919,9 +922,9 @@ void init_embedded()
     embed_function("Android_GetExternalStoragePath$", ID_TYPE_FN_STR);
     embed_function("Android_GetExternalStorageState", ID_TYPE_FN_NUM);
     embed_function("Android_GetInternalStoragePath$", ID_TYPE_FN_STR);
-    embed_function("RCBasic_Android_Interface$", ID_TYPE_FN_STR);
+    embed_function("Android_JNI_Message$", ID_TYPE_FN_STR);
     add_embedded_arg("arg$", ID_TYPE_STR);
-    embed_function("RCBasic_IOS_Interface$", ID_TYPE_FN_STR);
+    embed_function("Runtime_Utility_Message$", ID_TYPE_FN_STR);
     add_embedded_arg("arg$", ID_TYPE_STR);
     embed_function("ClipboardText$", ID_TYPE_FN_STR);
     embed_function("SetClipboardText", ID_TYPE_SUB);
@@ -1008,10 +1011,9 @@ void init_embedded()
     add_embedded_arg("buf_size", ID_TYPE_NUM);
     embed_function("WindowEvent_Resize", ID_TYPE_FN_NUM);
     add_embedded_arg("win", ID_TYPE_NUM);
-    embed_function("WindowEvent_SetExitOnClose", ID_TYPE_SUB);
+    embed_function("SetWindowAutoClose", ID_TYPE_SUB);
     add_embedded_arg("win", ID_TYPE_NUM);
     add_embedded_arg("exit_on_close", ID_TYPE_NUM);
-
 
 }
 
