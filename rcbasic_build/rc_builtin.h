@@ -224,6 +224,7 @@ void init_embedded()
     add_embedded_arg("w", ID_TYPE_NUM);
     add_embedded_arg("h", ID_TYPE_NUM);
     add_embedded_arg("flag", ID_TYPE_NUM);
+    add_embedded_arg("vsync", ID_TYPE_NUM);
     embed_function("WindowClose", ID_TYPE_SUB);
     add_embedded_arg("win", ID_TYPE_NUM);
     embed_function("RaiseWindow", ID_TYPE_SUB);
@@ -960,15 +961,6 @@ void init_embedded()
     embed_function("EvalJS$", ID_TYPE_FN_STR);
     add_embedded_arg("js_code$", ID_TYPE_STR);
     embed_function("GetRenderScaleQuality", ID_TYPE_FN_NUM);
-    embed_function("WindowOpen_Ex", ID_TYPE_SUB);
-    add_embedded_arg("win", ID_TYPE_NUM);
-    add_embedded_arg("title$", ID_TYPE_STR);
-    add_embedded_arg("x", ID_TYPE_NUM);
-    add_embedded_arg("y", ID_TYPE_NUM);
-    add_embedded_arg("w", ID_TYPE_NUM);
-    add_embedded_arg("h", ID_TYPE_NUM);
-    add_embedded_arg("flag", ID_TYPE_NUM);
-    add_embedded_arg("vsync", ID_TYPE_NUM);
     embed_function("GetGlobalMouse", ID_TYPE_SUB);
     add_embedded_arg("x", ID_TYPE_BYREF_NUM);
     add_embedded_arg("y", ID_TYPE_BYREF_NUM);
@@ -1014,6 +1006,11 @@ void init_embedded()
     embed_function("SetWindowAutoClose", ID_TYPE_SUB);
     add_embedded_arg("win", ID_TYPE_NUM);
     add_embedded_arg("exit_on_close", ID_TYPE_NUM);
+    embed_function("SetWindowResizable", ID_TYPE_SUB);
+    add_embedded_arg("win", ID_TYPE_NUM);
+    add_embedded_arg("flag", ID_TYPE_NUM);
+    embed_function("SystemReturnOutput$", ID_TYPE_FN_STR);
+    add_embedded_arg("cmd$", ID_TYPE_STR);
 
 }
 

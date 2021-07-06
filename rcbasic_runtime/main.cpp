@@ -1410,7 +1410,7 @@ void func_130(uint64_t fn)
             rc_intern_wait( WAIT_M_SEC );
             break;
         case FN_WindowOpen: //Sub Procedure
-            rc_media_openWindow_hw( WINDOWOPEN_WIN, WINDOWOPEN_TITLE$, WINDOWOPEN_X, WINDOWOPEN_Y, WINDOWOPEN_W, WINDOWOPEN_H, WINDOWOPEN_FLAG);
+            rc_media_openWindow_hw( WINDOWOPEN_WIN, WINDOWOPEN_TITLE$, WINDOWOPEN_X, WINDOWOPEN_Y, WINDOWOPEN_W, WINDOWOPEN_H, WINDOWOPEN_FLAG, WINDOWOPEN_VSYNC);
             break;
         case FN_WindowClose: //Sub Procedure
             rc_media_closeWindow_hw( WINDOWCLOSE_WIN );
@@ -2168,9 +2168,6 @@ void func_130(uint64_t fn)
         case FN_GetRenderScaleQuality: //Number Function
             rc_push_num( rc_media_getRenderScaleQuality() );
             break;
-        case FN_WindowOpen_Ex: //Sub Procedure
-            rc_media_openWindow_ex_hw(WINDOWOPEN_EX_WIN, WINDOWOPEN_EX_TITLE$, WINDOWOPEN_EX_X, WINDOWOPEN_EX_Y, WINDOWOPEN_EX_W, WINDOWOPEN_EX_H, WINDOWOPEN_EX_FLAG, WINDOWOPEN_EX_VSYNC);
-            break;
         case FN_GetGlobalMouse: //Sub Procedure
             rc_media_getGlobalMouse(&GETGLOBALMOUSE_X, &GETGLOBALMOUSE_Y, &GETGLOBALMOUSE_MB1, &GETGLOBALMOUSE_MB2, &GETGLOBALMOUSE_MB3);
             break;
@@ -2219,8 +2216,12 @@ void func_130(uint64_t fn)
         case FN_SetWindowAutoClose: //Sub Procedure
             rc_media_windowEvent_setExitOnClose( SETWINDOWAUTOCLOSE_WIN, SETWINDOWAUTOCLOSE_EXIT_ON_CLOSE );
             break;
-
-
+        case FN_SetWindowResizable:
+            rc_media_setWindowResizable(SETWINDOWRESIZABLE_WIN, SETWINDOWRESIZABLE_FLAG);
+            break;
+        case FN_SystemReturnOutput$:
+            rc_push_str( rc_intern_sysReturnOutput(SYSTEMRETURNOUTPUT$_CMD$) );
+            break;
     }
 }
 
