@@ -107,7 +107,7 @@ function Time$()
 function Timer()
 sub Wait(m_sec)
 'Window Management
-sub WindowOpen(win, title$, x, y, w, h, flag)
+sub WindowOpen(win, title$, x, y, w, h, flag, vsync)
 sub WindowClose(win)
 sub RaiseWindow(win)
 sub Window(win)
@@ -373,7 +373,6 @@ Function EvalJS$(js_code$) 'Only useable in Emscripten
 Function GetRenderScaleQuality()
 
 'v3.14
-sub WindowOpen_Ex(win, title$, x, y, w, h, flag, vsync)
 sub GetGlobalMouse(ByRef x, ByRef y, ByRef mb1, ByRef mb2, ByRef mb3)
 function GlobalMouseX()
 function GlobalMouseY()
@@ -390,3 +389,5 @@ function WriteByteBuffer(stream, ByRef buf, buf_size)
 function ReadByteBuffer(stream, ByRef buf, buf_size)
 function WindowEvent_Resize(win)
 sub SetWindowAutoClose( win, exit_on_close )
+sub SetWindowResizable(win, flag) 'new
+function SystemReturnOutput$(cmd$) 'new

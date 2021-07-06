@@ -624,7 +624,7 @@ int rc_debug_msg(string msg)
     return 0;
 }
 
-inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, int w, int h, Uint32 flags)
+inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, int w, int h, Uint32 flags, int vsync_flag)
 {
     //cout << "start windowOpen" << endl;
     if(win_num < 0 || win_num >= MAX_WINDOWS)
@@ -638,7 +638,7 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
         return false;
     }
 
-    bool vsync = true;
+    bool vsync = vsync_flag == 0 ? false : true;
     rc_win_exitOnClose[win_num] = true;
 
     if(flags == 0)
@@ -689,7 +689,10 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     }
 #endif // RC_MOBILE
 
-    rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+    if(vsync)
+        rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+    else
+        rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 
 
     if(rc_win_renderer[win_num] == NULL)
@@ -1597,6 +1600,17 @@ void rc_media_setWindowBordered(int win_num, bool b)
         SDL_SetWindowBordered(rc_win[win_num], bswitch);
     else
         cout << "SetWindowBorder Error: Window #" << win_num << " is not an active window" << endl;
+}
+
+void rc_media_setWindowResizable(int win_num, bool b)
+{
+    SDL_bool bswitch = SDL_FALSE;
+    if(b)
+        bswitch = SDL_TRUE;
+    if(rc_winCheck(win_num))
+        SDL_SetWindowResizable(rc_win[win_num], bswitch);
+    else
+        cout << "SetWindowResizable Error: Window #" << win_num << " is not an active window" << endl;
 }
 
 int rc_media_numWindows()

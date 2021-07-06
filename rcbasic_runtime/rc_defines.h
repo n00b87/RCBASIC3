@@ -218,6 +218,7 @@
 #define WINDOWOPEN_W num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
 #define WINDOWOPEN_H num_var[4].nid_value[0].value[ num_var[4].byref_offset ]
 #define WINDOWOPEN_FLAG num_var[5].nid_value[0].value[ num_var[5].byref_offset ]
+#define WINDOWOPEN_VSYNC num_var[6].nid_value[0].value[ num_var[6].byref_offset ]
 #define FN_WindowClose 98
 #define WINDOWCLOSE_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define FN_RaiseWindow 99
@@ -954,57 +955,53 @@
 #define FN_EvalJS$ 343
 #define EVALJS$_JS_CODE$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
 #define FN_GetRenderScaleQuality 344
-#define FN_WindowOpen_Ex 345
-#define WINDOWOPEN_EX_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define WINDOWOPEN_EX_TITLE$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
-#define WINDOWOPEN_EX_X num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
-#define WINDOWOPEN_EX_Y num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
-#define WINDOWOPEN_EX_W num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
-#define WINDOWOPEN_EX_H num_var[4].nid_value[0].value[ num_var[4].byref_offset ]
-#define WINDOWOPEN_EX_FLAG num_var[5].nid_value[0].value[ num_var[5].byref_offset ]
-#define WINDOWOPEN_EX_VSYNC num_var[6].nid_value[0].value[ num_var[6].byref_offset ]
-#define FN_GetGlobalMouse 346
+#define FN_GetGlobalMouse 345
 #define GETGLOBALMOUSE_X num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define GETGLOBALMOUSE_Y num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define GETGLOBALMOUSE_MB1 num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
 #define GETGLOBALMOUSE_MB2 num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
 #define GETGLOBALMOUSE_MB3 num_var[4].nid_value[0].value[ num_var[4].byref_offset ]
-#define FN_GlobalMouseX 347
-#define FN_GlobalMouseY 348
-#define FN_GetAccel 349
+#define FN_GlobalMouseX 346
+#define FN_GlobalMouseY 347
+#define FN_GetAccel 348
 #define GETACCEL_ACCEL_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define GETACCEL_X num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define GETACCEL_Y num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
 #define GETACCEL_Z num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
-#define FN_AccelName$ 350
+#define FN_AccelName$ 349
 #define ACCELNAME$_ACCEL_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define FN_NumAccels 351
-#define FN_GetGyro 352
+#define FN_NumAccels 350
+#define FN_GetGyro 351
 #define GETGYRO_GYRO_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define GETGYRO_X num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define GETGYRO_Y num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
 #define GETGYRO_Z num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
-#define FN_GyroName$ 353
+#define FN_GyroName$ 352
 #define GYRONAME$_GYRO_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define FN_NumGyros 354
-#define FN_JoyRumblePlay 355
+#define FN_NumGyros 353
+#define FN_JoyRumblePlay 354
 #define JOYRUMBLEPLAY_JOY_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define JOYRUMBLEPLAY_STRENGTH num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define JOYRUMBLEPLAY_DURATION num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
-#define FN_JoyRumbleStop 356
+#define FN_JoyRumbleStop 355
 #define JOYRUMBLESTOP_JOY_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define FN_JoystickIsHaptic 357
+#define FN_JoystickIsHaptic 356
 #define JOYSTICKISHAPTIC_JOY_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define FN_WriteByteBuffer 358
+#define FN_WriteByteBuffer 357
 #define WRITEBYTEBUFFER_STREAM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define WRITEBYTEBUFFER_BUF num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define WRITEBYTEBUFFER_BUF_SIZE num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
-#define FN_ReadByteBuffer 359
+#define FN_ReadByteBuffer 358
 #define READBYTEBUFFER_STREAM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define READBYTEBUFFER_BUF num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define READBYTEBUFFER_BUF_SIZE num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
-#define FN_WindowEvent_Resize 360
+#define FN_WindowEvent_Resize 359
 #define WINDOWEVENT_RESIZE_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define FN_SetWindowAutoClose 361
+#define FN_SetWindowAutoClose 360
 #define SETWINDOWAUTOCLOSE_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define SETWINDOWAUTOCLOSE_EXIT_ON_CLOSE num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_SetWindowResizable 361
+#define SETWINDOWRESIZABLE_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SETWINDOWRESIZABLE_FLAG num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_SystemReturnOutput$ 362
+#define SYSTEMRETURNOUTPUT$_CMD$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
