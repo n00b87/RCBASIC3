@@ -1101,7 +1101,7 @@ inline int rc_intern_system(string rc_sys_cmd)
 
 inline string rc_intern_sysReturnOutput(string rc_sys_cmd)
 {
-    #if defined(RC_ANDROID) || defined(RC_IOS)
+    #if defined(RC_ANDROID) || defined(RC_IOS) || defined(RC_WEB)
         return "";
     #else
         const char * cmd = rc_sys_cmd.c_str();

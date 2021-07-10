@@ -390,10 +390,14 @@ bool rc_media_init()
     rc_ink_color.g = 0;
     rc_ink_color.b = 0;
     rc_ink_color.a = 0;
+    #ifdef RC_WEB
+    if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
+    #else
     if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_SENSOR) < 0)
+    #endif
     {
         cout << "Init Error: " << SDL_GetError() << endl;
-        return false;
+        //return false;
     }
     if(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) < 0)
     {
@@ -466,8 +470,12 @@ bool rc_media_init()
                 cout << "Joystick " << i << " could not be opened: " << SDL_GetError() << endl;
             }
             rc_joyID[i] = SDL_JoystickInstanceID(rc_joystick[i]);
+            #ifdef RC_WEB
+            rc_haptic[i] = NULL;
+            #else
             rc_haptic[i] = SDL_HapticOpenFromJoystick(rc_joystick[i]);
             SDL_HapticRumbleInit(rc_haptic[i]);
+            #endif
             //if(rc_haptic[i] == NULL){ cout << "HAP NULL: " << SDL_GetError() << endl; }
             rc_numJoysticks++;
         }
@@ -2530,11 +2538,12 @@ void rc_media_loadImage_hw(int slot, string img_file)
         cout << "LoadImage Error: Image " << slot << " is already in use" << endl;
         return;
     }
+    //mariocircuit-1.png
     SDL_Surface * image = IMG_Load(img_file.c_str());
     if(image == NULL)
     {
-        cout << "Image: " << img_file << endl;
-        cout << "LoadImage Error: " << SDL_GetError() << endl;
+        cout << "~Image: " << img_file.c_str() << endl;
+        cout << "LoadImage Error: " << IMG_GetError() << endl;
         return;
     }
     #ifdef RC_MOBILE
@@ -2585,18 +2594,18 @@ void rc_media_loadImage_ex_hw(int slot, string img_file, double color)
 {
     if(slot < 0 || slot >= MAX_IMAGES)
     {
-        cout << "LoadImage Error: Image Slot must be in the range of 0 to " << MAX_IMAGES << endl;
+        cout << "LoadImage_Ex Error: Image Slot must be in the range of 0 to " << MAX_IMAGES << endl;
         return;
     }
     if(rc_himage[slot][rc_active_window]!=NULL)
     {
-        cout << "LoadImage Error: Image Slot is already in use" << endl;
+        cout << "LoadImage_Ex Error: Image Slot is already in use" << endl;
         return;
     }
     SDL_Surface * image = IMG_Load(img_file.c_str());
     if(image == NULL)
     {
-        cout << "LoadImage Error: " << SDL_GetError() << endl;
+        cout << "LoadImage_Ex Error: " << SDL_GetError() << endl;
         return;
     }
 
@@ -2618,7 +2627,7 @@ void rc_media_loadImage_ex_hw(int slot, string img_file, double color)
     rc_image_isLoaded[slot] = true;
     if(image_cv == NULL)
     {
-        cout << "LoadImage Error: " << SDL_GetError() << endl;
+        cout << "LoadImage_Ex Error: " << SDL_GetError() << endl;
         SDL_FreeSurface(image);
         return;
     }
@@ -2638,7 +2647,7 @@ void rc_media_loadImage_ex_hw(int slot, string img_file, double color)
         SDL_SetTextureBlendMode(rc_himage[slot][i], SDL_BLENDMODE_BLEND);
         if(i == rc_active_window && rc_himage[slot][rc_active_window] == NULL)
         {
-            cout << "#LoadImage Error: " << SDL_GetError() << endl;
+            cout << "#LoadImage_Ex Error: " << SDL_GetError() << endl;
             SDL_FreeSurface(image);
             SDL_FreeSurface(image_cv);
             for(int j = 0; j < i; j++)
@@ -2674,7 +2683,7 @@ void rc_media_createImage_hw(int slot, int w, int h, double * pdata)
 
     if(rc_himage[slot][rc_active_window] == NULL)
     {
-        cout << "#LoadImage Error: " << SDL_GetError() << endl;
+        cout << "#CreateImage Error: " << SDL_GetError() << endl;
         SDL_FreeSurface(img_surf);
         SDL_DestroyTexture(rc_himage[slot][rc_active_window]);
         return;
@@ -2688,7 +2697,7 @@ void rc_media_createImage_hw(int slot, int w, int h, double * pdata)
     }
     if(rc_himage[slot][rc_active_window] == NULL)
     {
-        cout << "#LoadImage Error: " << SDL_GetError() << endl;
+        cout << "#CreateImage Error: " << SDL_GetError() << endl;
         SDL_FreeSurface(img_surf);
         for(int j = 0; j < MAX_WINDOWS; j++)
         {
@@ -2708,7 +2717,7 @@ void rc_media_createImage_Ex_hw(int slot, int w, int h, double * pdata, double c
 {
     if(rc_himage[slot][rc_active_window] != NULL)
     {
-        cout << "CreateImage Error: Image already exist" << endl;
+        cout << "CreateImage_Ex Error: Image already exist" << endl;
         return;
     }
 
@@ -2725,7 +2734,7 @@ void rc_media_createImage_Ex_hw(int slot, int w, int h, double * pdata, double c
     #endif // RC_MOBILE
     if(image_cv == NULL)
     {
-        cout << "LoadImage Error: " << SDL_GetError() << endl;
+        cout << "CreateImage_Ex Error: " << SDL_GetError() << endl;
         SDL_FreeSurface(img_surf);
         return;
     }
@@ -2741,7 +2750,7 @@ void rc_media_createImage_Ex_hw(int slot, int w, int h, double * pdata, double c
 
     if(rc_himage[slot][rc_active_window] == NULL)
     {
-        cout << "#LoadImage Error: " << SDL_GetError() << endl;
+        cout << "#CreateImage_Ex Error: " << SDL_GetError() << endl;
         SDL_FreeSurface(img_surf);
         SDL_FreeSurface(image_cv);
         SDL_DestroyTexture(rc_himage[slot][rc_active_window]);
@@ -2757,7 +2766,7 @@ void rc_media_createImage_Ex_hw(int slot, int w, int h, double * pdata, double c
     }
     if(rc_himage[slot][rc_active_window] == NULL)
     {
-        cout << "#LoadImage Error: " << SDL_GetError() << endl;
+        cout << "#CreateImage_Ex Error: " << SDL_GetError() << endl;
         SDL_FreeSurface(img_surf);
         SDL_FreeSurface(image_cv);
         for(int j = 0; j < MAX_WINDOWS; j++)
@@ -5006,7 +5015,11 @@ void rc_media_updateWindow_hw()
         if(rc_hscreen[rc_active_window][s_num] != NULL && rc_screen_visible[rc_active_window][s_num])
         {
             //cout << "draw canvas " << s_num << endl;
+            #ifdef RC_WEB
+            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], NULL);
+            #else
             SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], &rc_bb_rect[rc_active_window]);
+            #endif
         }
     }
     //#ifndef RC_ANDROID
@@ -5014,7 +5027,7 @@ void rc_media_updateWindow_hw()
     //#endif // RC_ANDROID
     //cout << endl;
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
-    #ifdef RC_MOBILE
+    #if defined(RC_MOBILE) || defined(RC_WEB)
     SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window], NULL, NULL);
     #else
     SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window], &rc_bb_rect[rc_active_window], NULL);
