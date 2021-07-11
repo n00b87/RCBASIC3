@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=RCBasic
+Exec=rcbasic
+Comment=RCBasic Application
+Icon=rcbasic
+Type=Application
+Terminal=true
+StartupNotify=true
+Categories=Game;

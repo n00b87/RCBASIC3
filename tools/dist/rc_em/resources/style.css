@@ -1,0 +1,29 @@
+body {
+    background-color: #A0A0FF;
+}
+
+span.number
+{
+	color: #800000;
+}
+
+span.keyword
+{
+	color: black;
+	font-weight: bold;
+}
+
+span.string
+{
+	color: green;
+}
+
+span.code
+{
+	font-family: monospace;
+}
+
+span.comment
+{
+	color: #0A0A0A;
+}

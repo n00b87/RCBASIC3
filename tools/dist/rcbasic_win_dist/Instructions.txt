@@ -1,0 +1,14 @@
+1. Rename your *.cbc file to main.cbc
+
+2. Place main.cbc along with all your the files and folders for your project in
+   dist_32\assets to distribute 32-bit binary or
+   dist_64\assets to distribute 64-bit binary
+
+DO NOT REMOVE OR RENAME THE "assets" FOLDER
+DO NOT REMOVE OR RENAME THE "assets\bin" FOLDER
+
+3. You can rename launcher to whatever you want
+
+4. Zip the folder up
+
+5. From here you can distribute it how ever you want

@@ -1,0 +1,23 @@
+21.4.7075529
+
+
+in android-project\app\build.gradle
+----------------------------------------------
+set applicationId  default is "org.libsdl.app"
+set compileSdkVersion
+set minSdkVersion
+set targetSdkVersion
+set APP_PLATFORM in externalNativeBuild.ndkBuild
+
+
+
+apk outputs to android-project\app\build\outputs\apk\debug
+
+
+
+
+
+build menu
+-------------------------
+Key Generator
+New PKG Tool
