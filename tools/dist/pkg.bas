@@ -141,24 +141,41 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 		Return False
 	End If
 
-	CopyFile(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"rcb.html", DST_LOCATION$+path_join$+"tmp.html")
-	CopyFile(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"banner.png", DST_LOCATION$+path_join$+"banner.png")
-	CopyFile(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"style.css", DST_LOCATION$+path_join$+"style.css")
-
-	FileOpen(0, DST_LOCATION$+path_join$+"tmp.html", TEXT_INPUT)
+	'CopyFile(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"rcb.html", DST_LOCATION$+path_join$+"tmp.html")
+	If FileExists(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"banner.png") Then
+		CopyFile(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"banner.png", DST_LOCATION$+path_join$+"banner.png")
+	Else
+		Print "Missing banner.png"
+	End If
+	
+	If FileExists(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"style.css") Then
+		CopyFile(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"style.css", DST_LOCATION$+path_join$+"style.css")
+	Else
+		Print "Missing style.css"
+	End If
+	
 	html$=""
-	While Not EOF(0)
-		html$=html$+ReadLine(0)+"\n"
-	Wend
-	FileClose(0)
+	f = FreeFile
+	If FileExists(Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"rcb.html") Then
+		FileOpen(f, Env$("RC_PKG_HOME")+path_join$+"rc_em"+path_join$+"resources"+path_join$+"rcb.html", TEXT_INPUT)
+		While Not EOF(0)
+			html$=html$+ReadLine(f)+"\n"
+		Wend
+		FileClose(f)
+	Else
+		Print "Missing RCBASIC html template. Using emscripten default"
+		Return True
+	End If
 
-	RemoveFile(DST_LOCATION$+path_join$+"tmp.html")
-	RemoveFile(DST_LOCATION$+path_join$+PRG_NAME+".html")
-
-	If Not FileExists(DST_LOCATION$+path_join$+PRG_NAME+".html") Then
-		FileOpen(0, DST_LOCATION$ + path_join$ + PRG_NAME+ ".html", TEXT_OUTPUT_PLUS)
-		WriteLine(0, Replace(html$, "%SOURCE_JS%", PRG_NAME$+".js"))
-		FileClose(0)
+	'RemoveFile(DST_LOCATION$+path_join$+"tmp.html")
+	RemoveFile(OUT_HTML$)
+	
+	f = FreeFile
+	If Not FileExists(OUT_HTML$) Then
+		'Print "OUT_HTML = ";OUT_HTML$
+		FileOpen(f, OUT_HTML$, TEXT_OUTPUT_PLUS)
+		WriteLine(f, Replace(html$, "%SOURCE_JS%", PRG_NAME$+".js"))
+		FileClose(f)
 	End If
 	
 	Return True
@@ -454,7 +471,7 @@ Function Build_App_MacOS(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, AP
 	MAC_APP$ = APP_NAME$ + ".app"
 	
 	MakeDir(APP_PATH$)
-	CopyDir(dir + path_join$ + "RCBasic_MACOS" + path_join$ + "rcbasic_app" + path_join$, APP_PATH$ + path_join$ + MAC_APP$)
+	CopyDir(base_dir$ + path_join$ + "RCBasic_MACOS" + path_join$ + "rcbasic_app" + path_join$, APP_PATH$ + path_join$ + MAC_APP$)
 	
 	f = FreeFile
 	
@@ -536,9 +553,9 @@ End Function
 Function RmDir(rm_path$)
 	Select Case OS$
 	Case "WINDOWS"
-		Return Not System("rmdir /s /q " + rm_path$)
+		Return Not System("rmdir /s /q \q" + rm_path$ + "\q")
 	Default
-		Return Not System("rm -rf " + rm_path$)
+		Return Not System("rm -rf \q" + rm_path$ + "\q")
 	End Select
 End Function
 
@@ -680,6 +697,8 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 	Default
 		build_cmd$ = build_cmd$ + "cd " + project_dir$ + " && chmod u+x $RCBASIC_ANDROID_DIR/rcbasic_android_build.sh && $RCBASIC_ANDROID_DIR/rcbasic_android_build.sh "
 	End Select
+	
+	Print "\n\nRCBASIC_ANDROID_DIR=";env("RCBASIC_ANDROID_DIR");"\n\n"
 	
 	System(build_cmd$)
 	
@@ -1040,7 +1059,7 @@ If android_flag Then
 		Print "Failed to Create Android Debug App"
 	End If
 	
-	If AndBit(android_flag, 2) Then
+	If AndBit(android_flag SHR 1, 1) Then
 		Print "Successfully Created Android Release App"
 	Else
 		Print "Failed to Create Android Release App"
