@@ -1,0 +1,10 @@
+signingConfigs {
+        release {
+            // You need to specify either an absolute path or include the
+            // keystore file in the same directory as the build.gradle file.
+            storeFile file("rc_keystore.jks")
+            storePassword "rc_keystore_password"
+            keyAlias "rc_alias_name"
+            keyPassword "rc_alias_password"
+        }
+    }

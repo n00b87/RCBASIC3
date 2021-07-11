@@ -1,0 +1,46 @@
+bitpack.lo: bitpack.c \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libcxx/string.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libcxx/__config \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/compat/string.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/string.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/features.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten/bits/alltypes.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/strings.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libcxx/stdlib.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/compat/stdlib.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/stdlib.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/alloca.h \
+  bitpack.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libcxx/limits.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/limits.h \
+  /home/n00b/Programs/emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten/bits/limits.h
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libcxx/string.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libcxx/__config:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/compat/string.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/string.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/features.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten/bits/alltypes.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/strings.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libcxx/stdlib.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/compat/stdlib.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/stdlib.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/alloca.h:
+
+bitpack.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libcxx/limits.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/include/libc/limits.h:
+
+/home/n00b/Programs/emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten/bits/limits.h:

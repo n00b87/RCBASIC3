@@ -1,0 +1,78 @@
+def buildAsLibrary = project.hasProperty('BUILD_AS_LIBRARY');
+def buildAsApplication = !buildAsLibrary
+if (buildAsApplication) {
+    apply plugin: 'com.android.application'
+}
+else {
+    apply plugin: 'com.android.library'
+}
+
+android {
+    compileSdkVersion RCBASIC_API_VERSION
+    defaultConfig {
+        if (buildAsApplication) {
+            applicationId "RCBASIC_APP_ID"
+        }
+        minSdkVersion RCBASIC_MIN_API_VERSION
+        targetSdkVersion RCBASIC_API_VERSION
+        versionCode 1
+        versionName "1.0"
+        externalNativeBuild {
+            ndkBuild {
+                arguments "APP_PLATFORM=android-RCBASIC_API_VERSION"
+                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            }
+            // cmake {
+            //     arguments "-DANDROID_APP_PLATFORM=android-16", "-DANDROID_STL=c++_static"
+            //     // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            //     abiFilters 'arm64-v8a'
+            // }
+        }
+    }
+    //rc_signingConfig_block
+    buildTypes {
+        release {
+			//rc_signConfig_release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
+    }    
+    if (!project.hasProperty('EXCLUDE_NATIVE_LIBS')) {
+        sourceSets.main {
+            jniLibs.srcDir 'libs'
+        }
+        externalNativeBuild {
+            ndkBuild {
+                path 'jni/Android.mk'
+            }
+            // cmake {
+            //     path 'jni/CMakeLists.txt'
+            // }
+        }
+       
+    }
+    lintOptions {
+        abortOnError false
+    }
+    
+    if (buildAsLibrary) {
+        libraryVariants.all { variant ->
+            variant.outputs.each { output ->
+                def outputFile = output.outputFile
+                if (outputFile != null && outputFile.name.endsWith(".aar")) {
+                    def fileName = "org.libsdl.app.aar";
+                    output.outputFile = new File(outputFile.parent, fileName);
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+}
