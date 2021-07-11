@@ -10,6 +10,7 @@
 #include "rc_builtin.h"
 #include "rc_vm_asm.h"
 #include "file_directory.h"
+#include "env_resolve.h"
 
 using namespace std;
 
@@ -115,6 +116,8 @@ bool rc_preprocessor()
                 rc_setError("Expected include file as string constant");
                 return false;
             }
+
+            tmp_token[1] = resolveEnvironmentVariables(tmp_token[1]);
 
             inc_file.filename = tmp_token[1].substr(8);
             inc_file.filename = rc_absFilePath(inc_file.filename);

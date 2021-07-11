@@ -191,6 +191,7 @@ inline string rc_intern_dir()
 
 string rc_absFilePath(string file_path)
 {
+    //cout << "file_path: " << file_path << endl;
     string cwd = rc_intern_dir();
     int start_index = 0;
     string::size_type bs_index = file_path.find_last_of("\\");
