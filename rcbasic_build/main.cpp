@@ -489,47 +489,41 @@ rc_src rc_last_line;
 bool rc_getline(string &line)
 {
     line = "";
-    while(true)
+
+    getline(rcbasic_file, line);
+
+    if(!rcbasic_file.eof())
     {
-        getline(rcbasic_file, line);
-
-        if(!rcbasic_file.eof())
-        {
-            return true;
-        }
-        else if(rcbasic_program.size()>1)
-        {
-            //execute last line in included file
-            if(!rc_eval(line))
-            {
-                cout << "Error on Line " << rcbasic_program.top().line_number << " in " << rcbasic_program.top().filename << ": " << rc_getError() << endl;
-                //output_tokens();
-                cout << endl;
-                return false;
-            }
-
-            rcbasic_program.pop();
-            rcbasic_file.close();
-            rcbasic_file.open(rcbasic_program.top().filename.c_str(), fstream::in);
-            if(!rcbasic_file.is_open())
-            {
-                cout << "Could not open " << rcbasic_program.top().filename << endl;
-                return false;
-            }
-            rcbasic_file.seekg(rcbasic_program.top().line_position);
-        }
-        else
-        {
-            if(rcbasic_program.size()==1)
-                rc_last_line = rcbasic_program.top();
-            rcbasic_program.pop();
-            rcbasic_file.close();
-            return false;
-        }
+        return true;
     }
-    if(line.compare("")==0)
+    else if(rcbasic_program.top().line_position != -1)
+    {
+        rcbasic_program.top().line_position = -1; // end of file
+        return true;
+    }
+    else
+    {
+        rcbasic_file.close();
+
+        for(int i = 0; i < rcbasic_program.size(); i++)
+        {
+            if(rcbasic_program.top().line_position == -1)
+                rcbasic_program.pop();
+            else
+            {
+                rcbasic_file.open(rcbasic_program.top().filename.c_str(), fstream::in);
+                if(!rcbasic_file.is_open())
+                {
+                    cout << "Could not open " << rcbasic_program.top().filename << endl;
+                    return false;
+                }
+                rcbasic_file.seekg(rcbasic_program.top().line_position);
+                getline(rcbasic_file, line);
+                return true;
+            }
+        }
         return false;
-    return true;
+    }
 }
 
 bool rcbasic_compile()
@@ -562,7 +556,8 @@ bool rcbasic_compile()
     while( rc_getline(line) )
     {
         //cout << "line " << rcbasic_program.top().line_number << ": " << rcbasic_file.tellg() << " -> " << line << endl;
-        rcbasic_program.top().line_position = rcbasic_file.tellg();
+        if(rcbasic_program.top().line_position >= 0)
+            rcbasic_program.top().line_position = rcbasic_file.tellg();
         //vm_asm.push_back("mov n0 " + rc_intToString(rcbasic_program.top().line_number));
         //vm_asm.push_back("print n0");
         if(!rc_eval(line))
@@ -587,14 +582,6 @@ bool rcbasic_compile()
 //            f.close();
 //            data_segment.clear();
 //        }
-    }
-
-    if(!rc_eval(line))
-    {
-        cout << "Error on Line " << rc_last_line.line_number << " in " << rc_last_line.filename << ": " << rc_getError() << endl;
-        //output_tokens();
-        cout << endl;
-        return false;
     }
 
     vm_asm.push_back("end");
