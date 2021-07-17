@@ -187,6 +187,8 @@ rc_double readdouble_val;
 
 uint64_t arr_ref_id = 0;
 
+int rcbasic_exit_code = 0;
+
 //needed by internal functions so i am declaring it here
 void pop_ptr_137(uint64_t n);
 
@@ -2425,6 +2427,11 @@ void for_offset_0_149()
     for_offset_dimensions = 0;
 }
 
+void end_x_150(int n1)
+{
+    rcbasic_exit_code = (int)vm_n[n1].value;
+}
+
 bool rcbasic_run()
 {
     unsigned char rcbasic_cmd;
@@ -2444,6 +2451,7 @@ bool rcbasic_run()
         {
             case 0:
                 end_of_program = true;
+                rcbasic_exit_code = 0;
                 break;
             case 32:
                 i[0] = readInt();
@@ -2983,8 +2991,14 @@ bool rcbasic_run()
             case 149:
                 for_offset_0_149();
                 break;
+            case 150:
+                i[0] = readInt();
+                end_x_150(i[0]);
+                end_of_program = true;
+                break;
             default:
                 cout << "invalid cmd: " << rcbasic_cmd << endl;
+                rcbasic_exit_code = 1;
                 return 0;
         }
     }
@@ -3133,6 +3147,8 @@ int main(int argc, char * argv[])
         cout << "++Could not load rcbasic program" << endl;
 
     rcbasic_clean();
+
+    exit(rcbasic_exit_code);
     //cout << "Hello world!" << endl;
     return 0;
 }

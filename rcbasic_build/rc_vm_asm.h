@@ -972,6 +972,10 @@ namespace rc_cbc_assembler
             {
                 writeSegment(149);
             }
+            else if(line_arg[0].compare("end_x")==0)
+            {
+                writeSegment(150);
+            }
             else
             {
                 cout << "unrecognized cmd: " << line_arg[0] << endl;

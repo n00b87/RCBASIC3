@@ -2786,8 +2786,20 @@ bool check_rule()
             }
             else
             {
-                rc_setError("Invalid use of END");
-                return false;
+                if(!eval_expression(1, token.size()-1))
+                {
+                    rc_setError("Could not evaluate expression");
+                    return false;
+                }
+
+                if(expr_result.substr(0,1).compare("n")!=0)
+                {
+                    rc_setError("Expected a number expression");
+                    return false;
+                }
+
+                vm_asm.push_back("end_x " + expr_result);
+                return true;
             }
         }
         else if(token[0].compare("<function>")==0)
