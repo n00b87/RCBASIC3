@@ -390,4 +390,7 @@ function ReadByteBuffer(stream, ByRef buf, buf_size)
 function WindowEvent_Resize(win)
 sub SetWindowAutoClose( win, exit_on_close )
 sub SetWindowResizable(win, flag) 'new
-function SystemReturnOutput$(cmd$) 'new
+function SystemReturnStdOut$(cmd$) 'new
+function WindowMode(visible, fullscreen, resizable, borderless, highDPI)
+function WindowFlags(win)
+sub RestoreWindow(win)

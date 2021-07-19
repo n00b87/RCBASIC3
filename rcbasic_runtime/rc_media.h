@@ -632,6 +632,31 @@ int rc_debug_msg(string msg)
     return 0;
 }
 
+inline Uint32 rc_media_windowMode(int visible_flag, int fullscreen_flag, int resizable_flag, int borderless_flag, int highDPI_flag)
+{
+    Uint32 window_mode = ( visible_flag == 0 ? SDL_WINDOW_HIDDEN : SDL_WINDOW_SHOWN ) |
+                         ( fullscreen_flag == 0 ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP ) |
+                         ( resizable_flag == 0 ? 0 : SDL_WINDOW_RESIZABLE ) |
+                         ( borderless_flag == 0 ? 0 : SDL_WINDOW_BORDERLESS ) |
+                         ( highDPI_flag == 0 ? 0 : SDL_WINDOW_ALLOW_HIGHDPI );
+    return window_mode;
+}
+
+inline Uint32 rc_media_windowFlags(int win_num)
+{
+    if(win_num < 0 || win_num >= MAX_WINDOWS)
+    {
+        cout << "Window #" << win_num << " is not an available Window Slot" << endl;
+        return 0;
+    }
+    if(rc_win[win_num] == NULL)
+    {
+        cout << "Window #" << win_num << " is not currently open" << endl;
+        return 0;
+    }
+    return SDL_GetWindowFlags(rc_win[win_num]);
+}
+
 inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, int w, int h, Uint32 flags, int vsync_flag)
 {
     //cout << "start windowOpen" << endl;
@@ -648,22 +673,6 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
 
     bool vsync = vsync_flag == 0 ? false : true;
     rc_win_exitOnClose[win_num] = true;
-
-    if(flags == 0)
-        flags = SDL_WINDOW_SHOWN;
-    else if(flags == 1)
-        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP;
-    else if(flags == 2)
-        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
-    else if(flags == 3)
-        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
-    else if(flags == 4)
-        flags = SDL_WINDOW_HIDDEN;
-    else
-    {
-        cout << "WindowOpen Error: Flag is not a supported mode" << endl;
-        return false;
-    }
 
     #ifdef RC_MOBILE
 		flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -813,8 +822,9 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     rc_mouse_scale_x = (double)((double)w / (double)rc_displayMode[win_num].w);
     rc_mouse_scale_y = (double)((double)h / (double)rc_displayMode[win_num].h);
 #else
-    if(flags == (SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP))
+    if((flags&SDL_WINDOW_FULLSCREEN_DESKTOP)!=0)
     {
+        //cout << "fullscreen" << endl;
         //cout << "W = " << w << endl;
         //cout << "D.W = " << rc_displayMode[win_num].w << endl;
         rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
@@ -865,237 +875,6 @@ inline bool rc_media_openWindow_hw(int win_num, string caption, int x, int y, in
     //cout << "open complete" << endl;
 
     //rc_debug_msg("Window Creation Successful");
-
-    return true;
-}
-
-inline bool rc_media_openWindow_ex_hw(int win_num, string caption, int x, int y, int w, int h, Uint32 flags, int vsync)
-{
-    //cout << "start windowOpen" << endl;
-    if(win_num < 0 || win_num >= MAX_WINDOWS)
-    {
-        cout << "Window #" << win_num << " is not an available Window Slot" << endl;
-        return false;
-    }
-    if(rc_win[win_num] != NULL)
-    {
-        cout << "Window #" << win_num << " is currently open" << endl;
-        return false;
-    }
-
-
-    if(flags == 0)
-        flags = SDL_WINDOW_SHOWN;
-    else if(flags == 1)
-        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP;
-    else if(flags == 2)
-        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
-    else if(flags == 3)
-        flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
-    else if(flags == 4)
-        flags = SDL_WINDOW_HIDDEN;
-    else
-    {
-        cout << "WindowOpen Error: Flag is not a supported mode" << endl;
-        return false;
-    }
-
-    #ifdef RC_MOBILE
-		flags = flags | SDL_WINDOW_FULLSCREEN_DESKTOP;
-	#endif // RC_MOBILE
-
-    rc_win[win_num] = SDL_CreateWindow(caption.c_str(), x, y, w, h, flags);
-    rc_win_exitOnClose[win_num] = true;
-    if(rc_win[win_num] == NULL)
-    {
-        cout << "Error: " << SDL_GetError() << endl;
-        return false;
-    }
-
-    if(rc_active_window == -1)
-        rc_active_window = win_num;
-
-    //rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
-    rc_win_id[win_num] = SDL_GetWindowID(rc_win[win_num]);
-
-    rc_win_width[win_num] = w;
-    rc_win_height[win_num] = h;
-    //SDL_SetSurfaceRLE(rc_win_surface[win_num],1);
-    //rc_console = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
-    //SDL_SetColorKey(rc_console, SDL_TRUE, rc_clearColor);
-    //cout << "boob physics" << endl;
-
-#ifdef RC_MOBILE
-    if(rc_win_renderer[win_num] != NULL)
-    {
-        SDL_DestroyRenderer(rc_win_renderer[win_num]);
-    }
-#endif // RC_MOBILE
-
-    if(vsync != 0)
-        rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
-    else
-        rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-
-    if(rc_win_renderer[win_num] == NULL)
-    {
-#ifdef RC_ANDROID
-        __android_log_write(ANDROID_LOG_ERROR, "My Ass Error: ", SDL_GetError());
-        rc_win_renderer[win_num] = SDL_GetRenderer(rc_win[win_num]);
-        if(rc_win_renderer[win_num] == NULL)
-        {
-            __android_log_write(ANDROID_LOG_ERROR, "Renderer Error: ", SDL_GetError());
-            exit(0);
-        }
-        SDL_DestroyRenderer(rc_win_renderer[win_num]);
-        rc_win_renderer[win_num] = NULL;
-        if(vsync)
-            rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
-        else
-            rc_win_renderer[win_num] = SDL_CreateRenderer(rc_win[win_num], -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-
-        if(rc_win_renderer[win_num] == NULL)
-        {
-            __android_log_write(ANDROID_LOG_ERROR, "Renderer Error2: ", SDL_GetError());
-            exit(0);
-        }
-#else
-        cout << "WindowOpen Error: " << SDL_GetError() << endl;
-        exit(0);
-#endif
-    }
-
-    SDL_SetRenderDrawBlendMode(rc_win_renderer[win_num], SDL_BLENDMODE_BLEND);
-
-    //cout << "booty" << endl;
-
-#ifndef RC_MOBILE
-
-    for(int i = 0; i < MAX_IMAGES; i++)
-    {
-        if(rc_image_isLoaded[i])
-        {
-            for(int w = 0; w < MAX_WINDOWS; w++)
-            {
-                if(rc_win[w] != NULL && rc_himage[i][w]==NULL)
-                {
-                    SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[i], rc_image_height[i], 32, 0, 0, 0, 0);
-                    //cout << "ColorKey = " << (Uint32)rc_image_colorKey_r[i] << ", ";
-                    //cout << (Uint32)rc_image_colorKey_g[i] << ", ";
-                    //cout << (Uint32)rc_image_colorKey_b[i] << ", ";
-                    //cout << (Uint32)rc_image_colorKey_a[i] << endl;
-                    SDL_FillRect(tmp_surf, NULL, rc_image_colorKey[i]);
-                    SDL_SetRenderTarget(rc_win_renderer[w], NULL);
-                    SDL_Rect t_rect;
-                    t_rect.x = 0;
-                    t_rect.y = 0;
-                    t_rect.w = tmp_surf->w;
-                    t_rect.h = tmp_surf->h;
-                    Uint8 r, g, b, a;
-                    SDL_GetRenderDrawColor(rc_win_renderer[w], &r, &g, &b, &a);
-                    SDL_SetRenderDrawColor(rc_win_renderer[w], rc_image_colorKey_r[i], rc_image_colorKey_g[i], rc_image_colorKey_b[i], 255);
-                    SDL_RenderFillRect(rc_win_renderer[w], NULL);
-                    SDL_SetRenderDrawColor(rc_win_renderer[w], r, g, b, a);
-                    SDL_RenderCopy(rc_win_renderer[w], rc_himage[i][w], NULL, &t_rect);
-                    SDL_RenderReadPixels(rc_win_renderer[w],&t_rect,tmp_surf->format->format,tmp_surf->pixels,tmp_surf->pitch);
-                    SDL_SetColorKey(tmp_surf, SDL_TRUE, rc_image_colorKey[i]);
-                    rc_himage[i][w] = SDL_CreateTextureFromSurface(rc_win_renderer[w], tmp_surf);
-                    SDL_FreeSurface(tmp_surf);
-                    break;
-                }
-            }
-        }
-    }
-
-#endif // RC_ANDROID
-
-    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    //SDL_RenderSetLogicalSize(rc_win_renderer[win_num], w, h);
-
-    //cout << "boobs" << endl;
-
-    rc_backBuffer[win_num] = SDL_CreateTexture(rc_win_renderer[win_num], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, w, h);
-    //cout << "dbg 1" << endl;
-
-#ifdef RC_MOBILE
-
-    if(SDL_GetDesktopDisplayMode(0, &rc_displayMode[win_num])<0)
-    {
-        cout << "Something happend: " << SDL_GetError() << endl;
-    }
-
-#else
-
-    if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
-    {
-        cout << "Something happend: " << SDL_GetError() << endl;
-    }
-
-#endif // RC_ANDROID
-    //cout << "dbg 2" << endl;
-    rc_bb_rect[win_num].x = 0;
-    rc_bb_rect[win_num].y = 0;
-    //cout << "dbg 3" << endl;
-    rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
-    //cout << "dbg 4" << endl;
-    rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
-
-    //cout << "cunt" << endl;
-
-#ifdef RC_MOBILE
-    rc_mouse_scale_x = (double)((double)w / (double)rc_displayMode[win_num].w);
-    rc_mouse_scale_y = (double)((double)h / (double)rc_displayMode[win_num].h);
-#else
-    if(flags == (SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP))
-    {
-        //cout << "W = " << w << endl;
-        //cout << "D.W = " << rc_displayMode[win_num].w << endl;
-        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
-        //cout << "fs = " << rc_fullscreen_mouse_scale_x[win_num] << endl;
-        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)h / (double)rc_displayMode[win_num].h);
-        //cout << "display mode = " << rc_fullscreen_mouse_scale_x[win_num] << ", " << rc_fullscreen_mouse_scale_y[win_num] << endl;
-    }
-    else
-    {
-        rc_fullscreen_mouse_scale_x[win_num] = 1;
-        rc_fullscreen_mouse_scale_y[win_num] = 1;
-    }
-#endif // RC_ANDROID
-
-    //#ifndef RC_ANDROID
-    rc_hconsole[win_num] = SDL_CreateTexture(rc_win_renderer[win_num],rc_pformat->format,SDL_TEXTUREACCESS_TARGET,w,h);
-    SDL_SetTextureBlendMode(rc_hconsole[win_num], SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(rc_win_renderer[win_num], rc_hconsole[win_num]);
-    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 0);
-    SDL_RenderClear(rc_win_renderer[win_num]);
-    SDL_SetRenderTarget(rc_win_renderer[win_num], NULL);
-    //#endif // RC_ANDROID
-
-    //cout << "wtf" << endl;
-
-    rc_console_width[win_num] = w/8;
-    rc_console_height[win_num] = h/8;
-    rc_sConsole_x[win_num] = 0;
-    rc_sConsole_y[win_num] = 0;
-
-    //cout << "cdi" << endl;
-
-#ifdef RC_MOBILE
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window]);
-    SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 255);
-    SDL_RenderClear(rc_win_renderer[rc_active_window]);
-    SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
-    SDL_RenderClear(rc_win_renderer[rc_active_window]);
-    rc_win_width[win_num] = w;
-    rc_win_height[win_num] = h;
-#else
-    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 255);
-    SDL_RenderClear(rc_win_renderer[win_num]);
-#endif // RC_ANDROID
-
-    SDL_RenderPresent(rc_win_renderer[win_num]);
-
-    //cout << "open complete" << endl;
 
     return true;
 }
@@ -1269,42 +1048,94 @@ void rc_media_getWindowPosition(int win_num, double * x, double * y)
     *y = y_data;
 }
 
+
+void rc_onResize(int win_num)
+{
+    SDL_Texture * current_tgt = SDL_GetRenderTarget(rc_win_renderer[win_num]);
+    int w = 0;
+    int h = 0;
+    SDL_DestroyTexture(rc_backBuffer[win_num]);
+    rc_backBuffer[win_num] = NULL;
+    Uint32 win_flags = SDL_GetWindowFlags(rc_win[win_num]);
+    if( (win_flags & SDL_WINDOW_RESIZABLE) && !(win_flags & SDL_WINDOW_FULLSCREEN_DESKTOP) )
+        SDL_GetWindowSize(rc_win[win_num], &w, &h);
+    else
+    {
+        w = rc_win_width[win_num];
+        h = rc_win_height[win_num];
+    }
+    //cout << "debug1: " << w << ", " << h << endl;
+    rc_backBuffer[win_num] = SDL_CreateTexture(rc_win_renderer[win_num], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, w, h);
+
+#ifdef RC_MOBILE
+
+    if(SDL_GetDesktopDisplayMode(0, &rc_displayMode[win_num])<0)
+    {
+        cout << "Something happend: " << SDL_GetError() << endl;
+    }
+
+#else
+
+    if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
+    {
+        cout << "Something happend: " << SDL_GetError() << endl;
+    }
+
+#endif // RC_ANDROID
+
+    rc_bb_rect[win_num].x = 0;
+    rc_bb_rect[win_num].y = 0;
+    rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
+    rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
+
+    //cout << "bb_rect = " << rc_bb_rect[win_num].w << ", " << rc_bb_rect[win_num].h << endl;
+
+    Uint32 flags = SDL_GetWindowFlags(rc_win[win_num]);
+
+#ifdef RC_MOBILE
+    rc_mouse_scale_x = (double)((double)w / (double)rc_displayMode[win_num].w);
+    rc_mouse_scale_y = (double)((double)h / (double)rc_displayMode[win_num].h);
+#else
+    if((flags & SDL_WINDOW_FULLSCREEN_DESKTOP)!=0)
+    {
+        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)rc_win_width[win_num] / (double)rc_displayMode[win_num].w);
+        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)rc_win_height[win_num] / (double)rc_displayMode[win_num].h);
+        //cout << "resize_fullscreen: " << w << " / " << rc_displayMode[win_num].w << endl;
+    }
+    else
+    {
+        //cout << "resize window mode" << endl;
+        rc_fullscreen_mouse_scale_x[win_num] = 1;
+        rc_fullscreen_mouse_scale_y[win_num] = 1;
+    }
+#endif // RC_ANDROID
+
+    SDL_DestroyTexture(rc_hconsole[win_num]);
+    rc_hconsole[win_num] = SDL_CreateTexture(rc_win_renderer[win_num],rc_pformat->format,SDL_TEXTUREACCESS_TARGET,w,h);
+    SDL_SetTextureBlendMode(rc_hconsole[win_num], SDL_BLENDMODE_BLEND);
+    SDL_SetRenderTarget(rc_win_renderer[win_num], rc_hconsole[win_num]);
+    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 0);
+    SDL_RenderClear(rc_win_renderer[win_num]);
+    SDL_SetRenderTarget(rc_win_renderer[win_num], current_tgt);
+
+    rc_console_width[win_num] = w/8;
+    rc_console_height[win_num] = h/8;
+    rc_sConsole_x[win_num] = 0;
+    rc_sConsole_y[win_num] = 0;
+
+}
+
+
 void rc_media_setWindowSize(int win_num, int w, int h)
 {
     if(rc_winCheck(win_num))
     {
         SDL_SetWindowSize(rc_win[win_num], w, h);
-        rc_win_renderer[win_num] = SDL_GetRenderer(rc_win[win_num]);
 
-        rc_bb_rect[win_num].w = w;
-        rc_bb_rect[win_num].h = h;
-        #ifdef RC_MOBILE
-        rc_mouse_scale_x = 1;
-        rc_mouse_scale_y = 1;
-        #else
-
-        Uint32 wflags = SDL_GetWindowFlags(rc_win[win_num]);
-        Uint32 wflags_cmp1 = wflags & SDL_WINDOW_FULLSCREEN;
-        Uint32 wflags_cmp2 = wflags & SDL_WINDOW_FULLSCREEN_DESKTOP;
-        if(!(wflags_cmp1 || wflags_cmp2))
-        {
-            rc_fullscreen_mouse_scale_x[win_num] = 1;
-            rc_fullscreen_mouse_scale_y[win_num] = 1;
-        }
-        else if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
-        {
-            cout << "Something happend: " << SDL_GetError() << endl;
-            rc_fullscreen_mouse_scale_x[win_num] = 1;
-            rc_fullscreen_mouse_scale_y[win_num] = 1;
-        }
-        else
-        {
-            rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
-            rc_fullscreen_mouse_scale_y[win_num] = (double)((double)h / (double)rc_displayMode[win_num].h);
-        }
-        #endif // RC_MOBILE
         rc_win_width[win_num] = w;
         rc_win_height[win_num] = h;
+
+        rc_onResize(win_num);
     }
     else
         cout << "SetWindowSize Error: Window #" << win_num << " is not an active window" << endl;
@@ -1522,7 +1353,7 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
         }
         if(SDL_SetWindowFullscreen(rc_win[win_num], flag) < 0)
         {
-            cout << "SDL_FULLSCREEN ERROR: " << SDL_GetError() << endl;
+            cout << "SetWindowFullscreen Error: " << SDL_GetError() << endl;
             return;
         }
 
@@ -1568,6 +1399,8 @@ void rc_media_maximizeWindow(int win_num)
     if(rc_winCheck(win_num))
     {
         SDL_MaximizeWindow(rc_win[win_num]);
+        if( (SDL_GetWindowFlags(rc_win[win_num]) & SDL_WINDOW_RESIZABLE) )
+            return;
         SDL_GetWindowDisplayMode(rc_win[win_num],&rc_displayMode[win_num]);
         rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
@@ -1836,12 +1669,7 @@ void rc_media_screenOffset(int s_num, int x, int y)
 {
     if(rc_screenCheck(s_num))
     {
-        if( (x + rc_screen_rect[rc_active_window][s_num].w) > rc_screen_width[rc_active_window][s_num] ||
-            (y + rc_screen_rect[rc_active_window][s_num].h) > rc_screen_height[rc_active_window][s_num] )
-        {
-            cout << "ScreenView Error: View exceeds Screen #" << s_num << " Size" << endl;
-            return;
-        }
+        //removed error checks because you only live once
         rc_screenview[rc_active_window][s_num].x = x;
         rc_screenview[rc_active_window][s_num].y = y;
         rc_screenview[rc_active_window][s_num].w = rc_screen_rect[rc_active_window][s_num].w;
@@ -3242,7 +3070,7 @@ void rc_media_copyImage_hw(int src_slot, int dst_slot)
         SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[src_slot], rc_image_height[src_slot], 32, 0, 0, 0, 0);
         SDL_Texture * tmp_tex = SDL_CreateTexture(rc_win_renderer[rc_active_window], tmp_surf->format->format, SDL_TEXTUREACCESS_TARGET, tmp_surf->w, tmp_surf->h);
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], tmp_tex);
-        SDL_RendererFlip rf = SDL_FLIP_VERTICAL;
+        SDL_RendererFlip rf = SDL_FLIP_NONE;
         SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[src_slot][rc_active_window],NULL,NULL,0,NULL,rf);
         SDL_RenderReadPixels(rc_win_renderer[rc_active_window],NULL,tmp_surf->format->format,tmp_surf->pixels,tmp_surf->pitch);
         for(int i = 0; i < MAX_WINDOWS; i++)
@@ -3565,14 +3393,20 @@ void rc_media_cls()
     if(rc_winCheck(rc_active_window))
     {
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window]);
-        SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_clearColor>>16, rc_clearColor>>8, rc_clearColor, rc_clearColor>>24);
         SDL_RenderClear(rc_win_renderer[rc_active_window]);
+
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
         SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 0);
         SDL_RenderClear(rc_win_renderer[rc_active_window]);
+
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+        SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_clearColor>>16, rc_clearColor>>8, rc_clearColor, rc_clearColor>>24);
         SDL_RenderClear(rc_win_renderer[rc_active_window]);
-        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
+
+        if(rc_active_screen >= 0)
+            SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
+        rc_media_ink(rc_ink);
     }
 }
 
@@ -3840,12 +3674,14 @@ void rc_media_cls()
 {
     if(rc_winCheck(rc_active_window))
     {
-        SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_clearColor>>16, rc_clearColor>>8, rc_clearColor, rc_clearColor>>24);
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hconsole[rc_active_window]);
         SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], 0, 0, 0, 0);
         SDL_RenderClear(rc_win_renderer[rc_active_window]);
+
         SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
+        SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_clearColor>>16, rc_clearColor>>8, rc_clearColor, rc_clearColor>>24);
         SDL_RenderClear(rc_win_renderer[rc_active_window]);
+
         if(rc_active_screen >= 0)
             SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
         rc_media_ink(rc_ink);
@@ -4345,70 +4181,6 @@ void rc_setTouchFingerEvent(SDL_FingerID fingerID, double x, double y, double pr
             return;
         }
     }
-}
-
-void rc_onResize(int win_num)
-{
-    SDL_Texture * current_tgt = SDL_GetRenderTarget(rc_win_renderer[win_num]);
-    int w = 0;
-    int h = 0;
-    SDL_DestroyTexture(rc_backBuffer[win_num]);
-    rc_backBuffer[win_num] = NULL;
-    SDL_GetWindowSize(rc_win[win_num], &w, &h);
-    rc_backBuffer[win_num] = SDL_CreateTexture(rc_win_renderer[win_num], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, w, h);
-
-#ifdef RC_MOBILE
-
-    if(SDL_GetDesktopDisplayMode(0, &rc_displayMode[win_num])<0)
-    {
-        cout << "Something happend: " << SDL_GetError() << endl;
-    }
-
-#else
-
-    if(SDL_GetWindowDisplayMode(rc_win[win_num], &rc_displayMode[win_num])<0)
-    {
-        cout << "Something happend: " << SDL_GetError() << endl;
-    }
-
-#endif // RC_ANDROID
-
-    rc_bb_rect[win_num].x = 0;
-    rc_bb_rect[win_num].y = 0;
-    rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
-    rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
-
-    Uint32 flags = SDL_GetWindowFlags(rc_win[win_num]);
-
-#ifdef RC_MOBILE
-    rc_mouse_scale_x = (double)((double)w / (double)rc_displayMode[win_num].w);
-    rc_mouse_scale_y = (double)((double)h / (double)rc_displayMode[win_num].h);
-#else
-    if(flags == (SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP))
-    {
-        rc_fullscreen_mouse_scale_x[win_num] = (double)((double)w / (double)rc_displayMode[win_num].w);
-        rc_fullscreen_mouse_scale_y[win_num] = (double)((double)h / (double)rc_displayMode[win_num].h);
-    }
-    else
-    {
-        rc_fullscreen_mouse_scale_x[win_num] = 1;
-        rc_fullscreen_mouse_scale_y[win_num] = 1;
-    }
-#endif // RC_ANDROID
-
-    SDL_DestroyTexture(rc_hconsole[win_num]);
-    rc_hconsole[win_num] = SDL_CreateTexture(rc_win_renderer[win_num],rc_pformat->format,SDL_TEXTUREACCESS_TARGET,w,h);
-    SDL_SetTextureBlendMode(rc_hconsole[win_num], SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(rc_win_renderer[win_num], rc_hconsole[win_num]);
-    SDL_SetRenderDrawColor(rc_win_renderer[win_num], 0, 0, 0, 0);
-    SDL_RenderClear(rc_win_renderer[win_num]);
-    SDL_SetRenderTarget(rc_win_renderer[win_num], current_tgt);
-
-    rc_console_width[win_num] = w/8;
-    rc_console_height[win_num] = h/8;
-    rc_sConsole_x[win_num] = 0;
-    rc_sConsole_y[win_num] = 0;
-
 }
 
 int rc_getEvents()
@@ -4954,6 +4726,7 @@ void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, doubl
     #else
     *x = (int)(rc_mouseX * rc_fullscreen_mouse_scale_x[rc_active_window]);
     *y = (int)(rc_mouseY * rc_fullscreen_mouse_scale_y[rc_active_window]);
+    //cout << "debug getMouse = " << rc_mouseX << " * " << rc_fullscreen_mouse_scale_x[rc_active_window] << endl;
     #endif // RC_MOBILE
     return;
 }
@@ -5016,9 +4789,9 @@ void rc_media_updateWindow_hw()
         {
             //cout << "draw canvas " << s_num << endl;
             #ifdef RC_WEB
-            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], NULL);
+            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], &rc_screen_rect[rc_active_window][s_num]);
             #else
-            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], &rc_bb_rect[rc_active_window]);
+            SDL_RenderCopy(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][s_num], &rc_screenview[rc_active_window][s_num], &rc_screen_rect[rc_active_window][s_num]);
             #endif
         }
     }
@@ -5884,7 +5657,7 @@ int rc_media_getVideoStats(string fname, double * v_len, double * v_fps, double 
             audio = NULL;
         }
 
-        SDL_Delay(1);
+        //SDL_Delay(1);
     }
 
     THEORAPLAY_stopDecode(decoder);

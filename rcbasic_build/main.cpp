@@ -19,6 +19,7 @@ struct rc_src
     string filename = "";
     uint64_t line_number = 1;
     uint64_t line_position = 0;
+    bool eof_reached = false;
 };
 
 stack<rc_src> rcbasic_program;
@@ -496,21 +497,28 @@ bool rc_getline(string &line)
     {
         return true;
     }
-    else if(rcbasic_program.top().line_position != -1)
+    else if(!rcbasic_program.top().eof_reached)
     {
-        rcbasic_program.top().line_position = -1; // end of file
+        //cout << "setting negative line in " << rcbasic_program.top().filename << " at line " << rcbasic_program.top().line_number << endl;
+        rcbasic_program.top().eof_reached = true; // end of file
         return true;
     }
     else
     {
         rcbasic_file.close();
 
-        for(int i = 0; i < rcbasic_program.size(); i++)
+        while(rcbasic_program.size()>0)
         {
-            if(rcbasic_program.top().line_position == -1)
+            //cout << "debug STACK: " << rcbasic_program.top().filename << " -- " << rcbasic_program.top().line_number << ":" << rcbasic_program.top().line_position << endl;
+            if(rcbasic_program.top().eof_reached)
+            {
+                //cout << "popping " << rcbasic_program.top().filename << endl;
                 rcbasic_program.pop();
+                //cout << "new size = " << rcbasic_program.size() << endl;
+            }
             else
             {
+                //cout << "reopening " << rcbasic_program.top().filename << " at line " << rcbasic_program.top().line_number << ":" << rcbasic_program.top().line_position << endl;
                 rcbasic_file.open(rcbasic_program.top().filename.c_str(), fstream::in);
                 if(!rcbasic_file.is_open())
                 {
@@ -556,7 +564,7 @@ bool rcbasic_compile()
     while( rc_getline(line) )
     {
         //cout << "line " << rcbasic_program.top().line_number << ": " << rcbasic_file.tellg() << " -> " << line << endl;
-        if(rcbasic_program.top().line_position >= 0)
+        if(!rcbasic_program.top().eof_reached)
             rcbasic_program.top().line_position = rcbasic_file.tellg();
         //vm_asm.push_back("mov n0 " + rc_intToString(rcbasic_program.top().line_number));
         //vm_asm.push_back("print n0");
@@ -734,13 +742,13 @@ int main(int argc, char * argv[])
     string rc_filename = "";// = "tst.bas";
 
     //DEBUG START
-    rc_filename = "tst.bas";
+    //rc_filename = "tst.bas";
     //DEBUG END
 
     if(argc > 1)
         rc_filename = argv[1];
 
-    if(rc_filename.compare("-v")==0)
+    if(rc_filename.compare("--version")==0)
     {
         cout << "RCBASIC Compiler v3.14" << endl;
         return 0;

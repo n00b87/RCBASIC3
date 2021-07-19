@@ -2223,8 +2223,17 @@ void func_130(uint64_t fn)
         case FN_SetWindowResizable:
             rc_media_setWindowResizable(SETWINDOWRESIZABLE_WIN, SETWINDOWRESIZABLE_FLAG);
             break;
-        case FN_SystemReturnOutput$:
-            rc_push_str( rc_intern_sysReturnOutput(SYSTEMRETURNOUTPUT$_CMD$) );
+        case FN_SystemReturnStdOut$:
+            rc_push_str( rc_intern_sysReturnOutput(SYSTEMRETURNSTDOUT$_CMD$) );
+            break;
+        case FN_WindowMode:
+            rc_push_num( rc_media_windowMode(WINDOWMODE_VISIBLE, WINDOWMODE_FULLSCREEN, WINDOWMODE_RESIZABLE, WINDOWMODE_BORDERLESS, WINDOWMODE_HIGHDPI) );
+            break;
+        case FN_WindowFlags:
+            rc_push_num( rc_media_windowFlags(WINDOWFLAGS_WIN) );
+            break;
+        case FN_RestoreWindow:
+            rc_media_restoreWindow(RESTOREWINDOW_WIN);
             break;
     }
 }
@@ -3078,7 +3087,7 @@ int main(int argc, char * argv[])
         }
         #endif // RC_WINDOWS
 
-    if(rc_filename.compare("-v")==0)
+    if(rc_filename.compare("--version")==0)
     {
         cout << "RCBASIC Runtime v3.14" << endl;
         return 0;

@@ -972,6 +972,18 @@ string rc_keywordToken(string sline)
         return "<num>3";
     else if(sline.compare("POWERSTATE_CHARGED")==0)
         return "<num>4";
+    else if(sline.compare("WINDOW_VISIBLE")==0)
+        return "<num>" + rc_intToString(SDL_WINDOW_SHOWN);
+    else if(sline.compare("WINDOW_FULLSCREEN")==0)
+        return "<num>" + rc_intToString(SDL_WINDOW_FULLSCREEN_DESKTOP);
+    else if(sline.compare("WINDOW_RESIZABLE")==0)
+        return "<num>" + rc_intToString(SDL_WINDOW_RESIZABLE);
+    else if(sline.compare("WINDOW_BORDERLESS")==0)
+        return "<num>" + rc_intToString(SDL_WINDOW_BORDERLESS);
+    else if(sline.compare("WINDOW_HIGHDPI")==0)
+        return "<num>" + rc_intToString(SDL_WINDOW_ALLOW_HIGHDPI);
+    else if(sline.compare("WINDOW_HIDDEN")==0)
+        return "<num>" + rc_intToString(SDL_WINDOW_HIDDEN);
     else
     {
         for(int i = 0; i < rc_constants.size(); i++)

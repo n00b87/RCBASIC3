@@ -1003,5 +1003,15 @@
 #define FN_SetWindowResizable 361
 #define SETWINDOWRESIZABLE_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define SETWINDOWRESIZABLE_FLAG num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
-#define FN_SystemReturnOutput$ 362
-#define SYSTEMRETURNOUTPUT$_CMD$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define FN_SystemReturnStdOut$ 362
+#define SYSTEMRETURNSTDOUT$_CMD$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define FN_WindowMode 363
+#define WINDOWMODE_VISIBLE num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define WINDOWMODE_FULLSCREEN num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define WINDOWMODE_RESIZABLE num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define WINDOWMODE_BORDERLESS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define WINDOWMODE_HIGHDPI num_var[4].nid_value[0].value[ num_var[4].byref_offset ]
+#define FN_WindowFlags 364
+#define WINDOWFLAGS_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_RestoreWindow 365
+#define RESTOREWINDOW_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]

@@ -1009,8 +1009,19 @@ void init_embedded()
     embed_function("SetWindowResizable", ID_TYPE_SUB);
     add_embedded_arg("win", ID_TYPE_NUM);
     add_embedded_arg("flag", ID_TYPE_NUM);
-    embed_function("SystemReturnOutput$", ID_TYPE_FN_STR);
+    embed_function("SystemReturnStdOut$", ID_TYPE_FN_STR);
     add_embedded_arg("cmd$", ID_TYPE_STR);
+    embed_function("WindowMode", ID_TYPE_FN_NUM);
+    add_embedded_arg("visible", ID_TYPE_NUM);
+    add_embedded_arg("fullscreen", ID_TYPE_NUM);
+    add_embedded_arg("resizable", ID_TYPE_NUM);
+    add_embedded_arg("borderless", ID_TYPE_NUM);
+    add_embedded_arg("highDPI", ID_TYPE_NUM);
+    embed_function("WindowFlags", ID_TYPE_FN_NUM);
+    add_embedded_arg("win", ID_TYPE_NUM);
+    embed_function("RestoreWindow", ID_TYPE_SUB);
+    add_embedded_arg("win", ID_TYPE_NUM);
+
 
 }
 
