@@ -275,9 +275,9 @@ bool rc_toggleBackspace = true;
 
 static Uint32 baseticks = 0;
 
-uint32_t rc_fps = 0;
-uint32_t rc_fps_frames = 0;
-uint32_t rc_fps_timer = 0;
+uint32_t rc_fps[MAX_WINDOWS];
+uint32_t rc_fps_frames[MAX_WINDOWS];
+uint32_t rc_fps_timer[MAX_WINDOWS];
 
 #ifdef RC_MOBILE
 double rc_mouse_scale_x = 0;
@@ -361,6 +361,11 @@ bool rc_media_init()
         rc_bb_rect[i].y = 0;
         rc_bb_rect[i].w = 0;
         rc_bb_rect[i].h = 0;
+
+        rc_fps[i] = 0;
+        rc_fps_frames[i] = 0;
+        rc_fps_timer[i] = 0;
+
         for(int j = 0; j < MAX_SCREENS; j++)
         {
             rc_hscreen[i][j] = NULL;
@@ -1248,7 +1253,7 @@ bool rc_media_windowHasMouseFocus(int win_num)
     }
     else
     {
-        cout << "WindowIsVisible Error: Window #" << win_num << " is not an active window" << endl;
+        cout << "WindowHasMouseFocus Error: Window #" << win_num << " is not an active window" << endl;
         return false;
     }
 }
@@ -1265,7 +1270,7 @@ bool rc_media_windowHasInputFocus(int win_num)
     }
     else
     {
-        cout << "WindowIsVisible Error: Window #" << win_num << " is not an active window" << endl;
+        cout << "WindowHasInputFocus Error: Window #" << win_num << " is not an active window" << endl;
         return false;
     }
 }
@@ -4809,15 +4814,15 @@ void rc_media_updateWindow_hw()
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
     SDL_SetRenderDrawColor(rc_win_renderer[rc_active_window], rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
 
-    rc_fps_frames++;
+    rc_fps_frames[rc_active_window]++;
 
     uint32_t t = SDL_GetTicks();
 
-    if( (t - rc_fps_timer) >= 1000 )
+    if( (t - rc_fps_timer[rc_active_window]) >= 1000 )
     {
-        rc_fps_timer = t;
-        rc_fps = rc_fps_frames;
-        rc_fps_frames = 0;
+        rc_fps_timer[rc_active_window] = t;
+        rc_fps[rc_active_window] = rc_fps_frames[rc_active_window];
+        rc_fps_frames[rc_active_window] = 0;
     }
 }
 

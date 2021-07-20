@@ -1537,7 +1537,7 @@ void func_130(uint64_t fn)
             rc_media_setWindowIcon( SETWINDOWICON_WIN, SETWINDOWICON_SLOT );
             break;
         case FN_FPS:
-            rc_push_num(rc_fps);
+            rc_push_num(rc_fps[rc_active_window]);
             break;
         case FN_CanvasOpen: //Sub Procedure
             rc_media_openScreen_hw( CANVASOPEN_C_NUM, CANVASOPEN_W, CANVASOPEN_H, CANVASOPEN_VIEWPORT_X, CANVASOPEN_VIEWPORT_Y, CANVASOPEN_VIEWPORT_W, CANVASOPEN_VIEWPORT_H, CANVASOPEN_MODE);
