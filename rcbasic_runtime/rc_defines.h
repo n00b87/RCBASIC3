@@ -1015,3 +1015,8 @@
 #define WINDOWFLAGS_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define FN_RestoreWindow 365
 #define RESTOREWINDOW_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_UpdateAllWindows 366
+#define FN_QueryAudioSpec 367
+#define QUERYAUDIOSPEC_FREQ num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define QUERYAUDIOSPEC_FORMAT num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define QUERYAUDIOSPEC_CHANNELS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]

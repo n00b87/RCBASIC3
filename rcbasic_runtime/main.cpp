@@ -2235,6 +2235,18 @@ void func_130(uint64_t fn)
         case FN_RestoreWindow:
             rc_media_restoreWindow(RESTOREWINDOW_WIN);
             break;
+        case FN_UpdateAllWindows:
+            rc_events();
+            rc_media_updateAllWindow_hw();
+            #ifdef RC_WEB
+                emscripten_sleep(0);
+            #else
+                SDL_Delay(0);
+            #endif // RC_WEB
+            break;
+        case FN_QueryAudioSpec:
+            rc_push_num( rc_media_queryAudioSpec(&QUERYAUDIOSPEC_FREQ, &QUERYAUDIOSPEC_FORMAT, &QUERYAUDIOSPEC_CHANNELS) );
+            break;
     }
 }
 

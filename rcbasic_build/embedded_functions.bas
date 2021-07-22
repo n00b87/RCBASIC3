@@ -394,3 +394,5 @@ function SystemReturnStdOut$(cmd$) 'new
 function WindowMode(visible, fullscreen, resizable, borderless, highDPI)
 function WindowFlags(win)
 sub RestoreWindow(win)
+sub UpdateAllWindows() 'new
+function QueryAudioSpec(ByRef freq, ByRef format, ByRef channels) 'new

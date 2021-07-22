@@ -2139,7 +2139,7 @@ Uint32 rc_media_getPixel_hw(int x, int y)
     if(tmp_buf==NULL)
         return 0;
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], tmp_buf);
-    SDL_RendererFlip rf = SDL_FLIP_VERTICAL;
+    SDL_RendererFlip rf = SDL_FLIP_NONE;
     SDL_RenderCopyEx(rc_win_renderer[rc_active_window], rc_backBuffer[rc_active_window], NULL, NULL, 0, NULL, rf);
     #else
     SDL_SetRenderTarget(rc_win_renderer[rc_active_window], NULL);
@@ -2172,7 +2172,7 @@ Uint32 rc_media_getPixel_hw(int x, int y)
     int g = (p_color >> 8) & 255;
     int b = (p_color >> 16) & 255;
     int a = (p_color >> 24) & 255;
-    p_color = SDL_MapRGBA(rc_pformat, r, g, b, a);
+    //p_color = SDL_MapRGBA(rc_pformat, r, g, b, a);
     #endif // RC_MOBILE
 
     //cout << "color = " << p_color << endl;
@@ -2654,69 +2654,6 @@ void rc_media_bufferFromImage(int slot, double * pdata)
 
 }
 
-#ifdef RC_ANDROID
-void rc_media_colorKey_hw(int slot, double color)
-{
-    Uint32 c = (Uint32) color;
-    Uint8 r = c >> 16;
-    Uint8 g = c >> 8;
-    Uint8 b = c;
-    Uint8 a = c >> 24;
-    //c = SDL_MapRGBA(rc_win_surface[0]->format,r,g,b,255);
-    if(color > 0)
-    {
-        //return;
-        SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_NONE);
-
-        SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[slot], rc_image_height[slot], 32, 0, 0, 0, 0);
-        SDL_Texture * tmp_tex = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, rc_image_width[slot], rc_image_height[slot]);
-        SDL_SetRenderTarget(rc_win_renderer[rc_active_window],tmp_tex);
-        //SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL);
-        SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
-
-        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, SDL_PIXELFORMAT_ABGR8888,tmp_surf->pixels,tmp_surf->pitch);
-        //cout << "Colorkey = " << (Uint32)r << ", " << (Uint32)g << ", " << (Uint32)b << ", " << (Uint32)a << endl;
-        SDL_SetColorKey(tmp_surf,SDL_TRUE,c);
-
-        for(int i = 0; i < MAX_WINDOWS; i++)
-        {
-            SDL_DestroyTexture(rc_himage[slot][i]);
-            rc_himage[slot][i] = SDL_CreateTextureFromSurface(rc_win_renderer[i], tmp_surf);
-        }
-        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
-        SDL_DestroyTexture(tmp_tex);
-        SDL_FreeSurface(tmp_surf);
-    }
-    else
-    {
-        SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_NONE);
-
-        SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[slot], rc_image_height[slot], 32, 0, 0, 0, 0);
-        //SDL_Surface * tmp_surf = SDL_ConvertSurfaceFormat(tmp_psurf, rc_pformat->format, 0);
-        //SDL_FreeSurface(tmp_psurf);
-        SDL_Texture * tmp_tex = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, rc_image_width[slot], rc_image_height[slot]);
-        SDL_SetRenderTarget(rc_win_renderer[rc_active_window],tmp_tex);
-        //SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL);
-        SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
-
-        SDL_RenderReadPixels(rc_win_renderer[rc_active_window], NULL, rc_pformat->format,tmp_surf->pixels,tmp_surf->pitch);
-        //cout << "Colorkey = " << (Uint32)r << ", " << (Uint32)g << ", " << (Uint32)b << ", " << (Uint32)a << endl;
-        Uint32 * gcolor = (Uint32*)tmp_surf->pixels;
-        c = gcolor[0];
-        SDL_SetColorKey(tmp_surf,SDL_TRUE,c);
-
-        for(int i = 0; i < MAX_WINDOWS; i++)
-        {
-            SDL_DestroyTexture(rc_himage[slot][i]);
-            rc_himage[slot][i] = SDL_CreateTextureFromSurface(rc_win_renderer[i], tmp_surf);
-        }
-        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
-        SDL_DestroyTexture(tmp_tex);
-        SDL_FreeSurface(tmp_surf);
-    }
-}
-#else
-
 #ifdef RC_IOS
 void rc_media_colorKey_hw(int slot, double color)
 {
@@ -2810,6 +2747,7 @@ void rc_media_colorKey_hw(int slot, double color)
         rc_image_colorKey_g[slot] = c >> 8;
         rc_image_colorKey_b[slot] = c;
         rc_image_colorKey_a[slot] = c >> 24;
+
         SDL_SetColorKey(tmp_surf,SDL_TRUE,c);
 
         for(int i = 0; i < MAX_WINDOWS; i++)
@@ -2853,8 +2791,6 @@ void rc_media_colorKey_hw(int slot, double color)
     }
 }
 #endif //RC_IOS
-
-#endif //RC_ANDROID
 
 void rc_media_deleteImage_hw(int slot)
 {
@@ -4826,6 +4762,58 @@ void rc_media_updateWindow_hw()
     }
 }
 
+void rc_media_updateAllWindow_hw()
+{
+    for(int win_num = 0; win_num < MAX_WINDOWS; win_num++)
+    {
+        if(!rc_win[win_num])
+            continue;
+        int s_num = 0;
+        SDL_SetRenderTarget(rc_win_renderer[win_num], rc_backBuffer[win_num]);
+        SDL_SetRenderDrawColor(rc_win_renderer[win_num], rc_clearColor >> 16, rc_clearColor >> 8, rc_clearColor, 255);
+        //SDL_RenderFillRect(rc_win_renderer[win_num], NULL);
+        SDL_RenderClear(rc_win_renderer[win_num]);
+        for(int i = MAX_SCREENS-1; i >= 0; i--)
+        {
+            s_num = rc_screen_zOrder[win_num][i];
+            //cout << "DRAW SCREEN: " << s_num << endl;
+            if(rc_hscreen[win_num][s_num] != NULL && rc_screen_visible[win_num][s_num])
+            {
+                //cout << "draw canvas " << s_num << endl;
+                #ifdef RC_WEB
+                SDL_RenderCopy(rc_win_renderer[win_num], rc_hscreen[win_num][s_num], &rc_screenview[win_num][s_num], &rc_screen_rect[win_num][s_num]);
+                #else
+                SDL_RenderCopy(rc_win_renderer[win_num], rc_hscreen[win_num][s_num], &rc_screenview[win_num][s_num], &rc_screen_rect[win_num][s_num]);
+                #endif
+            }
+        }
+        //#ifndef RC_ANDROID
+            SDL_RenderCopy(rc_win_renderer[win_num], rc_hconsole[win_num], NULL, NULL);
+        //#endif // RC_ANDROID
+        //cout << endl;
+        SDL_SetRenderTarget(rc_win_renderer[win_num], NULL);
+        #if defined(RC_MOBILE) || defined(RC_WEB)
+        SDL_RenderCopy(rc_win_renderer[win_num], rc_backBuffer[win_num], NULL, NULL);
+        #else
+        SDL_RenderCopy(rc_win_renderer[win_num], rc_backBuffer[win_num], &rc_bb_rect[win_num], NULL);
+        #endif // RC_ANDROID
+        SDL_RenderPresent(rc_win_renderer[win_num]);
+        SDL_SetRenderTarget(rc_win_renderer[win_num], rc_hscreen[win_num][rc_active_screen]);
+        SDL_SetRenderDrawColor(rc_win_renderer[win_num], rc_ink_color.r, rc_ink_color.g, rc_ink_color.b, rc_ink_color.a);
+
+        rc_fps_frames[win_num]++;
+
+        uint32_t t = SDL_GetTicks();
+
+        if( (t - rc_fps_timer[win_num]) >= 1000 )
+        {
+            rc_fps_timer[win_num] = t;
+            rc_fps[win_num] = rc_fps_frames[win_num];
+            rc_fps_frames[win_num] = 0;
+        }
+    }
+}
+
 bool rc_media_imageExist_hw(int slot)
 {
     return rc_image_isLoaded[slot];
@@ -4935,6 +4923,19 @@ int rc_media_joystickIsHaptic( int joy_num )
             return 1;
     }
     return 0;
+}
+
+int rc_media_queryAudioSpec(double * freq, double * format, double * channels)
+{
+    //need to do something here
+    int qa_freq = 0;
+    Uint16 qa_format = 0;
+    int qa_channels = 0;
+    int result = Mix_QuerySpec(&qa_freq, &qa_format, &qa_channels);
+    *freq = (double)qa_freq;
+    *format = (double)qa_format;
+    *channels = (double)qa_channels;
+    return result;
 }
 
 void rc_media_loadSound(int slot, string fname)

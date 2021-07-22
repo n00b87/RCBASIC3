@@ -1021,8 +1021,11 @@ void init_embedded()
     add_embedded_arg("win", ID_TYPE_NUM);
     embed_function("RestoreWindow", ID_TYPE_SUB);
     add_embedded_arg("win", ID_TYPE_NUM);
-
-
+    embed_function("UpdateAllWindows", ID_TYPE_SUB);
+    embed_function("QueryAudioSpec", ID_TYPE_FN_NUM);
+    add_embedded_arg("freq", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("format", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("channels", ID_TYPE_BYREF_NUM);
 }
 
 
