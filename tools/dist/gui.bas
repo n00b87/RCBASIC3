@@ -541,10 +541,19 @@ Sub ClearWindowObjects(win)
 End Sub
 
 Function Gui_WindowOpen(title$, x, y, w, h)
+	visible = true
+	fullscreen = false
+	resizable = true
+	borderless = false
+	highDPI = false
+	
+	win_mode = WindowMode(visible, fullscreen, resizable, borderless, highDPI)
+
+	vsync = true
 	For i = 0 to MAX_WINDOWS-1
 		If Not WindowExists(i) Then
 			current_win = gui_current_win
-			WindowOpen(i, title$, x, y, w, h, 0, 1)
+			WindowOpen(i, title$, x, y, w, h, win_mode, vsync)
 			Window(i)
 			Cls
 			CanvasOpen(GUI_TMP_CANVAS, w, h, 0, 0, w, h, 0)

@@ -36,6 +36,30 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 		project_dir$ = Left(project_dir$, Len(project_dir$)-1)
 	End If
 	
+	web_junction$ = ""
+	
+	If project_dir$ <> Replace(project_dir$, " ", "") Then
+		Select Case OS$
+		Case "WINDOWS"
+			web_junction$ = Env("TEMP") + "\\rcbasic_web_junction"
+			'print "web_junction = ";web_junction$
+			cmd$ = "mklink /J $web_junction \q$PRJ_DIR\q && cd $web_junction"
+			cmd$ = Replace(cmd$, "$web_junction", web_junction$)
+			cmd$ = Replace(cmd$, "$PRJ_DIR", project_dir$)
+			'print "cmd = ";cmd$
+			status = System(cmd$)
+			If status <> 0 Then
+				Print "This web build aint happenin chief"
+				Return False
+			Else
+				project_dir$ = web_junction$
+			End If
+		Default
+			'Need to Handle Mac and Linux
+		End Select
+	End If
+
+	
 	PRG_NAME$ = APP_NAME$
 	PRG_LOCATION$ = project_dir$
 
@@ -44,7 +68,6 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	Print "WEB PRG_NAME$ = ";PRG_NAME
 	Print "WEB PRG_LOCATION$ = ";PRG_LOCATION
 	Print "WEB DST_LOCATION$ = ";DST_LOCATION
-	
 
 	PROG_NAME$=PRG_NAME$
 	PROG_LOCATION$=PRG_LOCATION$ + "@" + path_join$
@@ -131,6 +154,14 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 
 	System(pre_cmd$ + web_compile_cmd$)	
 	
+	If DirExists(web_junction$) Then
+		Select Case OS$
+		Case "WINDOWS"
+			System("rmdir " + web_junction$)
+		Default
+			System("rm " + web_junction$)
+		End Select
+	End If
 	
 	ChangeDir(base_dir$)
 	
