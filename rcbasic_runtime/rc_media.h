@@ -326,6 +326,26 @@ int rc_video_length = 0;
 int rc_video_fps = 0;
 int rc_video_currentLoop = 0;
 
+bool mobile_active_window_flag = true;
+
+int mobile_event_filter(void* userdata, SDL_Event* event)
+{
+    switch(event->type)
+    {
+        case SDL_APP_WILLENTERBACKGROUND:
+            mobile_active_window_flag = false;
+            break;
+        case SDL_APP_DIDENTERFOREGROUND:
+            if(!mobile_active_window_flag)
+            {
+                //rc_win_renderer[0] = SDL_GetRenderer(rc_win[0]);
+            }
+            mobile_active_window_flag = true;
+            break;
+    }
+    return 0;
+}
+
 bool rc_media_init()
 {
     rc_socket_set = SDLNet_AllocSocketSet(MAX_SOCKETS*2); //*2 for udp and tcp
@@ -404,6 +424,11 @@ bool rc_media_init()
         cout << "Init Error: " << SDL_GetError() << endl;
         //return false;
     }
+
+    #ifdef RC_MOBILE
+        SDL_SetEventFilter(mobile_event_filter, NULL);
+    #endif // RC_MOBILE
+
     if(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) < 0)
     {
         cout << "IMG Init Error: " << IMG_GetError() << endl;
