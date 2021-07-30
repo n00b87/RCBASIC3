@@ -735,7 +735,7 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 		app_id_path$ = gen_id_path$(ANDROID_APP_ID$)
 		Print "APP PATH = ";app_id_path
 		If app_id_path$ <> "" Then
-			If OS$ = "LINUX" And Right$(ANDROID_JAVA_DIR$, 1) <> "/" Then
+			If OS$ <> "WINDOWS" And Right$(ANDROID_JAVA_DIR$, 1) <> "/" Then
 				CopyDir(ANDROID_JAVA_DIR$+"/", app_id_path$)
 			Else
 				CopyDir(ANDROID_JAVA_DIR$, app_id_path$)
