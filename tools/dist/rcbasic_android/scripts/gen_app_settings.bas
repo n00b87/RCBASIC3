@@ -106,8 +106,15 @@ Function gen_app_settings(app_name$, icon_path$, orientation$)
 		Print "SET to PATH:";image_magic_path$
 		resize_cmd$ = Replace("convert [icon_path] -resize [size] ../android-project/app/src/main/res/[res_dir]/ic_launcher.png", "/", path_join$)
 		resize_cmd$ = Replace(resize_cmd$, "[icon_path]", icon_path$)
+		If OS$ = "LINUX" Then
+			resize_cmd$ = "magick " + resize_cmd$
+		End If
 		CURRENT_PATH$ = Env("PATH")
-		SetEnv("PATH", image_magic_path$, 1)
+		If OS$ = "WINDOWS" Then
+			SetEnv("PATH", Env("PATH") + ";" + image_magic_path$, 1)
+		Else
+			SetEnv("PATH", Env("PATH") + ":" + image_magic_path$, 1)
+		End If
 		Print "error code = ";System(Replace(Replace(resize_cmd$,"[size]","48x48"),"[res_dir]","mipmap-mdpi"))
 		Print "error code = ";System(Replace(Replace(resize_cmd$,"[size]","72x72"),"[res_dir]","mipmap-hdpi"))
 		Print "error code = ";System(Replace(Replace(resize_cmd$,"[size]","96x96"),"[res_dir]","mipmap-xhdpi"))

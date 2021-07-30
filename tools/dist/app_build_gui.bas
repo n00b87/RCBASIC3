@@ -27,6 +27,9 @@ If Not DirExists(Env("RC_KEYSTORE_DIR")) Then
 	MakeDir(Env("RC_KEYSTORE_DIR"))
 End If
 
+If OS$ = "LINUX" And Trim(Env("ANDROID_HOME"))="" Then
+	SetEnv("ANDROID_HOME", "/home/n00b/Programs/android-dev/commandlinetools-linux-7302050_latest", 1)
+End If
 'SetEnv("RCBASIC_ANDROID_DIR", Dir$ + path_join$ + "rcbasic_android", 1)
 
 Dim APP_NAME$
@@ -213,6 +216,8 @@ End Sub
 
 
 Function Init_Java_Dir(java_dir$, prj_name$)
+	Print "Init_Java_Dir = ";java_dir$
+	
 	activity_name$ = "rcbasic_" + Replace(Trim(prj_name$), " ", "_")
 	
 	If Right(java_dir$,1) = path_join$ Then
@@ -306,6 +311,8 @@ While WindowExists(win)
 		Gui_TextField_SetPasswordField(alias_password_field, show_alias_pw)
 	ElseIf Gui_Button_Clicked(java_dir_init_button) Then
 		java_dir$ = Gui_TextField_GetValue$(java_dir_field)
+		Print "Base = ";base_dir$ + Replace("/rcbasic_android/scripts/rcbasic.java", "/", path_join$)
+		Print "Java_Dir = ";java_dir$
 		If FileExists(base_dir$ + Replace("/rcbasic_android/scripts/rcbasic.java", "/", path_join$)) And DirExists(java_dir$) Then
 			PROJECT_NAME$ = Trim(Gui_TextField_GetValue$(project_name_field))
 			APP_NAME$ = Replace(PROJECT_NAME$, " ", "_")

@@ -198,11 +198,11 @@ While Not Key(K_Q) And WindowExists(win)
 	If Gui_Button_Clicked(ok_button) Then
 		ChangeDir(Env("RC_KEYSTORE_DIR"))
 		If Length( Trim(Gui_TextField_GetValue$(keystore_password_field)+".") ) = 1 Or Length( Trim(Gui_TextField_GetValue$(keystore_confirm_field)+".") ) = 1 Then
-			System(Replace("pushd base_dir && rcbasic msg_cmp pw_error1 && popd","base_dir", base_dir$))
+			System(Replace("cd base_dir && rcbasic msg_cmp pw_error1","base_dir", base_dir$))
 		ElseIf Trim(Gui_TextField_GetValue$(keystore_password_field)) <> Trim(Gui_TextField_GetValue$(keystore_confirm_field)) Then
-			System(Replace("pushd base_dir && rcbasic msg_cmp pw_error2 && popd","base_dir", base_dir$))
+			System(Replace("cd base_dir && rcbasic msg_cmp pw_error2","base_dir", base_dir$))
 		ElseIf Trim(Gui_TextField_GetValue$(alias_password_field)) <> Trim(Gui_TextField_GetValue$(alias_confirm_field)) Then
-			System(Replace("pushd base_dir && rcbasic msg_cmp pw_error2 && popd","base_dir", base_dir$))
+			System(Replace("cd base_dir && rcbasic msg_cmp pw_error2","base_dir", base_dir$))
 		Else
 			keystore_cmd$=Replace$(keystore_cmd$,VAR_CN$, Gui_TextField_GetValue$(cert_name_field))
 			keystore_cmd$=Replace$(keystore_cmd$,VAR_OU$, Gui_TextField_GetValue$(cert_org_unit_field))
@@ -212,7 +212,7 @@ While Not Key(K_Q) And WindowExists(win)
 			keystore_cmd$=Replace$(keystore_cmd$,VAR_PW$, Trim(Gui_TextField_GetValue$(keystore_password_field)))
 			keystore_cmd$=Replace$(keystore_cmd$,VAR_KEYSTORE$, Trim(Gui_TextField_GetValue$(keystore_name_field)))
 			If FileExists(Env("RC_KEYSTORE_DIR") + path_join$ + Trim(Gui_TextField_GetValue$(keystore_name_field)) + ".keystore") Then
-				System(Replace("pushd base_dir && rcbasic msg_cmp exists && popd","base_dir", base_dir$))
+				System(Replace("cd base_dir && rcbasic msg_cmp exists","base_dir", base_dir$))
 				Exit While
 			Else
 				If OS$ = "WINDOWS" Then
@@ -238,13 +238,13 @@ While Not Key(K_Q) And WindowExists(win)
 					
 					System("chmod u+x \q"+base_dir$+"/rc_build.sh\q && "+base_dir$+"/rc_build.sh")
 
-					RemoveFile(base_dir$+"/rc_build.bat")
+					RemoveFile(base_dir$+"/rc_build.sh")
 				End If
 				
-				If FileExists(dir + "\\" + Gui_TextField_GetValue$(keystore_name_field) + ".keystore") Then
-					System(Replace("pushd base_dir && rcbasic msg_cmp complete && popd","base_dir", base_dir$))
+				If FileExists(dir + path_join$ + Gui_TextField_GetValue$(keystore_name_field) + ".keystore") Then
+					System(Replace("cd base_dir && rcbasic msg_cmp complete","base_dir", base_dir$))
 				Else
-					System(Replace("pushd base_dir && rcbasic msg_cmp fail && popd","base_dir", base_dir$))
+					System(Replace("cd base_dir && rcbasic msg_cmp fail","base_dir", base_dir$))
 				End If
 				Exit While
 			End If

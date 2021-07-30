@@ -42,23 +42,36 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 		Select Case OS$
 		Case "WINDOWS"
 			web_junction$ = Env("TEMP") + "\\rcbasic_web_junction"
-			'print "web_junction = ";web_junction$
+			If DirExists(web_junction$) Then
+				System("rmdir " + web_junction$)
+			End If
 			cmd$ = "mklink /J $web_junction \q$PRJ_DIR\q && cd $web_junction"
 			cmd$ = Replace(cmd$, "$web_junction", web_junction$)
 			cmd$ = Replace(cmd$, "$PRJ_DIR", project_dir$)
-			'print "cmd = ";cmd$
 			status = System(cmd$)
 			If status <> 0 Then
-				Print "This web build aint happenin chief"
+				Print "Error: Junction could not be created for web build"
 				Return False
 			Else
-				project_dir$ = web_junction$
+				project_dir$
 			End If
-		Default
-			'Need to Handle Mac and Linux
+		Default 'Linux and Mac OS should be the same
+			web_junction$ = "/tmp/rcbasic_web_junction"
+			If DirExists(web_junction$) Then
+				System("rm " + web_junction$)
+			End If
+			cmd$ = "ln -s \q$PRJ_DIR\q $web_junction && cd $web_junction"
+			cmd$ = Replace(cmd$, "$web_junction", web_junction$)
+			cmd$ = Replace(cmd$, "$PRJ_DIR", project_dir$)
+			status = System(cmd$)
+			If status <> 0 Then
+				Print "Error: Junction could not be created for web build"
+				Return False
+			Else
+				project_dir$
+			End If
 		End Select
 	End If
-
 	
 	PRG_NAME$ = APP_NAME$
 	PRG_LOCATION$ = project_dir$
@@ -68,6 +81,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	Print "WEB PRG_NAME$ = ";PRG_NAME
 	Print "WEB PRG_LOCATION$ = ";PRG_LOCATION
 	Print "WEB DST_LOCATION$ = ";DST_LOCATION
+	
 
 	PROG_NAME$=PRG_NAME$
 	PROG_LOCATION$=PRG_LOCATION$ + "@" + path_join$
@@ -92,31 +106,35 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	pre_cmd$ = ""
 
 	If Not DirExists("emsdk") Then
+		Print "Starting Emscripten Initial Setup...."
+		' Get the emsdk repo
+		System("git clone https://github.com/emscripten-core/emsdk.git")
 
-	Print "Starting Emscripten Initial Setup...."
-	' Get the emsdk repo
-	System("git clone https://github.com/emscripten-core/emsdk.git")
+		' Enter that directory
+		Print ".."
+		Print "Go into folder"
+		ChangeDir("emsdk")
+		Print "PWD is "; Dir$
+		Print ".."
 
-	' Enter that directory
-	Print ".."
-	Print "Go into folder"
-	ChangeDir("emsdk")
-	Print "PWD is "; Dir$
-	Print ".."
-
-	' Download and install the latest SDK tools.
-	Print "EMSDK install latest ...."
-	System("." + path_join$ + "emsdk install latest")
-	Print "..."
-
+		' Download and install the latest SDK tools.
+		Print "EMSDK install latest ...."
+		System("." + path_join$ + "emsdk install latest")
+		Print "..."
 	Else
-	' Enter that directory
-	ChangeDir("emsdk")
+		' Enter that directory
+		ChangeDir("emsdk")
 	End If
 
 	' Make the "latest" SDK "active" for the current user. (writes ~/.emscripten file)
 	Print "ACTIVATE"
-	pre_cmd$ = "pushd " + Dir$ + " && ." + path_join$ + "emsdk activate latest" 
+	
+	If OS$ = "WINDOWS" Then
+		pre_cmd$ = "pushd " + Dir$ + " && ." + path_join$ + "emsdk activate latest" 
+	Else
+		pre_cmd$ = "export rc_current_dir=$PWD && cd " + Dir$ + " && ." + path_join$ + "emsdk activate latest"
+	End If
+	
 	'System("." + path_join$ + "emsdk activate latest")
 	SetEnv("EM_CONFIG", HOME$ + path_join$ + ".emscripten",1)
 	Print "..."
@@ -126,10 +144,14 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	Case "WINDOWS"
 		pre_cmd$ = pre_cmd$ + " && .\\emsdk_env.bat"
 	Default
-		pre_cmd$ = pre_cmd$ + " && chmod u+x emsdk_env.sh && source $PWD/emsdk_env.sh"
+		pre_cmd$ = pre_cmd$ + " && chmod u+x emsdk_env.sh && . $PWD/emsdk_env.sh"
 	End Select
 
-	pre_cmd$ = pre_cmd$ + " && popd && "
+	If OS$ = "WINDOWS" Then
+		pre_cmd$ = pre_cmd$ + " && popd && "
+	Else
+		pre_cmd$ = pre_cmd$ + " && cd $rc_current_dir && "
+	End If
 
 	Print "path is "; Dir$
 
@@ -149,6 +171,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	web_compile_cmd$ = Replace(web_compile_cmd$, "$PROG_LOCATION", PROG_LOCATION$)
 	web_compile_cmd$ = Replace(web_compile_cmd$, "$rc_extra_web_flags", thread_flags$)
 
+	Print "Pre command: ";pre_cmd$
 	Print "running command: ";web_compile_cmd$
 	Print "--------------------------"
 
@@ -676,8 +699,8 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 		RmDir(base_dir$ + Replace("/rcbasic_android/android-project/app/src/main/java", "/", path_join$))
 	End If
 	
-	
-	CopyDir(base_dir$ + Replace("/rcbasic_android/scripts/java", "/", path_join$), base_dir$ + Replace("/rcbasic_android/android-project/app/src/main/java", "/", path_join$))
+	Print "BASE_DIR: ";base_dir$
+	CopyDir(base_dir$ + Replace("/rcbasic_android/scripts/java/", "/", path_join$), base_dir$ + Replace("/rcbasic_android/android-project/app/src/main/java/", "/", path_join$))
 	
 	RemoveFile(base_dir$ + Replace("/rcbasic_android/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java", "/", path_join$))
 	
@@ -712,7 +735,11 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 		app_id_path$ = gen_id_path$(ANDROID_APP_ID$)
 		Print "APP PATH = ";app_id_path
 		If app_id_path$ <> "" Then
-			CopyDir(ANDROID_JAVA_DIR$, app_id_path$)
+			If OS$ = "LINUX" And Right$(ANDROID_JAVA_DIR$, 1) <> "/" Then
+				CopyDir(ANDROID_JAVA_DIR$+"/", app_id_path$)
+			Else
+				CopyDir(ANDROID_JAVA_DIR$, app_id_path$)
+			End If
 		Else
 			Print "Error: Could not create path for APP_ID("; ANDROID_APP_ID$;")"
 			Return False
