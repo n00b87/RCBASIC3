@@ -573,6 +573,48 @@ Function Build_App_MacOS(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, AP
 			
 End Function
 
+Function Build_App_MacOS_2(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_TYPE$, TERMINAL_FLAG$, PROJECT_CATEGORY$, icon_path$)
+	
+	Select Case OS$
+	Case "WINDOWS"
+		If Right(output_dir$, 1) <> "\\" Then
+			output_dir$ = output_dir$ + "/"
+		End If
+		
+		If Right(project_dir$, 1) = "\\" Then
+			project_dir$ = Left(project_dir$, Length(project_dir$)-1)
+		End If
+	Default
+		If Right(output_dir$, 1) <> "/" Then
+			output_dir$ = output_dir$ + "/"
+		End If
+		
+		If Right(project_dir$, 1) <> "/" Then
+			project_dir$ = project_dir$ + "/"
+		End If
+	End Select
+	
+	APP_PATH$ = output_dir$ + APP_NAME$ + "_MAC"
+	MAC_APP$ = Replace(APP_NAME$, " ", "")
+	
+	MakeDir(APP_PATH$)
+	CopyDir(base_dir$ + path_join$ + "RCBasic_MACOS" + path_join$ + "runtime" + path_join$, APP_PATH$ + path_join$ + MAC_APP$)
+	
+	CopyDir(project_dir$, APP_PATH$ + path_join$ + MAC_APP$)
+	
+	RenameFile(APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + "rcbasic", APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + MAC_APP$)
+	RenameFile(APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + "main.cbc", APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + MAC_APP$ + ".cbc")
+	
+	If DirExists(APP_PATH$ + path_join$ + MAC_APP$) Then
+		Print "Successfully packaged Mac OS Program"
+		Return True
+	Else
+		Print "Error: Failed to packaged Mac OS Program"
+	End If
+	
+	Return False
+			
+End Function
 
 Function gen_id_path$(app_id$)
 	Push_S(Dir$)
@@ -1060,7 +1102,7 @@ If TGT_PLATFORM[PLATFORM_WIN64] Then
 End If
 
 If TGT_PLATFORM[PLATFORM_MAC] Then
-	mac_flag = Build_App_MacOS(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_TYPE$, TERMINAL_FLAG$, PROJECT_CATEGORY$, icon_path$)
+	mac_flag = Build_App_MacOS_2(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_TYPE$, TERMINAL_FLAG$, PROJECT_CATEGORY$, icon_path$)
 End If
 
 If TGT_PLATFORM[PLATFORM_WEB] Then

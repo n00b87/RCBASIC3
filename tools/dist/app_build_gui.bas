@@ -27,9 +27,6 @@ If Not DirExists(Env("RC_KEYSTORE_DIR")) Then
 	MakeDir(Env("RC_KEYSTORE_DIR"))
 End If
 
-If OS$ = "LINUX" And Trim(Env("ANDROID_HOME"))="" Then
-	SetEnv("ANDROID_HOME", "/home/n00b/Programs/android-dev/commandlinetools-linux-7302050_latest", 1)
-End If
 'SetEnv("RCBASIC_ANDROID_DIR", Dir$ + path_join$ + "rcbasic_android", 1)
 
 Dim APP_NAME$
