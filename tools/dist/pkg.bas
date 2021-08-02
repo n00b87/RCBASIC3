@@ -53,7 +53,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 				Print "Error: Junction could not be created for web build"
 				Return False
 			Else
-				project_dir$
+				project_dir$ = web_junction$
 			End If
 		Default 'Linux and Mac OS should be the same
 			web_junction$ = "/tmp/rcbasic_web_junction"
@@ -68,7 +68,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 				Print "Error: Junction could not be created for web build"
 				Return False
 			Else
-				project_dir$
+				project_dir$ = web_junction$
 			End If
 		End Select
 	End If
