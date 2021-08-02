@@ -328,9 +328,29 @@ int rc_video_currentLoop = 0;
 
 bool mobile_active_window_flag = true;
 
-int mobile_event_filter(void* userdata, SDL_Event* event)
+void rc_setTouchFingerEvent(SDL_FingerID fingerID, double x, double y, double pressure)
 {
-    switch(event->type)
+    for(int i = 0; i < MAX_FINGERS; i++)
+    {
+        if(rc_finger[i].id == -1 || rc_finger[i].id == fingerID)
+        {
+            rc_finger[i].id = fingerID;
+            rc_finger[i].x = x;
+            rc_finger[i].y = y;
+            rc_finger[i].pressure = pressure;
+            if(rc_finger[i].pressure > 0)
+            {
+                rc_fingers_pressed.insert(i);
+            }
+            return;
+        }
+    }
+}
+
+int mobile_event_filter(void* userdata, SDL_Event* evt)
+{
+    SDL_Event event = evt[0];
+    switch(evt->type)
     {
         case SDL_APP_WILLENTERBACKGROUND:
             mobile_active_window_flag = false;
@@ -342,6 +362,54 @@ int mobile_event_filter(void* userdata, SDL_Event* event)
             }
             mobile_active_window_flag = true;
             break;
+
+        case SDL_FINGERDOWN:
+            rc_touch = 1;
+            rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
+            rc_touchY = event.tfinger.y * rc_win_height[rc_active_window];
+#ifdef RC_IOS
+            rc_pressure = 1; //FIXME: On IOS pressure is always getting reported as 0 on finger down so I am just setting it to 1 until I figure this out
+#else
+            rc_pressure = event.tfinger.pressure;
+#endif
+            rc_setTouchFingerEvent(event.tfinger.fingerId, rc_touchX, rc_touchY, rc_pressure);
+            break;
+        case SDL_FINGERUP:
+            rc_touch = 0;
+            rc_mt_status = 0;
+            rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
+            rc_touchY = event.tfinger.y * rc_win_height[rc_active_window];
+            rc_pressure = event.tfinger.pressure;
+            rc_setTouchFingerEvent(event.tfinger.fingerId, -1, -1, 0);
+            break;
+        case SDL_FINGERMOTION:
+            rc_touch = 1;
+            rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
+            rc_touchY = event.tfinger.y * rc_win_height[rc_active_window];
+            rc_motionX = event.tfinger.dx * rc_win_width[rc_active_window];
+            rc_motionY = event.tfinger.dy * rc_win_height[rc_active_window];
+#ifdef RC_IOS
+            rc_pressure = 1;
+#else
+            rc_pressure = event.tfinger.pressure;
+#endif
+            rc_setTouchFingerEvent(event.tfinger.fingerId, rc_touchX, rc_touchY, rc_pressure);
+            break;
+        case SDL_MULTIGESTURE:
+            rc_touch = 2;
+            rc_mt_status = 1;
+            rc_mt_x = event.mgesture.x;
+            rc_mt_y = event.mgesture.y;
+            rc_mt_numFingers = event.mgesture.numFingers;
+            rc_mt_dist = event.mgesture.dDist;
+            rc_mt_theta = event.mgesture.dTheta;
+#ifdef RC_IOS
+            rc_pressure = 1;
+#else
+            rc_pressure = event.tfinger.pressure;
+#endif
+            break;
+
     }
     return 0;
 }
@@ -4130,25 +4198,6 @@ void rc_media_GetRenderedText_hw(int slot, string text)
     SDL_FreeSurface(rendered_text);
 }
 
-void rc_setTouchFingerEvent(SDL_FingerID fingerID, double x, double y, double pressure)
-{
-    for(int i = 0; i < MAX_FINGERS; i++)
-    {
-        if(rc_finger[i].id == -1 || rc_finger[i].id == fingerID)
-        {
-            rc_finger[i].id = fingerID;
-            rc_finger[i].x = x;
-            rc_finger[i].y = y;
-            rc_finger[i].pressure = pressure;
-            if(rc_finger[i].pressure > 0)
-            {
-                rc_fingers_pressed.insert(i);
-            }
-            return;
-        }
-    }
-}
-
 int rc_getEvents()
 {
     SDL_Event event;
@@ -4368,6 +4417,7 @@ int rc_getEvents()
                 }
             }
             break;
+#ifndef RC_MOBILE
         case SDL_FINGERDOWN:
             rc_touch = 1;
             rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
@@ -4414,6 +4464,7 @@ int rc_getEvents()
             rc_pressure = event.tfinger.pressure;
 #endif
             break;
+#endif
     }
     //cout << "end_event" << endl;
     return g_events;
