@@ -440,12 +440,12 @@ void shr_51(int n1, int n2)
 
 void and_52(int n1, int n2)
 {
-    vm_n[n1].value = (int64_t)(vm_n[n1].value) & (int64_t)(vm_n[n2].value);
+    vm_n[n1].value = (int64_t)(vm_n[n1].value) && (int64_t)(vm_n[n2].value);
 }
 
 void or_53(int n1, int n2)
 {
-    vm_n[n1].value = (int64_t)(vm_n[n1].value) | (int64_t)(vm_n[n2].value);
+    vm_n[n1].value = (int64_t)(vm_n[n1].value) || (int64_t)(vm_n[n2].value);
 }
 
 void xor_54(int n1, int n2)
@@ -3101,7 +3101,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("--version")==0)
     {
-        cout << "RCBASIC Runtime version PI" << endl;
+        cout << "RCBASIC Runtime v3.15" << endl;
         return 0;
     }
 
