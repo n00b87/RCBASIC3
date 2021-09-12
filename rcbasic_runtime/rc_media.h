@@ -1453,6 +1453,10 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
         }
 
         Uint32 wflags_preOp = SDL_GetWindowFlags(rc_win[win_num]);
+        if( flag != 0 && ( (wflags_preOp & SDL_WINDOW_FULLSCREEN_DESKTOP) || (wflags_preOp & SDL_WINDOW_FULLSCREEN) ) )
+            return;
+        else if( flag == 0 && !((wflags_preOp & SDL_WINDOW_FULLSCREEN_DESKTOP) || (wflags_preOp & SDL_WINDOW_FULLSCREEN)))
+            return;
 
         if(SDL_SetWindowFullscreen(rc_win[win_num], flag) < 0)
         {
@@ -4289,7 +4293,6 @@ int rc_getEvents()
                         if(win_id == event.window.windowID)
                         {
                             rc_win_event[i] = 3;
-
                             //rc_media_closeWindow_hw(i);
                             break;
                         }
