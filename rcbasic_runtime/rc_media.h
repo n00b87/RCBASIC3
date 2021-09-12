@@ -1162,6 +1162,8 @@ void rc_onResize(int win_num)
         w = rc_win_width[win_num];
         h = rc_win_height[win_num];
     }
+    rc_win_width[win_num] = w;
+    rc_win_height[win_num] = h;
     //cout << "debug1: " << w << ", " << h << endl;
     rc_backBuffer[win_num] = SDL_CreateTexture(rc_win_renderer[win_num], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, w, h);
 
@@ -1449,11 +1451,17 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
                 flag = SDL_WINDOW_FULLSCREEN_DESKTOP;
                 break;
         }
+
+        Uint32 wflags_preOp = SDL_GetWindowFlags(rc_win[win_num]);
+
         if(SDL_SetWindowFullscreen(rc_win[win_num], flag) < 0)
         {
             cout << "SetWindowFullscreen Error: " << SDL_GetError() << endl;
             return;
         }
+
+        rc_win_renderer[win_num] = SDL_GetRenderer(rc_win[win_num]);
+        //cout << "debug = " << (rc_win_renderer[win_num] == NULL) << endl;
 
         Uint32 wflags = SDL_GetWindowFlags(rc_win[win_num]);
         Uint32 wflags_cmp1 = wflags & SDL_WINDOW_FULLSCREEN;
@@ -1483,7 +1491,7 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
 
         SDL_PumpEvents();
         SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
-        //SDL_GetWindowDisplayMode(rc_win[win_num],&rc_displayMode[win_num]);
+        // SDL_GetWindowDisplayMode(rc_win[win_num],&rc_displayMode[win_num]);
         //rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         //rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
         //rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
@@ -4281,6 +4289,7 @@ int rc_getEvents()
                         if(win_id == event.window.windowID)
                         {
                             rc_win_event[i] = 3;
+
                             //rc_media_closeWindow_hw(i);
                             break;
                         }
@@ -4299,7 +4308,6 @@ int rc_getEvents()
             rc_textinput_flag = true;
             break;
         case SDL_KEYUP:
-            rc_inkey = 0;
             rc_textinput_flag = true;
             break;
         case SDL_KEYDOWN:
@@ -4313,7 +4321,6 @@ int rc_getEvents()
             }
 
             rc_inkey = event.key.keysym.sym;
-            keyState = SDL_GetKeyboardState(NULL);
             break;
         //case SDL_MOUSEMOTION:
             //SDL_GetMouseState(&rc_mouseX, &rc_mouseY);

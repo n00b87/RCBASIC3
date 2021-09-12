@@ -285,12 +285,13 @@ void rc_events()
     if(rc_checkEvent())
     {
         rc_fingers_pressed.clear();
-
+        rc_inkey = 0;
         rc_mwheelx = 0;
         rc_mwheely = 0;
         for(int i = 0; i < MAX_WINDOWS; i++)
             rc_win_event[i] = 0;
         while(rc_getEvents()){}
+        keyState = SDL_GetKeyboardState(NULL);
         //rc_getEvents();
         #ifndef RC_WINDOWS
             SDL_PumpEvents();
