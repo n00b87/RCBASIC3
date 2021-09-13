@@ -1026,9 +1026,6 @@ void init_embedded()
     add_embedded_arg("freq", ID_TYPE_BYREF_NUM);
     add_embedded_arg("format", ID_TYPE_BYREF_NUM);
     add_embedded_arg("channels", ID_TYPE_BYREF_NUM);
-    embed_function("SetWindowAutoResize", ID_TYPE_SUB);
-    add_embedded_arg("win", ID_TYPE_NUM);
-    add_embedded_arg("flag", ID_TYPE_NUM);
 }
 
 
