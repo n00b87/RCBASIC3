@@ -286,12 +286,18 @@ void rc_events()
     {
         rc_fingers_pressed.clear();
         rc_inkey = 0;
+        rc_mouseX = -1;
+        rc_mouseY = -1;
+        rc_global_mouseX = -1;
+        rc_global_mouseY = -1;
         rc_mwheelx = 0;
         rc_mwheely = 0;
         for(int i = 0; i < MAX_WINDOWS; i++)
             rc_win_event[i] = 0;
         while(rc_getEvents()){}
         keyState = SDL_GetKeyboardState(NULL);
+        SDL_GetMouseState(&rc_mouseX, &rc_mouseY);
+        SDL_GetGlobalMouseState(&rc_global_mouseX, &rc_global_mouseY);
         //rc_getEvents();
         #ifndef RC_WINDOWS
             SDL_PumpEvents();

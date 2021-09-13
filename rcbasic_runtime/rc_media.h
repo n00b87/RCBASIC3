@@ -190,6 +190,9 @@ int rc_mbutton3 = 0;
 int rc_mwheelx = 0;
 int rc_mwheely = 0;
 
+int rc_global_mouseX = 0;
+int rc_global_mouseY = 0;
+
 //SDL_Event event;
 
 Uint32 prev_color = 0;
@@ -4707,7 +4710,7 @@ bool rc_media_mouseIsVisible()
 
 int rc_media_mouseX()
 {
-    SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     //cout << "debug: " << rc_fullscreen_mouse_scale_x[rc_active_window] << endl;
     #ifdef RC_MOBILE
     return rc_mouseX;
@@ -4718,7 +4721,7 @@ int rc_media_mouseX()
 
 int rc_media_mouseY()
 {
-    SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     #ifdef RC_MOBILE
     return rc_mouseY;
     #else
@@ -4742,7 +4745,7 @@ int rc_media_mouseButton(int m)
 
 void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, double * mb3)
 {
-    SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     //SDL_PumpEvents();
     *mb1 = rc_mbutton1;
     *mb2 = rc_mbutton2;
@@ -4760,25 +4763,25 @@ void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, doubl
 
 int rc_media_globalMouseX()
 {
-    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
-    return rc_mouseX;
+    //SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    return rc_global_mouseX;
 }
 
 int rc_media_globalMouseY()
 {
-    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
-    return rc_mouseY;
+    //SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    return rc_global_mouseY;
 }
 
 void rc_media_getGlobalMouse(double * x, double * y, double * mb1, double * mb2, double * mb3)
 {
-    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
     //SDL_PumpEvents();
     *mb1 = rc_mbutton1;
     *mb2 = rc_mbutton2;
     *mb3 = rc_mbutton3;
-    *x = rc_mouseX;
-    *y = rc_mouseY;
+    *x = rc_global_mouseX;
+    *y = rc_global_mouseY;
     return;
 }
 
