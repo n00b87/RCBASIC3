@@ -4430,7 +4430,7 @@ int rc_getEvents()
                 }
             }
             break;
-#ifndef RC_MOBILE
+#ifndef RC_MOBILE //This block handles touch events for non-mobile devices, Just in case it has a touch screen that SDL2 can get events for
         case SDL_FINGERDOWN:
             rc_touch = 1;
             rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
