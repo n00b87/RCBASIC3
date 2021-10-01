@@ -3300,6 +3300,65 @@ bool check_rule()
             vm_asm.push_back("while " + expr_result + " @" + end_label);
 
         }
+        else if(token[0].compare("<continue>")==0)
+        {
+            string tmp_scope = current_scope;
+            stack<select_data> tmp_select_stack = select_block;
+            string scope_type = "";
+
+            int scope_start = current_scope.find_last_of(".");
+            bool canContinue = false;
+
+            while(scope_start > 0)
+            {
+                scope_type = current_scope.substr(scope_start+1);
+
+                if(rc_substr(scope_type, 0, 5).compare("#FOR:")==0)
+                {
+                    canContinue = true;
+                    vm_asm.push_back("next @" + current_scope);
+                    vm_asm.push_back("jmp @" + for_end.top());
+                    break;
+                }
+                if(scope_type.substr(0,4).compare("#DO:")==0)
+                {
+                    canContinue = true;
+                    vm_asm.push_back("loop @" + current_scope);
+                    vm_asm.push_back("jmp @" + do_end.top());
+                    break;
+                }
+                if(scope_type.substr(0,7).compare("#WHILE:")==0)
+                {
+                    canContinue = true;
+                    vm_asm.push_back("jmp @" + current_scope);
+                    vm_asm.push_back("jmp @" + while_end.top());
+                    break;
+                }
+                else if(rc_substr(scope_type, 0, 8).compare("#SELECT:")==0)
+                {
+                    if(tmp_select_stack.top().case_type == ID_TYPE_STR)
+                    {
+                        vm_asm.push_back("pop$ s0"); //doesnt matter which reg I use since EXIT does not allow expressions
+                    }
+                    else
+                    {
+                        vm_asm.push_back("pop n0");
+                    }
+                    tmp_select_stack.pop();
+                }
+
+                exit_scope(1);
+                scope_start = current_scope.find_last_of(".");
+            }
+
+            if(!canContinue)
+            {
+                rc_setError("CONTINUE can only be used within a loop");
+                return false;
+            }
+            current_scope = tmp_scope;
+
+        }
         else if(token[0].compare("<wend>")==0)
         {
             if(token.size() > 1)

@@ -39,8 +39,8 @@ string keyWords[] = {
     "ELSEIF", //35
     "REDIM", //, //36
     "CONST", //37
-    "ONCE" //38
-    //"TYPE", //39
+    "ONCE", //38
+    "CONTINUE" //39
     //"AS" //40
 };
 
