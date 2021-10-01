@@ -5106,6 +5106,14 @@ void rc_media_playMusic(int loops)
     }
 }
 
+int rc_media_musicIsPlaying()
+{
+    if(rc_music != NULL)
+    {
+        return Mix_PlayingMusic();
+    }
+}
+
 void rc_media_pauseSound(int channel)
 {
     if(Mix_Playing(channel))

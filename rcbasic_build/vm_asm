@@ -221,3 +221,10 @@ OBJ_CURRENT_TYPE
 149 - for_offset_0
 
 150 - end_x   n#
+
+151 - lval   n#
+152 - lval   !id
+153 - lval   @[address]
+
+154 - lval$  s#
+155 - lval$  !id

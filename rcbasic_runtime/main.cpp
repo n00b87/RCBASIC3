@@ -190,6 +190,11 @@ uint64_t arr_ref_id = 0;
 int rcbasic_exit_code = 0;
 
 //needed by internal functions so i am declaring it here
+void lval_151(int n1);
+void lval_152(uint64_t nid);
+void lval_153(uint64_t lval_addr);
+void lval_154(int s1);
+void lval_155(uint64_t sid);
 void pop_ptr_137(uint64_t n);
 
 uint64_t rcbasic_readInt()
@@ -908,10 +913,35 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
     num_var[nid].nid_value[0].value[byref_offset + for_loop.counter_offset] = vm_n[n1].value;
 
 
+    //These 3 lines reads the line value passed by the compiler
+    //This line value is the address of the end of the loop
+    unsigned rcbasic_cmd = segment[current_segment][current_address];
+    current_address++;
+    uint64_t for_end_addr = readInt();
+
+    //cout << "next_addr: " << next_addr << endl;
+
     if( vm_n[n2].value < vm_n[n1].value )
+    {
         for_loop.isNegative = true;
+
+        if(for_loop.f_step > 0)
+        {
+            current_address = for_end_addr;
+            return;
+        }
+    }
     else
+    {
         for_loop.isNegative = false;
+
+        if(for_loop.f_step < 0)
+        {
+            current_address = for_end_addr;
+            return;
+        }
+    }
+
 
     loop_stack.push(for_loop);
     //current_loop_stack_count++;
@@ -2254,6 +2284,9 @@ void func_130(uint64_t fn)
         case FN_QueryAudioSpec:
             rc_push_num( rc_media_queryAudioSpec(&QUERYAUDIOSPEC_FREQ, &QUERYAUDIOSPEC_FORMAT, &QUERYAUDIOSPEC_CHANNELS) );
             break;
+        case FN_MusicIsPlaying:
+            rc_push_num( rc_media_musicIsPlaying() );
+            break;
     }
 }
 
@@ -2458,6 +2491,31 @@ void for_offset_0_149()
 void end_x_150(int n1)
 {
     rcbasic_exit_code = (int)vm_n[n1].value;
+}
+
+void lval_151(int n1)
+{
+    cout << "lval_151 = " << vm_n[n1].value << endl;
+}
+
+void lval_152(uint64_t nid)
+{
+    cout << "lval_152 = " << num_var[nid].nid_value[0].value[0] << endl;
+}
+
+void lval_153(uint64_t lval_addr )
+{
+    //cout << "lval_153 = " << lval_addr << endl;
+}
+
+void lval_154(int s1)
+{
+    //cout << "lval_154 = " << vm_s[s1].value << endl;
+}
+
+void lval_155(uint64_t sid)
+{
+    //cout << "lval_155 = " << str_var[sid].sid_value[0].value[0] << endl;
 }
 
 bool rcbasic_run()

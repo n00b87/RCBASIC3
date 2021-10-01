@@ -3673,6 +3673,7 @@ bool check_rule()
                 max_for_count = for_counter.size();
 
             vm_asm.push_back("for !" + rc_intToString(id[counter_id].vec_pos) + " " + start_value + " " + end_value + " " + step_value);
+            vm_asm.push_back("lval @" + end_label);
             vm_asm.push_back("label " + start_label);
 
 
@@ -3697,6 +3698,7 @@ bool check_rule()
             current_block_state = block_state.top();
             vm_asm.push_back("next @" + current_scope);
             vm_asm.push_back("label " + next_label);
+            //cout << "next_addr = " << vm_asm.current_address[CODE_SEGMENT] << endl;
             exit_scope(1);
         }
         else if(token[0].compare("<if>")==0)
