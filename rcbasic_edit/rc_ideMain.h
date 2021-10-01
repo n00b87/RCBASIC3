@@ -10,6 +10,9 @@
 #ifndef RC_IDEMAIN_H
 #define RC_IDEMAIN_H
 
+#define RC_WINDOWS
+//#define RC_LINUX
+
 #include <wx/wx.h>
 
 //(*Headers(rc_ideFrame)
@@ -49,6 +52,7 @@ class rc_ideFrame: public wxFrame
         void OnDelete(wxCommandEvent& event);
         void OnCompile(wxCommandEvent& event);
         void OnRun(wxCommandEvent& event);
+        void OnDistribute(wxCommandEvent& event);
         void OnReference(wxCommandEvent& event);
         void OnDocumentKey(wxStyledTextEvent& event);
         void OnStop(wxCommandEvent& event);
@@ -69,6 +73,7 @@ class rc_ideFrame: public wxFrame
         static const long deleteID;
         static const long compileID;
         static const long runID;
+        static const long distributeID;
         static const long idMenuAbout;
         static const long referenceID;
         static const long ID_STATUSBAR1;
@@ -106,6 +111,7 @@ class rc_ideFrame: public wxFrame
         wxMenuItem* MenuItem13;
         wxMenuItem* MenuItem8;
         wxMenuItem* MenuItem14;
+        wxMenuItem* MenuItem16;
         //*)
 
         DECLARE_EVENT_TABLE()
@@ -126,7 +132,12 @@ public:
     virtual void OnTerminate(int pid, int status)
     {
         wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+        #ifdef RC_WINDOWS
+        editor_path = editor_path.substr(0, editor_path.find_last_of(_("\\"))) +_("\\");
+        #else
         editor_path = editor_path.substr(0, editor_path.find_last_of(_("/"))) +_("/");
+        #endif // RC_WINDOWS
+        wxPuts(_("Set Path to: ") + editor_path);
         wxSetWorkingDirectory(editor_path);
     }
 

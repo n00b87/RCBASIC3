@@ -56,8 +56,8 @@ wxString wxbuildinfo(wxbuildinfoformat format)
     return wxbuild;
 }
 
-//#define RC_WINDOWS
-#define RC_LINUX
+#define RC_WINDOWS
+//#define RC_LINUX
 
 //(*IdInit(rc_ideFrame)
 const long rc_ideFrame::ID_AUINOTEBOOK1 = wxNewId();
@@ -74,6 +74,7 @@ const long rc_ideFrame::pasteID = wxNewId();
 const long rc_ideFrame::deleteID = wxNewId();
 const long rc_ideFrame::compileID = wxNewId();
 const long rc_ideFrame::runID = wxNewId();
+const long rc_ideFrame::distributeID = wxNewId();
 const long rc_ideFrame::idMenuAbout = wxNewId();
 const long rc_ideFrame::referenceID = wxNewId();
 const long rc_ideFrame::ID_STATUSBAR1 = wxNewId();
@@ -103,35 +104,36 @@ wxProcess * vm_process;
 
 void rc_initKeywords()
 {
-    rc_keywords = wxT("include mod and or xor shl shr not true false ");
-    rc_keywords += wxT("if then else elseif end select case default do loop until while wend for to step next exit function return sub byref print dim ");
-    rc_keywords += wxT("fprint input input$ arraydim arraysize delete asc chr chr$ insert insert$ instr lcase lcase$ left left$ length ltrim ltrim$ mid mid$ ");
-    rc_keywords += wxT("replace replace$ replacesubstr replacesubstr$ reverse reverse$ right right$ rtrim rtrim$ stringfill str str$ tally trim trim$ ucase ucase$ val ");
-    rc_keywords += wxT("abs acos andbit asin atan bin bin$ cos exp frac hex hex$ int log max min orbit randomize rand round sign sin sqrt tan xorbit ");
-    rc_keywords += wxT("fileopen fileclose readbyte writebyte readline readline$ writeline copyfile removefile fileexists movefile renamefile filelength tell seek eof freefile ");
-    rc_keywords += wxT("changedir direxists dirfirst dirfirst$ dir dir$ dirnext dirnext$ makedir removedir ");
-    rc_keywords += wxT("date date$ ticks time time$ timer wait ");
-    rc_keywords += wxT("windowopen windowclose raisewindow window update showwindow hidewindow setwindowtitle windowtitle windowtitle$ setwindowposition getwindowposition setwindowsize getwindowsize ");
-    rc_keywords += wxT("setwindowminsize getwindowminsize setwindowmaxsize getwindowmaxsize windowisfullscreen windowisvisible windowisbordered windowisresizable windowisminimized ");
-    rc_keywords += wxT("windowismaximized setwindowfullscreen maximizewindow minimizewindow setwindowborder setwindowicon ");
-    rc_keywords += wxT("canvasopen canvasclose setcanvasviewport getcanvasviewport canvas setcanvasoffset getcanvasoffset getcanvassize clearcanvas setcanvasalpha copycanvas clonecanvas ");
-    rc_keywords += wxT("setcanvasz box boxfill circle circlefill ellipse ellipsefill floodfill pixel setcolor line rgb rgba pset loadimage imageexists colorkey copyimage deleteimage setimagealpha ");
-    rc_keywords += wxT("imagealpha getimagesize drawimage drawimage_blit drawimage_blit_ex drawimage_rotate drawimage_rotate_ex drawimage_zoom drawimage_zoom_ex drawimage_rotozoom drawimage_rotozoom_ex drawimage_flip drawimage_flip_ex ");
-    rc_keywords += wxT("getcursor prints inputs inputs$ locate fontisloaded font loadfont deletefont setfontstyle drawtext drawtext_shaded drawtext_blended inkey key waitkey hidemouse showmouse mouseisvisible getmouse ");
-    rc_keywords += wxT("getmousewheel numjoysticks joyaxis joybutton joyname joyname$ loadsound loadmusic playsound playsoundtimed playmusic pausesound resumesound pausemusic resumemusic ");
-    rc_keywords += wxT("deletesound fademusicin fademusicout musicexists setmusicvolume musicvolume setmusicposition musicposition rewindmusic setsoundchannels numsoundchannels soundisenabled soundexists ");
-    rc_keywords += wxT("setchannelvolume channelvolume setsoundvolume soundvolume stopmusic stopsound ");
-    rc_keywords += wxT("tcp_socketopen tcp_socketclose tcp_remotehost tcp_remoteport tcp_getdata tcp_senddata tcp_acceptsocket ");
-    rc_keywords += wxT("udp_socketopen udp_socketclose udp_getdata udp_length udp_maxlength udp_remotehost udp_remotehost$ udp_remoteport udp_senddata ");
-    rc_keywords += wxT("zoneinput zoneinput$ touchpressure gettouch getmultitouch readinput_start readinput_stop readinput_text readinput_text$ canvasclip windowclip ");
-    rc_keywords += wxT("setcanvasvisible canvasisvisible rendertext gettextsize imagefrombuffer imagefrombuffer_ex ");
-    rc_keywords += wxT("readinput_settext gettouchfinger numfingers loadimage_ex rect rectfill os os$ numjoybuttons numjoyaxes ");
-    rc_keywords += wxT("loadvideo playvideo pausevideo stopvideo setvideoposition resumevideo videoposition deletevideo deletemusic ");
-    rc_keywords += wxT("system videoisplaying roundrect roundrectfill videoend getvideostats setvideodrawrect getvideodrawrect ");
-    rc_keywords += wxT("getvideosize videoexists setvideoalpha soundfrombuffer command command$ numcommands str_f str_f$ str_s str_s$ cls env env$ setenv prefpath prefpath$ numjoyhats joyhat numjoytrackballs getjoytrackball ");
-    rc_keywords += wxT("windowhasinputfocus windowhasmousefocus push_n push_s pop_n pop_s pop_s$ n_stack_size s_stack_size joystickisconnected ");
-    rc_keywords += wxT("numwindows windowexists readinput_togglebackspace windowevent_close windowevent_minimize windowevent_maximize poly polyfill cint32 cint64 mousex mousey mousebutton mousewheelx mousewheely setclearcolor ");
-    rc_keywords += wxT("stringarraydim stringarraysize numberarraydim numberarraysize activewindow activecanvas fps hasclipboardtext setclipboardtext clipboardtext ");
+    rc_keywords = wxT("include once ");
+    rc_keywords += wxT("true false mod shl shr and not or xor byref case do default else elseif end exit for function if loop next return select step sub then to until wend while ");
+    rc_keywords += wxT("print dim delete fprint input arraydim stringarraydim numberarraydim arraysize stringarraysize numberarraysize asc chr insert instr lcase left length ");
+    rc_keywords += wxT("ltrim mid replace replacesubstr reverse right rtrim stringfill str tally trim ucase val abs acos andbit asin atan bin cos exp frac hex int log max min ");
+    rc_keywords += wxT("orbit randomize rand round sign sin sqrt tan xorbit fileopen fileclose readbyte writebyte readline writeline copyfile removefile fileexists movefile renamefile ");
+    rc_keywords += wxT("filelength tell seek eof freefile changedir direxists dirfirst dir dirnext makedir removedir date ticks time timer wait windowopen windowclose raisewindow ");
+    rc_keywords += wxT("window update showwindow hidewindow setwindowtitle windowtitle setwindowposition getwindowposition setwindowsize getwindowsize setwindowminsize getwindowminsize ");
+    rc_keywords += wxT("setwindowmaxsize getwindowmaxsize windowisfullscreen windowisvisible windowisbordered windowisresizable windowisminimized windowismaximized setwindowfullscreen ");
+    rc_keywords += wxT("maximizewindow minimizewindow setwindowborder canvasopen canvasclose setcanvasviewport getcanvasviewport canvas setcanvasoffset getcanvasoffset getcanvassize ");
+    rc_keywords += wxT("clearcanvas setcanvasalpha copycanvas clonecanvas setcanvasz box boxfill circle circlefill ellipse ellipsefill floodfill getpixel setcolor line poly polyfill ");
+    rc_keywords += wxT("rgb rgba pset loadimage imageexists colorkey copyimage deleteimage setimagealpha imagealpha getimagesize flipimage drawimage drawimage_blit drawimage_blit_ex ");
+    rc_keywords += wxT("drawimage_rotate drawimage_rotate_ex drawimage_zoom drawimage_zoom_ex drawimage_rotozoom drawimage_rotozoom_ex getcursor prints inputs locate fontisloaded ");
+    rc_keywords += wxT("font loadfont deletefont setfontstyle drawtext drawtext_shaded drawtext_blended inkey key waitkey hidemouse showmouse mouseisvisible getmouse getmousewheel ");
+    rc_keywords += wxT("mousex mousey mousebutton mousewheelx mousewheely numjoysticks joyaxis joybutton joyname loadsound loadmusic playsound playsoundtimed playmusic pausesound ");
+    rc_keywords += wxT("resumesound pausemusic resumemusic deletesound fademusicin fademusicout musicexists setmusicvolume musicvolume setmusicposition musicposition rewindmusic ");
+    rc_keywords += wxT("setsoundchannels numsoundchannels soundisenabled soundexists setchannelvolume channelvolume setsoundvolume soundvolume stopmusic stopsound tcp_socketopen ");
+    rc_keywords += wxT("tcp_socketclose tcp_remotehost tcp_remoteport tcp_getdata tcp_senddata tcp_acceptsocket udp_socketopen udp_socketclose udp_getdata udp_length udp_maxlength ");
+    rc_keywords += wxT("udp_remotehost udp_remoteport udp_senddata zoneinputs touchpressure gettouch getmultitouch readinput_start readinput_stop readinput_text canvasclip windowclip ");
+    rc_keywords += wxT("setcanvasvisible canvasisvisible rendertext gettextsize imagefrombuffer imagefrombuffer_ex readinput_settext gettouchfinger numfingers loadimage_ex rect ");
+    rc_keywords += wxT("rectfill os numjoybuttons numjoyaxes loadvideo playvideo pausevideo stopvideo setvideoposition resumevideo videoposition deletevideo deletemusic system ");
+    rc_keywords += wxT("videoisplaying roundrect roundrectfill videoend getvideostats setvideodrawrect getvideodrawrect getvideosize videoexists setvideoalpha soundfrombuffer ");
+    rc_keywords += wxT("command numcommands str_f str_f$ str_s str_s$ cls env env$ setenv prefpath prefpath$ numjoyhats joyhat numjoytrackballs getjoytrackball windowhasinputfocus ");
+    rc_keywords += wxT("windowhasmousefocus push_n push_s pop_n pop_s pop_s$ stack_size_n stack_size_s joystickisconnected numwindows windowexists readinput_togglebackspace windowevent_close ");
+    rc_keywords += wxT("windowevent_minimize windowevent_maximize poly polyfill setclearcolor cint32 cint64 activecanvas activewindow fps hasclipboardtext setclipboardtext clipboardtext ");
+    rc_keywords += wxT("setwindowicon hexval checksockets tcp_socketready udp_socketready easter bufferfromimage drawimage_flip drawimage_flip_ex stack_n stack_s setimageblendmode ");
+    rc_keywords += wxT("imageblendmode setimagecolormod imagecolormod canvasalpha setcanvasblendmode canvasblendmode setcanvascolormod canvascolormod len degrees radians canvasz ");
+    rc_keywords += wxT("setchanneldistance setchannelpanning channelisplaying channelispaused android_getexternalstoragepath android_getexternalstoragestate android_getinternalstoragepath ");
+    rc_keywords += wxT("android_jni_message runtime_utility_message getdesktopdisplaymode drawimage_transform getpowerinfo systemram setrenderscalequality evaljs getrenderscalequality ");
+    rc_keywords += wxT("write getglobalmouse globalmousex globalmousey getaccel accelname numaccels getgyro gyroname numgyros joyrumbleplay joyrumblestop joystickishaptic writebytebuffer ");
+    rc_keywords += wxT("readbytebuffer windowevent_resize setwindowautoclose setwindowresizable systemreturnstdout windowmode windowflags restorewindow updateallwindows queryaudiospec ");
 
     rc_keywords2 = wxT("k_0 k_1 k_2 k_3 k_4 k_5 k_6 k_7 k_8 k_9 k_a k_ac_back k_ac_bookmarks k_ac_forward k_ac_home k_ac_refresh k_ac_search k_ac_stop k_again k_alterase k_application ");
     rc_keywords2 += wxT("k_audiomute k_audionext k_audioplay k_audioprev k_audiostop k_b k_backslash k_backspace k_brightnessdown k_brightnessup k_c k_calculator k_cancel k_capslock k_clear ");
@@ -148,6 +150,9 @@ void rc_initKeywords()
     rc_keywords2 += wxT("k_thousandseparator k_u k_undo k_unknown k_up k_v k_volumedown k_volumeup k_w k_www k_x k_y k_z windowpos_centered hat_up hat_down hat_left hat_right hat_rightup ");
     rc_keywords2 += wxT("hat_rightdown hat_leftup hat_leftdown hat_centered text_input text_output text_append text_input_plus text_output_plus text_append_plus ");
     rc_keywords2 += wxT("binary_input binary_output binary_append binary_input_plus binary_output_plus binary_append_plus ");
+    rc_keywords2 += wxT("blendmode_none blendmode_blend blendmode_add blendmode_mod ");
+    rc_keywords2 += wxT("android_external_storage_read android_external_storage_write powerstate_unknown powerstate_on_battery powerstate_no_battery powerstate_charging powerstate_charged ");
+    rc_keywords2 += wxT("window_visible window_hidden window_fullscreen window_borderless window_resizable window_highdpi ");
 }
 
 rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
@@ -181,17 +186,28 @@ rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
     	#endif
     	SetIcon(FrameIcon);
     }
+
+    wxBitmap PlayButton_Image;
+    wxBitmap StopButton_Image;
+    #ifdef RC_WINDOWS
+        PlayButton_Image = wxBitmap(wxImage(rc_path + _T("\\icon\\play.png")));
+        StopButton_Image = wxBitmap(wxImage(rc_path + _T("\\icon\\stop.png")));
+    #else
+        PlayButton_Image = wxBitmap(wxImage(rc_path + _T("/icon/play.bmp")));
+        StopButton_Image = wxBitmap(wxImage(rc_path + _T("/icon/stop.png")));
+    #endif
+
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
     AuiNotebook1 = new wxAuiNotebook(this, ID_AUINOTEBOOK1, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
     BoxSizer1->Add(AuiNotebook1, 1, wxALL|wxEXPAND, 1);
     SetSizer(BoxSizer1);
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
-    MenuItem6 = new wxMenuItem(Menu1, newID, _("New"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem6 = new wxMenuItem(Menu1, newID, _("New\tCtrl-N"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem6);
-    MenuItem5 = new wxMenuItem(Menu1, openID, _("Open"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem5 = new wxMenuItem(Menu1, openID, _("Open\tCtrl-O"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem5);
-    MenuItem4 = new wxMenuItem(Menu1, saveID, _("Save"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem4 = new wxMenuItem(Menu1, saveID, _("Save\tCtrl-S"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem4);
     MenuItem3 = new wxMenuItem(Menu1, saveAsID, _("Save As"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem3);
@@ -214,10 +230,12 @@ rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
     Menu3->Append(MenuItem12);
     MenuBar1->Append(Menu3, _("Edit"));
     Menu4 = new wxMenu();
-    MenuItem13 = new wxMenuItem(Menu4, compileID, _("Compile"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem13 = new wxMenuItem(Menu4, compileID, _("Compile\tF5"), wxEmptyString, wxITEM_NORMAL);
     Menu4->Append(MenuItem13);
-    MenuItem14 = new wxMenuItem(Menu4, runID, _("Run"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem14 = new wxMenuItem(Menu4, runID, _("Run\tF8"), wxEmptyString, wxITEM_NORMAL);
     Menu4->Append(MenuItem14);
+    MenuItem16 = new wxMenuItem(Menu4, distributeID, _("Distribute"), wxEmptyString, wxITEM_NORMAL);
+    Menu4->Append(MenuItem16);
     MenuBar1->Append(Menu4, _("Build"));
     Menu2 = new wxMenu();
     MenuItem2 = new wxMenuItem(Menu2, idMenuAbout, _("About\tF1"), _("Show info about this application"), wxITEM_NORMAL);
@@ -238,8 +256,8 @@ rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
     ToolBarItem3 = ToolBar1->AddTool(toolSaveID, _("Save File"), wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_SAVE")),wxART_TOOLBAR), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString);
     ToolBarItem4 = ToolBar1->AddTool(toolSaveAsID, _("Save File As"), wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_SAVE_AS")),wxART_TOOLBAR), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, _("Save File As"));
     ToolBar1->AddSeparator();
-    ToolBarItem5 = ToolBar1->AddTool(toolRunID, _("Run Program"), wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_EXECUTABLE_FILE")),wxART_TOOLBAR), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, _("Run Program"));
-    ToolBarItem6 = ToolBar1->AddTool(toolStopID, _("Stop Program"), wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_QUIT")),wxART_TOOLBAR), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, _("Abort Program"));
+    ToolBarItem5 = ToolBar1->AddTool(toolRunID, _("Run Program"), PlayButton_Image, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, _("Run Program"));
+    ToolBarItem6 = ToolBar1->AddTool(toolStopID, _("Stop Program"), StopButton_Image, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, _("Abort Program"));
     ToolBar1->Realize();
     SetToolBar(ToolBar1);
     SetSizer(BoxSizer1);
@@ -259,6 +277,7 @@ rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
     Connect(deleteID,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&rc_ideFrame::OnDelete);
     Connect(compileID,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&rc_ideFrame::OnCompile);
     Connect(runID,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&rc_ideFrame::OnRun);
+    Connect(distributeID,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&rc_ideFrame::OnDistribute);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&rc_ideFrame::OnAbout);
     Connect(referenceID,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&rc_ideFrame::OnReference);
     Connect(toolNewID,wxEVT_COMMAND_TOOL_CLICKED,(wxObjectEventFunction)&rc_ideFrame::OnNewPage);
@@ -283,7 +302,7 @@ void rc_ideFrame::OnQuit(wxCommandEvent& event)
 
 void rc_ideFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = _("RCBASIC Editor\nCopyright (C) 2015-2018 Rodney Cunningham ( aka n00b )\n\nFor latest release, updates, and info go to \nhttp://www.rcbasic.com\n\nAnd the forum at \nhttp://rcbasic.freeforums.net");
+    wxString msg = _("RCBASIC Editor\nCopyright (C) 2015-2021 Rodney Cunningham ( aka n00b )\n\nFor latest release, updates, and info go to \nhttp://www.rcbasic.com\n\nAnd the forum at \nhttp://rcbasic.freeforums.net");
     wxMessageBox(msg);
 }
 
@@ -321,6 +340,7 @@ void rc_ideFrame::OnPageOpen(wxCommandEvent& event)
         wxString rc_filename = FileDialog1->GetDirectory() + _("/") + FileDialog1->GetFilename();
     #else
         wxString rc_filename = FileDialog1->GetDirectory() + _("\\") + FileDialog1->GetFilename();
+        wxString rc_tabname = FileDialog1->GetFilename();
     #endif
     //wxMessageBox(rc_filename);
     if(FileDialog1->GetReturnCode() == wxID_CANCEL)
@@ -392,7 +412,7 @@ void rc_ideFrame::OnPageOpen(wxCommandEvent& event)
             rc_txtCtrl->StyleSetFont(wxSTC_STYLE_DEFAULT, rc_font);
             rc_txtCtrl->SetTabWidth(4);
             rc_txtCtrl->Connect(wxEVT_STC_CHARADDED, wxStyledTextEventHandler(rc_ideFrame::OnDocumentKey), NULL, this);
-            AuiNotebook1->AddPage(rc_txtCtrl, FileDialog1->GetFilename());
+            AuiNotebook1->AddPage(rc_txtCtrl, rc_tabname);
             rc_fnames[AuiNotebook1->GetPageIndex(rc_txtCtrl)] = rc_filename;
         }
     }
@@ -814,7 +834,7 @@ void rc_ideFrame::OnRun(wxCommandEvent& event)
     wxSetWorkingDirectory(rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("/")));
     wxString fs = rc_path + _("rcbasic_build ") + _("\"") + rc_fnames[AuiNotebook1->GetPageIndex(t)] + _("\"");
     #else
-    //wxMessageBox(rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("\\")));
+    //wxMessageBox(_("Set Dir: ") + rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("\\")));
     wxSetWorkingDirectory(rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("\\")));
     wxString fs = rc_path + _("rcbasic_build.exe ") + _("\"") + rc_fnames[AuiNotebook1->GetPageIndex(t)] + _("\"");
     #endif
@@ -831,13 +851,124 @@ void rc_ideFrame::OnRun(wxCommandEvent& event)
     pid = wxExecute(fs, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER, vm_process);
 }
 
+void rc_ideFrame::OnDistribute(wxCommandEvent& event)
+{
+    //wxMessageBox(wxString::Format(wxT("%i"),AuiNotebook1->GetSelection()),_("WX AUI"));
+    if(AuiNotebook1->GetSelection() < 0)
+    {
+        wxMessageBox(_("Nothing to Port"));
+        return;
+    }
+    wxStyledTextCtrl * t = (wxStyledTextCtrl*)AuiNotebook1->GetPage(AuiNotebook1->GetSelection());
+    if(t == NULL)
+        return;
+    if(rc_fnames[AuiNotebook1->GetSelection()].compare(_(""))==0)
+    {
+        wxMessageDialog * MessageDialog1 = new wxMessageDialog(this, _("--You must save the file first."), wxEmptyString , wxOK, wxDefaultPosition);
+        wxFileDialog * FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+        if(MessageDialog1->ShowModal() == wxID_OK)
+        {
+            //wxTextCtrl * t = (wxTextCtrl*)AuiNotebook1->GetPage(AuiNotebook1->GetSelection());
+            wxFileDialog * FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+            FileDialog1->ShowModal();
+            #ifndef RC_WINDOWS
+            wxString rc_filename = FileDialog1->GetDirectory() + _("/") + FileDialog1->GetFilename();
+            #else
+            wxString rc_filename = FileDialog1->GetDirectory() + _("\\") + FileDialog1->GetFilename();
+            #endif
+            //wxMessageBox(rc_filename);
+            FileDialog1->Destroy();
+
+            #ifndef RC_WINDOWS
+            if(rc_filename.compare(_("/"))!=0)
+            #else
+            if(rc_filename.compare(_("\\"))!=0)
+            #endif
+            {
+                wxFileOutputStream output(rc_filename);
+
+                if(!output.IsOk())
+                {
+                    output.Close();
+                    return;
+                }
+
+                wxTextOutputStream text(output);
+                text.SetMode(wxEOL_UNIX);
+                long i = 0;
+                while(i < t->GetLineCount())
+                {
+                    wxString line = t->GetLine(i);
+                    int spos = line.find_first_of("\n");
+                    if(spos == wxString::npos)
+                        line = line + "\n";
+                    else
+                        line = line.substr(0, spos) + "\n";
+                    //line = line;
+                    text.WriteString(line);
+                    i++;
+                }
+                output.Close();
+                rc_fnames[AuiNotebook1->GetPageIndex(t)] = rc_filename;
+                AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), FileDialog1->GetFilename());
+            }
+        }
+        MessageDialog1->Destroy();
+        FileDialog1->Destroy();
+    }
+    else
+    {
+        //wxMessageBox(_("File to Run = ") + rc_fnames[AuiNotebook1->GetSelection()]);
+        wxFileOutputStream output(rc_fnames[AuiNotebook1->GetPageIndex(t)]);
+
+        if(!output.IsOk())
+        {
+            output.Close();
+            return;
+        }
+
+        wxTextOutputStream text(output);
+        text.SetMode(wxEOL_UNIX);
+        long i = 0;
+        while(i < t->GetLineCount())
+        {
+            wxString line = t->GetLine(i);
+            int spos = line.find_first_of("\n");
+            if(spos == wxString::npos)
+                line = line + "\n";
+            else
+                line = line.substr(0, spos) + "\n";
+            //line = line;
+            text.WriteString(line);
+            i++;
+        }
+        output.Close();
+    }
+
+    wxString RC_PKG_HOME;
+    wxGetEnv(_("RC_PKG_HOME"), &RC_PKG_HOME);
+
+    #ifndef RC_WINDOWS
+    wxString call_dir = rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("/"));
+    wxString f_name = rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("/")+1);
+    wxString fs = rc_path + _("rcbasic ") + _("\"") + RC_PKG_HOME + _("/app_build_gui\" \"") + call_dir + _("\" \"") + f_name + _("\"");
+    #else
+    wxString call_dir = rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("\\"));
+    wxString f_name = rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("\\")+1);
+    wxString fs = rc_path + _("rcbasic ") + _("\"") + RC_PKG_HOME + _("\\app_build_gui\" \"") + call_dir + _("\" \"") + f_name + _("\"");
+    #endif
+
+    int rt = -1;
+    rt = wxExecute(fs, wxEXEC_SYNC);
+}
+
 void rc_ideFrame::OnReference(wxCommandEvent& event)
 {
     //wxMessageBox(_("Refer to the documentation in " + rc_path));
     #ifndef RC_WINDOWS
     wxLaunchDefaultBrowser(rc_path+_("doc/rcbasic_manual.html"));
     #else
-    wxLaunchDefaultBrowser(rc_path+_("doc\\rcbasic_manual.html"));
+    wxLaunchDefaultBrowser(rc_path+_("..\\doc\\rcbasic_manual.html"));
     #endif
 }
 
