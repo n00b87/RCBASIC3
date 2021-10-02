@@ -56,8 +56,8 @@ wxString wxbuildinfo(wxbuildinfoformat format)
     return wxbuild;
 }
 
-#define RC_WINDOWS
-//#define RC_LINUX
+//#define RC_WINDOWS
+#define RC_LINUX
 
 //(*IdInit(rc_ideFrame)
 const long rc_ideFrame::ID_AUINOTEBOOK1 = wxNewId();
@@ -163,9 +163,12 @@ rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
     rc_path =  wxStandardPaths::Get().GetExecutablePath();
     #ifndef RC_WINDOWS
         rc_path = rc_path.substr(0, rc_path.find_last_of(_("/"))) +_("/");
+        wxSetEnv(_("RC_PKG_HOME"), rc_path + _("/tools/dist"));
     #else
         rc_path = rc_path.substr(0, rc_path.find_last_of(_("\\"))) +_("\\");
     #endif
+
+
     //(*Initialize(rc_ideFrame)
     wxMenuItem* MenuItem2;
     wxMenuItem* MenuItem1;
@@ -194,7 +197,7 @@ rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
         PlayButton_Image = wxBitmap(wxImage(rc_path + _T("\\icon\\play.png")));
         StopButton_Image = wxBitmap(wxImage(rc_path + _T("\\icon\\stop.png")));
     #else
-        PlayButton_Image = wxBitmap(wxImage(rc_path + _T("/icon/play.bmp")));
+        PlayButton_Image = wxBitmap(wxImage(rc_path + _T("/icon/play.png")));
         StopButton_Image = wxBitmap(wxImage(rc_path + _T("/icon/stop.png")));
     #endif
 
@@ -339,6 +342,7 @@ void rc_ideFrame::OnPageOpen(wxCommandEvent& event)
     FileDialog1->ShowModal();
     #ifndef RC_WINDOWS
         wxString rc_filename = FileDialog1->GetDirectory() + _("/") + FileDialog1->GetFilename();
+        wxString rc_tabname = FileDialog1->GetFilename();
     #else
         wxString rc_filename = FileDialog1->GetDirectory() + _("\\") + FileDialog1->GetFilename();
         wxString rc_tabname = FileDialog1->GetFilename();
