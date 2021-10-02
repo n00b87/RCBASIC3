@@ -2495,12 +2495,12 @@ void end_x_150(int n1)
 
 void lval_151(int n1)
 {
-    cout << "lval_151 = " << vm_n[n1].value << endl;
+    //cout << "lval_151 = " << vm_n[n1].value << endl;
 }
 
 void lval_152(uint64_t nid)
 {
-    cout << "lval_152 = " << num_var[nid].nid_value[0].value[0] << endl;
+    //cout << "lval_152 = " << num_var[nid].nid_value[0].value[0] << endl;
 }
 
 void lval_153(uint64_t lval_addr )
