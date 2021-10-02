@@ -104,7 +104,7 @@ wxProcess * vm_process;
 
 void rc_initKeywords()
 {
-    rc_keywords = wxT("include once ");
+    rc_keywords = wxT("include once continue ");
     rc_keywords += wxT("true false mod shl shr and not or xor byref case do default else elseif end exit for function if loop next return select step sub then to until wend while ");
     rc_keywords += wxT("print dim delete fprint input arraydim stringarraydim numberarraydim arraysize stringarraysize numberarraysize asc chr insert instr lcase left length ");
     rc_keywords += wxT("ltrim mid replace replacesubstr reverse right rtrim stringfill str tally trim ucase val abs acos andbit asin atan bin cos exp frac hex int log max min ");
@@ -134,6 +134,7 @@ void rc_initKeywords()
     rc_keywords += wxT("android_jni_message runtime_utility_message getdesktopdisplaymode drawimage_transform getpowerinfo systemram setrenderscalequality evaljs getrenderscalequality ");
     rc_keywords += wxT("write getglobalmouse globalmousex globalmousey getaccel accelname numaccels getgyro gyroname numgyros joyrumbleplay joyrumblestop joystickishaptic writebytebuffer ");
     rc_keywords += wxT("readbytebuffer windowevent_resize setwindowautoclose setwindowresizable systemreturnstdout windowmode windowflags restorewindow updateallwindows queryaudiospec ");
+    rc_keywords += wxT("musicisplaying ");
 
     rc_keywords2 = wxT("k_0 k_1 k_2 k_3 k_4 k_5 k_6 k_7 k_8 k_9 k_a k_ac_back k_ac_bookmarks k_ac_forward k_ac_home k_ac_refresh k_ac_search k_ac_stop k_again k_alterase k_application ");
     rc_keywords2 += wxT("k_audiomute k_audionext k_audioplay k_audioprev k_audiostop k_b k_backslash k_backspace k_brightnessdown k_brightnessup k_c k_calculator k_cancel k_capslock k_clear ");
@@ -966,9 +967,9 @@ void rc_ideFrame::OnReference(wxCommandEvent& event)
 {
     //wxMessageBox(_("Refer to the documentation in " + rc_path));
     #ifndef RC_WINDOWS
-    wxLaunchDefaultBrowser(rc_path+_("doc/rcbasic_manual.html"));
+    wxLaunchDefaultBrowser(_("http://rcbasic.online/doc/rcbasic_manual.html"));
     #else
-    wxLaunchDefaultBrowser(rc_path+_("..\\doc\\rcbasic_manual.html"));
+    wxLaunchDefaultBrowser(_("http://rcbasic.online/doc/rcbasic_manual.html"));
     #endif
 }
 

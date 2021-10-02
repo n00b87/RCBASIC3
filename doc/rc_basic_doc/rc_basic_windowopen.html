@@ -5,20 +5,33 @@
     <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
     <title>RC BASIC WINDOWOPEN</title>
   </head>
-  <body><b>WindowOpen ( win_num, title$, x, y, w, h, flag )</b><br>
+  <body><b>WindowOpen ( win_num, title$, x, y, w, h, mode, vsync )</b><br>
     <br>
     Opens a graphics window.<br>
     Set x and y to WINDOWPOS_CENTERED to position window in middle of screen.<br>
     <br>
-    FLAG 0 - window<br>
-    FLAG 1 - Fullscreen<br>
-    FLAG 2 - Borderless Window<br>
-    FLAG 3 - Resizable<br>
-    FLAG 4 - Hidden<br><br>
+    Mode is a bitmask of possible window flags that can be combined to achieve the desired window.<br>
+    Possible flags that can be used are:<br><br>
+    &nbsp;&nbsp;&nbsp;WINDOW_VISIBLE - Makes the window visible when opened<br><br>
+    &nbsp;&nbsp;&nbsp;WINDOW_HIDDEN - Hides the window when opened<br><br>
+    &nbsp;&nbsp;&nbsp;WINDOW_FULLSCREEN - Opens the window in fullscreen ( Fullscreen mode will set a virtual resolution for the window rather than change the display resolution ) <br><br>
+    &nbsp;&nbsp;&nbsp;WINDOW_RESIZABLE - Makes the window resizable ( Resizable windows will increase/decrease the resolution of the window rather than stretch the image )<br><br>
+    &nbsp;&nbsp;&nbsp;WINDOW_BORDERLESS - Draws the window without borders<br><br>
+    &nbsp;&nbsp;&nbsp;WINDOW_HIGHDPI - Enables highdpi for the window ( HighDPI is for increasing mouse sensitivity on the window ) <br><br>
+    Note: You can combine them with <a href="rc_basic_orbit.html" target="main">OrBit()</a> or just set them with <a href="rc_basic_windowmode.html" target="main">WindowMode()</a><br>
     <br>
-    Note: The constant WINDOWPOS_CENTERED can be used to automatically position
-    the window at the center of the desktop.<br>
+    Set VSync to true to enable vsync on the window. ( VSync is recommended for most applications. )
     <br>
-    Example:
+    Example:<br><br>
+    <span  style="font-style: italic;">
+		&nbsp;&nbsp;&nbsp;my_window_mode = <span class="keyword">WindowMode</span>(<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>)<br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">WindowOpen</span> ( <span class="number">0</span>, <span class="string">"My App"</span>, <span class="keyword">WINDOWPOS_CENTERED</span>, <span class="keyword">WINDOWPOS_CENTERED</span>, <span class="number">640</span>, <span class="number">480</span>, my_window_mode, <span class="number">1</span> )<br>
+		<br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">While WindowExists</span>( <span class="number">0</span> ) <br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">Update</span>()<br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">Wend</span>
+      <br>
+    </span><br>
+    This will open a 640 x 480 window and wait for the user to close it.<br>
   </body>
 </html>

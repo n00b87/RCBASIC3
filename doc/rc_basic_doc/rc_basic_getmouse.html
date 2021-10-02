@@ -7,9 +7,23 @@
   </head>
   <body><b>GetMouse ( ByRef x, ByRef y, ByRef mb1, ByRef mb2, ByRef mb3 )</b><br>
     <br>
-    Gets the position of the mouse and whether or not the mouse buttons are
+    Gets the position of the mouse in the window and whether or not the mouse buttons are
     pressed.<br>
+    Note: For the absolute mouse position on the display look at <a  href="rc_basic_getglobalmouse.html" target="main">GetGlobalMouse</a><br><br>
     <br>
-    Example:
+    Example:<br><p>
+    <span  style="font-style: italic;">
+		&nbsp;&nbsp;&nbsp;my_window_mode = <span class="keyword">WindowMode</span>(<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>)<br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">WindowOpen</span> ( <span class="number">0</span>, <span class="string">"My App"</span>, <span class="keyword">WINDOWPOS_CENTERED</span>, <span class="keyword">WINDOWPOS_CENTERED</span>, <span class="number">640</span>, <span class="number">480</span>, my_window_mode, <span class="number">1</span> )<br>
+		&nbsp;&nbsp;&nbsp;Dim x, y, mb1, mb2, mb3
+		<br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">While WindowExists</span>( <span class="number">0</span> ) <br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">GetMouse</span> ( x, y, mb1, mb2, mb3 )<br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">Print</span> <span class="string">"Mouse position is "</span>; x; <span class="string">","</span>; y<br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">Update</span>()<br>
+		&nbsp;&nbsp;&nbsp;<span class="keyword">Wend</span>
+      <br>
+    </span><br>
+    This will open a 640 x 480 window and continue printing the mouse position to the console until closed.</p><br>
   </body>
 </html>
