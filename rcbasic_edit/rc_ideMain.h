@@ -137,7 +137,7 @@ public:
         #else
         editor_path = editor_path.substr(0, editor_path.find_last_of(_("/"))) +_("/");
         #endif // RC_WINDOWS
-        wxPuts(_("Set Path to: ") + editor_path);
+        //wxPuts(_("Set Path to: ") + editor_path);
         wxSetWorkingDirectory(editor_path);
     }
 

@@ -378,8 +378,7 @@ void rc_ideFrame::OnPageOpen(wxCommandEvent& event)
                 //rc_txtCtrl->GotoPos(0);
                 //rc_txtCtrl->GotoLine(i);
                 wxString line=text.ReadLine();
-                if(input.Eof())
-                    break;
+
                 if(i > 0)
                     rc_txtCtrl->AddText( _("\n"));
                 rc_txtCtrl->GotoPos(0);
@@ -460,8 +459,10 @@ void rc_ideFrame::onSavePage(wxCommandEvent& event)
         FileDialog1->ShowModal();
         #ifndef RC_WINDOWS
         wxString rc_filename = FileDialog1->GetDirectory() + _("/") + FileDialog1->GetFilename();
+        wxString rc_tabname = FileDialog1->GetFilename();
         #else
         wxString rc_filename = FileDialog1->GetDirectory() + _("\\") + FileDialog1->GetFilename();
+        wxString rc_tabname = FileDialog1->GetFilename();
         #endif
         //wxMessageBox(rc_filename);
 
@@ -504,7 +505,7 @@ void rc_ideFrame::onSavePage(wxCommandEvent& event)
             }
             output.Close();
             rc_fnames[AuiNotebook1->GetPageIndex(t)] = rc_filename;
-            AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), FileDialog1->GetFilename());
+            AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), rc_tabname);
         }
 
     }
@@ -524,8 +525,10 @@ void rc_ideFrame::OnSavePageAs(wxCommandEvent& event)
     FileDialog1->ShowModal();
     #ifndef RC_WINDOWS
     wxString rc_filename = FileDialog1->GetDirectory() + _("/") + FileDialog1->GetFilename();
+    wxString rc_tabname = FileDialog1->GetFilename();
     #else
     wxString rc_filename = FileDialog1->GetDirectory() + _("\\") + FileDialog1->GetFilename();
+    wxString rc_tabname = FileDialog1->GetFilename();
     #endif
     //wxMessageBox(rc_filename);
 
@@ -568,7 +571,7 @@ void rc_ideFrame::OnSavePageAs(wxCommandEvent& event)
         }
         output.Close();
         rc_fnames[AuiNotebook1->GetPageIndex(t)] = rc_filename;
-        AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), FileDialog1->GetFilename());
+        AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), rc_tabname);
     }
 }
 
@@ -654,8 +657,10 @@ void rc_ideFrame::OnCompile(wxCommandEvent& event)
             FileDialog1->ShowModal();
             #ifndef RC_WINDOWS
             wxString rc_filename = FileDialog1->GetDirectory() + _("/") + FileDialog1->GetFilename();
+            wxString rc_tabname = FileDialog1->GetFilename();
             #else
             wxString rc_filename = FileDialog1->GetDirectory() + _("\\") + FileDialog1->GetFilename();
+            wxString rc_tabname = FileDialog1->GetFilename();
             #endif
             //wxMessageBox(rc_filename);
             FileDialog1->Destroy();
@@ -690,7 +695,7 @@ void rc_ideFrame::OnCompile(wxCommandEvent& event)
                 }
                 output.Close();
                 rc_fnames[AuiNotebook1->GetPageIndex(t)] = rc_filename;
-                AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), FileDialog1->GetFilename());
+                AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), rc_tabname);
             }
         }
         MessageDialog1->Destroy();
@@ -759,8 +764,10 @@ void rc_ideFrame::OnRun(wxCommandEvent& event)
             FileDialog1->ShowModal();
             #ifndef RC_WINDOWS
             wxString rc_filename = FileDialog1->GetDirectory() + _("/") + FileDialog1->GetFilename();
+            wxString rc_tabname = FileDialog1->GetFilename();
             #else
             wxString rc_filename = FileDialog1->GetDirectory() + _("\\") + FileDialog1->GetFilename();
+            wxString rc_tabname = FileDialog1->GetFilename();
             #endif
             //wxMessageBox(rc_filename);
             FileDialog1->Destroy();
@@ -796,7 +803,7 @@ void rc_ideFrame::OnRun(wxCommandEvent& event)
                 }
                 output.Close();
                 rc_fnames[AuiNotebook1->GetPageIndex(t)] = rc_filename;
-                AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), FileDialog1->GetFilename());
+                AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), rc_tabname);
             }
         }
         MessageDialog1->Destroy();
@@ -846,6 +853,7 @@ void rc_ideFrame::OnRun(wxCommandEvent& event)
     #ifndef RC_WINDOWS
     fs = rc_path + _("rcbasic ") + _("\"") + rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_first_of(".")) + _(".cbc\"");
     #else
+    wxShell(_("cls"));
     fs = rc_path + _("rcbasic.exe ") + _("\"") + rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_first_of(".")) + _(".cbc\"");
     #endif // RC_WINDOWS
     vm_process = new MyProcess(this);
@@ -874,8 +882,10 @@ void rc_ideFrame::OnDistribute(wxCommandEvent& event)
             FileDialog1->ShowModal();
             #ifndef RC_WINDOWS
             wxString rc_filename = FileDialog1->GetDirectory() + _("/") + FileDialog1->GetFilename();
+            wxString rc_tabname = FileDialog1->GetFilename();
             #else
             wxString rc_filename = FileDialog1->GetDirectory() + _("\\") + FileDialog1->GetFilename();
+            wxString rc_tabname = FileDialog1->GetFilename();
             #endif
             //wxMessageBox(rc_filename);
             FileDialog1->Destroy();
@@ -911,7 +921,7 @@ void rc_ideFrame::OnDistribute(wxCommandEvent& event)
                 }
                 output.Close();
                 rc_fnames[AuiNotebook1->GetPageIndex(t)] = rc_filename;
-                AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), FileDialog1->GetFilename());
+                AuiNotebook1->SetPageText(AuiNotebook1->GetPageIndex(t), rc_tabname);
             }
         }
         MessageDialog1->Destroy();
@@ -958,6 +968,8 @@ void rc_ideFrame::OnDistribute(wxCommandEvent& event)
     wxString f_name = rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("\\")+1);
     wxString fs = rc_path + _("rcbasic ") + _("\"") + RC_PKG_HOME + _("\\app_build_gui\" \"") + call_dir + _("\" \"") + f_name + _("\"");
     #endif
+
+    //wxPuts(_("cmd -> ") + fs);
 
     int rt = -1;
     rt = wxExecute(fs, wxEXEC_SYNC);
