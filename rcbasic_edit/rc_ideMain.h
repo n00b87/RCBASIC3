@@ -10,8 +10,8 @@
 #ifndef RC_IDEMAIN_H
 #define RC_IDEMAIN_H
 
-//#define RC_WINDOWS
-#define RC_LINUX
+#define RC_WINDOWS
+//#define RC_LINUX
 
 #include <wx/wx.h>
 
