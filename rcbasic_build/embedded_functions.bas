@@ -396,3 +396,6 @@ function WindowFlags(win)
 sub RestoreWindow(win)
 sub UpdateAllWindows() 'new
 function QueryAudioSpec(ByRef freq, ByRef format, ByRef channels) 'new
+
+'v3.15
+function MusicIsPlaying()

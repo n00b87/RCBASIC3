@@ -109,7 +109,8 @@ public:
                 s.substr(0,s.find_first_of(" ")).compare("not")==0 || s.substr(0,s.find_first_of(" ")).compare("next")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("pop_ptr")==0 || s.substr(0,s.find_first_of(" ")).compare("preset")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("preset$")==0 || s.substr(0,s.find_first_of(" ")).compare("for_offset_arr1")==0 ||
-                s.substr(0,s.find_first_of(" ")).compare("end_x")==0)
+                s.substr(0,s.find_first_of(" ")).compare("end_x")==0 || s.substr(0,s.find_first_of(" ")).compare("lval")==0 ||
+                s.substr(0,s.find_first_of(" ")).compare("lval$")==0)
         {
             current_address[current_segment] += 9; //1 byte for instruction and 8 bytes a single argument
         }

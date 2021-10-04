@@ -18,18 +18,20 @@ The image shown above outlines the structure of a graphics program consisting of
 The viewport of this canvas is 120x100 which means only a 120x100 section of the total canvas will be shown. Below is the code to create
 this window.
 <p><span class="code"><br>
-<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>)<br>
+mode = WINDOW_VISIBLE <span class="comment">'To set different window modes checkout <a href="rc_basic_windowmode.html">WindowMode()</a></span><br>
+<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, mode, <span class="number">1</span>)<br>
 <span class="keyword">CanvasOpen</span>(<span class="number">0</span>, <span class="number">220</span>, <span class="number">200</span>, <span class="number">60</span>, <span class="number">90</span>, <span class="number">120</span>, <span class="number">100</span>, <span class="number">0</span>)<br>
 </span></p>
 <br>
 There is quite a bit that is being done in the 2 lines of code above.
 <br>
-<br><b><u>WindowOpen(0, "GFX Exampe", 0, 0, 640, 480, 0)</u></b>
-<br><b>0</b> - The number of the window. Windows can be numbered from 0 to 7. (Only window 0 is accessible on mobile)
-<br><b>"GFX Example"</b> - The title of the window
-<br><b>0, 0</b> - The x and y position of the window (you can use the constant WINDOWPOS_CENTERED to open the window in the middle of the desktop)
-<br><b>640, 480</b> - The width and height of the window
-<br><b>0</b> - This flag can be 0 for windowed and 1 for fullscreen
+<br><b><u>WindowOpen(0, "GFX Exampe", 0, 0, 640, 480, mode, 1)</u></b>
+<br><b><span class="number">0</span></b> - The number of the window. Windows can be numbered from 0 to 7. (Only window 0 is accessible on mobile)
+<br><br><b><span class="string">"GFX Example"</span></b> - The title of the window
+<br><br><b><span class="number">0</span>, <span class="number">0</span></b> - The x and y position of the window (you can use the constant WINDOWPOS_CENTERED to open the window in the middle of the desktop)
+<br><br><b><span class="number">640</span>, <span class="number">480</span></b> - The width and height of the window
+<br><br><b>mode</b> - This is the combination of flags that decides how the window is drawn.
+<br><br><b><span class="number">1</span></b> - If this is 0 then vsync is disabled. Else it is enabled.
 <br>
 <br><b><u>CanvasOpen(0, 220, 200, 60, 90, 120, 100, 0)</u></b>
 <br><b>0</b> - The number of the canvas. Canvases can be numbered from 0 to 7.
@@ -43,7 +45,8 @@ display everything you have drawn. Even if you are not drawing anything you shou
 to update the event queue otherwise you will not be able to get mouse/keyboard/joystick events, window events, touch events, etc.
 So a simple program that draws a red rectangle on the screen would look like this:
 <p><span class="code"><br>
-<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>)<br>
+mode = WINDOW_VISIBLE<br>
+<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, mode, <span class="number">1</span>)<br>
 <span class="keyword">CanvasOpen</span>(<span class="number">0</span>, <span class="number">220</span>, <span class="number">200</span>, <span class="number">60</span>, <span class="number">90</span>, <span class="number">120</span>, <span class="number">100</span>, <span class="number">0</span>)<br>
 <br>
 <span class="keyword">SetColor</span>(<span class="keyword">RGB</span>(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>))   <i>Set the Drawing color to RED</i><br>
@@ -58,7 +61,8 @@ So a simple program that draws a red rectangle on the screen would look like thi
 As previously mentioned, you have access to up to 8 canvases. If you have more than one canvas you can use the Canvas() function to
 switch which canvas you are drawing to. Here is an example of drawing a rectangle to 2 different canvases.
 <p><span class="code"><br>
-<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>)<br>
+mode = WINDOW_VISIBLE<br>
+<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, mode, <span class="number">1</span>)<br>
 <span class="keyword">CanvasOpen</span>(<span class="number">0</span>, <span class="number">220</span>, <span class="number">200</span>, <span class="number">60</span>, <span class="number">90</span>, <span class="number">120</span>, <span class="number">100</span>, <span class="number">0</span>)<br>
 <span class="keyword">CanvasOpen</span>(<span class="number">1</span>, <span class="number">150</span>, <span class="number">150</span>, <span class="number">200</span>, <span class="number">200</span>, <span class="number">150</span>, <span class="number">150</span>, <span class="number">0</span>)<br>
 <br>
@@ -78,7 +82,8 @@ switch which canvas you are drawing to. Here is an example of drawing a rectangl
 Along with being able to draw shapes, RCBasic has several built-in commands for loading and drawing images. You can load a total of
 4096 images that can be loaded at one time which are numbered from 0 to 4095. The following will load an image and draw it.
 <p><span class="code"><br>
-<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>)<br>
+mode = WINDOW_VISIBLE<br>
+<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, mode, <span class="number">1</span>)<br>
 <span class="keyword">CanvasOpen</span>(<span class="number">0</span>, <span class="number">220</span>, <span class="number">200</span>, <span class="number">60</span>, <span class="number">90</span>, <span class="number">120</span>, <span class="number">100</span>, <span class="number">0</span>)<br>
 <br>
 <span class="keyword">LoadImage</span>(<span class="number">0</span>, <span class="string">"tst_image.png"</span>)   <i>'loads an image file called tst_image.png into image slot 0</i><br>
@@ -95,7 +100,8 @@ Along with being able to draw shapes, RCBasic has several built-in commands for 
 Loading and playing sounds is similiar to how you would load and draw images. There are a total 1024 sounds that can be loaded at
 one time. Here is a simple program that loads and plays a single sound.
 <p><span class="code"><br>
-<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"Sound Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>)<br>
+mode = WINDOW_VISIBLE<br>
+<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, mode, <span class="number">1</span>)<br>
 <br>
 <span class="keyword">LoadSound</span>(<span class="number">0</span>, <span class="string">"MySound.wav"</span>)   <i>'Load a sound file into sound slot 0</i><br>
 <br>
@@ -107,7 +113,8 @@ one time. Here is a simple program that loads and plays a single sound.
 <br>
 There is only 1 music track that can be loaded at one time. Loading and playing music is pretty straight forward.
 <p><span class="code"><br>
-<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"Sound Example"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>)<br>
+mode = WINDOW_VISIBLE<br>
+<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"GFX Exampe"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, mode, <span class="number">1</span>)<br>
 <span class="keyword">LoadMusic</span> ( <span class="string">"MYMUSIC.MP3"</span> )<br>
 <span class="keyword">PlayMusic</span> ( -<span class="number">1</span> )   <i>'Setting the music loop to -1 will have it loop infinitely</i><br>
 <span class="keyword">Update</span>()<br>
@@ -116,11 +123,11 @@ There is only 1 music track that can be loaded at one time. Loading and playing 
 <br>
 
 This is only a brief overview of integrating graphics and audio into your programs. For more info on these you can reference these categories: <br>
-<b>Window Management</b><br>
-<b>Canvases</b><br>
-<b>Graphics Primitives</b><br>
-<b>Loading and Drawing Images</b><br>
-<b>Sound and Music</b><br><br>
+<b><a href="rc_basic_winref_links.html" target="cat">Window Management</a></b><br>
+<b><a href="rc_basic_canvasref_links.html" target="cat">Canvases</a></b><br>
+<b><a href="rc_basic_gfxprimitives_links.html" target="cat">Graphics Primitives</a></b><br>
+<b><a href="rc_basic_imageref_links.html" target="cat">Loading and Drawing Images</a></b><br>
+<b><a href="rc_basic_soundref_links.html" target="cat">Sound and Music</a></b><br><br>
 It is also highly reccomended to go through the examples included with RCBasic.<br>
   </body>
 </html>

@@ -153,11 +153,11 @@ int main(int argc, char *argv[])
     //cout << "os_bit = " << os_bit << endl;
 
     string line = "";
-    string config_file_path = env("RCBASIC_WIN")+"\\geany_files\\geany.conf";
+    string config_file_path = env("RCBASIC_WIN")+"\\geany_files\\filetypes.rcbasic";
     ifstream config_file(config_file_path.c_str());
     if (config_file.is_open())
     {
-        ofstream config_out((dp+"\\Geany\\Data\\settings\\geany.conf").c_str(), ios::out | ios::trunc);
+        ofstream config_out((dp+"\\Geany\\Data\\settings\\filedefs\\filetypes.freebasic").c_str(), ios::out | ios::trunc);
         while ( getline (config_file,line) )
         {
           config_out << str_replace(line, "[RCBASIC_HOME]", str_replace(env("RCBASIC_WIN"), "\\", "\\\\")) << '\n';
@@ -170,7 +170,8 @@ int main(int argc, char *argv[])
         cout << "could not open: " << config_file_path << endl;
     }
 
-    string cmd = "start " + dp + "\\Geany\\GeanyPortable";
+    string cmd = "cd \"" + dp + "\" && start Geany\\GeanyPortable";
+    //string cmd = "\"" + env("RCBASIC_BIN") + "\\rcbasic_edit\"";
     system(cmd.c_str());
     return 0;
 }

@@ -18,8 +18,13 @@
         </tr>
         <tr>
           <td>INCLUDE</td>
-          <td>Include code from an external file</td>
+          <td>Include code from an external file. You can reference environment variables inside the include string with this syntax "${env_var}"</td>
           <td>INCLUDE&nbsp; &lt;STRING_LITERAL&gt;</td>
+        </tr>
+        <tr>
+          <td>INCLUDE ONCE</td>
+          <td>Tells the compiler to only include the current file once.</td>
+          <td>INCLUDE&nbsp; ONCE</td>
         </tr>
         <tr>
           <td>IF | ELSEIF | ELSE | END IF</td>
@@ -74,6 +79,11 @@
           <td>EXIT { DO | FOR | WHILE }</td>
         </tr>
         <tr>
+          <td>CONTINUE</td>
+          <td>Jumps back to the start of a loop</td>
+          <td>CONTINUE</td>
+        </tr>
+        <tr>
           <td>FUNCTION | RETURN |<br>
             END FUNCTION</td>
           <td>Creates a function</td>
@@ -97,8 +107,8 @@
         </tr>
         <tr>
           <td>END</td>
-          <td>Ends a program</td>
-          <td>END</td>
+          <td>Ends a program. Add a number expression after END to set the exit code.</td>
+          <td>END <br>END &lt;EXPRESSION&gt;</td>
         </tr>
         <tr>
           <td>DIM</td>

@@ -190,6 +190,9 @@ int rc_mbutton3 = 0;
 int rc_mwheelx = 0;
 int rc_mwheely = 0;
 
+int rc_global_mouseX = 0;
+int rc_global_mouseY = 0;
+
 //SDL_Event event;
 
 Uint32 prev_color = 0;
@@ -1162,6 +1165,8 @@ void rc_onResize(int win_num)
         w = rc_win_width[win_num];
         h = rc_win_height[win_num];
     }
+    rc_win_width[win_num] = w;
+    rc_win_height[win_num] = h;
     //cout << "debug1: " << w << ", " << h << endl;
     rc_backBuffer[win_num] = SDL_CreateTexture(rc_win_renderer[win_num], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, w, h);
 
@@ -1449,11 +1454,21 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
                 flag = SDL_WINDOW_FULLSCREEN_DESKTOP;
                 break;
         }
+
+        Uint32 wflags_preOp = SDL_GetWindowFlags(rc_win[win_num]);
+        if( flag != 0 && ( (wflags_preOp & SDL_WINDOW_FULLSCREEN_DESKTOP) || (wflags_preOp & SDL_WINDOW_FULLSCREEN) ) )
+            return;
+        else if( flag == 0 && !((wflags_preOp & SDL_WINDOW_FULLSCREEN_DESKTOP) || (wflags_preOp & SDL_WINDOW_FULLSCREEN)))
+            return;
+
         if(SDL_SetWindowFullscreen(rc_win[win_num], flag) < 0)
         {
             cout << "SetWindowFullscreen Error: " << SDL_GetError() << endl;
             return;
         }
+
+        rc_win_renderer[win_num] = SDL_GetRenderer(rc_win[win_num]);
+        //cout << "debug = " << (rc_win_renderer[win_num] == NULL) << endl;
 
         Uint32 wflags = SDL_GetWindowFlags(rc_win[win_num]);
         Uint32 wflags_cmp1 = wflags & SDL_WINDOW_FULLSCREEN;
@@ -1483,7 +1498,7 @@ void rc_media_setWindowFullscreen(int win_num, int flag)
 
         SDL_PumpEvents();
         SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
-        //SDL_GetWindowDisplayMode(rc_win[win_num],&rc_displayMode[win_num]);
+        // SDL_GetWindowDisplayMode(rc_win[win_num],&rc_displayMode[win_num]);
         //rc_bb_rect[win_num].w = rc_displayMode[win_num].w;
         //rc_bb_rect[win_num].h = rc_displayMode[win_num].h;
         //rc_win_surface[win_num] = SDL_GetWindowSurface(rc_win[win_num]);
@@ -4299,7 +4314,6 @@ int rc_getEvents()
             rc_textinput_flag = true;
             break;
         case SDL_KEYUP:
-            rc_inkey = 0;
             rc_textinput_flag = true;
             break;
         case SDL_KEYDOWN:
@@ -4313,7 +4327,6 @@ int rc_getEvents()
             }
 
             rc_inkey = event.key.keysym.sym;
-            keyState = SDL_GetKeyboardState(NULL);
             break;
         //case SDL_MOUSEMOTION:
             //SDL_GetMouseState(&rc_mouseX, &rc_mouseY);
@@ -4417,7 +4430,7 @@ int rc_getEvents()
                 }
             }
             break;
-#ifndef RC_MOBILE
+#ifndef RC_MOBILE //This block handles touch events for non-mobile devices, Just in case it has a touch screen that SDL2 can get events for
         case SDL_FINGERDOWN:
             rc_touch = 1;
             rc_touchX = event.tfinger.x * rc_win_width[rc_active_window];
@@ -4697,7 +4710,7 @@ bool rc_media_mouseIsVisible()
 
 int rc_media_mouseX()
 {
-    SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     //cout << "debug: " << rc_fullscreen_mouse_scale_x[rc_active_window] << endl;
     #ifdef RC_MOBILE
     return rc_mouseX;
@@ -4708,7 +4721,7 @@ int rc_media_mouseX()
 
 int rc_media_mouseY()
 {
-    SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     #ifdef RC_MOBILE
     return rc_mouseY;
     #else
@@ -4732,7 +4745,7 @@ int rc_media_mouseButton(int m)
 
 void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, double * mb3)
 {
-    SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_GetMouseState(&rc_mouseX,&rc_mouseY);
     //SDL_PumpEvents();
     *mb1 = rc_mbutton1;
     *mb2 = rc_mbutton2;
@@ -4750,25 +4763,25 @@ void rc_media_getMouse(double * x, double * y, double * mb1, double * mb2, doubl
 
 int rc_media_globalMouseX()
 {
-    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
-    return rc_mouseX;
+    //SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    return rc_global_mouseX;
 }
 
 int rc_media_globalMouseY()
 {
-    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
-    return rc_mouseY;
+    //SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    return rc_global_mouseY;
 }
 
 void rc_media_getGlobalMouse(double * x, double * y, double * mb1, double * mb2, double * mb3)
 {
-    SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
+    //SDL_GetGlobalMouseState(&rc_mouseX,&rc_mouseY);
     //SDL_PumpEvents();
     *mb1 = rc_mbutton1;
     *mb2 = rc_mbutton2;
     *mb3 = rc_mbutton3;
-    *x = rc_mouseX;
-    *y = rc_mouseY;
+    *x = rc_global_mouseX;
+    *y = rc_global_mouseY;
     return;
 }
 
@@ -5090,6 +5103,14 @@ void rc_media_playMusic(int loops)
     if(rc_music != NULL)
     {
         Mix_PlayMusic(rc_music, loops);
+    }
+}
+
+int rc_media_musicIsPlaying()
+{
+    if(rc_music != NULL)
+    {
+        return Mix_PlayingMusic();
     }
 }
 

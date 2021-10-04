@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html>
+	<script type="text/javascript">
+		function rc_setframes(m,c)
+		{
+			parent.main.location=m
+			parent.cat.location=c
+		}
+	</script>
   <head>
   <link rel="stylesheet" href="style.css">
     <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
@@ -7,12 +14,13 @@
   </head>
   <body><span  style="text-decoration: underline; font-weight: bold;">GETTING
       STARTED</span><br>
-    <a href="rc_basic_title_links.html" target="cat">RC BASIC</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_title.html','rc_basic_title_links.html')">RC BASIC</a><br>
 	<a  href="rc_basic_getting_started.html" target="main">Getting Started</a><br>
-	<a  href="rc_basic_tutorial.html" target="cat">Intro to Programming</a><br>    
+	<a  href="javascript:rc_setframes('intro_tutorial/tutorial_ch1.html','rc_basic_tutorial.html')">Intro to Programming</a><br>    
     <a  href="rc_basic_operators.html" target="main">Operators</a><br>
     <a  href="rc_basic_vars.html" target="main">Variables and Data Types</a><br>
     <a  href="rc_basic_arrays.html" target="main">Arrays</a><br>
+    <a  href="rc_basic_constants.html" target="main">Constants</a><br>
     <a  href="rc_basic_io.html" target="main">Input/Output</a><br>
     <a  href="rc_basic_flow.html" target="main">Flow Control</a><br>
     <a  href="rc_basic_loops.html" target="main">Loops</a><br>
@@ -25,31 +33,31 @@
     <a  href="rc_basic_escape.html" target="main">Escape Characters</a><br>
     <br>
     <span  style="text-decoration: underline; font-weight: bold;">FUNCTIONS BY NAME</span><br>
-     <a href="rcbasic_function_list.html" target="cat">Functions A-Z</a><br><br>
+      <a  href="javascript:rc_setframes('rc_basic_functions_by_name.html','rcbasic_function_list.html')">Functions A-Z</a><br><br>
     <span  style="text-decoration: underline; font-weight: bold;">FUNCTIONS BY CATEGORY</span><br>
-    <a  href="rc_basic_conio_links.html" target="cat">Console I/O</a><br>
-    <a  href="rc_basic_arrayref_links.html" target="cat">Arrays</a><br>
-    <a  href="rc_basic_mathref_links.html" target="cat">Math</a><br>
-    <a  href="rc_basic_stringref_links.html" target="cat">Strings</a><br>
-    <a  href="rc_basic_stackref_links.html" target="cat">Stack</a><br>
-    <a  href="rc_basic_fileIOref_links.html" target="cat">File I/O</a><br>
-    <a  href="rc_basic_dirref_links.html" target="cat">Directories</a><br>
-    <a  href="rc_basic_timeref_links.html" target="cat">Date and Time</a><br>
-    <a  href="rc_basic_winref_links.html" target="cat">Window Management</a><br>
-    <a  href="rc_basic_canvasref_links.html" target="cat">Canvases</a><br>
-    <a  href="rc_basic_gfxprimitives_links.html" target="cat">Graphics Primitives</a><br>
-    <a  href="rc_basic_imageref_links.html" target="cat">Loading and Drawing Images</a><br>
-    <a  href="rc_basic_renderhintref_links.html" target="cat">Render Hints</a><br>
-    <a  href="rc_basic_keymouseref_links.html" target="cat">Keyboard and Mouse</a><br>
-    <a  href="rc_basic_soundref_links.html" target="cat">Sounds and Music</a><br>
-    <a  href="rc_basic_joystickref_links.html" target="cat">Joystick</a><br>
-    <a  href="rc_basic_screenconref_links.html" target="cat">Window Console</a><br>
-    <a  href="rc_basic_texteditref_links.html" target="cat">Text Editing</a><br>
-    <a  href="rc_basic_drawingtextref_links.html" target="cat">Drawing Text</a><br>
-    <a  href="rc_basic_touchref_links.html" target="cat">Touch Events</a><br>
-    <a  href="rc_basic_networkref_links.html" target="cat">Networking</a><br>
-    <a  href="rc_basic_vidref_links.html" target="cat">Video Playback</a><br>
-    <a  href="rc_basic_osref_links.html" target="cat">System and Platform Interface</a><br>
-    <a  href="rc_basic_clipboardref_links.html" target="cat">Clipboard</a>
+    <a  href="javascript:rc_setframes('rc_basic_conio.html','rc_basic_conio_links.html')">Console I/O</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_arrayref.html','rc_basic_arrayref_links.html')">Arrays</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_mathref.html','rc_basic_mathref_links.html')">Math</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_stringref.html','rc_basic_stringref_links.html')">Strings</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_stackref.html','rc_basic_stackref_links.html')">Stack</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_fileIOref.html','rc_basic_fileIOref_links.html')">File I/O</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_dirref.html','rc_basic_dirref_links.html')">Directories</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_timeref.html','rc_basic_timeref_links.html')">Date and Time</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_winref.html','rc_basic_winref_links.html')">Window Management</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_canvasref.html','rc_basic_canvasref_links.html')">Canvases</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_gfxprimitives.html','rc_basic_gfxprimitives_links.html')">Graphics Primitives</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_imageref.html','rc_basic_imageref_links.html')">Loading and Drawing Images</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_renderhintref.html','rc_basic_renderhintref_links.html')">Render Hints</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_keymouseref.html','rc_basic_keymouseref_links.html')">Keyboard and Mouse</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_soundref.html','rc_basic_soundref_links.html')">Sounds and Music</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_joystickref.html','rc_basic_joystickref_links.html')">Joystick</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_screenconref.html','rc_basic_screenconref_links.html')">Window Console</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_texteditref.html','rc_basic_texteditref_links.html')">Text Editing</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_drawingtextref.html','rc_basic_drawingtextref_links.html')">Drawing Text</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_touchref.html','rc_basic_touchref_links.html')">Touch Events and Sensors</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_networkref.html','rc_basic_networkref_links.html')">Networking</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_vidref.html','rc_basic_vidref_links.html')">Video Playback</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_osref.html','rc_basic_osref_links.html')">System and Platform Interface</a><br>
+    <a  href="javascript:rc_setframes('rc_basic_clipboardref.html','rc_basic_clipboardref_links.html')">Clipboard</a>
   </body>
 </html>

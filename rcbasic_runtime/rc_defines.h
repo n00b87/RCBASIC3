@@ -1020,3 +1020,4 @@
 #define QUERYAUDIOSPEC_FREQ num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define QUERYAUDIOSPEC_FORMAT num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define QUERYAUDIOSPEC_CHANNELS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_MusicIsPlaying 368

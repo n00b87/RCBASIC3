@@ -976,6 +976,40 @@ namespace rc_cbc_assembler
             {
                 writeSegment(150);
             }
+            else if(line_arg[0].compare("lval")==0)
+            {
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("n")==0)
+                {
+                    writeSegment(151);
+                }
+                else if(arg1_type.compare("!")==0)
+                {
+                    writeSegment(152);
+                }
+                else if(arg1_type.compare("@")==0)
+                {
+                    writeSegment(153);
+                }
+                else
+                    cout << "Error lval" << endl;
+            }
+            else if(line_arg[0].compare("lval$")==0)
+            {
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("s")==0)
+                {
+                    writeSegment(154);
+                }
+                else if(arg1_type.compare("!")==0)
+                {
+                    writeSegment(155);
+                }
+                else
+                    cout << "Error lval$" << endl;
+            }
             else
             {
                 cout << "unrecognized cmd: " << line_arg[0] << endl;

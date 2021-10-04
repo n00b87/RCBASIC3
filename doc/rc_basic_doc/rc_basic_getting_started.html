@@ -58,13 +58,45 @@ Once you have a *.cbc file you can pass it to rcbasic to run it.
 rcbasic myprogram.cbc<br>
 </span></p>
 <br>
-Both tools also except the -v argument which will simply output the version of rcbasic you are using.
+Both tools also except the --version argument which will simply output the version of rcbasic you are using.
 <p><span class="code"><br>
-rcbasic_build -v<br>
-rcbasic -v<br>
+rcbasic_build --version<br>
+rcbasic -version<br>
 </span></p>
 <br>
+<br><br><br>
+<b><u>PORTING TO OTHER PLATFORMS</u></b><br>
+If you are using geany, RCBasic comes bundled with a tool that enables you to generate binary distributions of your
+programs that you can distribute however you see fit. If you want to use the tool with other editors you should be able to.
+Just pass your project directory along with the name of your *.bas file to app_build_gui.cbc. Since RCBasic compiles to intermediate 
+bytecode, the distributables produced by this tool only bundles it with the runtime for each platform.<br><br>
 
+This tool will be available from the Build menu on windows when you startup geany using start_editor.exe. On linux you will
+need to install geany from your package manager and run rcbasic_geany_config.sh to set these tools up. This will setup geany
+to use RCBasic for *.bas files instead of freebasic. You can modify this behavior by editing the rcbasic_geany_config.sh file.<br><br>
+
+To be able to build for Android you will need to install the Android SDK command-line tools which are available on Google's
+official Android SDK page. You will also need to make sure you have the ANDROID_HOME environment variable set prior to starting
+geany. You should ensure you have an internet connection the first time you attempt to build for Android because it will need to
+download some packages and do a first time setup. The first time you build for android it will take longer to build your APK 
+because it will need to build its dependencies. Once that is done, each subsequent build should be quite a bit faster.<br><br>
+
+NOTE: If you are trying to publish an android app you will need to generate a keystore. There is a tool that comes bundles with
+RCBasic called gen_key that will ask you for some information and generate the keystore for you. After you create your keystore
+you need to enter the name of your keystore and alias along with your password on the Android Settings tab in the Distribute App
+tool. Also, make sure you select the release checkbox at the bottom in Android Settings.<br><br>
+
+To be able to build for the web you will need to have git installed. You will also need an internet connection the first time you build for
+the web since it will need to download and setup emscripten to build the runtime. This will probably take a while but it will only need
+to do this setup once.<br><br>
+
+For IOS, you will need to download the XCode project and put all your project files in the assets folder. Rename your *.cbc file to
+main.cbc. After that you should just be able to build.<br><br>
+
+All source code to these tools is written in RCBasic itself and is provided with RCBasic for you to tinker with. If you make an
+improvement that you would like to contribute to the RCBasic repo just checkout a branch and put up a pull-request on
+<a href="https://github.com/n00b87/RCBASIC3">https://github.com/n00b87/RCBASIC3</a>. If you do wish to contribute it is greatly
+appreciated.<br><br>
         <br>
   </body>
 </html>
