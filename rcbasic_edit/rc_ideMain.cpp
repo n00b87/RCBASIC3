@@ -194,7 +194,7 @@ rc_ideFrame::rc_ideFrame(wxWindow* parent,wxWindowID id)
         PlayButton_Image = wxBitmap(wxImage(rc_path + _T("\\icon\\play.png")));
         StopButton_Image = wxBitmap(wxImage(rc_path + _T("\\icon\\stop.png")));
     #else
-        PlayButton_Image = wxBitmap(wxImage(rc_path + _T("/icon/play.bmp")));
+        PlayButton_Image = wxBitmap(wxImage(rc_path + _T("/icon/play.png")));
         StopButton_Image = wxBitmap(wxImage(rc_path + _T("/icon/stop.png")));
     #endif
 
@@ -960,6 +960,7 @@ void rc_ideFrame::OnDistribute(wxCommandEvent& event)
     wxGetEnv(_("RC_PKG_HOME"), &RC_PKG_HOME);
 
     #ifndef RC_WINDOWS
+    RC_PKG_HOME = rc_path + _("tools/dist");
     wxString call_dir = rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("/"));
     wxString f_name = rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("/")+1);
     wxString fs = rc_path + _("rcbasic ") + _("\"") + RC_PKG_HOME + _("/app_build_gui\" \"") + call_dir + _("\" \"") + f_name + _("\"");
