@@ -6,21 +6,6 @@ set BUILD_DIR="%~dp0"
 echo PROJECT_DIR=%PROJECT_DIR%
 echo BUILD_DIR=%BUILD_DIR%
 
-REM These variables will be set by the process that calls this script
-REM set RC_KEY_STORE=
-REM set RC_KEY_STORE_PASS=
-REM set RC_ALIAS=
-REM set RC_ALIAS_PASS=
-REM set APP_ID=org.rcbasic.app
-REM set RCBASIC_HOME=
-
-REM Setting up Environment Variables that android sdk needs
-
-rem set ANDROID_HOME=%~dp0android_sdk
-rem set ANDROID_SDK_ROOT=%ANDROID_HOME%
-rem set ANDROID_HOME=C:\Users\omega\Desktop\ISO\SDL2-2.0.14\android_sdk
-rem set ANDROID_HOME=C:\android_sdk
-set JAVA_HOME=%~dp0openjdk-11
 set ANDROID_NDK_HOME=%ANDROID_HOME%\ndk\21.4.7075529
 
 set PATH=%RBASIC_HOME%;%ANDROID_HOME%\cmdline-tools\bin;%ANDROID_NDK_HOME%;%JAVA_HOME%\bin;%PATH%
@@ -52,7 +37,9 @@ if not exist %ANDROID_HOME%\build-tools\%BUILD_TOOLS_VERSION%  set RC_ANDROID_AR
 if not exist %ANDROID_HOME%\system-images\android-%API_VERSION%\google_apis  set RC_ANDROID_ARGS=%RC_ANDROID_ARGS% "system-images;android-%API_VERSION%;google_apis;x86_64" && set SDK_REQUIREMENT=1
 if not exist %ANDROID_NDK_HOME%  set RC_ANDROID_ARGS=%RC_ANDROID_ARGS% "ndk;21.4.7075529" && set SDK_REQUIREMENT=1
 
+echo call time
 call :SDK_MANAGER
+echo call over
 
 call :OUTPUT_BUILD_GRADLE
 
@@ -84,8 +71,10 @@ if %SDK_REQUIREMENT%==1 ( echo Performing initial setup for RCBasic Android Buil
 rem echo sdkmanager %RC_ANDROID_ARGS%
 rem ECHO REQURIREMENTS = "%SDK_REQUIREMENT%"
 rem sdkmanager --sdk_root="%ANDROID_HOME%" --licenses
+if %SDK_REQUIREMENT%==1 ( rmdir /s /q "%USERPROFILE%\.gradle" && rmdir /s /q "%BUILD_DIR%android-project\.gradle" && del "%BUILD_DIR%android-project\gradle.properties" )
 if %SDK_REQUIREMENT%==1 ( echo Configuring SDK && call sdkmanager %RC_ANDROID_ARGS% )
 if %SDK_REQUIREMENT%==1 ( call sdkmanager --sdk_root="%ANDROID_HOME%" --licenses )
+if %SDK_REQUIREMENT%==1 ( rmdir /s /q "%USERPROFILE%\.gradle" && rmdir /s /q "%BUILD_DIR%android-project\.gradle" && del "%BUILD_DIR%android-project\gradle.properties" )
 if %ERRORLEVEL%==0 ( echo Initial Setup is Complete )
 
 exit /B
