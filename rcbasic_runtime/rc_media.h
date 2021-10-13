@@ -4218,6 +4218,10 @@ int rc_getEvents()
     SDL_Event event;
     int g_events = SDL_PollEvent(&event);
     //int g_events = SDL_WaitEvent(&event);
+    //cout << "G_EVENT = " << g_events << endl;
+    //cout << "TYPE = " << event.type << endl;
+    if(!g_events)
+        return 0;
     switch(event.type)
     {
         case SDL_QUIT:
