@@ -871,6 +871,10 @@ inline int rc_intern_dirDelete(string d_path)
 
 inline string rc_intern_OS()
 {
+    #ifdef RC_WEB
+        return "WEB";
+    #endif // RC_WEB
+
     #ifdef RC_LINUX
         return "LINUX";
     #endif // RC_LINUX
