@@ -5116,6 +5116,7 @@ int rc_media_musicIsPlaying()
     {
         return Mix_PlayingMusic();
     }
+    return 0;
 }
 
 void rc_media_pauseSound(int channel)
