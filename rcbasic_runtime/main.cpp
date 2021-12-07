@@ -285,7 +285,7 @@ bool rc_checkEvent()
 
 void rc_events()
 {
-    rc_textinput_flag = false;
+    //rc_textinput_flag = false;
     cycleVideo();
     if(rc_checkEvent())
     {

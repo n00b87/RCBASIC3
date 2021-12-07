@@ -292,6 +292,10 @@ Gui_TabGroup_Tab_AddObject(tab_group, tab2, android_settings_panel)
 
 Gui_Update
 
+If OS$ = "WINDOWS" Then
+	SetEnv("PATH", Env("PATH") + ";" + Env("RCBASIC_BIN"), 1)
+End If
+
 
 While WindowExists(win)
 	If Gui_Button_Clicked(project_dir_button) Then

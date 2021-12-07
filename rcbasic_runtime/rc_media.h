@@ -4313,8 +4313,9 @@ int rc_getEvents()
             {
                 rc_textinput_string += event.text.text;
                 rc_textinput_flag = true;
-                //cout << "TEXT = " << rc_textinput_string << endl;
+                cout << "TEXT = " << rc_textinput_string << endl;
             }
+
             rc_textinput_flag = true;
             break;
         case SDL_KEYUP:
