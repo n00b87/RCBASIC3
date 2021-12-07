@@ -4312,23 +4312,15 @@ int rc_getEvents()
             if(rc_textinput_flag == true)
             {
                 rc_textinput_string += event.text.text;
-                rc_textinput_flag = true;
-                cout << "TEXT = " << rc_textinput_string << endl;
             }
-
-            rc_textinput_flag = true;
             break;
         case SDL_KEYUP:
-            rc_textinput_flag = true;
             break;
         case SDL_KEYDOWN:
             if(rc_textinput_isActive && event.key.keysym.sym == SDLK_BACKSPACE && rc_textinput_string.length() > 0
-               && !rc_textinput_flag && rc_toggleBackspace)
+               && rc_toggleBackspace)
             {
                 rc_textinput_string = rc_textinput_string.substr(0, rc_textinput_string.length()-1);
-                //rc_textinput_timer = clock() / (double)(CLOCKS_PER_SEC / 1000);
-                rc_textinput_hold = false;
-                rc_textinput_flag = true;
             }
 
             rc_inkey = event.key.keysym.sym;
