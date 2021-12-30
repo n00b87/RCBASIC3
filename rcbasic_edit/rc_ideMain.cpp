@@ -318,6 +318,8 @@ void rc_ideFrame::OnNewPage(wxCommandEvent& event)
     rc_txtCtrl->SetUndoCollection(true);
     rc_txtCtrl->EmptyUndoBuffer();
     rc_txtCtrl->SetLexer(wxSTC_LEX_FREEBASIC);
+    //rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_DEFAULT, wxColour(0,255,0));
+    //rc_txtCtrl->StyleClearAll();
     rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD, wxColour(0, 0, 210));
     rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD2, wxColour(0, 180, 0));
     rc_txtCtrl->StyleSetForeground(wxSTC_B_NUMBER, wxColour(200, 40, 40));

@@ -1,0 +1,1173 @@
+<html>
+<head>
+<title>rcbasic_edit build log</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<body>
+<tt>
+Build started on: <u>30-12-2021 at 16:17.12</u><br />
+Build ended on: <u>30-12-2021 at 16:17.16</u><p />
+<b>-------------- Build: Release in rcbasic_edit (compiler: GNU GCC Compiler)---------------</b><br />
+mingw32-g++.exe -Wall -fexceptions -O2 -IC:\dev_libs\wx\include -IC:\dev_libs\wx\lib\gcc510TDM_dll\mswu -IC:\dev_libs\ogg\x86\include -IC:\dev_libs\theora\x86\include -IC:\dev_libs\vorbis\x86\include -IC:\dev_libs\SDL2-2.0.16\i686-w64-mingw32\include -IC:\dev_libs\wx\include -c C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp -o obj\Release\projects.o<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryValidator(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3704:22: note: declared here<br />
+         virtual bool TryValidator(wxEvent&amp; WXUNUSED(event)), return false; )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3703:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual bool wxEvtHandler::TryParent(wxEvent&amp;)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/event.h:3707:22: note: declared here<br />
+         virtual bool TryParent(wxEvent&amp; event), return DoTryApp(event); )<br />
+                      ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+C:\dev_libs\wx\include/wx/event.h:3706:5: note: in expansion of macro 'wxDEPRECATED_BUT_USED_INTERNALLY_INLINE'<br />
+     wxDEPRECATED_BUT_USED_INTERNALLY_INLINE(<br />
+     ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetVirtualSizeHints(int, int, int, int)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:459:32: note: declared here<br />
+     wxDEPRECATED( virtual void SetVirtualSizeHints( int minW, int minH,<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::MakeModal(bool)' is deprecated [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:14:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:688:32: note: declared here<br />
+     wxDEPRECATED( virtual void MakeModal(bool modal = true) );<br />
+                                ^<br />
+C:\dev_libs\wx\include/wx/defs.h:654:43: note: in definition of macro 'wxDEPRECATED'<br />
+ #define wxDEPRECATED(x) wxDEPRECATED_DECL x<br />
+                                           ^<br />
+In file included from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:0:<br />
+<font color="#0000ff">C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:43:55: warning: 'virtual void wxWindowBase::SetInitialBestSize(const wxSize&amp;)' is deprecated: use SetInitialSize() instead. [-Wdeprecated-declarations]</font><br />
+ rcbasic_project loadProject(wxString project_filePath);<br />
+                                                       ^<br />
+In file included from C:\dev_libs\wx\include/wx/wx.h:38:0,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.h:4,<br />
+                 from C:\Users\omega\Desktop\Projects\RCBASIC3\rcbasic_edit\projects.cpp:1:<br />
+C:\dev_libs\wx\include/wx/window.h:1872:13: note: declared here<br />
+ inline void wxWindowBase::SetInitialBestSize(const wxSize&amp; size)<br />
+             ^<br />
+mingw32-g++.exe -LC:\dev_libs\wx\lib\gcc510TDM_dll -LC:\dev_libs\ogg\x86\lib -LC:\dev_libs\theora\x86\lib -LC:\dev_libs\vorbis\x86\lib -LC:\dev_libs\SDL2-2.0.16\i686-w64-mingw32\lib -LC:\dev_libs\wx\lib\gcc510TDM_dll -o bin\Release\rcbasic_edit.exe obj\Release\projects.o obj\Release\rc_ideApp.o obj\Release\rcbasic_edit.o obj\Release\rcbasic_edit_frame.o obj\Release\rcbasic_edit_newProject_dialog.o  -s  C:\dev_libs\wx\lib\gcc510TDM_dll\libwxbase30u.a C:\dev_libs\wx\lib\gcc510TDM_dll\libwxmsw30u_aui.a C:\dev_libs\wx\lib\gcc510TDM_dll\libwxmsw30u_core.a C:\dev_libs\wx\lib\gcc510TDM_dll\libwxmsw30u_stc.a C:\dev_libs\wx\lib\gcc510TDM_dll\libwxscintilla.a C:\dev_libs\wx\lib\gcc510TDM_dll\libwxmsw30u_richtext.a<br />
+Output file is bin\Release\rcbasic_edit.exe with size 894.00 KB<br />
+<font color="#0000ff">Process terminated with status 0 (0 minute(s), 4 second(s))</font><br />
+<font color="#0000ff">0 error(s), 85 warning(s) (0 minute(s), 4 second(s))</font><br />
+</tt>
+</body>
+</html>
