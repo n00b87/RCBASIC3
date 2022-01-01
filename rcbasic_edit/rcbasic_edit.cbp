@@ -58,6 +58,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="projects.cpp" />
 		<Unit filename="projects.h" />
 		<Unit filename="rc_ideApp.cpp" />
 		<Unit filename="rc_ideApp.h" />

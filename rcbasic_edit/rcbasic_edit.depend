@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1640822763 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.cpp
+1640919704 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.cpp
 	"rc_ideApp.h"
 	"rcbasic_edit_frame.h"
 	<wx/image.h>
@@ -3227,10 +3227,10 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1640893853 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1641021114 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1640893853 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1641021114 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3373,10 +3373,13 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1640892178 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1641021254 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
+	"projects.h"
+	<wx/imaglist.h>
+	<vector>
 
-1640893337 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1641019800 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -3401,9 +3404,35 @@
 	"wx/filedlg.h"
 	"wx/dirdlg.h"
 
-1640894369 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_newproject_dialog.cpp
+1640924838 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_newproject_dialog.cpp
 	"rcbasic_edit_newProject_dialog.h"
+	"projects.h"
 
-1640894369 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_newproject_dialog.h
+1640979702 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_newproject_dialog.h
 	"rcbasic_edit.h"
+	"projects.h"
+
+1641003816 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
+	"projects.h"
+
+1641003790 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
+	<wx/wx.h>
+	<wx/treectrl.h>
+	<wx/file.h>
+	<wx/imaglist.h>
+	<wx/image.h>
+	<wx/filename.h>
+	<vector>
+
+1587560968 c:\dev_libs\wx\include\wx\textfile.h
+	"wx/defs.h"
+	"wx/textbuf.h"
+	"wx/file.h"
+
+1587560968 c:\dev_libs\wx\include\wx\textbuf.h
+	"wx/defs.h"
+	"wx/arrstr.h"
+	"wx/convauto.h"
+	"wx/string.h"
+	"wx/dynarray.h"
 

@@ -115,7 +115,7 @@ class rc_ideFrame : public wxFrame
 		wxPanel* m_sideBar_panel;
 		wxNotebook* m_notebook4;
 		wxPanel* m_project_panel;
-		wxTreeCtrl* m_treeCtrl6;
+		wxTreeCtrl* project_tree;
 		wxPanel* m_;
 		wxTreeCtrl* m_treeCtrl5;
 		wxPanel* m_panel6;
@@ -128,6 +128,8 @@ class rc_ideFrame : public wxFrame
 		virtual void toggleToolbar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleSideBar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleMessageWindow( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onProjectTreeNodeActivated( wxTreeEvent& event ) { event.Skip(); }
+		virtual void onProjectTreeContextMenu( wxTreeEvent& event ) { event.Skip(); }
 
 
 	public:
@@ -159,23 +161,12 @@ class rc_newProject_dialog : public wxDialog
 
 	protected:
 		wxStaticText* projectName_label;
-		wxTextCtrl* projectName_field;
 		wxStaticText* projectLocation_label;
-		wxDirPickerCtrl* projectLocation_picker;
-		wxRadioButton* projectCreateMain_radio;
 		wxStaticText* projectNewMain_label;
-		wxTextCtrl* projectNewMain_field;
-		wxRadioButton* projectExistingMain_radio;
 		wxStaticText* projectPathToExistingMain_label;
-		wxFilePickerCtrl* projectExistingFile_picker;
 		wxStaticText* projectAuthor_label;
-		wxTextCtrl* projectAuthor_field;
 		wxStaticText* projectWebsite_label;
-		wxTextCtrl* projectWebsite_field;
 		wxStaticText* projectDescription_label;
-		wxTextCtrl* projectDescription_field;
-		wxButton* cancelNewProject_button;
-		wxButton* createNewProject_button;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void createMainSourceRadioSelected( wxCommandEvent& event ) { event.Skip(); }
@@ -185,6 +176,17 @@ class rc_newProject_dialog : public wxDialog
 
 
 	public:
+		wxTextCtrl* projectName_field;
+		wxDirPickerCtrl* projectLocation_picker;
+		wxRadioButton* projectCreateMain_radio;
+		wxTextCtrl* projectNewMain_field;
+		wxRadioButton* projectExistingMain_radio;
+		wxFilePickerCtrl* projectExistingFile_picker;
+		wxTextCtrl* projectAuthor_field;
+		wxTextCtrl* projectWebsite_field;
+		wxTextCtrl* projectDescription_field;
+		wxButton* cancelNewProject_button;
+		wxButton* createNewProject_button;
 
 		rc_newProject_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("New Project"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 464,562 ), long style = wxDEFAULT_DIALOG_STYLE );
 
