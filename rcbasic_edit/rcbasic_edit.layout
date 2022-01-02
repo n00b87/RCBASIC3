@@ -2,39 +2,34 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="rcbasic_edit.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rcbasic_edit.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="10184" topLine="174" />
+			<Cursor1 position="3946" topLine="102" />
 		</Cursor>
 	</File>
-	<File name="rcbasic_edit_newProject_dialog.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="projects.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2009" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="rc_ideApp.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="rcbasic_edit_frame.h" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1131" topLine="3" />
+			<Cursor1 position="5237" topLine="148" />
 		</Cursor>
 	</File>
 	<File name="projects.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="909" topLine="27" />
+			<Cursor1 position="1727" topLine="29" />
 		</Cursor>
 	</File>
-	<File name="rcbasic_edit_newProject_dialog.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rcbasic_edit_frame.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="790" topLine="0" />
+			<Cursor1 position="1865" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="rcbasic_edit_frame.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rcbasic_edit_frame.cpp" open="1" top="1" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="8595" topLine="204" />
+			<Cursor1 position="5353" topLine="121" />
+		</Cursor>
+	</File>
+	<File name="rcbasic_edit_newProject_dialog.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2009" topLine="16" />
 		</Cursor>
 	</File>
 	<File name="rc_ideApp.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -42,14 +37,19 @@
 			<Cursor1 position="597" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="rcbasic_edit.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rcbasic_edit.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4178" topLine="96" />
+			<Cursor1 position="10184" topLine="174" />
 		</Cursor>
 	</File>
-	<File name="projects.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rc_ideApp.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2870" topLine="108" />
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="rcbasic_edit_newProject_dialog.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="790" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

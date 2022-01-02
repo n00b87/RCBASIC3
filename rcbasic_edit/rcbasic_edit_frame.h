@@ -21,7 +21,8 @@ class rcbasic_edit_frame : public rc_ideFrame
         bool sideBarVisible;
         bool messageWindowVisible;
         std::vector<rcbasic_project*> open_projects;
-        rcbasic_project* context_project;
+        rcbasic_project* context_project; //for context menu
+        rcbasic_project* active_project; //for everything else
         wxImageList* project_tree_imageList;
         int project_tree_rootImage;
         int project_tree_folderImage;
@@ -35,14 +36,20 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onProjectTreeContextMenu( wxTreeEvent& event );
 		void onTreeContextClick( wxCommandEvent &evt );
 		void onProjectTreeNodeActivated( wxTreeEvent& event );
+		void onSaveProject( wxCommandEvent& event );
+		void onSaveProjectAs( wxCommandEvent& event );
 	public:
 		/** Constructor */
 		rcbasic_edit_frame( wxWindow* parent );
 		int getProjectFromRoot(wxTreeItemId node);
 		void updateProjectTree(int project_index);
 		void addFileToProject(wxFileName sourceFile);
+		void addMultipleFilesToProject();
 		void projectTreeContextMenu();
-		wxFileName openFileDialog();
+		wxFileName openFileDialog(wxString title, wxString default_wildcard, int flag);
+		wxArrayString openMultiFileDialog(wxString title, wxString default_wildcard, int flag);
+		void saveProject(rcbasic_project* project);
+		void closeProject(rcbasic_project* project);
 	//// end generated class members
 
 

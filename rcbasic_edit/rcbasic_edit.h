@@ -125,6 +125,8 @@ class rc_ideFrame : public wxFrame
 
 		// Virtual event handlers, override them in your derived class
 		virtual void createNewProject( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSaveProject( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSaveProjectAs( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleToolbar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleSideBar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleMessageWindow( wxCommandEvent& event ) { event.Skip(); }

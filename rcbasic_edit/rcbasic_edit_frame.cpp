@@ -16,6 +16,9 @@ rc_ideFrame( parent )
     sideBarVisible = true;
     m_showSideBar_menuItem->Check(sideBarVisible);
 
+    context_project = NULL;
+    active_project = NULL;
+
     project_tree_imageList = new wxImageList(16,16,true);
     project_tree_rootImage = project_tree_imageList->Add(wxBitmap(wxImage("gfx/rcbasic16.png")));
     project_tree_folderImage  = project_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));
@@ -42,6 +45,11 @@ void rcbasic_edit_frame::createNewProject( wxCommandEvent& event)
         wxString project_description = newProject_win->projectDescription_field->GetValue();
 
         rcbasic_project* new_project = new rcbasic_project(project_name, project_location, main_source_flag, main_source_value, project_author, project_website, project_description);
+        if(!new_project->projectExists())
+        {
+            delete new_project;
+            return;
+        }
         new_project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
         new_project->addSourceFile(new_project->getMainSource().GetFullPath());
 
@@ -81,14 +89,25 @@ void rcbasic_edit_frame::updateProjectTree(int project_index)
     }
 }
 
-wxFileName rcbasic_edit_frame::openFileDialog()
+wxFileName rcbasic_edit_frame::openFileDialog(wxString title, wxString default_wildcard, int flag)
 {
-    wxFileDialog openFileDialog(this, _("Open RCBasic Source file"), "", "", "RCBasic Source files (*.bas)|*.bas", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    wxFileDialog openFileDialog(this, title, "", "", default_wildcard, flag);
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return wxFileName();     // the user changed idea...
 
     wxFileName fname(openFileDialog.GetPath());
     return fname;
+}
+
+wxArrayString rcbasic_edit_frame::openMultiFileDialog(wxString title, wxString default_wildcard, int flag)
+{
+    wxFileDialog openFileDialog(this, title, "", "", default_wildcard, flag);
+    if (openFileDialog.ShowModal() == wxID_CANCEL)
+        return wxArrayString();     // the user changed idea...
+
+    wxArrayString fnames;
+    openFileDialog.GetPaths(fnames);
+    return fnames;
 }
 
 void rcbasic_edit_frame::addFileToProject(wxFileName sourceFile)
@@ -101,6 +120,55 @@ void rcbasic_edit_frame::addFileToProject(wxFileName sourceFile)
 
     context_project->addSourceFile(sourceFile.GetFullPath());
     updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
+}
+
+void rcbasic_edit_frame::saveProject(rcbasic_project* project)
+{
+    if(!project)
+        return;
+
+    wxFileName project_file;
+
+    wxPuts(_("Location: ")+project->getLocation());
+    wxPuts(_("Name: ")+project->getName());
+    //return;
+
+    project_file.SetPath(project->getLocation());
+    project_file.SetName(project->getName());
+    project_file.SetExt(_("rcprj"));
+
+    project->saveProject(project_file);
+}
+
+void rcbasic_edit_frame::closeProject(rcbasic_project* project)
+{
+    if(!project)
+        return;
+
+    wxFileName project_file;
+
+    wxPuts(_("Location: ")+project->getLocation());
+    wxPuts(_("Name: ")+project->getName());
+    //return;
+
+    project_file.SetPath(project->getLocation());
+    project_file.SetName(project->getName());
+    project_file.SetExt(_("rcprj"));
+
+    project->saveProject(project_file);
+}
+
+void rcbasic_edit_frame::onSaveProject(wxCommandEvent& event)
+{
+    saveProject(active_project);
+}
+
+void rcbasic_edit_frame::onSaveProjectAs(wxCommandEvent& event)
+{
+    if(active_project)
+    {
+        active_project->saveProject(openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"),wxFD_SAVE));
+    }
 }
 
 void rcbasic_edit_frame::toggleMessageWindow( wxCommandEvent& event )
@@ -171,27 +239,52 @@ void rcbasic_edit_frame::toggleSideBar( wxCommandEvent& event )
 #define CLOSE_PROJECT 1002
 #define NEW_FILE 1003
 #define ADD_FILES 1004
-#define BUILD_PROJECT 1005
-#define RUN_PROJECT 1006
-#define DEBUG_PROJECT 1007
-#define PROJECT_PROPERTIES 1008
+#define REMOVE_FILES 1005
+#define BUILD_PROJECT 1006
+#define RUN_PROJECT 1007
+#define DEBUG_PROJECT 1008
+#define PROJECT_PROPERTIES 1009
+
+void rcbasic_edit_frame::addMultipleFilesToProject()
+{
+    if(context_project==NULL)
+        return;
+
+    wxArrayString sourceFiles = openMultiFileDialog( _("Open RCBasic Source file"), _("RCBasic Source files (*.bas)|*.bas"), wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_MULTIPLE);
+
+    for(int i = 0; i < sourceFiles.size(); i++)
+    {
+        wxFileName fname(sourceFiles[i]);
+        if(!fname.Exists())
+            continue;
+
+        context_project->addSourceFile(fname.GetFullPath());
+    }
+
+    updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
+}
 
 void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)
 {
     switch(evt.GetId())
     {
         case SAVE_PROJECT:
-            wxPuts(_("Saving the project"));
+            //wxPuts(_("Saving the project"));
+            saveProject(context_project);
             break;
         case CLOSE_PROJECT:
-            wxPuts(_("Closing the project"));
+            //wxPuts(_("Closing the project"));
+            closeProject(context_project);
             break;
         case NEW_FILE:
             wxPuts(_("New File"));
             break;
         case ADD_FILES:
             wxPuts(_("Add Files"));
-            addFileToProject(openFileDialog());
+            addMultipleFilesToProject();
+            break;
+        case REMOVE_FILES:
+            wxPuts(_("Remove Files"));
             break;
         case BUILD_PROJECT:
             wxPuts(_("Build Project"));
@@ -215,6 +308,7 @@ void rcbasic_edit_frame::projectTreeContextMenu()
     menu.Append(CLOSE_PROJECT, wxT("&Close Project"));
     menu.Append(NEW_FILE, wxT("&New File"));
     menu.Append(ADD_FILES, wxT("&Add Files"));
+    menu.Append(REMOVE_FILES, wxT("&Remove Files"));
     menu.Append(BUILD_PROJECT, wxT("&Build"));
     menu.Append(RUN_PROJECT, wxT("&Run"));
     menu.Append(DEBUG_PROJECT, wxT("&Debug"));
@@ -238,5 +332,18 @@ void rcbasic_edit_frame::onProjectTreeContextMenu( wxTreeEvent& event )
 
 void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
 {
-    wxPuts(_("Node activated"));
+    //wxPuts(_("Node Activated"));
+    wxTreeItemId selected_node = event.GetItem();
+    for(int i = 0; i < open_projects.size(); i++)
+    {
+        if(open_projects[i]->getRootNode()==selected_node)
+        {
+            if(active_project != NULL)
+            {
+                project_tree->SetItemBold(active_project->getRootNode(), false);
+            }
+            active_project = open_projects[i];
+            project_tree->SetItemBold(active_project->getRootNode(), true);
+        }
+    }
 }

@@ -7,6 +7,7 @@
 #include <wx/imaglist.h>
 #include <wx/image.h>
 #include <wx/filename.h>
+#include <wx/filefn.h>
 #include <vector>
 
 #define RCBASIC_PROJECT_SOURCE_NEW      0
@@ -37,6 +38,8 @@ class rcbasic_project
 
         wxString location;
 
+        bool project_valid;
+
     public:
         rcbasic_project(wxString project_name, wxString project_location, int main_source_flag, wxString main_source_value,
                         wxString project_author, wxString project_website, wxString project_description);
@@ -50,6 +53,9 @@ class rcbasic_project
         bool createNewSourceFile(wxString filePath);
         void setRootNode(wxTreeItemId project_root);
 
+        void setLocation(wxString new_location);
+        wxString getLocation();
+
         wxString getName();
         wxFileName getMainSource();
         wxString getAuthor();
@@ -58,6 +64,10 @@ class rcbasic_project
         std::vector<rcbasic_project_node> getSourceFiles();
 
         wxTreeItemId getRootNode();
+
+        bool projectExists();
+
+        bool saveProject(wxFileName save_file);
 };
 
 //std::vector<rcbasic_project> open_projects;
