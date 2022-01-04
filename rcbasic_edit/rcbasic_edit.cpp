@@ -122,11 +122,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_findPrevious_menuItem = new wxMenuItem( m_search_menu, wxID_ANY, wxString( wxT("Find Previous") ) , wxEmptyString, wxITEM_NORMAL );
 	m_search_menu->Append( m_findPrevious_menuItem );
 
-	m_search_menu->AppendSeparator();
-
-	m_findInFiles_menuItem = new wxMenuItem( m_search_menu, wxID_ANY, wxString( wxT("Find in Files") ) , wxEmptyString, wxITEM_NORMAL );
-	m_search_menu->Append( m_findInFiles_menuItem );
-
 	m_replace_menuItem = new wxMenuItem( m_search_menu, wxID_ANY, wxString( wxT("Replace") ) , wxEmptyString, wxITEM_NORMAL );
 	m_search_menu->Append( m_replace_menuItem );
 
@@ -281,9 +276,9 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
 
-	m_auinotebook1 = new wxAuiNotebook( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE|wxBORDER_SIMPLE );
+	sourceFile_auinotebook = new wxAuiNotebook( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE|wxBORDER_SIMPLE );
 
-	bSizer6->Add( m_auinotebook1, 1, wxEXPAND | wxALL, 5 );
+	bSizer6->Add( sourceFile_auinotebook, 1, wxEXPAND | wxALL, 5 );
 
 
 	m_panel6->SetSizer( bSizer6 );
@@ -328,6 +323,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleMessageWindow ), this, m_showMessageWindow_menuItem->GetId());
 	project_tree->Connect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Connect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
+	sourceFile_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
 }
 
 rc_ideFrame::~rc_ideFrame()
@@ -335,6 +331,7 @@ rc_ideFrame::~rc_ideFrame()
 	// Disconnect Events
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
+	sourceFile_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
 
 }
 
@@ -565,4 +562,616 @@ rc_newProject_dialog::~rc_newProject_dialog()
 	cancelNewProject_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_newProject_dialog::cancelNewProject ), NULL, this );
 	createNewProject_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_newProject_dialog::createNewProject ), NULL, this );
 
+}
+
+rc_closeProjectSavePrompt_dialog::rc_closeProjectSavePrompt_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer20;
+	bSizer20 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer21;
+	bSizer21 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer21->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("Do you want to save the project before closing?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8->Wrap( -1 );
+	m_staticText8->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
+
+	bSizer21->Add( m_staticText8, 1, wxALL|wxEXPAND, 5 );
+
+
+	bSizer21->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( bSizer21, 3, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer22;
+	bSizer22 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer22->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	closeProjectSave_cancelButton = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer22->Add( closeProjectSave_cancelButton, 0, wxALL, 5 );
+
+	closeProjectSave_dontSaveButton = new wxButton( this, wxID_ANY, wxT("Don't Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer22->Add( closeProjectSave_dontSaveButton, 0, wxALL, 5 );
+
+	closeProjectSave_saveButton = new wxButton( this, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer22->Add( closeProjectSave_saveButton, 0, wxALL, 5 );
+
+
+	bSizer22->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( bSizer22, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer20 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	closeProjectSave_cancelButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeProjectSavePrompt_dialog::onCloseProjectSaveCancel ), NULL, this );
+	closeProjectSave_dontSaveButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeProjectSavePrompt_dialog::onCloseProjectSaveDontSave ), NULL, this );
+	closeProjectSave_saveButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeProjectSavePrompt_dialog::onCloseProjectSaveOk ), NULL, this );
+}
+
+rc_closeProjectSavePrompt_dialog::~rc_closeProjectSavePrompt_dialog()
+{
+	// Disconnect Events
+	closeProjectSave_cancelButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeProjectSavePrompt_dialog::onCloseProjectSaveCancel ), NULL, this );
+	closeProjectSave_dontSaveButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeProjectSavePrompt_dialog::onCloseProjectSaveDontSave ), NULL, this );
+	closeProjectSave_saveButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeProjectSavePrompt_dialog::onCloseProjectSaveOk ), NULL, this );
+
+}
+
+rc_newFile_dialog::rc_newFile_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer23;
+	bSizer23 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer23->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer24;
+	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer24->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText9 = new wxStaticText( this, wxID_ANY, wxT("Filename (Including Full Path):"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText9->Wrap( -1 );
+	bSizer24->Add( m_staticText9, 2, wxALL, 5 );
+
+	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	bSizer24->Add( createNewSource_fileDialog, 5, wxALL, 5 );
+
+
+	bSizer24->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer23->Add( bSizer24, 4, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer25;
+	bSizer25 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer25->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	createNewSource_addToProject_checkBox = new wxCheckBox( this, wxID_ANY, wxT("Add New File to Current Project"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer25->Add( createNewSource_addToProject_checkBox, 6, wxALL, 5 );
+
+
+	bSizer25->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer23->Add( bSizer25, 4, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer26;
+	bSizer26 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer26->Add( 0, 0, 8, wxEXPAND, 5 );
+
+	createNewSource_cancelButton = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer26->Add( createNewSource_cancelButton, 1, wxALL, 5 );
+
+	createNewSource_okButton = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer26->Add( createNewSource_okButton, 1, wxALL, 5 );
+
+
+	bSizer26->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer23->Add( bSizer26, 1, wxEXPAND, 5 );
+
+
+	bSizer23->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer23 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	createNewSource_cancelButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_newFile_dialog::onCreateNewSourceCancel ), NULL, this );
+	createNewSource_okButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_newFile_dialog::onCreateNewSourceOk ), NULL, this );
+}
+
+rc_newFile_dialog::~rc_newFile_dialog()
+{
+	// Disconnect Events
+	createNewSource_cancelButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_newFile_dialog::onCreateNewSourceCancel ), NULL, this );
+	createNewSource_okButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_newFile_dialog::onCreateNewSourceOk ), NULL, this );
+
+}
+
+rc_find_dialog::rc_find_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer27;
+	bSizer27 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer28;
+	bSizer28 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer28->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText11 = new wxStaticText( this, wxID_ANY, wxT("Search for:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText11->Wrap( -1 );
+	bSizer28->Add( m_staticText11, 2, wxALL, 5 );
+
+	m_textCtrl6 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer28->Add( m_textCtrl6, 8, wxALL, 5 );
+
+
+	bSizer28->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer27->Add( bSizer28, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer29;
+	bSizer29 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer29->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_checkBox2 = new wxCheckBox( this, wxID_ANY, wxT("Case Sensitive"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer29->Add( m_checkBox2, 0, wxALL, 5 );
+
+	m_checkBox3 = new wxCheckBox( this, wxID_ANY, wxT("Match only a whole word"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer29->Add( m_checkBox3, 0, wxALL, 5 );
+
+
+	bSizer29->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer27->Add( bSizer29, 2, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer30;
+	bSizer30 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer31;
+	bSizer31 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer31->Add( 0, 0, 4, wxEXPAND, 5 );
+
+	m_button10 = new wxButton( this, wxID_ANY, wxT("Mark"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_button10, 0, wxALL, 5 );
+
+	m_button11 = new wxButton( this, wxID_ANY, wxT("In Project"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_button11, 0, wxALL, 5 );
+
+	m_button12 = new wxButton( this, wxID_ANY, wxT("In File"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_button12, 0, wxALL, 5 );
+
+
+	bSizer31->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer30->Add( bSizer31, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer32;
+	bSizer32 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer32->Add( 0, 0, 4, wxEXPAND, 5 );
+
+	m_button13 = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer32->Add( m_button13, 0, wxALL, 5 );
+
+	m_button14 = new wxButton( this, wxID_ANY, wxT("Previous"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer32->Add( m_button14, 0, wxALL, 5 );
+
+	m_button15 = new wxButton( this, wxID_ANY, wxT("Next"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer32->Add( m_button15, 0, wxALL, 5 );
+
+
+	bSizer32->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer30->Add( bSizer32, 2, wxEXPAND, 5 );
+
+
+	bSizer27->Add( bSizer30, 2, wxEXPAND, 5 );
+
+
+	bSizer27->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer27 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+}
+
+rc_find_dialog::~rc_find_dialog()
+{
+}
+
+rc_replace_dialog::rc_replace_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer27;
+	bSizer27 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer28;
+	bSizer28 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer45;
+	bSizer45 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer45->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText11 = new wxStaticText( this, wxID_ANY, wxT("Search for:    "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText11->Wrap( -1 );
+	bSizer45->Add( m_staticText11, 2, wxALL, 5 );
+
+	m_textCtrl6 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer45->Add( m_textCtrl6, 8, wxALL, 5 );
+
+
+	bSizer45->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer28->Add( bSizer45, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer46;
+	bSizer46 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer46->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText15 = new wxStaticText( this, wxID_ANY, wxT("Replace with:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText15->Wrap( -1 );
+	bSizer46->Add( m_staticText15, 2, wxALL, 5 );
+
+	m_textCtrl9 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer46->Add( m_textCtrl9, 8, wxALL, 5 );
+
+
+	bSizer46->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer28->Add( bSizer46, 1, wxEXPAND, 5 );
+
+
+	bSizer27->Add( bSizer28, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer29;
+	bSizer29 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer29->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_checkBox2 = new wxCheckBox( this, wxID_ANY, wxT("Case Sensitive"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer29->Add( m_checkBox2, 0, wxALL, 5 );
+
+	m_checkBox3 = new wxCheckBox( this, wxID_ANY, wxT("Match only a whole word"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer29->Add( m_checkBox3, 0, wxALL, 5 );
+
+
+	bSizer29->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer27->Add( bSizer29, 2, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer30;
+	bSizer30 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer31;
+	bSizer31 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer31->Add( 0, 0, 4, wxEXPAND, 5 );
+
+	m_button10 = new wxButton( this, wxID_ANY, wxT("In Project"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_button10, 0, wxALL, 5 );
+
+	m_button11 = new wxButton( this, wxID_ANY, wxT("In File"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_button11, 0, wxALL, 5 );
+
+	m_button12 = new wxButton( this, wxID_ANY, wxT("In Selection"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_button12, 0, wxALL, 5 );
+
+
+	bSizer31->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer30->Add( bSizer31, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer32;
+	bSizer32 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer32->Add( 0, 0, 4, wxEXPAND, 5 );
+
+	m_button13 = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer32->Add( m_button13, 0, wxALL, 5 );
+
+	m_button14 = new wxButton( this, wxID_ANY, wxT("Find"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer32->Add( m_button14, 0, wxALL, 5 );
+
+	m_button15 = new wxButton( this, wxID_ANY, wxT("Replace"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer32->Add( m_button15, 0, wxALL, 5 );
+
+
+	bSizer32->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer30->Add( bSizer32, 2, wxEXPAND, 5 );
+
+
+	bSizer27->Add( bSizer30, 2, wxEXPAND, 5 );
+
+
+	bSizer27->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer27 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+}
+
+rc_replace_dialog::~rc_replace_dialog()
+{
+}
+
+rc_gotoLine_dialog::rc_gotoLine_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer47;
+	bSizer47 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer48;
+	bSizer48 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer48->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText17 = new wxStaticText( this, wxID_ANY, wxT("Line:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText17->Wrap( -1 );
+	bSizer48->Add( m_staticText17, 2, wxALL, 5 );
+
+	m_textCtrl10 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer48->Add( m_textCtrl10, 8, wxALL, 5 );
+
+
+	bSizer48->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer47->Add( bSizer48, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer49;
+	bSizer49 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer49->Add( 0, 0, 4, wxEXPAND, 5 );
+
+	m_button28 = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer49->Add( m_button28, 0, wxALL, 5 );
+
+	m_button29 = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer49->Add( m_button29, 0, wxALL, 5 );
+
+
+	bSizer49->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer47->Add( bSizer49, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer47 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+}
+
+rc_gotoLine_dialog::~rc_gotoLine_dialog()
+{
+}
+
+rc_changeFont_dialog::rc_changeFont_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer50;
+	bSizer50 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer51;
+	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText18 = new wxStaticText( this, wxID_ANY, wxT("Font"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText18->Wrap( -1 );
+	bSizer51->Add( m_staticText18, 1, wxALL, 5 );
+
+	m_comboBox1 = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer51->Add( m_comboBox1, 4, wxALL, 5 );
+
+
+	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer50->Add( bSizer51, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer52;
+	bSizer52 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer52->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText19 = new wxStaticText( this, wxID_ANY, wxT("Size  "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText19->Wrap( -1 );
+	bSizer52->Add( m_staticText19, 1, wxALL, 5 );
+
+	m_comboBox2 = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer52->Add( m_comboBox2, 4, wxALL, 5 );
+
+
+	bSizer52->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer50->Add( bSizer52, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer53;
+	bSizer53 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer53->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText20 = new wxStaticText( this, wxID_ANY, wxT("Style"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText20->Wrap( -1 );
+	bSizer53->Add( m_staticText20, 1, wxALL, 5 );
+
+	m_comboBox3 = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer53->Add( m_comboBox3, 4, wxALL, 5 );
+
+
+	bSizer53->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer50->Add( bSizer53, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer55;
+	bSizer55 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer55->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText21 = new wxStaticText( this, wxID_ANY, wxT("Preview"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText21->Wrap( -1 );
+	bSizer55->Add( m_staticText21, 1, wxALIGN_BOTTOM|wxALL, 5 );
+
+	m_textCtrl11 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	bSizer55->Add( m_textCtrl11, 4, wxALIGN_BOTTOM|wxALL, 5 );
+
+
+	bSizer55->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer50->Add( bSizer55, 4, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer54;
+	bSizer54 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer54->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_button30 = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer54->Add( m_button30, 0, wxALIGN_BOTTOM|wxALL, 5 );
+
+	m_button31 = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer54->Add( m_button31, 0, wxALIGN_BOTTOM|wxALL, 5 );
+
+
+	bSizer54->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer50->Add( bSizer54, 4, wxEXPAND, 5 );
+
+
+	bSizer50->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer50 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+}
+
+rc_changeFont_dialog::~rc_changeFont_dialog()
+{
+}
+
+rc_setColorScheme_dialog::rc_setColorScheme_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer57;
+	bSizer57 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer58;
+	bSizer58 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer58->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_listBox2 = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer58->Add( m_listBox2, 8, wxALL|wxEXPAND, 5 );
+
+
+	bSizer58->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer57->Add( bSizer58, 8, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer59;
+	bSizer59 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer59->Add( 0, 0, 8, wxEXPAND, 5 );
+
+	m_button32 = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer59->Add( m_button32, 1, wxALL, 5 );
+
+
+	bSizer59->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer57->Add( bSizer59, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer57 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+}
+
+rc_setColorScheme_dialog::~rc_setColorScheme_dialog()
+{
 }

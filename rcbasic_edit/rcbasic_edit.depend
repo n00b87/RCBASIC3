@@ -3227,10 +3227,10 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1641102681 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1641259213 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1641102681 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1641259213 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3257,6 +3257,9 @@
 	<wx/radiobut.h>
 	<wx/button.h>
 	<wx/dialog.h>
+	<wx/checkbox.h>
+	<wx/combobox.h>
+	<wx/listbox.h>
 
 1587560968 c:\dev_libs\wx\include\wx\xrc\xmlres.h
 	"wx/defs.h"
@@ -3373,16 +3376,20 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1641103894 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1641260932 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
+	"rc_closeProjectSavePrompt_dialog.h"
+	"rc_newFile_dialog.h"
 	"projects.h"
 	<wx/imaglist.h>
+	<wx/stc/stc.h>
 	<vector>
 
-1641106815 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1641279900 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
+	"rc_closeProjectSavePrompt_dialog.h"
 
 1587560968 c:\dev_libs\wx\include\wx\filepicker.h
 	"wx/defs.h"
@@ -3408,14 +3415,14 @@
 	"rcbasic_edit_newProject_dialog.h"
 	"projects.h"
 
-1640979702 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_newproject_dialog.h
+1641190989 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_newproject_dialog.h
 	"rcbasic_edit.h"
 	"projects.h"
 
-1641107885 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
+1641279985 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
 	"projects.h"
 
-1641105544 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
+1641279899 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
 	<wx/wx.h>
 	<wx/treectrl.h>
 	<wx/file.h>
@@ -3423,7 +3430,10 @@
 	<wx/image.h>
 	<wx/filename.h>
 	<wx/filefn.h>
+	<wx/stc/stc.h>
+	<wx/treebase.h>
 	<vector>
+	<stdint.h>
 
 1587560968 c:\dev_libs\wx\include\wx\textfile.h
 	"wx/defs.h"
@@ -3436,4 +3446,16 @@
 	"wx/convauto.h"
 	"wx/string.h"
 	"wx/dynarray.h"
+
+1641190989 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_closeprojectsaveprompt_dialog.h
+	"rcbasic_edit.h"
+
+1641231715 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_newfile_dialog.cpp
+	"rc_newFile_dialog.h"
+
+1641231374 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_newfile_dialog.h
+	"rcbasic_edit.h"
+
+1641202089 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_closeprojectsaveprompt_dialog.cpp
+	"rc_closeProjectSavePrompt_dialog.h"
 

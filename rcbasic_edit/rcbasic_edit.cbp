@@ -60,8 +60,12 @@
 		</Compiler>
 		<Unit filename="projects.cpp" />
 		<Unit filename="projects.h" />
+		<Unit filename="rc_closeProjectSavePrompt_dialog.cpp" />
+		<Unit filename="rc_closeProjectSavePrompt_dialog.h" />
 		<Unit filename="rc_ideApp.cpp" />
 		<Unit filename="rc_ideApp.h" />
+		<Unit filename="rc_newFile_dialog.cpp" />
+		<Unit filename="rc_newFile_dialog.h" />
 		<Unit filename="rcbasic_edit.cpp" />
 		<Unit filename="rcbasic_edit.h" />
 		<Unit filename="rcbasic_edit_frame.cpp" />

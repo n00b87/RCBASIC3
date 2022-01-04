@@ -3,6 +3,8 @@
 rcbasic_project_node::rcbasic_project_node(wxFileName node_path)
 {
     path = node_path;
+    rc_txtCtrl = NULL;
+    notebook_page = NULL;
 }
 
 void rcbasic_project_node::setNode(wxTreeItemId node)
@@ -20,14 +22,38 @@ wxFileName rcbasic_project_node::getPath()
     return path;
 }
 
+void rcbasic_project_node::setTextCtrl(wxStyledTextCtrl* txt_ctrl)
+{
+    rc_txtCtrl = txt_ctrl;
+}
 
+wxStyledTextCtrl* rcbasic_project_node::getTextCtrl()
+{
+    return rc_txtCtrl;
+}
 
+void rcbasic_project_node::setNotebookPage(wxWindow* page)
+{
+    notebook_page = page;
+    notebook_page_addr = reinterpret_cast<uintptr_t>(&page);
+    data = _("Hello World");
+    wxPuts(_("data start = ") + data +_("\n"));
+    //wxPrintf("Notebook page change2: %p\n", notebook_page);
+}
+
+wxWindow* rcbasic_project_node::getNotebookPage()
+{
+    wxPuts(_("data = ")+data+_("\n"));
+    //wxPrintf("Notebook page change return: %u\n", notebook_page_addr);
+    return (wxWindow*)(notebook_page_addr);
+}
 
 
 
 rcbasic_project::rcbasic_project(wxString project_name, wxString project_location, int main_source_flag, wxString main_source_value,
                 wxString project_author, wxString project_website, wxString project_description)
 {
+    last_saved_project = NULL;
     project_valid = false;
     wxFileName project_dir;
 
@@ -153,7 +179,23 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
             break;
     }
 
+    //wxPuts(_("Testing"));
+    //setLastProjectSave();
+
     //rcbasic_project_tree->AddRoot(name);
+}
+
+rcbasic_project::rcbasic_project()
+{
+    last_saved_project = NULL;
+}
+
+rcbasic_project::~rcbasic_project()
+{
+    if(last_saved_project)
+        delete last_saved_project;
+
+    source_files.clear();
 }
 
 bool rcbasic_project::saveProject(wxFileName save_file)
@@ -200,7 +242,58 @@ bool rcbasic_project::saveProject(wxFileName save_file)
         location = save_file.GetPath();
         //wxPuts(_("New location: ") + location);
     }
+
+    //setLastProjectSave();
+
     return true;
+}
+
+void rcbasic_project::setLastProjectSave()
+{
+    if(!last_saved_project)
+        last_saved_project = new rcbasic_project();
+
+    last_saved_project->setName(name);
+    last_saved_project->setMainSource(main_source.GetFullPath());
+    last_saved_project->setAuthor(author);
+    last_saved_project->setWebsite(website);
+    last_saved_project->setDescription(description);
+    last_saved_project->getSourceFiles().clear();
+    for(int i = 0; i < source_files.size(); i++)
+    {
+        last_saved_project->addSourceFile(source_files[i].getPath().GetFullPath());
+    }
+}
+
+bool rcbasic_project::projectHasChanged()
+{
+    bool cmp = true;
+
+    //wxPuts("WATS GUD");
+
+    if(!last_saved_project)
+        return true;
+
+    cmp = cmp && name==last_saved_project->getName();
+    cmp = cmp && main_source.GetFullPath()==last_saved_project->getMainSource().GetFullPath();
+    cmp = cmp && author==last_saved_project->getAuthor();
+    cmp = cmp && website==last_saved_project->getWebsite();
+    cmp = cmp && description==last_saved_project->getDescription();
+    if(source_files.size()==last_saved_project->getSourceFiles().size())
+    {
+        for(int i = 0; i < source_files.size(); i++)
+        {
+            if(source_files[i].getPath().GetFullPath() != last_saved_project->getSourceFiles()[i].getPath().GetFullPath())
+            {
+                cmp = false;
+                break;
+            }
+        }
+    }
+    else
+        cmp = false;
+
+    return !cmp;
 }
 
 void rcbasic_project::setLocation(wxString new_location)
@@ -246,8 +339,24 @@ void rcbasic_project::setDescription(wxString new_description)
 void rcbasic_project::addSourceFile(wxString filePath)
 {
     wxFileName fname(filePath);
-    fname.MakeRelativeTo(location);
-    source_files.push_back(fname);
+    rcbasic_project_node src_file(fname);
+    //fname.MakeRelativeTo(location);
+    source_files.push_back(src_file);
+}
+
+int rcbasic_project::getSourceFileIndex(wxFileName file_path)
+{
+    int index = -1;
+
+    for(int i = 0; i < source_files.size(); i++)
+    {
+        if(source_files[i].getPath().GetFullPath()==file_path.GetFullPath())
+        {
+            index = i;
+            break;
+        }
+    }
+    return index;
 }
 
 bool rcbasic_project::createNewSourceFile(wxString filePath)
@@ -257,8 +366,9 @@ bool rcbasic_project::createNewSourceFile(wxString filePath)
     if(!f.Create(filePath))
        return false;
     f.Close();
-    fname.MakeRelativeTo(location);
-    source_files.push_back(fname);
+    //fname.MakeRelativeTo(location);
+    rcbasic_project_node src_file(fname);
+    source_files.push_back(src_file);
     return true;
 }
 
