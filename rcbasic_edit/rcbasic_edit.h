@@ -151,7 +151,7 @@ class rc_ideFrame : public wxFrame
 
 		void m_project_file_splitterOnIdle( wxIdleEvent& )
 		{
-			m_project_file_splitter->SetSashPosition( 221 );
+			m_project_file_splitter->SetSashPosition( 215 );
 			m_project_file_splitter->Disconnect( wxEVT_IDLE, wxIdleEventHandler( rc_ideFrame::m_project_file_splitterOnIdle ), NULL, this );
 		}
 

@@ -24,8 +24,8 @@ class rcbasic_project_node
         wxStyledTextCtrl* rc_txtCtrl;
         wxWindow* notebook_page;
         uintptr_t notebook_page_addr;
-        wxString data;
     public:
+        wxString data;
         rcbasic_project_node(wxFileName node_path);
         void setNode(wxTreeItemId node);
         wxTreeItemId getNode();
@@ -44,7 +44,7 @@ class rcbasic_project
         wxString author;
         wxString website;
         wxString description;
-        std::vector<rcbasic_project_node> source_files;
+        std::vector<rcbasic_project_node*> source_files;
         std::vector<wxString> src;
         wxTreeItemId root_node_id;
 
@@ -77,7 +77,7 @@ class rcbasic_project
         wxString getAuthor();
         wxString getWebsite();
         wxString getDescription();
-        std::vector<rcbasic_project_node> getSourceFiles();
+        std::vector<rcbasic_project_node*> getSourceFiles();
         int getSourceFileIndex(wxFileName file_path);
 
         wxTreeItemId getRootNode();

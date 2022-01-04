@@ -236,7 +236,7 @@ bool rcbasic_project::saveProject(wxFileName save_file)
         project_file.Write(_("DESCRIPTION:")+description+_("\n"));
         for(int i = 0; i < source_files.size(); i++)
         {
-            project_file.Write(_("SOURCE:")+source_files[i].getPath().GetFullPath()+_("\n"));
+            project_file.Write(_("SOURCE:")+source_files[i]->getPath().GetFullPath()+_("\n"));
         }
         project_file.Close();
         location = save_file.GetPath();
@@ -261,7 +261,7 @@ void rcbasic_project::setLastProjectSave()
     last_saved_project->getSourceFiles().clear();
     for(int i = 0; i < source_files.size(); i++)
     {
-        last_saved_project->addSourceFile(source_files[i].getPath().GetFullPath());
+        last_saved_project->addSourceFile(source_files[i]->getPath().GetFullPath());
     }
 }
 
@@ -283,7 +283,7 @@ bool rcbasic_project::projectHasChanged()
     {
         for(int i = 0; i < source_files.size(); i++)
         {
-            if(source_files[i].getPath().GetFullPath() != last_saved_project->getSourceFiles()[i].getPath().GetFullPath())
+            if(source_files[i]->getPath().GetFullPath() != last_saved_project->getSourceFiles()[i]->getPath().GetFullPath())
             {
                 cmp = false;
                 break;
@@ -339,7 +339,7 @@ void rcbasic_project::setDescription(wxString new_description)
 void rcbasic_project::addSourceFile(wxString filePath)
 {
     wxFileName fname(filePath);
-    rcbasic_project_node src_file(fname);
+    rcbasic_project_node* src_file = new rcbasic_project_node(fname);
     //fname.MakeRelativeTo(location);
     source_files.push_back(src_file);
 }
@@ -350,7 +350,7 @@ int rcbasic_project::getSourceFileIndex(wxFileName file_path)
 
     for(int i = 0; i < source_files.size(); i++)
     {
-        if(source_files[i].getPath().GetFullPath()==file_path.GetFullPath())
+        if(source_files[i]->getPath().GetFullPath()==file_path.GetFullPath())
         {
             index = i;
             break;
@@ -367,7 +367,7 @@ bool rcbasic_project::createNewSourceFile(wxString filePath)
        return false;
     f.Close();
     //fname.MakeRelativeTo(location);
-    rcbasic_project_node src_file(fname);
+    rcbasic_project_node* src_file = new rcbasic_project_node(fname);
     source_files.push_back(src_file);
     return true;
 }
@@ -403,7 +403,7 @@ wxString rcbasic_project::getDescription()
     return description;
 }
 
-std::vector<rcbasic_project_node> rcbasic_project::getSourceFiles()
+std::vector<rcbasic_project_node*> rcbasic_project::getSourceFiles()
 {
     return source_files;
 }

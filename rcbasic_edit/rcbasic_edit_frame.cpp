@@ -108,17 +108,17 @@ void rcbasic_edit_frame::updateProjectTree(int project_index)
 {
     wxTreeItemId project_node = open_projects[project_index]->getRootNode();
     project_tree->DeleteChildren(project_node);
-    std::vector<rcbasic_project_node> source_files = open_projects[project_index]->getSourceFiles();
+    std::vector<rcbasic_project_node*> source_files = open_projects[project_index]->getSourceFiles();
 
     wxFileName node_label;
     rcbasic_treeItem_data* data;
 
     for(int i = 0; i < source_files.size(); i++)
     {
-        node_label = wxFileName(source_files[i].getPath().GetFullPath());
+        node_label = wxFileName(source_files[i]->getPath().GetFullPath());
         data = new rcbasic_treeItem_data(node_label, open_projects[project_index]);
         node_label.MakeRelativeTo(open_projects[project_index]->getLocation());
-        source_files[i].setNode( project_tree->AppendItem( project_node, node_label.GetFullPath(), project_tree_fileImage, -1, data) );
+        source_files[i]->setNode( project_tree->AppendItem( project_node, node_label.GetFullPath(), project_tree_fileImage, -1, data) );
     }
 }
 
@@ -365,7 +365,7 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
     {
         //No need to check for project value here because index will be -1 if project is NULL
         if(index >= 0)
-            project->getSourceFiles()[index].setTextCtrl(txtCtrl);
+            project->getSourceFiles()[index]->setTextCtrl(txtCtrl);
     }
     else
     {
@@ -379,13 +379,15 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         sourceFile_auinotebook->AddPage(txtCtrl_obj->getTextCtrl(), newFile.GetFullName());
         open_files.push_back(txtCtrl_obj);
 
-        project->getSourceFiles()[index].setTextCtrl(txtCtrl_obj->getTextCtrl());
+        project->getSourceFiles()[index]->setTextCtrl(txtCtrl_obj->getTextCtrl());
         wxPrintf("Notebook page: %p\n", sourceFile_auinotebook->GetPage(page_index));
-        project->getSourceFiles()[index].setNotebookPage(sourceFile_auinotebook->GetPage(page_index));
+        project->getSourceFiles()[index]->setNotebookPage(sourceFile_auinotebook->GetPage(page_index));
         //wxString s;
         //s.Printf("S--Notebook page: %p\n", sourceFile_auinotebook->GetPage(page_index));
         //wxPuts(s);
-        wxPrintf("Notebook page[V]: %p\n\n", project->getSourceFiles()[index].getNotebookPage());
+        //project->getSourceFiles()[index].data = _("This is a test");
+        wxPrintf("Notebook page[V]: %p\n\n", project->getSourceFiles()[index]->getNotebookPage());
+        wxPuts(_("XT data = ")+project->getSourceFiles()[index]->data+_("\n"));
     }
 
     return txtCtrl_obj;
@@ -506,26 +508,27 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
         }
         else
         {
-            continue;
-            rcbasic_project_node file_node(wxFileName(_("")));
+            rcbasic_project_node* file_node;
             wxPuts(_("Looking through project files"));
             for(int file_node_index = 0; file_node_index < open_projects[i]->getSourceFiles().size(); file_node_index++)
             {
                 file_node = open_projects[i]->getSourceFiles()[file_node_index];
-                wxPuts(file_node.getPath().GetFullPath());
-                if(file_node.getNode()==selected_node)
+                //wxPuts(file_node.getPath().GetFullPath());
+                if(file_node->getNode()==selected_node)
                 {
                     wxPuts(_("Request open"));
-                    if(sourceFile_auinotebook->GetPageIndex(file_node.getTextCtrl())<0)
+                    if(sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl())<0)
                     {
                         wxPuts(_("Open a tab"));
-                        file_node.setTextCtrl(openFileTab(open_projects[i], file_node.getPath())->getTextCtrl());
+                        if(file_node->getTextCtrl())
+                            file_node->setTextCtrl(NULL);
+                        file_node->setTextCtrl(openFileTab(open_projects[i], file_node->getPath())->getTextCtrl());
                         return;
                     }
                 }
                 else
                 {
-                    wxPuts(_("\n\nCould not open ")+file_node.getPath().GetFullName());
+                    wxPuts(_("\n\nCould not open ")+file_node->getPath().GetFullName());
                 }
             }
         }
@@ -539,18 +542,24 @@ void rcbasic_edit_frame::onSourceFileTabClose( wxAuiNotebookEvent& event )
     //wxPuts( _("page to close: ") + sourceFile_auinotebook->GetPageText(selected_page) );
     //return;
 
+    for(int i = 0; i < open_files.size(); i++)
+    {
+        if(sourceFile_auinotebook->GetPageIndex(open_files[i]->getTextCtrl()) == selected_page)
+        {
+            open_files.erase(open_files.begin()+i);
+            break;
+        }
+    }
+
     for(int i = 0; i < open_projects.size(); i++)
     {
         for(int file_node_index = 0; file_node_index < open_projects[i]->getSourceFiles().size(); file_node_index++)
         {
-            if(sourceFile_auinotebook->GetPageIndex(open_projects[i]->getSourceFiles()[file_node_index].getTextCtrl()) == selected_page)
+            if(sourceFile_auinotebook->GetPageIndex(open_projects[i]->getSourceFiles()[file_node_index]->getTextCtrl()) == selected_page)
             {
                 wxPuts(_("Tab belongs to project -> ") + open_projects[i]->getName());
-            }
-            else
-            {
-                wxPrintf("addr 1: %d\n", sourceFile_auinotebook->GetPageIndex(open_projects[i]->getSourceFiles()[file_node_index].getTextCtrl()));
-                wxPrintf("addr 2: %d\n\n", selected_page);
+                wxPuts(_("Full PATH = ") + open_projects[i]->getSourceFiles()[file_node_index]->getPath().GetFullPath());
+                open_projects[i]->getSourceFiles()[file_node_index]->setTextCtrl(NULL);
             }
         }
 

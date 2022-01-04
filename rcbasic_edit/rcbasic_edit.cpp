@@ -284,7 +284,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_panel6->SetSizer( bSizer6 );
 	m_panel6->Layout();
 	bSizer6->Fit( m_panel6 );
-	m_project_file_splitter->SplitVertically( m_sideBar_panel, m_panel6, 221 );
+	m_project_file_splitter->SplitVertically( m_sideBar_panel, m_panel6, 215 );
 	projectFileSizer->Add( m_project_file_splitter, 1, wxEXPAND, 1 );
 
 
