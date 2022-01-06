@@ -3227,10 +3227,10 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1641259213 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1641431135 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1641285953 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1641431135 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3376,16 +3376,17 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1641284784 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1641440335 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
 	"projects.h"
 	<wx/imaglist.h>
 	<wx/stc/stc.h>
+	<wx/stdpaths.h>
 	<vector>
 
-1641285489 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1641442607 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -3411,7 +3412,7 @@
 	"wx/filedlg.h"
 	"wx/dirdlg.h"
 
-1640924838 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_newproject_dialog.cpp
+1641410626 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_newproject_dialog.cpp
 	"rcbasic_edit_newProject_dialog.h"
 	"projects.h"
 
@@ -3419,10 +3420,10 @@
 	"rcbasic_edit.h"
 	"projects.h"
 
-1641283545 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
+1641442390 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
 	"projects.h"
 
-1641283686 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
+1641434473 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
 	<wx/wx.h>
 	<wx/treectrl.h>
 	<wx/file.h>
@@ -3450,10 +3451,10 @@
 1641190989 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_closeprojectsaveprompt_dialog.h
 	"rcbasic_edit.h"
 
-1641231715 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_newfile_dialog.cpp
+1641414167 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_newfile_dialog.cpp
 	"rc_newFile_dialog.h"
 
-1641231374 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_newfile_dialog.h
+1641410401 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_newfile_dialog.h
 	"rcbasic_edit.h"
 
 1641202089 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_closeprojectsaveprompt_dialog.cpp

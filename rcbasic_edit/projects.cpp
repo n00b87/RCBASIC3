@@ -24,7 +24,21 @@ wxFileName rcbasic_project_node::getPath()
 
 void rcbasic_project_node::setTextCtrl(wxStyledTextCtrl* txt_ctrl)
 {
-    rc_txtCtrl = txt_ctrl;
+    if(!txt_ctrl)
+        return;
+
+    wxFile f;
+
+    if(!f.Open(path.GetFullPath()))
+        return;
+
+    wxString f_data;
+
+    f.ReadAll(&f_data);
+    f.Close();
+
+    txt_ctrl->ClearAll();
+    txt_ctrl->AddText(f_data);
 }
 
 wxStyledTextCtrl* rcbasic_project_node::getTextCtrl()
@@ -36,14 +50,14 @@ void rcbasic_project_node::setNotebookPage(wxWindow* page)
 {
     notebook_page = page;
     notebook_page_addr = reinterpret_cast<uintptr_t>(&page);
-    data = _("Hello World");
-    wxPuts(_("data start = ") + data +_("\n"));
+    //data = _("Hello World");
+    //wxPuts(_("data start = ") + data +_("\n"));
     //wxPrintf("Notebook page change2: %p\n", notebook_page);
 }
 
 wxWindow* rcbasic_project_node::getNotebookPage()
 {
-    wxPuts(_("data = ")+data+_("\n"));
+    //wxPuts(_("data = ")+data+_("\n"));
     //wxPrintf("Notebook page change return: %u\n", notebook_page_addr);
     return (wxWindow*)(notebook_page_addr);
 }
@@ -57,20 +71,29 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
     project_valid = false;
     wxFileName project_dir;
 
-    project_dir.SetPath(project_location);
-    project_dir.AppendDir(project_name);
-    location = project_dir.GetFullPath();
-
-    if(wxDirExists(location))
+    switch(main_source_flag)
     {
-        wxMessageBox(_("A folder with the project name already exists at this location."));
-        return;
-    }
+        case RCBASIC_PROJECT_SOURCE_NEW:
+        case RCBASIC_PROJECT_SOURCE_EXISTING:
+            project_dir.SetPath(project_location);
+            project_dir.AppendDir(project_name);
+            location = project_dir.GetFullPath();
 
-    if(!wxMkdir(location))
-    {
-        wxMessageBox(_("Could not access project location"));
-        return;
+            if(wxDirExists(location))
+            {
+                wxMessageBox(_("A folder with the project name already exists at this location."));
+                return;
+            }
+
+            if(!wxMkdir(location))
+            {
+                wxMessageBox(_("Could not access project location"));
+                return;
+            }
+            break;
+        case RCBASIC_PROJECT_SOURCE_OPEN:
+            project_dir.SetPath(project_location);
+            location = project_dir.GetFullPath();
     }
 
 
@@ -128,6 +151,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
             }
             else
             {
+                project_file_location = project_file_name.GetFullPath();
                 project_valid = true;
                 //main_source.MakeRelativeTo(location);
                 project_file.Write(_("RCBASIC_STUDIO:1.0\n"));
@@ -163,6 +187,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
             }
             else
             {
+                project_file_location = project_file_name.GetFullPath();
                 project_valid = true;
                 //main_source.MakeRelativeTo(location);
                 project_file.Write(_("RCBASIC_STUDIO:1.0\n"));
@@ -176,6 +201,11 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
                 project_file.Write(_("SOURCE:")+main_source.GetFullPath()+_("\n"));
                 project_file.Close();
             }
+            break;
+        case RCBASIC_PROJECT_SOURCE_OPEN:
+            main_source = wxFileName(main_source_value);
+            //wxPuts(_("Proj Loc: ") + location + _("\n"));
+            //wxPuts(_("Main: ") + main_source.GetFullPath() + _("\n"));
             break;
     }
 
@@ -339,6 +369,13 @@ void rcbasic_project::setDescription(wxString new_description)
 void rcbasic_project::addSourceFile(wxString filePath)
 {
     wxFileName fname(filePath);
+
+    for(int i = 0; i < source_files.size(); i++)
+    {
+        if(fname.GetFullPath()==source_files[i]->getPath().GetFullPath())
+            return;
+    }
+
     rcbasic_project_node* src_file = new rcbasic_project_node(fname);
     //fname.MakeRelativeTo(location);
     source_files.push_back(src_file);
@@ -413,4 +450,12 @@ wxTreeItemId rcbasic_project::getRootNode()
     return root_node_id;
 }
 
+void rcbasic_project::setProjectFileLocation(wxString pfile_loc)
+{
+    project_file_location = pfile_loc;
+}
 
+wxString rcbasic_project::getProjectFileLocation()
+{
+    return project_file_location;
+}

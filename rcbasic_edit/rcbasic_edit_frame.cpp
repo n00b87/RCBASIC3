@@ -49,9 +49,164 @@ rc_ideFrame( parent )
 
     project_tree->AddRoot(_("Projects"), project_tree_rootImage);
 
+    //Load recent files and projects
+    wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+    wxFileName data_path(editor_path);
+    data_path.AppendDir(_("data"));
+
+    wxFileName recent_file_path = data_path;
+    recent_file_path.SetName(_("recent_files"));
+    recent_file_path.SetExt(_("data"));
+
+    if(recent_file_path.Exists())
+    {
+        wxFile f;
+        if(f.Open(recent_file_path.GetFullPath()))
+        {
+            wxString contents;
+            f.ReadAll(&contents);
+            f.Close();
+
+            wxString c_line;
+            c_line.clear();
+            int rec_count = 0;
+
+            int RECENT_ID = 0;
+
+            for(int i = 0; i < contents.Length(); i++)
+            {
+                if(contents.substr(i, 1).compare(_("\n"))==0)
+                {
+                    recent_files[rec_count] = c_line;
+                    rec_count++;
+                    if(rec_count >= 9)
+                        break;
+                    if(c_line.compare(_(""))==0)
+                        continue;
+                    m_recentFiles_menu->Append(RECENT_ID, c_line);
+                    RECENT_ID++;
+                    c_line.clear();
+                }
+                else
+                {
+                    c_line += contents.substr(i, 1);
+                }
+            }
+
+            f.Close();
+        }
+    }
+
+
+    wxFileName recent_project_path = data_path;
+    recent_project_path.SetName(_("recent_projects"));
+    recent_project_path.SetExt(_("data"));
+
+    if(recent_project_path.Exists())
+    {
+        wxFile f;
+        if(f.Open(recent_project_path.GetFullPath()))
+        {
+            wxString contents;
+            f.ReadAll(&contents);
+            f.Close();
+
+            wxString c_line;
+            c_line.clear();
+            int rec_count = 0;
+
+            int RECENT_ID = 0;
+
+            for(int i = 0; i < contents.Length(); i++)
+            {
+                if(contents.substr(i, 1).compare(_("\n"))==0)
+                {
+                    recent_projects[rec_count] = c_line;
+                    rec_count++;
+                    if(rec_count >= 9)
+                        break;
+                    if(c_line.compare(_(""))==0)
+                        continue;
+                    m_recentProjects_menu->Append(RECENT_ID, c_line);
+                    RECENT_ID++;
+                    c_line.clear();
+                }
+                else
+                {
+                    c_line += contents.substr(i, 1);
+                }
+            }
+
+            f.Close();
+        }
+    }
+
 }
 
-void rcbasic_edit_frame::createNewProject( wxCommandEvent& event)
+void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
+{
+    wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+    wxFileName data_path(editor_path);
+    data_path.AppendDir(_("data"));
+
+    //wxPuts(_("Making data path at ") + data_path.GetPath());
+
+    if(!wxDirExists(data_path.GetPath()))
+    {
+        if(!wxMkdir(data_path.GetPath()))
+            return;
+    }
+
+    wxFileName recent_file_path = data_path;
+    recent_file_path.SetName(_("recent_files"));
+    recent_file_path.SetExt(_("data"));
+
+    wxFileName recent_project_path = data_path;
+    recent_project_path.SetName(_("recent_projects"));
+    recent_project_path.SetExt(_("data"));
+
+    wxFile f;
+
+    //Save Recent Files
+    if(!f.Open(recent_file_path.GetFullPath(), wxFile::write))
+    {
+        f.Create(recent_file_path.GetFullPath(), true);
+    }
+
+    //wxPuts(_("writing files"));
+
+    if(f.IsOpened())
+    {
+
+        for(int i = 0; i < 10; i++)
+        {
+            f.Write(recent_files[i]+_("\n"));
+        }
+        f.Close();
+    }
+
+    //Save Recent Projects
+    if(!f.Open(recent_project_path.GetFullPath(), wxFile::write))
+    {
+        f.Create(recent_project_path.GetFullPath(), true);
+    }
+
+    //wxPuts(_("writing projects"));
+
+    if(f.IsOpened())
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            //wxPuts(_("PF: ") + recent_projects[i]);
+            f.Write(recent_projects[i]+_("\n"));
+        }
+        //wxPuts(_("***end project write***"));
+        f.Close();
+    }
+    this->Destroy();
+}
+
+void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
 {
     rcbasic_edit_newProject_dialog* newProject_win = new rcbasic_edit_newProject_dialog(this);
     newProject_win->ShowModal();
@@ -80,6 +235,7 @@ void rcbasic_edit_frame::createNewProject( wxCommandEvent& event)
         //project_tree->AppendItem(new_project->getRootNode(), new_project->getMainSource().GetFullPath());
 
         open_projects.push_back(new_project);
+        addRecentProject(new_project);
         int new_project_index = getProjectFromRoot(new_project->getRootNode());
         if(new_project_index >= 0)
             updateProjectTree(new_project_index);
@@ -93,6 +249,144 @@ void rcbasic_edit_frame::createNewProject( wxCommandEvent& event)
 
     newProject_win->Destroy();
 }
+
+void rcbasic_edit_frame::newFileMenuSelect( wxCommandEvent& event)
+{
+    //wxPuts(_("New file Dialog"));
+    createNewFile(active_project);
+}
+
+void rcbasic_edit_frame::openProjectMenuSelect( wxCommandEvent& event )
+{
+    wxFileName project_fname = openFileDialog(_("Open Project"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    openProject(project_fname);
+}
+
+void rcbasic_edit_frame::openFileMenuSelect( wxCommandEvent& event )
+{
+    wxFileName fname = openFileDialog( _("Open RCBasic Source file"), _("RCBasic Source files (*.bas)|*.bas"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    openSourceFile(fname);
+}
+
+void rcbasic_edit_frame::openProject(wxFileName project_path)
+{
+    for(int i = 0; i < open_projects.size(); i++)
+    {
+        if(open_projects[i]->getProjectFileLocation().compare(project_path.GetFullPath())==0)
+            return;
+    }
+
+    if(project_path.GetFullPath().compare(_(""))==0)
+        return;
+    wxFile project_file;
+    if(!project_file.Open(project_path.GetFullPath()))
+    {
+        wxMessageBox(_("Could not open project file"));
+        return;
+    }
+    else
+    {
+
+        wxString contents;
+        project_file.ReadAll(&contents);
+        project_file.Close();
+
+        contents += _("\n");
+
+        wxString project_property;
+        wxString project_name;
+        wxString project_main;
+        wxString project_author;
+        wxString project_website;
+        wxString project_description;
+        std::vector<wxString> project_source;
+
+        wxString property_name;
+        wxString property_value;
+        for(int i = 0; i < contents.Length(); i++)
+        {
+            if(contents.substr(i, 1).compare(_("\n"))==0)
+            {
+                //wxPuts( _("PROPERTY [") + project_property.substr(0,project_property.find_first_of(_(":"))) + _("]={") + project_property.substr(project_property.find_first_of(_(":"))+1) + _("}\n") );
+                property_name = project_property.substr(0,project_property.find_first_of(_(":")));
+                property_value = project_property.substr(project_property.find_first_of(_(":"))+1);
+
+                if(property_name.compare(_("PROJECT_NAME"))==0)
+                {
+                    project_name = property_value;
+                }
+                else if(property_name.compare(_("PROJECT_MAIN"))==0)
+                {
+                    project_main = property_value;
+                }
+                else if(property_name.compare(_("AUTHOR"))==0)
+                {
+                    project_author = property_value;
+                }
+                else if(property_name.compare(_("WEBSITE"))==0)
+                {
+                    project_website = property_value;
+                }
+                else if(property_name.compare(_("DESCRIPTION"))==0)
+                {
+                    project_description = property_value;
+                }
+                else if(property_name.compare(_("SOURCE"))==0)
+                {
+                    project_source.push_back(property_value);
+                }
+
+                project_property = _("");
+            }
+            else
+            {
+                project_property += contents.substr(i, 1);
+            }
+        }
+
+        rcbasic_project* project = new rcbasic_project(project_name, project_path.GetPath(true), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description);
+        for(int i = 0; i < project_source.size(); i++)
+        {
+            project->addSourceFile(project_source[i]);
+        }
+
+        project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
+        project->setLastProjectSave();
+        open_projects.push_back(project);
+
+        project->setProjectFileLocation(project_path.GetFullPath());
+        addRecentProject(project);
+
+        int project_index = getProjectFromRoot(project->getRootNode());
+        if(project_index >= 0)
+            updateProjectTree(project_index);
+
+        openFileTab(project, project->getMainSource());
+    }
+}
+
+void rcbasic_edit_frame::openSourceFile(wxFileName source_path)
+{
+    if(source_path.GetFullPath().compare(_(""))==0)
+        return;
+    wxFile s_file;
+    if(!s_file.Open(source_path.GetFullPath()))
+    {
+        wxMessageBox(_("Could not open file"));
+        return;
+    }
+    else
+    {
+        wxString contents;
+        s_file.ReadAll(&contents);
+        s_file.Close();
+
+        addRecentFile(source_path);
+
+        openFileTab(NULL, source_path)->getTextCtrl()->SetText(contents);
+    }
+}
+
 
 int rcbasic_edit_frame::getProjectFromRoot(wxTreeItemId node)
 {
@@ -363,13 +657,20 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
 
     if(txtCtrl)
     {
+        for(int i = 0; i < open_files.size(); i++)
+        {
+            if(open_files[i]->getTextCtrl()==txtCtrl)
+                txtCtrl_obj = open_files[i];
+        }
         //No need to check for project value here because index will be -1 if project is NULL
         if(index >= 0)
+        {
             project->getSourceFiles()[index]->setTextCtrl(txtCtrl);
+        }
     }
     else
     {
-        wxPrintf("Index = %d\n", index);
+        //wxPrintf("Index = %d\n", index);
         txtCtrl_obj = new rcbasic_edit_txtCtrl(newFile, sourceFile_auinotebook);
 
         //apply settings here
@@ -379,27 +680,37 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         sourceFile_auinotebook->AddPage(txtCtrl_obj->getTextCtrl(), newFile.GetFullName());
         open_files.push_back(txtCtrl_obj);
 
-        project->getSourceFiles()[index]->setTextCtrl(txtCtrl_obj->getTextCtrl());
-        wxPrintf("Notebook page: %p\n", sourceFile_auinotebook->GetPage(page_index));
-        project->getSourceFiles()[index]->setNotebookPage(sourceFile_auinotebook->GetPage(page_index));
-        //wxString s;
-        //s.Printf("S--Notebook page: %p\n", sourceFile_auinotebook->GetPage(page_index));
-        //wxPuts(s);
-        //project->getSourceFiles()[index].data = _("This is a test");
-        wxPrintf("Notebook page[V]: %p\n\n", project->getSourceFiles()[index]->getNotebookPage());
-        wxPuts(_("XT data = ")+project->getSourceFiles()[index]->data+_("\n"));
+        if(project)
+        {
+            project->getSourceFiles()[index]->setTextCtrl(txtCtrl_obj->getTextCtrl());
+            project->getSourceFiles()[index]->setNotebookPage(sourceFile_auinotebook->GetPage(page_index));
+            updateProjectTree(getProjectFromRoot(project->getRootNode()));
+        }
+    }
+
+    if(txtCtrl_obj->getTextCtrl())
+    {
+        wxStyledTextCtrl* rc_txtCtrl = txtCtrl_obj->getTextCtrl();
+
+        rc_txtCtrl->SetMarginType(0, wxSTC_MARGIN_NUMBER);
+        rc_txtCtrl->SetMarginWidth(0, 40);
+        rc_txtCtrl->SetUndoCollection(true);
+        rc_txtCtrl->EmptyUndoBuffer();
+        rc_txtCtrl->SetLexer(wxSTC_LEX_FREEBASIC);
     }
 
     return txtCtrl_obj;
 }
 
-void rcbasic_edit_frame::createNewFile(rcbasic_project* project, wxFileName newFile)
+void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
 {
     rcbasic_edit_newFile_dialog newFile_dialog(this);
     newFile_dialog.ShowModal();
 
     if(newFile_dialog.getNewFileFlag()==newFileFlag_CANCEL)
         return;
+
+    wxFileName newFile = newFile_dialog.getFileName();
 
     wxFile f;
 
@@ -408,12 +719,29 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project, wxFileName newF
         wxMessageBox(_("Could not create new file"));
         return;
     }
+    //wxPuts(_("\nCreated New File: ")+newFile.GetFullPath());
     //Might want to add header info
     f.Close();
 
-    project->addSourceFile(newFile.GetFullPath());
+    addRecentFile(newFile);
 
-    openFileTab(project, newFile);
+    if(newFile_dialog.getAddToProjectFlag())
+    {
+        //wxPuts("Adding to project");
+        if(project)
+        {
+            project->addSourceFile(newFile.GetFullPath());
+        }
+        else
+        {
+            wxMessageBox(_("There is no active project to add new file to."));
+        }
+        openFileTab(project, newFile);
+    }
+    else
+    {
+        openFileTab(NULL, newFile);
+    }
 
 }
 
@@ -428,9 +756,6 @@ void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)
         case CLOSE_PROJECT:
             wxPuts(_("###Closing the project"));
             closeProject(context_project);
-            break;
-        case NEW_FILE:
-            wxPuts(_("New File"));
             break;
         case ADD_FILES:
             //wxPuts(_("Add Files"));
@@ -459,9 +784,10 @@ void rcbasic_edit_frame::projectTreeContextMenu()
     wxMenu menu;
     menu.Append(SAVE_PROJECT, wxT("&Save Project"));
     menu.Append(CLOSE_PROJECT, wxT("&Close Project"));
-    menu.Append(NEW_FILE, wxT("&New File"));
+    menu.AppendSeparator();
     menu.Append(ADD_FILES, wxT("&Add Files"));
     menu.Append(REMOVE_FILES, wxT("&Remove Files"));
+    menu.AppendSeparator();
     menu.Append(BUILD_PROJECT, wxT("&Build"));
     menu.Append(RUN_PROJECT, wxT("&Run"));
     menu.Append(DEBUG_PROJECT, wxT("&Debug"));
@@ -485,14 +811,14 @@ void rcbasic_edit_frame::onProjectTreeContextMenu( wxTreeEvent& event )
 
 void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
 {
-    wxPrintf("Node Activated: %d\n\n", 0);
+    //wxPrintf("Node Activated: %d\n\n", 0);
     wxTreeItemId selected_node = event.GetItem();
     rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)project_tree->GetItemData(selected_node);
 
-    if(data)
+    /*if(data)
     {
         wxPuts(_("Node Data: ")+data->node_file_path.GetFullPath()+_(", ")+data->parent_project->getName());
-    }
+    }*/
 
     for(int i = 0; i < open_projects.size(); i++)
     {
@@ -503,32 +829,43 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
                 project_tree->SetItemBold(active_project->getRootNode(), false);
             }
             active_project = open_projects[i];
+
+            if(active_project)
+            {
+                wxSetWorkingDirectory(active_project->getLocation());
+            }
+
             project_tree->SetItemBold(active_project->getRootNode(), true);
             return;
         }
         else
         {
             rcbasic_project_node* file_node;
-            wxPuts(_("Looking through project files"));
+            //wxPuts(_("Looking through project files"));
             for(int file_node_index = 0; file_node_index < open_projects[i]->getSourceFiles().size(); file_node_index++)
             {
                 file_node = open_projects[i]->getSourceFiles()[file_node_index];
                 //wxPuts(file_node.getPath().GetFullPath());
                 if(file_node->getNode()==selected_node)
                 {
-                    wxPuts(_("Request open"));
+                    //wxPuts(_("Request open"));
                     if(sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl())<0)
                     {
-                        wxPuts(_("Open a tab"));
+                        //wxPuts(_("Open a tab"));
                         if(file_node->getTextCtrl())
                             file_node->setTextCtrl(NULL);
                         file_node->setTextCtrl(openFileTab(open_projects[i], file_node->getPath())->getTextCtrl());
                         return;
                     }
+                    else
+                    {
+                        //if tab is already open then switch to it
+                        sourceFile_auinotebook->SetSelection(sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl()));
+                    }
                 }
                 else
                 {
-                    wxPuts(_("\n\nCould not open ")+file_node->getPath().GetFullName());
+                    //wxPuts(_("\n\nCould not open ")+file_node->getPath().GetFullName());
                 }
             }
         }
@@ -557,11 +894,54 @@ void rcbasic_edit_frame::onSourceFileTabClose( wxAuiNotebookEvent& event )
         {
             if(sourceFile_auinotebook->GetPageIndex(open_projects[i]->getSourceFiles()[file_node_index]->getTextCtrl()) == selected_page)
             {
-                wxPuts(_("Tab belongs to project -> ") + open_projects[i]->getName());
-                wxPuts(_("Full PATH = ") + open_projects[i]->getSourceFiles()[file_node_index]->getPath().GetFullPath());
+                //wxPuts(_("Tab belongs to project -> ") + open_projects[i]->getName());
+                //wxPuts(_("Full PATH = ") + open_projects[i]->getSourceFiles()[file_node_index]->getPath().GetFullPath());
                 open_projects[i]->getSourceFiles()[file_node_index]->setTextCtrl(NULL);
             }
         }
 
     }
+}
+
+void rcbasic_edit_frame::addRecentProject(rcbasic_project* project)
+{
+    if(!project)
+        return;
+    //wxPuts(_("Adding project: ") + project->getProjectFileLocation());
+    wxString tmp[10];
+    for(int i = 0; i < 10; i++)
+    {
+        //wxPrintf(_("%d = [")+recent_projects[i]+_("]"),i);
+        if(recent_projects[i].compare(project->getProjectFileLocation())==0)
+            return;
+
+        tmp[i]=recent_projects[i];
+    }
+
+    for(int i = 1; i < 10; i++)
+    {
+        recent_projects[i] = tmp[i-1];
+    }
+    recent_projects[0] = project->getProjectFileLocation();
+}
+
+void rcbasic_edit_frame::addRecentFile(wxFileName file)
+{
+    //wxPuts(_("Adding file: ") + file.GetFullPath());
+    //return;
+    wxString tmp[10];
+    for(int i = 0; i < 10; i++)
+    {
+        //wxPrintf(_("%d = [")+recent_projects[i]+_("]"),i);
+        if(recent_files[i].compare(file.GetFullPath())==0)
+            return;
+
+        tmp[i]=recent_files[i];
+    }
+
+    for(int i = 1; i < 10; i++)
+    {
+        recent_files[i] = tmp[i-1];
+    }
+    recent_files[0] = file.GetFullPath();
 }

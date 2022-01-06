@@ -18,9 +18,20 @@ void rcbasic_edit_newFile_dialog::onCreateNewSourceOk( wxCommandEvent& event )
 {
 // TODO: Implement onCreateNewSourceOk
     newFileFlag = newFileFlag_OK;
+    Close();
 }
 
 int rcbasic_edit_newFile_dialog::getNewFileFlag()
 {
     return newFileFlag;
+}
+
+wxFileName rcbasic_edit_newFile_dialog::getFileName()
+{
+    return createNewSource_fileDialog->GetFileName();
+}
+
+bool rcbasic_edit_newFile_dialog::getAddToProjectFlag()
+{
+    return createNewSource_addToProject_checkBox->GetValue();
 }

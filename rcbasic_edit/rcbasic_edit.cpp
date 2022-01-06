@@ -31,7 +31,15 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_file_menu->AppendSeparator();
 
-	m_open_menuItem = new wxMenuItem( m_file_menu, wxID_ANY, wxString( wxT("Open") ) , wxEmptyString, wxITEM_NORMAL );
+	m_open_menu = new wxMenu();
+	wxMenuItem* m_open_menuItem = new wxMenuItem( m_file_menu, wxID_ANY, wxT("Open"), wxEmptyString, wxITEM_NORMAL, m_open_menu );
+	m_openProject_menuItem = new wxMenuItem( m_open_menu, wxID_ANY, wxString( wxT("Open Project") ) , wxEmptyString, wxITEM_NORMAL );
+	m_open_menu->Append( m_openProject_menuItem );
+
+	wxMenuItem* m_openFile_menuItem;
+	m_openFile_menuItem = new wxMenuItem( m_open_menu, wxID_ANY, wxString( wxT("Open Source File") ) , wxEmptyString, wxITEM_NORMAL );
+	m_open_menu->Append( m_openFile_menuItem );
+
 	m_file_menu->Append( m_open_menuItem );
 
 	m_recentProjects_menu = new wxMenu();
@@ -284,7 +292,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_panel6->SetSizer( bSizer6 );
 	m_panel6->Layout();
 	bSizer6->Fit( m_panel6 );
-	m_project_file_splitter->SplitVertically( m_sideBar_panel, m_panel6, 215 );
+	m_project_file_splitter->SplitVertically( m_sideBar_panel, m_panel6, 221 );
 	projectFileSizer->Add( m_project_file_splitter, 1, wxEXPAND, 1 );
 
 
@@ -315,7 +323,11 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	m_new_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::createNewProject ), this, m_newProject_menuItem->GetId());
+	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( rc_ideFrame::onEditorClose ) );
+	m_new_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::newProjectMenuSelect ), this, m_newProject_menuItem->GetId());
+	m_new_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::newFileMenuSelect ), this, m_newFile_menuItem->GetId());
+	m_open_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::openProjectMenuSelect ), this, m_openProject_menuItem->GetId());
+	m_open_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::openFileMenuSelect ), this, m_openFile_menuItem->GetId());
 	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveProject ), this, m_saveProject_menuItem->GetId());
 	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveProjectAs ), this, m_saveProjectAs_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleToolbar ), this, m_showToolbar_menuItem->GetId());
@@ -329,6 +341,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 rc_ideFrame::~rc_ideFrame()
 {
 	// Disconnect Events
+	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( rc_ideFrame::onEditorClose ) );
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
 	sourceFile_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
@@ -653,11 +666,11 @@ rc_newFile_dialog::rc_newFile_dialog( wxWindow* parent, wxWindowID id, const wxS
 
 	bSizer24->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_staticText9 = new wxStaticText( this, wxID_ANY, wxT("Filename (Including Full Path):"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText9 = new wxStaticText( this, wxID_ANY, wxT("Filename:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText9->Wrap( -1 );
-	bSizer24->Add( m_staticText9, 2, wxALL, 5 );
+	bSizer24->Add( m_staticText9, 1, wxALL, 5 );
 
-	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_SAVE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL );
 	bSizer24->Add( createNewSource_fileDialog, 5, wxALL, 5 );
 
 

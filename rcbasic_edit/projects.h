@@ -15,6 +15,7 @@
 
 #define RCBASIC_PROJECT_SOURCE_NEW      0
 #define RCBASIC_PROJECT_SOURCE_EXISTING 1
+#define RCBASIC_PROJECT_SOURCE_OPEN 2
 
 class rcbasic_project_node
 {
@@ -49,6 +50,7 @@ class rcbasic_project
         wxTreeItemId root_node_id;
 
         wxString location;
+        wxString project_file_location;
 
         bool project_valid;
 
@@ -86,6 +88,8 @@ class rcbasic_project
 
         bool saveProject(wxFileName save_file);
         bool projectHasChanged();
+        void setProjectFileLocation(wxString pfile_loc);
+        wxString getProjectFileLocation();
 
         void setLastProjectSave();
 };

@@ -53,7 +53,8 @@ class rc_ideFrame : public wxFrame
 		wxMenu* m_new_menu;
 		wxMenuItem* m_newProject_menuItem;
 		wxMenuItem* m_newFile_menuItem;
-		wxMenuItem* m_open_menuItem;
+		wxMenu* m_open_menu;
+		wxMenuItem* m_openProject_menuItem;
 		wxMenu* m_recentProjects_menu;
 		wxMenu* m_recentFiles_menu;
 		wxMenuItem* m_saveFile_menuItem;
@@ -126,7 +127,11 @@ class rc_ideFrame : public wxFrame
 		wxRichTextCtrl* m_messageWindow_richText;
 
 		// Virtual event handlers, override them in your derived class
-		virtual void createNewProject( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onEditorClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void newProjectMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void newFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void openProjectMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void openFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onSaveProject( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onSaveProjectAs( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleToolbar( wxCommandEvent& event ) { event.Skip(); }
@@ -151,7 +156,7 @@ class rc_ideFrame : public wxFrame
 
 		void m_project_file_splitterOnIdle( wxIdleEvent& )
 		{
-			m_project_file_splitter->SetSashPosition( 215 );
+			m_project_file_splitter->SetSashPosition( 221 );
 			m_project_file_splitter->Disconnect( wxEVT_IDLE, wxIdleEventHandler( rc_ideFrame::m_project_file_splitterOnIdle ), NULL, this );
 		}
 

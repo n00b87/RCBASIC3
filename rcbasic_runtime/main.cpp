@@ -3147,20 +3147,20 @@ int main(int argc, char * argv[])
 		#endif
     #endif // RC_WINDOWS
 
-    string rc_filename = "";
+    string rc_filename = "main.cbc";
 
     if(argc > 1)
         rc_filename = argv[1];
     else
         #ifdef RC_WINDOWS
         {
-            rc_filename = argv[0];
-            rc_filename = rc_filename.substr(0, rc_filename.length()-3) + "cbc";
+            //rc_filename = argv[0];
+            //rc_filename = rc_filename.substr(0, rc_filename.length()-3) + "cbc";
         }
         #else
         {
-            rc_filename = argv[0];
-            rc_filename += ".cbc";
+            //rc_filename = argv[0];
+            //rc_filename += ".cbc";
         }
         #endif // RC_WINDOWS
 

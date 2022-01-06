@@ -26,6 +26,8 @@ class rcbasic_edit_newFile_dialog : public rc_newFile_dialog
 		/** Constructor */
 		rcbasic_edit_newFile_dialog( wxWindow* parent );
 		int getNewFileFlag();
+		wxFileName getFileName();
+		bool getAddToProjectFlag();
 	//// end generated class members
 
 };
