@@ -171,6 +171,17 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_menubar1->Append( m_view_menu, wxT("View") );
 
+	m_project_menu = new wxMenu();
+	wxMenuItem* m_projectProperties_menuItem;
+	m_projectProperties_menuItem = new wxMenuItem( m_project_menu, wxID_ANY, wxString( wxT("Properties") ) , wxEmptyString, wxITEM_NORMAL );
+	m_project_menu->Append( m_projectProperties_menuItem );
+
+	wxMenuItem* m_environment_menuItem;
+	m_environment_menuItem = new wxMenuItem( m_project_menu, wxID_ANY, wxString( wxT("Environment") ) , wxEmptyString, wxITEM_NORMAL );
+	m_project_menu->Append( m_environment_menuItem );
+
+	m_menubar1->Append( m_project_menu, wxT("Project") );
+
 	m_build_menu = new wxMenu();
 	m_build_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Build") ) , wxEmptyString, wxITEM_NORMAL );
 	m_build_menu->Append( m_build_menuItem );
@@ -328,8 +339,15 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_new_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::newFileMenuSelect ), this, m_newFile_menuItem->GetId());
 	m_open_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::openProjectMenuSelect ), this, m_openProject_menuItem->GetId());
 	m_open_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::openFileMenuSelect ), this, m_openFile_menuItem->GetId());
-	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveProject ), this, m_saveProject_menuItem->GetId());
-	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveProjectAs ), this, m_saveProjectAs_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveFileMenuSelect ), this, m_saveFile_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveFileAsMenuSelect ), this, m_saveFileAs_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveProjectMenuSelect ), this, m_saveProject_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveProjectAsMenuSelect ), this, m_saveProjectAs_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSaveAllMenuSelect ), this, m_saveAll_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onCloseFileMenuSelect ), this, m_closeFile_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onCloseProjectMenuSelect ), this, m_closeProject_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onCloseAllMenuSelect ), this, m_closeAll_menuItem->GetId());
+	m_file_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onExitMenuSelect ), this, m_exit_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleToolbar ), this, m_showToolbar_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleSideBar ), this, m_showSideBar_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleMessageWindow ), this, m_showMessageWindow_menuItem->GetId());
@@ -1187,4 +1205,77 @@ rc_setColorScheme_dialog::rc_setColorScheme_dialog( wxWindow* parent, wxWindowID
 
 rc_setColorScheme_dialog::~rc_setColorScheme_dialog()
 {
+}
+
+rc_closeFileSavePrompt_dialog::rc_closeFileSavePrompt_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer20;
+	bSizer20 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer21;
+	bSizer21 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer21->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("Do you wish to save this file before closing?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8->Wrap( -1 );
+	m_staticText8->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
+
+	bSizer21->Add( m_staticText8, 1, wxALL|wxEXPAND, 5 );
+
+
+	bSizer21->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( bSizer21, 3, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer22;
+	bSizer22 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer22->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	closeFileSave_cancelButton = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer22->Add( closeFileSave_cancelButton, 0, wxALL, 5 );
+
+	closeFileSave_dontSaveButton = new wxButton( this, wxID_ANY, wxT("Don't Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer22->Add( closeFileSave_dontSaveButton, 0, wxALL, 5 );
+
+	closeFileSave_saveButton = new wxButton( this, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer22->Add( closeFileSave_saveButton, 0, wxALL, 5 );
+
+
+	bSizer22->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( bSizer22, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer20 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	closeFileSave_cancelButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeFileSavePrompt_dialog::onCloseFileSaveCancel ), NULL, this );
+	closeFileSave_dontSaveButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeFileSavePrompt_dialog::onCloseFileSaveDontSave ), NULL, this );
+	closeFileSave_saveButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeFileSavePrompt_dialog::onCloseFileSaveOk ), NULL, this );
+}
+
+rc_closeFileSavePrompt_dialog::~rc_closeFileSavePrompt_dialog()
+{
+	// Disconnect Events
+	closeFileSave_cancelButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeFileSavePrompt_dialog::onCloseFileSaveCancel ), NULL, this );
+	closeFileSave_dontSaveButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeFileSavePrompt_dialog::onCloseFileSaveDontSave ), NULL, this );
+	closeFileSave_saveButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeFileSavePrompt_dialog::onCloseFileSaveOk ), NULL, this );
+
 }

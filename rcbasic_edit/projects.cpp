@@ -5,6 +5,7 @@ rcbasic_project_node::rcbasic_project_node(wxFileName node_path)
     path = node_path;
     rc_txtCtrl = NULL;
     notebook_page = NULL;
+    text_changed = false;
 }
 
 void rcbasic_project_node::setNode(wxTreeItemId node)
@@ -22,15 +23,48 @@ wxFileName rcbasic_project_node::getPath()
     return path;
 }
 
+void rcbasic_project_node::setTextChangedFlag(bool flag)
+{
+    text_changed = flag;
+    /*if(text_changed)
+    {
+        if(rc_txtCtrl)
+            txt_backup = rc_txtCtrl->GetText();
+    }*/
+}
+
+bool rcbasic_project_node::getTextChangedFlag()
+{
+    return text_changed;
+}
+
 void rcbasic_project_node::setTextCtrl(wxStyledTextCtrl* txt_ctrl)
 {
-    if(!txt_ctrl)
+
+    if( (!txt_ctrl) || txt_ctrl==rc_txtCtrl)
+    {
+        rc_txtCtrl = txt_ctrl;
         return;
+    }
+
+    rc_txtCtrl = txt_ctrl;
 
     wxFile f;
 
-    if(!f.Open(path.GetFullPath()))
+    /*if(text_changed)
+    {
+        txt_ctrl->ClearAll();
+        txt_ctrl->AddText(txt_backup);
+        txt_backup.clear();
+        text_changed = false;
         return;
+    }*/
+
+    if(!f.Open(path.GetFullPath()))
+    {
+        wxMessageBox(_("Could not read file."));
+        return;
+    }
 
     wxString f_data;
 
@@ -270,6 +304,8 @@ bool rcbasic_project::saveProject(wxFileName save_file)
         }
         project_file.Close();
         location = save_file.GetPath();
+        project_file_location = save_file.GetFullPath();
+        setLastProjectSave();
         //wxPuts(_("New location: ") + location);
     }
 

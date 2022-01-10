@@ -25,8 +25,9 @@ class rcbasic_project_node
         wxStyledTextCtrl* rc_txtCtrl;
         wxWindow* notebook_page;
         uintptr_t notebook_page_addr;
+        bool text_changed;
+        wxString txt_backup;
     public:
-        wxString data;
         rcbasic_project_node(wxFileName node_path);
         void setNode(wxTreeItemId node);
         wxTreeItemId getNode();
@@ -35,6 +36,8 @@ class rcbasic_project_node
         wxStyledTextCtrl* getTextCtrl();
         void setNotebookPage(wxWindow* page);
         wxWindow* getNotebookPage();
+        void setTextChangedFlag(bool flag);
+        bool getTextChangedFlag();
 };
 
 class rcbasic_project

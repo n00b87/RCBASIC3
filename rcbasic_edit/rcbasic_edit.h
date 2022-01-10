@@ -90,6 +90,7 @@ class rc_ideFrame : public wxFrame
 		wxMenuItem* m_zoomIn_menuItem;
 		wxMenuItem* m_zoomOut_menuItem;
 		wxMenuItem* m_normalSize_menuItem;
+		wxMenu* m_project_menu;
 		wxMenu* m_build_menu;
 		wxMenuItem* m_build_menuItem;
 		wxMenuItem* m_run_menuItem;
@@ -132,8 +133,15 @@ class rc_ideFrame : public wxFrame
 		virtual void newFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void openProjectMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void openFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onSaveProject( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onSaveProjectAs( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSaveFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSaveFileAsMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSaveProjectMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSaveProjectAsMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSaveAllMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCloseFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCloseProjectMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCloseAllMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onExitMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleToolbar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleSideBar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleMessageWindow( wxCommandEvent& event ) { event.Skip(); }
@@ -378,6 +386,33 @@ class rc_setColorScheme_dialog : public wxDialog
 		rc_setColorScheme_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color Schemes"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 418,353 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_setColorScheme_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_closeFileSavePrompt_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_closeFileSavePrompt_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText8;
+		wxButton* closeFileSave_cancelButton;
+		wxButton* closeFileSave_dontSaveButton;
+		wxButton* closeFileSave_saveButton;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onCloseFileSaveCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCloseFileSaveDontSave( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCloseFileSaveOk( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		rc_closeFileSavePrompt_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Close File"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
+
+		~rc_closeFileSavePrompt_dialog();
 
 };
 
