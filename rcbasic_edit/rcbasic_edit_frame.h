@@ -41,6 +41,7 @@ class rcbasic_edit_txtCtrl
         bool getTextChangedFlag();
         void setTempText(wxString tmp);
         wxString getTempText();
+        //bool closeAll_skip_flag; //This is only going to be used in CloseAll to prevent infinite loop if you cancel when prompted to save
 };
 
 /** Implementing rc_ideFrame */
@@ -81,6 +82,14 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onCloseProjectMenuSelect( wxCommandEvent& event );
 		void onCloseAllMenuSelect( wxCommandEvent& event );
 		void onExitMenuSelect( wxCommandEvent& event );
+		void onUndoMenuSelect( wxCommandEvent& event );
+		void onRedoMenuSelect( wxCommandEvent& event );
+		void onCutMenuSelect( wxCommandEvent& event );
+		void onCopyMenuSelect( wxCommandEvent& event );
+		void onPasteMenuSelect( wxCommandEvent& event );
+		void onDeleteMenuSelect( wxCommandEvent& event );
+		void onCommentMenuSelect( wxCommandEvent& event );
+		void onBlockCommentMenuSelect( wxCommandEvent& event );
 		void toggleToolbar( wxCommandEvent& event );
 		void toggleSideBar( wxCommandEvent& event );
 		void toggleMessageWindow( wxCommandEvent& event );
@@ -106,8 +115,8 @@ class rcbasic_edit_frame : public rc_ideFrame
 		wxArrayString openMultiFileDialog(wxString title, wxString default_wildcard, int flag);
 		void saveProject(rcbasic_project* project);
 		void saveFile(int openFile_index, int flag);
-		void closeFile(int notebook_page);
-		void closeProject(rcbasic_project* project);
+		int closeFile(int notebook_page);
+		int closeProject(rcbasic_project* project);
 		void openProject(wxFileName project_path);
 		void openSourceFile(wxFileName source_path);
 		rcbasic_edit_txtCtrl* openFileTab(rcbasic_project* project, wxFileName newFile);

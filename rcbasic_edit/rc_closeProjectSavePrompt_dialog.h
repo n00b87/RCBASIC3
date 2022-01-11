@@ -26,7 +26,7 @@ class rcbasic_edit_closeProjectSavePrompt_dialog : public rc_closeProjectSavePro
 		void onCloseProjectSaveOk( wxCommandEvent& event );
 	public:
 		/** Constructor */
-		rcbasic_edit_closeProjectSavePrompt_dialog( wxWindow* parent );
+		rcbasic_edit_closeProjectSavePrompt_dialog( wxWindow* parent, const wxString& title );
 		int getProjectCloseFlag();
 	//// end generated class members
 

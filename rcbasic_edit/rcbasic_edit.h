@@ -142,6 +142,14 @@ class rc_ideFrame : public wxFrame
 		virtual void onCloseProjectMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCloseAllMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onExitMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onUndoMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onRedoMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCutMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCopyMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onPasteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onDeleteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onBlockCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleToolbar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleSideBar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleMessageWindow( wxCommandEvent& event ) { event.Skip(); }

@@ -1,8 +1,8 @@
 #include "rc_closeProjectSavePrompt_dialog.h"
 
-rcbasic_edit_closeProjectSavePrompt_dialog::rcbasic_edit_closeProjectSavePrompt_dialog( wxWindow* parent )
+rcbasic_edit_closeProjectSavePrompt_dialog::rcbasic_edit_closeProjectSavePrompt_dialog( wxWindow* parent, const wxString& title )
 :
-rc_closeProjectSavePrompt_dialog( parent )
+rc_closeProjectSavePrompt_dialog( parent, wxID_ANY, title, wxDefaultPosition, wxSize( 385,149 ), wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP )
 {
     projectCloseFlag = 0;
 }

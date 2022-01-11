@@ -476,7 +476,9 @@ void rcbasic_edit_frame::openSourceFile(wxFileName source_path)
         addRecentFile(source_path);
 
         rcbasic_edit_txtCtrl* txtCtrl_obj = openFileTab(NULL, source_path);
+        txtCtrl_obj->getTextCtrl()->ClearAll();
         txtCtrl_obj->getTextCtrl()->SetText(contents);
+        txtCtrl_obj->getTextCtrl()->EmptyUndoBuffer();
         txtCtrl_obj->setTextChangedFlag(false);
     }
 }
@@ -639,10 +641,12 @@ void rcbasic_edit_frame::onSaveAllMenuSelect( wxCommandEvent& event )
     }
 }
 
-void rcbasic_edit_frame::closeFile(int notebook_page)
+int rcbasic_edit_frame::closeFile(int notebook_page)
 {
     if(notebook_page < 0)
-        return;
+        return -1;
+
+    int rtn_val = -1;
 
     for(int i = 0; i < open_files.size(); i++)
     {
@@ -659,12 +663,13 @@ void rcbasic_edit_frame::closeFile(int notebook_page)
                     case fileCloseFlag_SAVE:
                         saveFile(i);
                         if(!last_fileSave_flag)
-                            return;
+                            return fileCloseFlag_SAVE;
                         break;
                     case fileCloseFlag_DONT_SAVE:
+                        rtn_val = fileCloseFlag_DONT_SAVE;
                         break;
                     case fileCloseFlag_CANCEL:
-                        return;
+                        return fileCloseFlag_CANCEL;
                 }
             }
             open_files.erase(open_files.begin()+i);
@@ -672,6 +677,7 @@ void rcbasic_edit_frame::closeFile(int notebook_page)
             break;
         }
     }
+    return rtn_val;
 }
 
 void rcbasic_edit_frame::onCloseFileMenuSelect( wxCommandEvent& event )
@@ -771,26 +777,30 @@ void rcbasic_edit_frame::saveProject(rcbasic_project* project)
     project->saveProject(project_file);
 }
 
-void rcbasic_edit_frame::closeProject(rcbasic_project* project)
+int rcbasic_edit_frame::closeProject(rcbasic_project* project)
 {
 
     if(!project)
-        return;
+        return -1;
+
+    int rtn_val = -1;
 
     if(project->projectHasChanged())
     {
         //wxPuts(_("Project has changed"));
-        rcbasic_edit_closeProjectSavePrompt_dialog cs_prompt(this);
+        rcbasic_edit_closeProjectSavePrompt_dialog cs_prompt(this, _("Project: ") + project->getName());
         cs_prompt.ShowModal();
         switch(cs_prompt.getProjectCloseFlag())
         {
             case projectCloseFlag_SAVE:
                 //wxPuts(_("SAVE and CLOSE"));
                 saveProject(project);
+                rtn_val = projectCloseFlag_SAVE;
                 break;
             case projectCloseFlag_CANCEL:
-                return;
+                return projectCloseFlag_CANCEL;
             default:
+                rtn_val = projectCloseFlag_DONT_SAVE;
                 break;
         }
     }
@@ -843,18 +853,28 @@ void rcbasic_edit_frame::closeProject(rcbasic_project* project)
 
     open_projects.erase(open_projects.begin()+getProjectFromRoot(project->getRootNode()));
     delete project;
+
+    return rtn_val;
 }
 
 void rcbasic_edit_frame::onCloseAllMenuSelect( wxCommandEvent& event )
 {
-    while(open_files.size() > 0)
+    int i = 0;
+    while(open_files.size() > i)
     {
-        closeFile(sourceFile_auinotebook->GetPageIndex(open_files[0]->getTextCtrl()));
+        int close_val = closeFile(sourceFile_auinotebook->GetPageIndex(open_files[i]->getTextCtrl()));
+
+        if(close_val==fileCloseFlag_CANCEL)
+            i++;
     }
 
-    while(open_projects.size() > 0)
+    i = 0;
+    while(open_projects.size() > i)
     {
-        closeProject(open_projects[0]);
+        int close_val = closeProject(open_projects[i]);
+
+        if(close_val==projectCloseFlag_CANCEL)
+            i++;
     }
 }
 
@@ -874,6 +894,118 @@ void rcbasic_edit_frame::onSaveProjectAs(wxCommandEvent& event)
     {
         active_project->saveProject(openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"),wxFD_SAVE));
     }
+}
+
+void rcbasic_edit_frame::onUndoMenuSelect( wxCommandEvent& event )
+{
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    t->Undo();
+}
+
+void rcbasic_edit_frame::onRedoMenuSelect( wxCommandEvent& event )
+{
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    t->Redo();
+}
+
+void rcbasic_edit_frame::onCutMenuSelect( wxCommandEvent& event )
+{
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    t->Cut();
+}
+
+void rcbasic_edit_frame::onCopyMenuSelect( wxCommandEvent& event )
+{
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    t->Copy();
+}
+
+void rcbasic_edit_frame::onPasteMenuSelect( wxCommandEvent& event )
+{
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    t->Paste();
+}
+
+void rcbasic_edit_frame::onDeleteMenuSelect( wxCommandEvent& event )
+{
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    //wxPrintf(_("Line: %d to %d"), t->LineFromPosition(t->GetSelectionStart()), t->LineFromPosition(t->GetSelectionEnd()));
+    t->Clear();
+}
+
+void rcbasic_edit_frame::onCommentMenuSelect( wxCommandEvent& event )
+{
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    //wxPrintf(_("Line: %d to %d"), t->LineFromPosition(t->GetSelectionStart()), t->LineFromPosition(t->GetSelectionEnd()));
+    int start_line = t->LineFromPosition(t->GetSelectionStart());
+    int end_line = t->LineFromPosition(t->GetSelectionEnd());
+
+    wxString new_line;
+
+    for(int i = start_line; i <= end_line; i++)
+    {
+        new_line = t->GetLine(i);
+        new_line.Replace(_("\n"), _(""));
+        t->Replace(t->PositionFromLine(i), t->GetLineEndPosition(i), _("\'") + new_line);
+    }
+}
+
+void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
+{
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    //wxPrintf(_("Line: %d to %d"), t->LineFromPosition(t->GetSelectionStart()), t->LineFromPosition(t->GetSelectionEnd()));
+    int start_line = t->LineFromPosition(t->GetSelectionStart());
+    int end_line = t->LineFromPosition(t->GetSelectionEnd());
+
+    wxString new_line;
+
+    new_line = t->GetLine(start_line);
+    new_line.Replace(_("\n"), _(""));
+    t->Replace(t->PositionFromLine(start_line), t->GetLineEndPosition(start_line), _("/\'") + new_line);
+
+    new_line = t->GetLine(end_line);
+    new_line.Replace(_("\n"), _(""));
+    t->Replace(t->PositionFromLine(end_line), t->GetLineEndPosition(end_line), new_line + _("\'/"));
 }
 
 void rcbasic_edit_frame::toggleMessageWindow( wxCommandEvent& event )

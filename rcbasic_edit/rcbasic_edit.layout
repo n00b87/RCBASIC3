@@ -4,37 +4,7 @@
 	<ActiveTarget name="Release" />
 	<File name="rc_closeFileSavePrompt_dialog.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="537" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="rcbasic_edit_newProject_dialog.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="16" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="projects.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1230" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="projects.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="318" topLine="8" />
-		</Cursor>
-	</File>
-	<File name="rcbasic_edit_frame.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1026" topLine="21" />
-		</Cursor>
-	</File>
-	<File name="rc_ideApp.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="597" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="rcbasic_edit_frame.cpp" open="1" top="1" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1236" topLine="20" />
+			<Cursor1 position="840" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="rc_closeProjectSavePrompt_dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -42,29 +12,103 @@
 			<Cursor1 position="268" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="rcbasic_edit_newProject_dialog.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rcbasic_edit_newProject_dialog.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="790" topLine="0" />
+			<Cursor1 position="16" topLine="0" />
 		</Cursor>
+	</File>
+	<File name="rcbasic_edit_frame.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3456" topLine="72" />
+		</Cursor>
+	</File>
+	<File name="projects.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1230" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="rc_ideApp.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="597" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="rcbasic_edit.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2019" topLine="74" />
+		</Cursor>
+	</File>
+	<File name="rc_closeFileSavePrompt_dialog.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="700" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="projects.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="318" topLine="11" />
+		</Cursor>
+	</File>
+	<File name="rcbasic_edit.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="14349" topLine="219" />
+		</Cursor>
+	</File>
+	<File name="rcbasic_edit_frame.cpp" open="1" top="1" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5477" topLine="17" />
+		</Cursor>
+		<Folding>
+			<Collapse line="7" />
+			<Collapse line="14" />
+			<Collapse line="19" />
+			<Collapse line="24" />
+			<Collapse line="29" />
+			<Collapse line="34" />
+			<Collapse line="39" />
+			<Collapse line="45" />
+			<Collapse line="50" />
+			<Collapse line="55" />
+			<Collapse line="66" />
+			<Collapse line="189" />
+			<Collapse line="201" />
+			<Collapse line="213" />
+			<Collapse line="276" />
+			<Collapse line="333" />
+			<Collapse line="351" />
+			<Collapse line="484" />
+			<Collapse line="499" />
+			<Collapse line="557" />
+			<Collapse line="562" />
+			<Collapse line="567" />
+			<Collapse line="598" />
+			<Collapse line="626" />
+			<Collapse line="677" />
+			<Collapse line="687" />
+			<Collapse line="695" />
+			<Collapse line="705" />
+			<Collapse line="723" />
+			<Collapse line="733" />
+			<Collapse line="744" />
+			<Collapse line="756" />
+			<Collapse line="774" />
+			<Collapse line="953" />
+			<Collapse line="972" />
+			<Collapse line="1044" />
+			<Collapse line="1091" />
+			<Collapse line="1125" />
+			<Collapse line="1142" />
+			<Collapse line="1155" />
+			<Collapse line="1300" />
+			<Collapse line="1322" />
+		</Folding>
 	</File>
 	<File name="rc_ideApp.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="rcbasic_edit.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rcbasic_edit_newProject_dialog.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="39999" topLine="998" />
-		</Cursor>
-	</File>
-	<File name="rcbasic_edit.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="11998" topLine="301" />
-		</Cursor>
-	</File>
-	<File name="rc_closeFileSavePrompt_dialog.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="774" topLine="0" />
+			<Cursor1 position="790" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
