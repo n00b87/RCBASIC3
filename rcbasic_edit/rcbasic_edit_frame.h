@@ -90,6 +90,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onDeleteMenuSelect( wxCommandEvent& event );
 		void onCommentMenuSelect( wxCommandEvent& event );
 		void onBlockCommentMenuSelect( wxCommandEvent& event );
+		void onFindMenuSelect( wxCommandEvent& event );
 		void toggleToolbar( wxCommandEvent& event );
 		void toggleSideBar( wxCommandEvent& event );
 		void toggleMessageWindow( wxCommandEvent& event );
@@ -124,6 +125,22 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void addRecentProject(rcbasic_project* project);
 		void addRecentFile(wxFileName file);
 		int getOpenFileFromSelection();
+		rcbasic_project* getActiveProject(){ return active_project; }
+		rcbasic_edit_txtCtrl* getCurrentFile()
+		{
+		    int selected_page = sourceFile_auinotebook->GetSelection();
+
+		    if(selected_page < 0)
+                return NULL;
+
+            for(int i = 0; i < open_files.size(); i++)
+            {
+                if(open_files[i]->getTextCtrl() == (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page))
+                    return open_files[i];
+            }
+
+            return NULL;
+		}
 	//// end generated class members
 
 

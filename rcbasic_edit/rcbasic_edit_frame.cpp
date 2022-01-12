@@ -3,6 +3,7 @@
 #include "rcbasic_edit_frame.h"
 #include "rcbasic_edit_newProject_dialog.h"
 #include "rc_closeProjectSavePrompt_dialog.h"
+#include "rc_find_dialog.h"
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
 {
@@ -1006,6 +1007,12 @@ void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
     new_line = t->GetLine(end_line);
     new_line.Replace(_("\n"), _(""));
     t->Replace(t->PositionFromLine(end_line), t->GetLineEndPosition(end_line), new_line + _("\'/"));
+}
+
+void rcbasic_edit_frame::onFindMenuSelect( wxCommandEvent& event )
+{
+    rcbasic_edit_find_dialog find_dialog(this);
+    find_dialog.ShowModal();
 }
 
 void rcbasic_edit_frame::toggleMessageWindow( wxCommandEvent& event )

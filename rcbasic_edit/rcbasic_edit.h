@@ -26,6 +26,7 @@
 #include <wx/aui/auibook.h>
 #include <wx/splitter.h>
 #include <wx/richtext/richtextctrl.h>
+#include <wx/listbox.h>
 #include <wx/frame.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -35,7 +36,6 @@
 #include <wx/dialog.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
-#include <wx/listbox.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -125,7 +125,11 @@ class rc_ideFrame : public wxFrame
 		wxPanel* m_panel6;
 		wxAuiNotebook* sourceFile_auinotebook;
 		wxPanel* m_panel7;
+		wxNotebook* m_notebook2;
+		wxPanel* m_panel71;
 		wxRichTextCtrl* m_messageWindow_richText;
+		wxPanel* m_panel8;
+		wxListBox* m_listBox2;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onEditorClose( wxCloseEvent& event ) { event.Skip(); }
@@ -150,6 +154,7 @@ class rc_ideFrame : public wxFrame
 		virtual void onDeleteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onBlockCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onFindMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleToolbar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleSideBar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleMessageWindow( wxCommandEvent& event ) { event.Skip(); }
@@ -283,17 +288,26 @@ class rc_find_dialog : public wxDialog
 
 	protected:
 		wxStaticText* m_staticText11;
-		wxTextCtrl* m_textCtrl6;
-		wxCheckBox* m_checkBox2;
-		wxCheckBox* m_checkBox3;
-		wxButton* m_button10;
-		wxButton* m_button11;
-		wxButton* m_button12;
-		wxButton* m_button13;
-		wxButton* m_button14;
-		wxButton* m_button15;
+		wxCheckBox* m_caseSensitive_checkBox;
+		wxCheckBox* m_matchWhole_checkBox;
+		wxButton* m_mark_button;
+		wxButton* m_inProject_button;
+		wxButton* m_inFile_button;
+		wxButton* m_close_button;
+		wxButton* m_previous_button;
+		wxButton* m_next_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onMarkButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onInProjectButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onInFileButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCloseButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onPreviousButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onNextButtonClick( wxCommandEvent& event ) { event.Skip(); }
+
 
 	public:
+		wxTextCtrl* m_search_textCtrl;
 
 		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 438,163 ), long style = wxDEFAULT_DIALOG_STYLE );
 
