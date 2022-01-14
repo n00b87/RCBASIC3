@@ -1009,10 +1009,82 @@ void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
     t->Replace(t->PositionFromLine(end_line), t->GetLineEndPosition(end_line), new_line + _("\'/"));
 }
 
+void rcbasic_edit_frame::setSearchResults(int searchIn_type, int findDialog_flag, wxString txt)
+{
+    if(sourceFile_auinotebook->GetPageCount() <= 0)
+        return;
+
+
+    int current_page_index = sourceFile_auinotebook->GetSelection();
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(current_page_index);
+
+    int flag = findDialog_flag;
+
+    wxString selText= txt;
+    int selLen = selText.Len();
+    int selStart= 0;
+
+    int totalLen = t->GetTextLength();
+    int searchStart=0;
+    int foundLoc = 0;
+
+    t->SetSearchFlags(flag);
+
+    rcbasic_search_result r;
+    r.isOpenFile = false;
+
+    for(int i = 0; i < open_files.size(); i++)
+    {
+        if(open_files[i]->getTextCtrl()==t)
+        {
+            r.isOpenFile = true;
+            r.txtCtrl_obj = open_files[i];
+            break;
+        }
+    }
+
+    while(foundLoc!=-1)
+    {
+        t->SetTargetStart(searchStart);
+        t->SetTargetEnd(totalLen);
+
+        foundLoc= t->SearchInTarget(selText);
+        searchStart= foundLoc+selLen;
+
+        if(foundLoc!=-1)
+        {
+            r.line = t->LineFromPosition(foundLoc);
+            wxFileName fname = r.txtCtrl_obj->getSourcePath();
+            wxString line_str;
+            line_str.Printf(_(":%d:    "), r.line+1);
+            m_searchResults_listBox->AppendAndEnsureVisible( fname.GetFullName() + line_str + t->GetLineText(r.line) );
+            search_results.push_back(r);
+        }
+    }
+
+    m_searchResults_listBox->SetSelection(0);
+
+}
+
+void rcbasic_edit_frame::clearSearchResults()
+{
+
+}
+
 void rcbasic_edit_frame::onFindMenuSelect( wxCommandEvent& event )
 {
     rcbasic_edit_find_dialog find_dialog(this);
     find_dialog.ShowModal();
+
+    switch(find_dialog.getValue())
+    {
+        case find_dialog_value_INFILE:
+            setSearchResults(searchIn_FILE, find_dialog.getFlags(), find_dialog.getSearchText());
+            break;
+        case find_dialog_value_INPROJECT:
+
+            break;
+    }
 }
 
 void rcbasic_edit_frame::toggleMessageWindow( wxCommandEvent& event )

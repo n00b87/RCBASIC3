@@ -64,6 +64,8 @@
 		<Unit filename="rc_closeFileSavePrompt_dialog.h" />
 		<Unit filename="rc_closeProjectSavePrompt_dialog.cpp" />
 		<Unit filename="rc_closeProjectSavePrompt_dialog.h" />
+		<Unit filename="rc_find_dialog.cpp" />
+		<Unit filename="rc_find_dialog.h" />
 		<Unit filename="rc_ideApp.cpp" />
 		<Unit filename="rc_ideApp.h" />
 		<Unit filename="rc_newFile_dialog.cpp" />

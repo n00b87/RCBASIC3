@@ -331,8 +331,8 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer57;
 	bSizer57 = new wxBoxSizer( wxVERTICAL );
 
-	m_listBox2 = new wxListBox( m_panel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0|wxBORDER_NONE );
-	bSizer57->Add( m_listBox2, 1, wxALL|wxEXPAND, 5 );
+	m_searchResults_listBox = new wxListBox( m_panel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0|wxBORDER_NONE );
+	bSizer57->Add( m_searchResults_listBox, 1, wxALL|wxEXPAND, 5 );
 
 
 	m_panel8->SetSizer( bSizer57 );

@@ -3227,10 +3227,10 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1641882538 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1642141844 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1641882538 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1642141844 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3250,6 +3250,7 @@
 	<wx/aui/auibook.h>
 	<wx/splitter.h>
 	<wx/richtext/richtextctrl.h>
+	<wx/listbox.h>
 	<wx/frame.h>
 	<wx/stattext.h>
 	<wx/textctrl.h>
@@ -3259,7 +3260,6 @@
 	<wx/dialog.h>
 	<wx/checkbox.h>
 	<wx/combobox.h>
-	<wx/listbox.h>
 
 1587560968 c:\dev_libs\wx\include\wx\xrc\xmlres.h
 	"wx/defs.h"
@@ -3376,7 +3376,7 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1641882584 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1642141592 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -3387,11 +3387,12 @@
 	<wx/stdpaths.h>
 	<vector>
 
-1641875125 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1642138454 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
 	"rc_closeProjectSavePrompt_dialog.h"
+	"rc_find_dialog.h"
 
 1587560968 c:\dev_libs\wx\include\wx\filepicker.h
 	"wx/defs.h"
@@ -3466,4 +3467,12 @@
 
 1641786166 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_closefilesaveprompt_dialog.h
 	"rcbasic_edit.h"
+
+1642139658 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_find_dialog.cpp
+	"rc_find_dialog.h"
+
+1642139587 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_find_dialog.h
+	"rcbasic_edit.h"
+	"rcbasic_edit_frame.h"
+	"projects.h"
 

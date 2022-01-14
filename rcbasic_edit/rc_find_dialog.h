@@ -22,9 +22,11 @@ class rcbasic_edit_find_dialog : public rc_find_dialog
 {
     private:
         int find_dialog_value;
+        int find_dialog_flags;
         rcbasic_project* current_project;
-        rcbasic_edit_frame* frame;
+        rcbasic_edit_frame* parent_frame;
         rcbasic_edit_txtCtrl* current_file;
+        wxString search_text;
         //vector<uint64_t> search_line_number;
 
     protected:
@@ -39,6 +41,9 @@ class rcbasic_edit_find_dialog : public rc_find_dialog
 	public:
 		/** Constructor */
 		rcbasic_edit_find_dialog( wxWindow* parent );
+		int getValue();
+		int getFlags();
+		wxString getSearchText();
 	//// end generated class members
 
 };

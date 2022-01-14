@@ -129,7 +129,7 @@ class rc_ideFrame : public wxFrame
 		wxPanel* m_panel71;
 		wxRichTextCtrl* m_messageWindow_richText;
 		wxPanel* m_panel8;
-		wxListBox* m_listBox2;
+		wxListBox* m_searchResults_listBox;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onEditorClose( wxCloseEvent& event ) { event.Skip(); }
