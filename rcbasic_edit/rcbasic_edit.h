@@ -35,6 +35,7 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/checkbox.h>
+#include <wx/collpane.h>
 #include <wx/combobox.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -155,12 +156,17 @@ class rc_ideFrame : public wxFrame
 		virtual void onCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onBlockCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onFindNextMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onFindPreviousMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onReplaceMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onGotoMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleToolbar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleSideBar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleMessageWindow( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeNodeActivated( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeContextMenu( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onSourceFileTabClose( wxAuiNotebookEvent& event ) { event.Skip(); }
+		virtual void onSearchResultSelection( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
@@ -316,6 +322,31 @@ class rc_find_dialog : public wxDialog
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+/// Class rc_searchWrap_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_searchWrap_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxButton* searchWrap_cancelButton;
+		wxButton* searchWrap_okButton;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onSearchWrapCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSearchWrapOk( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+		wxStaticText* m_searchWrapPrompt_staticText;
+
+		rc_searchWrap_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Search"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
+
+		~rc_searchWrap_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
 /// Class rc_replace_dialog
 ///////////////////////////////////////////////////////////////////////////////
 class rc_replace_dialog : public wxDialog
@@ -324,21 +355,31 @@ class rc_replace_dialog : public wxDialog
 
 	protected:
 		wxStaticText* m_staticText11;
-		wxTextCtrl* m_textCtrl6;
+		wxTextCtrl* m_search_textCtrl;
 		wxStaticText* m_staticText15;
-		wxTextCtrl* m_textCtrl9;
-		wxCheckBox* m_checkBox2;
-		wxCheckBox* m_checkBox3;
-		wxButton* m_button10;
-		wxButton* m_button11;
-		wxButton* m_button12;
+		wxTextCtrl* m_replace_textCtrl;
+		wxCheckBox* m_caseSensitive_checkBox;
+		wxCheckBox* m_matchWhole_checkBox;
+		wxCollapsiblePane* m_collapsiblePane1;
+		wxButton* m_replaceInProject_button;
+		wxButton* m_replaceInFile_button;
+		wxButton* m_replaceInSelection_button;
+		wxButton* m_find_button;
+		wxButton* m_button29;
 		wxButton* m_button13;
-		wxButton* m_button14;
-		wxButton* m_button15;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onReplaceInProjectClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onReplaceInFileClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onReplaceInSelectionClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onFindNextClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onReplaceClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onReplaceCloseClick( wxCommandEvent& event ) { event.Skip(); }
+
 
 	public:
 
-		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 467,202 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 467,238 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_replace_dialog();
 

@@ -30,8 +30,13 @@ void rcbasic_edit_find_dialog::onMarkButtonClick( wxCommandEvent& event )
 // TODO: Implement onMarkButtonClick
     find_dialog_value = find_dialog_value_MARK;
 
+    if(!current_file)
+        return;
 
     wxStyledTextCtrl* t = current_file->getTextCtrl();
+
+    if(!t)
+        return;
 
     int flag = m_matchWhole_checkBox->GetValue() ? wxSTC_FIND_WHOLEWORD : 0;
     flag = m_caseSensitive_checkBox->GetValue() ? (flag | wxSTC_FIND_MATCHCASE) : flag;
@@ -111,6 +116,9 @@ void rcbasic_edit_find_dialog::onCloseButtonClick( wxCommandEvent& event )
 void rcbasic_edit_find_dialog::onPreviousButtonClick( wxCommandEvent& event )
 {
 // TODO: Implement onPreviousButtonClick
+    if(!current_file)
+        return;
+
     wxStyledTextCtrl* t = current_file->getTextCtrl();
 
     if(!t)
@@ -132,6 +140,9 @@ void rcbasic_edit_find_dialog::onPreviousButtonClick( wxCommandEvent& event )
 void rcbasic_edit_find_dialog::onNextButtonClick( wxCommandEvent& event )
 {
 // TODO: Implement onNextButtonClick
+    if(!current_file)
+        return;
+
     wxStyledTextCtrl* t = current_file->getTextCtrl();
 
     if(!t)

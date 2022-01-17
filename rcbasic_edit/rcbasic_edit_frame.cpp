@@ -4,6 +4,8 @@
 #include "rcbasic_edit_newProject_dialog.h"
 #include "rc_closeProjectSavePrompt_dialog.h"
 #include "rc_find_dialog.h"
+#include "rcbasic_edit_searchWrap_dialog.h"
+#include "rcbasic_edit_replace_dialog.h"
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
 {
@@ -1009,11 +1011,65 @@ void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
     t->Replace(t->PositionFromLine(end_line), t->GetLineEndPosition(end_line), new_line + _("\'/"));
 }
 
-void rcbasic_edit_frame::setSearchResults(int searchIn_type, int findDialog_flag, wxString txt)
+int rcbasic_edit_frame::getOpenFileFromPath(wxFileName f_path)
 {
+    for(int i = 0; i < open_files.size(); i++)
+    {
+        if(open_files[i]->getSourcePath().GetFullPath().compare(f_path.GetFullPath())==0)
+            return i;
+    }
+    return -1;
+}
+
+void rcbasic_edit_frame::onSearchResultSelection(wxCommandEvent& event)
+{
+    int selection = event.GetSelection();
+    //wxPrintf(_("Search Selection: %d\n"), selection);
+
+    if(search_results.size() <= selection)
+        return;
+
+    int open_files_index = getOpenFileFromPath(search_results[selection].result_file);
+
+    if(open_files_index < 0)
+    {
+        //wxPuts(_("DEBUG OP"));
+        openSourceFile(search_results[selection].result_file);
+        open_files_index = getOpenFileFromPath(search_results[selection].result_file);
+        if(open_files_index < 0)
+            return;
+    }
+
+    if(open_files_index >= open_files.size())
+        return;
+
+    if(!open_files[open_files_index]->getTextCtrl())
+        return;
+
+    wxStyledTextCtrl* t = open_files[open_files_index]->getTextCtrl();
+
+    int page_index = sourceFile_auinotebook->GetPageIndex(t);
+
+    if(page_index < 0)
+    {
+        return;
+    }
+
+    sourceFile_auinotebook->SetSelection(page_index);
+    //t->SetCurrentPos( t->PositionFromLine(search_results[selection].line));
+    //t->GotoLine(search_results[selection].line);
+    t->GotoPos( search_results[selection].pos );
+    t->SetSelection(t->GetCurrentPos(), t->GetCurrentPos() + search_term.length());
+}
+
+void rcbasic_edit_frame::setSearchResultsInFile(int findDialog_flag, wxString txt)
+{
+    clearSearchResults();
+
     if(sourceFile_auinotebook->GetPageCount() <= 0)
         return;
 
+    search_term = txt;
 
     int current_page_index = sourceFile_auinotebook->GetSelection();
     wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(current_page_index);
@@ -1031,14 +1087,15 @@ void rcbasic_edit_frame::setSearchResults(int searchIn_type, int findDialog_flag
     t->SetSearchFlags(flag);
 
     rcbasic_search_result r;
-    r.isOpenFile = false;
+
+    wxFileName fname;
 
     for(int i = 0; i < open_files.size(); i++)
     {
         if(open_files[i]->getTextCtrl()==t)
         {
-            r.isOpenFile = true;
-            r.txtCtrl_obj = open_files[i];
+            fname = open_files[i]->getSourcePath();
+            r.result_file = fname;
             break;
         }
     }
@@ -1053,8 +1110,8 @@ void rcbasic_edit_frame::setSearchResults(int searchIn_type, int findDialog_flag
 
         if(foundLoc!=-1)
         {
+            r.pos = foundLoc;
             r.line = t->LineFromPosition(foundLoc);
-            wxFileName fname = r.txtCtrl_obj->getSourcePath();
             wxString line_str;
             line_str.Printf(_(":%d:    "), r.line+1);
             m_searchResults_listBox->AppendAndEnsureVisible( fname.GetFullName() + line_str + t->GetLineText(r.line) );
@@ -1062,13 +1119,104 @@ void rcbasic_edit_frame::setSearchResults(int searchIn_type, int findDialog_flag
         }
     }
 
-    m_searchResults_listBox->SetSelection(0);
+    if(m_searchResults_listBox->GetCount() > 0)
+        m_searchResults_listBox->SetSelection(0);
+
+}
+
+void rcbasic_edit_frame::setSearchResultsInProject(int findDialog_flag, wxString txt)
+{
+    clearSearchResults();
+
+    if(!active_project)
+        return;
+
+    //wxPuts(_("Search for \"") + txt + _("\" In ") + active_project->getName() );
+    search_term = txt;
+
+    rcbasic_project_node* p_node;
+    wxStyledTextCtrl* t;
+
+    int flag = findDialog_flag;
+
+    wxString selText= txt;
+    int selLen = selText.Len();
+
+    for(int p_file=0; p_file < active_project->getSourceFiles().size(); p_file++)
+    {
+        p_node = active_project->getSourceFiles()[p_file];
+        if(!p_node->getTextCtrl())
+        {
+            t = new wxStyledTextCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, _("temp"));
+            //t->ClearAll();
+            wxFile f;
+            if(!f.Open(p_node->getPath().GetFullPath()))
+            {
+                delete t;
+                continue;
+            }
+            else
+            {
+                wxString f_txt;
+                f.ReadAll(&f_txt);
+                f.Close();
+                t->SetText(f_txt);
+            }
+        }
+        else
+        {
+            t = p_node->getTextCtrl();
+        }
+
+        int selStart= 0;
+
+        int totalLen = t->GetTextLength();
+        int searchStart=0;
+        int foundLoc = 0;
+
+        t->SetSearchFlags(flag);
+
+        rcbasic_search_result r;
+
+        //
+        wxFileName fname = p_node->getPath();
+        r.result_file = fname;
+
+
+        while(foundLoc!=-1)
+        {
+            t->SetTargetStart(searchStart);
+            t->SetTargetEnd(totalLen);
+
+            foundLoc= t->SearchInTarget(selText);
+            searchStart= foundLoc+selLen;
+
+            if(foundLoc!=-1)
+            {
+                r.pos = foundLoc;
+                r.line = t->LineFromPosition(foundLoc);
+                wxString line_str;
+                line_str.Printf(_(":%d:    "), r.line+1);
+                m_searchResults_listBox->AppendAndEnsureVisible( fname.GetFullName() + line_str + t->GetLineText(r.line) );
+                search_results.push_back(r);
+            }
+        }
+
+        if(t != p_node->getTextCtrl())
+            delete t;
+
+    }
+
+    if(m_searchResults_listBox->GetCount() > 0)
+        m_searchResults_listBox->SetSelection(0);
 
 }
 
 void rcbasic_edit_frame::clearSearchResults()
 {
-
+    m_searchResults_listBox->DeselectAll();
+    m_searchResults_listBox->Clear();
+    search_results.clear();
 }
 
 void rcbasic_edit_frame::onFindMenuSelect( wxCommandEvent& event )
@@ -1079,10 +1227,268 @@ void rcbasic_edit_frame::onFindMenuSelect( wxCommandEvent& event )
     switch(find_dialog.getValue())
     {
         case find_dialog_value_INFILE:
-            setSearchResults(searchIn_FILE, find_dialog.getFlags(), find_dialog.getSearchText());
+            setSearchResultsInFile(find_dialog.getFlags(), find_dialog.getSearchText());
             break;
         case find_dialog_value_INPROJECT:
+            setSearchResultsInProject(find_dialog.getFlags(), find_dialog.getSearchText());
+            break;
+    }
 
+    search_term = find_dialog.getSearchText();
+}
+
+int rcbasic_edit_frame::searchNextPrev(wxStyledTextCtrl* t, int search_type)
+{
+    if(!t)
+        return -1;
+
+    //int previous_pos = t->FindText(t->GetCurrentPos()+1, t->GetLastPosition(), m_search_textCtrl->GetLineText(0));
+    int flag = search_flags;
+    //wxPrintf(_("CPOS = %d\n"), t->GetCurrentPos());
+    t->GotoPos( t->GetCurrentPos() + (search_type==search_type_NEXT ? 1 : -1) );
+    //wxPrintf(_("NEW CPOS = %d\n"), t->GetCurrentPos());
+    t->SearchAnchor();
+    int find_pos = search_type==search_type_NEXT ? t->SearchNext(flag, search_term) : t->SearchPrev(flag, search_term);
+    //wxPrintf(_("Prev POS = %d\n"), previous_pos);
+    if(find_pos >= 0)
+    {
+        //wxPuts(_("found: ") + search_term);
+        //wxPrintf(_("F-CPOS = %d\n"), t->GetCurrentPos());
+        t->GotoPos(find_pos);
+        t->SetSelection(t->GetCurrentPos(), t->GetCurrentPos() + search_term.length());
+    }
+
+    return find_pos;
+}
+
+void rcbasic_edit_frame::onFindNextMenuSelect(wxCommandEvent& event)
+{
+    if(sourceFile_auinotebook->GetSelection() < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection());
+
+    if(!t)
+    {
+        //wxPuts(_("No TXT_CTRL\n"));
+        return;
+    }
+
+
+    if(searchNextPrev(t, search_type_NEXT) < 0)
+    {
+        rcbasic_edit_searchWrap_dialog sw_dialog(this, search_term);
+        sw_dialog.ShowModal();
+
+        if(sw_dialog.getValue()==searchWrap_value_OK)
+        {
+            int current_pos = t->GetCurrentPos();
+            t->GotoPos(0);
+            if(searchNextPrev(t, search_type_NEXT) < 0)
+            {
+                t->GotoPos(current_pos);
+                wxMessageBox(_("Could not find \"") + search_term + _("\"."));
+            }
+        }
+    }
+}
+
+void rcbasic_edit_frame::onFindPreviousMenuSelect(wxCommandEvent& event)
+{
+    if(sourceFile_auinotebook->GetSelection() < 0)
+        return;
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection());
+
+    if(!t)
+    {
+        //wxPuts(_("No TXT_CTRL\n"));
+        return;
+    }
+
+    if(searchNextPrev(t, search_type_PREV) < 0)
+    {
+        rcbasic_edit_searchWrap_dialog sw_dialog(this, search_term);
+        sw_dialog.ShowModal();
+
+        if(sw_dialog.getValue()==searchWrap_value_OK)
+        {
+            int current_pos = t->GetCurrentPos();
+            t->GotoPos( t->GetLastPosition());
+            if(searchNextPrev(t, search_type_PREV) < 0)
+            {
+                t->GotoPos(current_pos);
+                wxMessageBox(_("Could not find \"") + search_term + _("\"."));
+            }
+        }
+    }
+}
+
+
+
+
+void rcbasic_edit_frame::replaceInFile(int findDialog_flag, wxString txt, wxString replace_txt)
+{
+
+    if(sourceFile_auinotebook->GetPageCount() <= 0)
+        return;
+
+    search_term = txt;
+
+    int current_page_index = sourceFile_auinotebook->GetSelection();
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(current_page_index);
+
+    if(!t)
+        return;
+
+    int flag = findDialog_flag;
+
+    wxString selText= txt;
+    int selLen = selText.Len();
+    int selStart= 0;
+
+    int totalLen = t->GetTextLength();
+    int searchStart=0;
+    int foundLoc = 0;
+
+    t->SetSearchFlags(flag);
+
+    rcbasic_search_result r;
+
+    wxFileName fname;
+
+    for(int i = 0; i < open_files.size(); i++)
+    {
+        if(open_files[i]->getTextCtrl()==t)
+        {
+            fname = open_files[i]->getSourcePath();
+            r.result_file = fname;
+            break;
+        }
+    }
+
+    while(foundLoc!=-1)
+    {
+        t->SetTargetStart(searchStart);
+        t->SetTargetEnd(totalLen);
+
+        foundLoc= t->SearchInTarget(selText);
+        searchStart= foundLoc+selLen;
+
+        if(foundLoc!=-1)
+        {
+            t->Replace(foundLoc, foundLoc + selText.length(), replace_txt);
+            //r.pos = foundLoc;
+            //r.line = t->LineFromPosition(foundLoc);
+            //wxString line_str;
+            //line_str.Printf(_(":%d:    "), r.line+1);
+            //m_searchResults_listBox->AppendAndEnsureVisible( fname.GetFullName() + line_str + t->GetLineText(r.line) );
+            //search_results.push_back(r);
+        }
+    }
+
+    //if(m_searchResults_listBox->GetCount() > 0)
+    //    m_searchResults_listBox->SetSelection(0);
+
+}
+
+void rcbasic_edit_frame::replaceInProject(int findDialog_flag, wxString txt, wxString replace_txt)
+{
+    clearSearchResults();
+
+    if(!active_project)
+        return;
+
+    //wxPuts(_("Search for \"") + txt + _("\" In ") + active_project->getName() );
+    search_term = txt;
+
+    rcbasic_project_node* p_node;
+    wxStyledTextCtrl* t;
+
+    int flag = findDialog_flag;
+
+    wxString selText= txt;
+    int selLen = selText.Len();
+
+    for(int p_file=0; p_file < active_project->getSourceFiles().size(); p_file++)
+    {
+        p_node = active_project->getSourceFiles()[p_file];
+        if(!p_node->getTextCtrl())
+        {
+            t = new wxStyledTextCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, _("temp"));
+            //t->ClearAll();
+            wxFile f;
+            if(!f.Open(p_node->getPath().GetFullPath()))
+            {
+                delete t;
+                continue;
+            }
+            else
+            {
+                wxString f_txt;
+                f.ReadAll(&f_txt);
+                f.Close();
+                t->SetText(f_txt);
+            }
+        }
+        else
+        {
+            t = p_node->getTextCtrl();
+        }
+
+        int selStart= 0;
+
+        int totalLen = t->GetTextLength();
+        int searchStart=0;
+        int foundLoc = 0;
+
+        t->SetSearchFlags(flag);
+
+        rcbasic_search_result r;
+
+        //
+        wxFileName fname = p_node->getPath();
+        r.result_file = fname;
+
+
+        while(foundLoc!=-1)
+        {
+            t->SetTargetStart(searchStart);
+            t->SetTargetEnd(totalLen);
+
+            foundLoc= t->SearchInTarget(selText);
+            searchStart= foundLoc+selLen;
+
+            if(foundLoc!=-1)
+            {
+                r.pos = foundLoc;
+                r.line = t->LineFromPosition(foundLoc);
+                wxString line_str;
+                line_str.Printf(_(":%d:    "), r.line+1);
+                m_searchResults_listBox->AppendAndEnsureVisible( fname.GetFullName() + line_str + t->GetLineText(r.line) );
+                search_results.push_back(r);
+            }
+        }
+
+        if(t != p_node->getTextCtrl())
+            delete t;
+
+    }
+
+    if(m_searchResults_listBox->GetCount() > 0)
+        m_searchResults_listBox->SetSelection(0);
+
+}
+
+void rcbasic_edit_frame::onReplaceMenuSelect(wxCommandEvent& event)
+{
+    rcbasic_edit_replace_dialog r_dialog(this);
+    r_dialog.ShowModal();
+
+    switch(r_dialog.getValue())
+    {
+        case replace_dialog_INFILE:
+            replaceInFile(r_dialog.getFlags(), r_dialog.getSearchText(), r_dialog.getReplaceText());
             break;
     }
 }

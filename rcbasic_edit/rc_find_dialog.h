@@ -27,6 +27,7 @@ class rcbasic_edit_find_dialog : public rc_find_dialog
         rcbasic_edit_frame* parent_frame;
         rcbasic_edit_txtCtrl* current_file;
         wxString search_text;
+        int search_index;
         //vector<uint64_t> search_line_number;
 
     protected:

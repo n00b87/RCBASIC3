@@ -382,12 +382,18 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onCommentMenuSelect ), this, m_comment_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBlockCommentMenuSelect ), this, m_blockComment_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindMenuSelect ), this, m_find_menuItem->GetId());
+	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindNextMenuSelect ), this, m_findNext_menuItem->GetId());
+	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindPreviousMenuSelect ), this, m_findPrevious_menuItem->GetId());
+	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onReplaceMenuSelect ), this, m_replace_menuItem->GetId());
+	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onGotoMenuSelect ), this, m_goto_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleToolbar ), this, m_showToolbar_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleSideBar ), this, m_showSideBar_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleMessageWindow ), this, m_showMessageWindow_menuItem->GetId());
 	project_tree->Connect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Connect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
 	sourceFile_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
+	m_searchResults_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
+	m_searchResults_listBox->Connect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
 }
 
 rc_ideFrame::~rc_ideFrame()
@@ -397,6 +403,8 @@ rc_ideFrame::~rc_ideFrame()
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
 	sourceFile_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
+	m_searchResults_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
+	m_searchResults_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
 
 }
 
@@ -908,6 +916,74 @@ rc_find_dialog::~rc_find_dialog()
 
 }
 
+rc_searchWrap_dialog::rc_searchWrap_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer20;
+	bSizer20 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer21;
+	bSizer21 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer21->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_searchWrapPrompt_staticText = new wxStaticText( this, wxID_ANY, wxT("Did not find \"[text]\".\nWrap and search again?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_searchWrapPrompt_staticText->Wrap( -1 );
+	m_searchWrapPrompt_staticText->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
+
+	bSizer21->Add( m_searchWrapPrompt_staticText, 1, wxALL|wxEXPAND, 5 );
+
+
+	bSizer21->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( bSizer21, 3, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer22;
+	bSizer22 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer22->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	searchWrap_cancelButton = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer22->Add( searchWrap_cancelButton, 0, wxALL, 5 );
+
+	searchWrap_okButton = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer22->Add( searchWrap_okButton, 0, wxALL, 5 );
+
+
+	bSizer22->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( bSizer22, 1, wxEXPAND, 5 );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer20 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	searchWrap_cancelButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_searchWrap_dialog::onSearchWrapCancel ), NULL, this );
+	searchWrap_okButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_searchWrap_dialog::onSearchWrapOk ), NULL, this );
+}
+
+rc_searchWrap_dialog::~rc_searchWrap_dialog()
+{
+	// Disconnect Events
+	searchWrap_cancelButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_searchWrap_dialog::onSearchWrapCancel ), NULL, this );
+	searchWrap_okButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_searchWrap_dialog::onSearchWrapOk ), NULL, this );
+
+}
+
 rc_replace_dialog::rc_replace_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -928,8 +1004,8 @@ rc_replace_dialog::rc_replace_dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText11->Wrap( -1 );
 	bSizer45->Add( m_staticText11, 2, wxALL, 5 );
 
-	m_textCtrl6 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer45->Add( m_textCtrl6, 8, wxALL, 5 );
+	m_search_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer45->Add( m_search_textCtrl, 8, wxALL, 5 );
 
 
 	bSizer45->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -947,8 +1023,8 @@ rc_replace_dialog::rc_replace_dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText15->Wrap( -1 );
 	bSizer46->Add( m_staticText15, 2, wxALL, 5 );
 
-	m_textCtrl9 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer46->Add( m_textCtrl9, 8, wxALL, 5 );
+	m_replace_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer46->Add( m_replace_textCtrl, 8, wxALL, 5 );
 
 
 	bSizer46->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -965,41 +1041,47 @@ rc_replace_dialog::rc_replace_dialog( wxWindow* parent, wxWindowID id, const wxS
 
 	bSizer29->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_checkBox2 = new wxCheckBox( this, wxID_ANY, wxT("Case Sensitive"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer29->Add( m_checkBox2, 0, wxALL, 5 );
+	m_caseSensitive_checkBox = new wxCheckBox( this, wxID_ANY, wxT("Case Sensitive"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer29->Add( m_caseSensitive_checkBox, 0, wxALL, 5 );
 
-	m_checkBox3 = new wxCheckBox( this, wxID_ANY, wxT("Match only a whole word"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer29->Add( m_checkBox3, 0, wxALL, 5 );
+	m_matchWhole_checkBox = new wxCheckBox( this, wxID_ANY, wxT("Match only a whole word"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer29->Add( m_matchWhole_checkBox, 0, wxALL, 5 );
 
 
 	bSizer29->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer27->Add( bSizer29, 2, wxEXPAND, 5 );
+	bSizer27->Add( bSizer29, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer30;
 	bSizer30 = new wxBoxSizer( wxVERTICAL );
+
+	m_collapsiblePane1 = new wxCollapsiblePane( this, wxID_ANY, wxT("Replace All"), wxDefaultPosition, wxDefaultSize, wxCP_DEFAULT_STYLE|wxCP_NO_TLW_RESIZE );
+	m_collapsiblePane1->Collapse( true );
 
 	wxBoxSizer* bSizer31;
 	bSizer31 = new wxBoxSizer( wxHORIZONTAL );
 
 
-	bSizer31->Add( 0, 0, 4, wxEXPAND, 5 );
+	bSizer31->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_button10 = new wxButton( this, wxID_ANY, wxT("In Project"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer31->Add( m_button10, 0, wxALL, 5 );
+	m_replaceInProject_button = new wxButton( m_collapsiblePane1->GetPane(), wxID_ANY, wxT("In Project"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_replaceInProject_button, 1, wxALL, 5 );
 
-	m_button11 = new wxButton( this, wxID_ANY, wxT("In File"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer31->Add( m_button11, 0, wxALL, 5 );
+	m_replaceInFile_button = new wxButton( m_collapsiblePane1->GetPane(), wxID_ANY, wxT("In File"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_replaceInFile_button, 1, wxALL, 5 );
 
-	m_button12 = new wxButton( this, wxID_ANY, wxT("In Selection"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer31->Add( m_button12, 0, wxALL, 5 );
+	m_replaceInSelection_button = new wxButton( m_collapsiblePane1->GetPane(), wxID_ANY, wxT("In Selection"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31->Add( m_replaceInSelection_button, 1, wxALL, 5 );
 
 
 	bSizer31->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer30->Add( bSizer31, 1, wxEXPAND, 5 );
+	m_collapsiblePane1->GetPane()->SetSizer( bSizer31 );
+	m_collapsiblePane1->GetPane()->Layout();
+	bSizer31->Fit( m_collapsiblePane1->GetPane() );
+	bSizer30->Add( m_collapsiblePane1, 3, wxEXPAND | wxALL, 5 );
 
 	wxBoxSizer* bSizer32;
 	bSizer32 = new wxBoxSizer( wxHORIZONTAL );
@@ -1007,36 +1089,52 @@ rc_replace_dialog::rc_replace_dialog( wxWindow* parent, wxWindowID id, const wxS
 
 	bSizer32->Add( 0, 0, 4, wxEXPAND, 5 );
 
+	m_find_button = new wxButton( this, wxID_ANY, wxT("Find Next"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer32->Add( m_find_button, 1, wxALL, 5 );
+
+	m_button29 = new wxButton( this, wxID_ANY, wxT("Replace"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer32->Add( m_button29, 1, wxALL, 5 );
+
 	m_button13 = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer32->Add( m_button13, 0, wxALL, 5 );
-
-	m_button14 = new wxButton( this, wxID_ANY, wxT("Find"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer32->Add( m_button14, 0, wxALL, 5 );
-
-	m_button15 = new wxButton( this, wxID_ANY, wxT("Replace"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer32->Add( m_button15, 0, wxALL, 5 );
+	bSizer32->Add( m_button13, 1, wxALL, 5 );
 
 
 	bSizer32->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer30->Add( bSizer32, 2, wxEXPAND, 5 );
+	bSizer30->Add( bSizer32, 1, wxEXPAND, 5 );
 
 
-	bSizer27->Add( bSizer30, 2, wxEXPAND, 5 );
+	bSizer27->Add( bSizer30, 1, wxEXPAND, 5 );
 
 
-	bSizer27->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer27->Add( 0, 0, 3, wxEXPAND, 5 );
 
 
 	this->SetSizer( bSizer27 );
 	this->Layout();
 
 	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_replaceInProject_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceInProjectClick ), NULL, this );
+	m_replaceInFile_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceInFileClick ), NULL, this );
+	m_replaceInSelection_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceInSelectionClick ), NULL, this );
+	m_find_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onFindNextClick ), NULL, this );
+	m_button29->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceClick ), NULL, this );
+	m_button13->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceCloseClick ), NULL, this );
 }
 
 rc_replace_dialog::~rc_replace_dialog()
 {
+	// Disconnect Events
+	m_replaceInProject_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceInProjectClick ), NULL, this );
+	m_replaceInFile_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceInFileClick ), NULL, this );
+	m_replaceInSelection_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceInSelectionClick ), NULL, this );
+	m_find_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onFindNextClick ), NULL, this );
+	m_button29->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceClick ), NULL, this );
+	m_button13->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_replace_dialog::onReplaceCloseClick ), NULL, this );
+
 }
 
 rc_gotoLine_dialog::rc_gotoLine_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
