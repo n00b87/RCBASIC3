@@ -62,12 +62,35 @@ wxString rcbasic_edit_txtCtrl::getTempText()
 
 
 
+BEGIN_EVENT_TABLE(rcbasic_edit_frame, wxFrame)
+    EVT_COMMAND(wxID_ANY, wxEVT_MYTHREAD, rcbasic_edit_frame::OnParserThread)
+END_EVENT_TABLE()
 
+void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
+{
+    std::vector<rcbasic_symbol>* sym_list = (std::vector<rcbasic_symbol>*) event.GetClientData();
+    wxPrintf(_("Data Size:%d  ----> %d\n"), sym_list->size(), event.GetInt());
+    if(event.GetInt()>0)
+    {
+        symbols.clear();
+
+        for(int i = 0; i < sym_list->size(); i++)
+        {
+            rcbasic_symbol s = sym_list[0][i];
+            symbols.push_back(s);
+
+            wxPuts(_("VAR --- ") + s.id);
+        }
+    }
+    symbolUpdateInProgress = false;
+}
 
 rcbasic_edit_frame::rcbasic_edit_frame( wxWindow* parent )
 :
 rc_ideFrame( parent )
 {
+    symbolUpdateInProgress = false;
+
     messageWindowVisible = true;
     m_showMessageWindow_menuItem->Check(messageWindowVisible);
 
@@ -87,6 +110,14 @@ rc_ideFrame( parent )
     project_tree->AssignImageList(project_tree_imageList);
 
     project_tree->AddRoot(_("Projects"), project_tree_rootImage);
+
+    symbol_tree_imageList = new wxImageList(16,16,true);
+    symbol_tree_rootImage = symbol_tree_imageList->Add(wxBitmap(wxImage("gfx/symbol_root.png")));
+    symbol_tree_folderImage  = symbol_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));
+    symbol_tree_fileImage = symbol_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_NORMAL_FILE, wxART_MENU ));
+    symbol_tree->AssignImageList(symbol_tree_imageList);
+
+    symbol_tree->AddRoot(_("Symbols"), symbol_tree_rootImage);
 
     //Load recent files and projects
     wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
@@ -1948,4 +1979,44 @@ void rcbasic_edit_frame::onTextCtrlUpdated( wxStyledTextEvent& event )
             open_files[i]->setTextChangedFlag(true);
         }
     }
+
+    if(symbolUpdateInProgress)
+        return;
+
+    symbolUpdateInProgress = true;
+    token_parser = new parserThread(this, 0, rc_txtCtrl->GetText(), this);
+    //token_parser->Connect( wxEVT_MYTHREAD, wxEventHandler( rcbasic_edit_frame::OnParserThread ), NULL, this );
+    token_parser->Run();
+
+    /*
+    wxString l_token;
+
+    //wxPuts(_("UPDATING SYMBOLS"));
+
+    for(int i = 0; i < rc_txtCtrl->GetLineCount(); i++)
+    {
+        rc_eval(std::string(rc_txtCtrl->GetLine(i).mb_str()));
+        //wxPuts(_("EVAL RAN"));
+        for(int t_count = 0; t_count < id_tokens.size(); t_count++)
+        {
+            //wxPrintf( wxString(id_tokens[t_count].name.c_str(), wxConvUTF8) + _("[%d]:%d\n"), id_tokens[t_count].dimensions, i+1 );
+            rcbasic_symbol sym;
+            sym.id = id_tokens[t_count].name;
+            sym.line = i;
+            sym.dimensions = id_tokens[t_count].dimensions;
+            sym.token_type = id_tokens[t_count].token_type;
+            addSymbol(sym);
+        }
+
+    }
+
+    symbolUpdateInProgress = false;
+
+    */
+}
+
+
+void rcbasic_edit_frame::addSymbol(rcbasic_symbol sym)
+{
+
 }

@@ -276,8 +276,8 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
 
-	m_treeCtrl5 = new wxTreeCtrl( m_, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE|wxBORDER_NONE );
-	bSizer7->Add( m_treeCtrl5, 1, wxALL|wxEXPAND, 5 );
+	symbol_tree = new wxTreeCtrl( m_, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE|wxBORDER_NONE );
+	bSizer7->Add( symbol_tree, 1, wxALL|wxEXPAND, 5 );
 
 
 	m_->SetSizer( bSizer7 );

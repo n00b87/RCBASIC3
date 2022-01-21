@@ -122,7 +122,7 @@ class rc_ideFrame : public wxFrame
 		wxPanel* m_project_panel;
 		wxTreeCtrl* project_tree;
 		wxPanel* m_;
-		wxTreeCtrl* m_treeCtrl5;
+		wxTreeCtrl* symbol_tree;
 		wxPanel* m_panel6;
 		wxAuiNotebook* sourceFile_auinotebook;
 		wxPanel* m_panel7;
