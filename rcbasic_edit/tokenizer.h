@@ -351,7 +351,7 @@ bool tokens(const std::string &data)
                             s_data.push_back('\f');
                         else
                         {
-                            cout << "Invalid escape sequence in string expression: \\" << ch << endl;
+                            //cout << "Invalid escape sequence in string expression: \\" << ch << endl;
                             return false;
                         }
                         esc_char = false;

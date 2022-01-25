@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "tokenizer.h"
+//#include <wx/wx.h>
 using namespace std;
 
 #define TOKEN_TYPE_VARIABLE 0
@@ -28,10 +29,12 @@ void add_id_token(rcbasic_id_token t)
     id_tokens.push_back(t);
 }
 
-bool rc_eval(string line)
+bool rc_eval(string line, bool* isInFunction)
 {
     //adding an extra character to line to avoid a memory leak
     line += "  ";
+
+    bool fn_define = *isInFunction;
 
     clearTokens();
     id_tokens.clear();
@@ -57,9 +60,55 @@ bool rc_eval(string line)
 
     tmp_token.push_back("<:>");
 
+    int expr_token_index = 0;
+
+    bool fn_expr = false;
+
+    rcbasic_id_token fn_id;
+
     for(i = 0; i < tmp_token.size(); i++)
     {
-        if(tmp_token[i].compare("<dim>")==0)
+        if(expr_token_index == 0)
+        {
+            expr_token_index++;
+
+            if(tmp_token.size() > (i + 1))
+            {
+                if(tmp_token[i].substr(0, 4).compare("<id>")==0 && tmp_token[i+1].compare("<equal>")==0 && (!fn_define))
+                {
+                    dim_id.name = tmp_token[i].substr(4);
+                    dim_id.dimensions = 0;
+                    dim_id.token_type = TOKEN_TYPE_VARIABLE;
+                    add_id_token(dim_id);
+
+                    dim_id.name = "";
+                    dim_id.dimensions = 0;
+                }
+                else if( (tmp_token[i].compare("<function>")==0 || tmp_token[i].compare("<subp>")==0) && tmp_token[i+1].substr(0,4).compare("<id>")==0 )
+                {
+                    fn_define = true;
+                    fn_expr = true;
+
+                    dim_id.token_type = TOKEN_TYPE_FUNCTION;
+                    dim_id.dimensions = 0;
+
+                    dim_define = false;
+                    is_dim_expr = false;
+                    dim_scope = 0;
+                    dim_id.name = tmp_token[i+1].substr(4);
+                    //wxPuts(_("found function: ") + dim_id.name);
+                }
+                else if(tmp_token[i].compare("<end>")==0 && (tmp_token[i+1].compare("<function>")==0 || tmp_token[i+1].compare("<subp>")==0))
+                {
+                    //wxPuts(_("END FUNC"));
+                    fn_define = false;
+                    i++;
+                    continue;
+                }
+            }
+        }
+
+        if(tmp_token[i].compare("<dim>")==0 && (!fn_define))
         {
             dim_token = tmp_token[i];
             dim_scope = 0;
@@ -82,12 +131,18 @@ bool rc_eval(string line)
         {
             dim_scope++;
 
-            if(dim_scope==1)
+            if(dim_scope==1 && dim_id.token_type==TOKEN_TYPE_VARIABLE)
                 dim_id.dimensions = 1;
         }
 
         if(tmp_token[i].compare("<par>")==0)
+        {
             dim_scope++;
+
+            if(dim_scope==1 && dim_id.token_type==TOKEN_TYPE_FUNCTION)
+                dim_id.dimensions = 1;
+        }
+
 
         if(tmp_token[i].compare("</par>")==0 || tmp_token[i].compare("</square>")==0)
             dim_scope--;
@@ -116,7 +171,11 @@ bool rc_eval(string line)
 
         if(tmp_token[i].compare("<:>")==0)
         {
-            if(dim_define && dim_id.name.compare("")!=0)
+            expr_token_index = 0;
+
+            if((!fn_define) && dim_define && dim_id.name.compare("")!=0)
+                add_id_token(dim_id);
+            else if(fn_expr && dim_id.name.compare("")!=0)
                 add_id_token(dim_id);
 
             dim_id.name = "";
@@ -124,8 +183,11 @@ bool rc_eval(string line)
 
             dim_define = false;
             is_dim_expr = false;
+            fn_expr = false;
         }
     }
+
+    isInFunction[0] = fn_define;
 
     return true;
 }

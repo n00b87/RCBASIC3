@@ -6,6 +6,7 @@
 #include "rc_find_dialog.h"
 #include "rcbasic_edit_searchWrap_dialog.h"
 #include "rcbasic_edit_replace_dialog.h"
+#include "rcbasic_edit_gotoLine_dialog.h"
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
 {
@@ -66,22 +67,118 @@ BEGIN_EVENT_TABLE(rcbasic_edit_frame, wxFrame)
     EVT_COMMAND(wxID_ANY, wxEVT_MYTHREAD, rcbasic_edit_frame::OnParserThread)
 END_EVENT_TABLE()
 
-void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
+void rcbasic_edit_frame::updateSymbolTree()
 {
-    std::vector<rcbasic_symbol>* sym_list = (std::vector<rcbasic_symbol>*) event.GetClientData();
-    wxPrintf(_("Data Size:%d  ----> %d\n"), sym_list->size(), event.GetInt());
-    if(event.GetInt()>0)
+    //symbol_tree->DeleteChildren(variable_root_node);
+    //symbol_tree->DeleteChildren(function_root_node);
+    int v_index = 0;
+    int f_index = 0;
+
+    //int v_count = symbol_tree->GetChildrenCount(variable_root_node);
+    //int f_count = symbol_tree->GetChildrenCount(function_root_node);
+
+    /*
+    wxTreeItemIdValue v_cookie;
+    wxTreeItemId v_child = symbol_tree->GetFirstChild(variable_root_node, v_cookie);
+
+    wxTreeItemIdValue f_cookie;
+    wxTreeItemId f_child = symbol_tree->GetFirstChild(function_root_node, f_cookie);
+    */
+
+    for(int i = 0; i < symbols.size(); i++)
     {
-        symbols.clear();
-
-        for(int i = 0; i < sym_list->size(); i++)
+        switch(symbols[i]->token_type)
         {
-            rcbasic_symbol s = sym_list[0][i];
-            symbols.push_back(s);
-
-            wxPuts(_("VAR --- ") + s.id);
+            case TOKEN_TYPE_VARIABLE:
+                if(v_index < var_nodes.size())
+                {
+                    setSymbol(var_nodes[v_index], symbols[i]);
+                    //v_child = symbol_tree->GetNextChild(variable_root_node, v_cookie);
+                }
+                else
+                    addSymbol(symbols[i]);
+                v_index++;
+                break;
+            case TOKEN_TYPE_FUNCTION:
+                if(f_index < fn_nodes.size())
+                {
+                    setSymbol(fn_nodes[f_index], symbols[i]);
+                    //f_child = symbol_tree->GetNextChild(function_root_node, f_cookie);
+                }
+                else
+                    addSymbol(symbols[i]);
+                f_index++;
+                break;
         }
     }
+
+    //wxPrintf(_("V -- %d   --  %d"), v_index, v_count);
+
+    while(v_index < var_nodes.size())
+    {
+        rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(var_nodes[v_index]);
+        delete data;
+        symbol_tree->Delete(var_nodes[v_index]);
+        var_nodes.erase(var_nodes.begin()+v_index);
+        //v_child = symbol_tree->GetNextChild(variable_root_node, v_cookie);
+    }
+
+    while(f_index < fn_nodes.size())
+    {
+        rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(fn_nodes[f_index]);
+        delete data;
+        symbol_tree->Delete(fn_nodes[f_index]);
+        fn_nodes.erase(fn_nodes.begin()+f_index);
+        //f_child = symbol_tree->GetNextChild(function_root_node, f_cookie);
+    }
+
+    //wxPrintf(_("NODE SIZES: %d  %d\n"), var_nodes.size(), fn_nodes.size());
+}
+
+void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
+{
+    thread_returned = true;
+
+    std::vector<rcbasic_symbol*>* sym_list;
+
+    if(!pre_parsed_page)
+    {
+        sym_list = NULL;
+    }
+    else
+    {
+        sym_list = (std::vector<rcbasic_symbol*>*) event.GetClientData();
+    }
+    //wxPrintf(_("Data Size:%d  ----> %d\n"), sym_list->size(), event.GetInt());
+    if(true)
+    {
+        for(int i = 0; i < symbols.size(); i++)
+        {
+            if(symbols[i])
+            {
+                delete symbols[i];
+                symbols[i] = NULL;
+            }
+        }
+        symbols.clear();
+
+        if(pre_parsed_page)
+        {
+            for(int i = 0; i < sym_list->size(); i++)
+            {
+                rcbasic_symbol* s = sym_list[0][i];
+                symbols.push_back(s);
+
+                //wxPuts(_("VAR --- ") + s->id);
+            }
+        }
+
+        if(sym_list)
+            delete sym_list;
+        updateSymbolTree();
+    }
+
+    parsed_page = pre_parsed_page;
     symbolUpdateInProgress = false;
 }
 
@@ -89,7 +186,15 @@ rcbasic_edit_frame::rcbasic_edit_frame( wxWindow* parent )
 :
 rc_ideFrame( parent )
 {
+    thread_returned = false;
+    sym_sem = NULL;
     symbolUpdateInProgress = false;
+
+    token_parser = new parserThread(this, 0, this);
+    token_parser->Run();
+
+    default_font = wxFont(12,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+    editor_font = default_font;
 
     messageWindowVisible = true;
     m_showMessageWindow_menuItem->Check(messageWindowVisible);
@@ -113,11 +218,17 @@ rc_ideFrame( parent )
 
     symbol_tree_imageList = new wxImageList(16,16,true);
     symbol_tree_rootImage = symbol_tree_imageList->Add(wxBitmap(wxImage("gfx/symbol_root.png")));
-    symbol_tree_folderImage  = symbol_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));
-    symbol_tree_fileImage = symbol_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_NORMAL_FILE, wxART_MENU ));
+    symbol_tree_varImage  = symbol_tree_imageList->Add(wxBitmap(wxImage("gfx/symbol_item.png")));
+    symbol_tree_fnImage = symbol_tree_imageList->Add(wxBitmap(wxImage("gfx/symbol_fn_item.png")));
     symbol_tree->AssignImageList(symbol_tree_imageList);
 
     symbol_tree->AddRoot(_("Symbols"), symbol_tree_rootImage);
+    function_root_node = symbol_tree->AppendItem(symbol_tree->GetRootItem(), _("Function"), symbol_tree_fnImage, -1, NULL);
+    variable_root_node = symbol_tree->AppendItem(symbol_tree->GetRootItem(), _("Variables"), symbol_tree_varImage, -1, NULL);
+
+    symbol_tree->Expand(symbol_tree->GetRootItem());
+
+    symbol_tree->SetDoubleBuffered(true);
 
     //Load recent files and projects
     wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
@@ -218,6 +329,257 @@ rc_ideFrame( parent )
             f.Close();
         }
     }
+
+    wxFileName editor_properties_path(editor_path);
+    editor_properties_path.AppendDir(_("config"));
+    editor_properties_path.SetFullName(_("rcbasic_edit.config"));
+    loadEditorProperties(editor_properties_path);
+
+    wxFileName scheme_path(editor_path);
+    scheme_path.AppendDir(_("config"));
+    scheme_path.AppendDir(_("schemes"));
+    scheme_path.SetFullName(_("dark theme.scheme"));
+    loadScheme(scheme_path);
+}
+
+bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
+{
+    wxFile properties_file;
+
+    if(!fname.Exists())
+    {
+        wxMessageBox(_("Cannot load properties from ")+fname.GetFullPath());
+        return false;
+    }
+
+    if(!properties_file.Open(fname.GetFullPath()))
+        return false;
+
+    wxString properties;
+    properties_file.ReadAll(&properties);
+    properties_file.Close();
+
+    properties.Append(_(" \n"));
+
+    wxString property;
+    wxString value;
+
+    for(int i = 0; i < properties.length(); i++)
+    {
+        int vpos = properties.find_first_of(_("="));
+        if(vpos == wxString::npos)
+            break;
+        property = properties.substr(0, vpos).Trim();
+        property = property.substr(property.find_first_not_of(_(" ")));
+
+        value = properties.substr(vpos+1);
+        value = value.substr(0, value.find_first_of(_("\n")));
+
+        if(property.compare(_("keywords"))==0)
+        {
+            rcbasic_edit_keywords = value;
+        }
+        else if(property.compare(_("keywords2"))==0)
+        {
+            rcbasic_edit_keywords2 = value;
+        }
+
+        properties = properties.substr(properties.find_first_of(_("\n"))+1);
+
+        //wxPuts(_("PROPERTY: ") + property);
+        //wxPuts(_("VALUE: ") + value);
+        //wxPuts(_(""));
+    }
+
+    return true;
+}
+
+bool rcbasic_edit_frame::loadScheme(wxFileName fname)
+{
+    wxFile scheme_file;
+
+    if(!fname.Exists())
+    {
+        wxMessageBox(_("Cannot open ")+fname.GetFullPath());
+        return false;
+    }
+
+    if(scheme_file.Open(fname.GetFullPath()))
+    {
+        wxString scheme_data;
+        scheme_file.ReadAll(&scheme_data);
+        scheme_file.Close();
+
+
+        //wxPuts(_("---DATA---\n")+scheme_data);
+        scheme_data.Append(_(" \n"));
+
+        wxString property;
+        wxString values;
+        long r = 0;
+        long g = 0;
+        long b = 0;
+
+        wxString n_value;
+
+        editor_scheme.caret_bkg_color_set = false;
+        editor_scheme.caret_fg_color_set = false;
+        editor_scheme.comment_fg_color_set = false;
+        editor_scheme.current_line_bkg_color_set = false;
+        editor_scheme.current_line_fg_color_set = false;
+        editor_scheme.identifier_fg_color_set = false;
+        editor_scheme.keyword2_fg_color_set = false;
+        editor_scheme.keyword_fg_color_set = false;
+        editor_scheme.number_fg_color_set = false;
+        editor_scheme.operator_fg_color_set = false;
+        editor_scheme.selection_bkg_color_set = false;
+        editor_scheme.selection_fg_color_set = false;
+        editor_scheme.string_fg_color_set = false;
+        editor_scheme.style_bkg_color_set = false;
+
+        for(int i = 0; i < scheme_data.length(); i++)
+        {
+            int vpos = scheme_data.find_first_of(_("="));
+            if(vpos == wxString::npos)
+                break;
+            property = scheme_data.substr(0, vpos).Trim();
+            property = property.substr(property.find_first_not_of(_(" ")));
+
+            values = scheme_data.substr(vpos+1);
+            values = values.substr(0, values.find_first_of(_("\n")));
+
+            n_value = values.substr(0, values.find_first_of(_(",")));
+            n_value.ToLong(&r);
+            values = values.substr(values.find_first_of(_(","))+1);
+
+            n_value = values.substr(0, values.find_first_of(_(",")));
+            n_value.ToLong(&g);
+            values = values.substr(values.find_first_of(_(","))+1);
+
+            n_value = values.substr(0, values.find_first_of(_("\n")));
+            n_value.ToLong(&b);
+
+            if(property.compare(_("style_bkg_color"))==0)
+            {
+                //uint8_t r8b = (uint8_t)r;
+                //uint8_t g8b = (uint8_t)g;
+                //uint8_t b8b = (uint8_t)b;
+                //wxPrintf(_("Style Background: %d, %d, %d"), r8b, g8b, b8b);
+                editor_scheme.style_bkg_color = wxColour(r, g, b);
+                editor_scheme.style_bkg_color_set = true;
+            }
+            else if(property.compare(_("keyword_fg_color"))==0)
+            {
+                editor_scheme.keyword_fg_color = wxColour(r, g, b);
+                editor_scheme.keyword_fg_color_set = true;
+            }
+            else if(property.compare(_("keyword2_fg_color"))==0)
+            {
+                editor_scheme.keyword2_fg_color = wxColour(r, g, b);
+                editor_scheme.keyword2_fg_color_set = true;
+            }
+            else if(property.compare(_("number_fg_color"))==0)
+            {
+                editor_scheme.number_fg_color = wxColour(r, g, b);
+                editor_scheme.number_fg_color_set = true;
+            }
+            else if(property.compare(_("string_fg_color"))==0)
+            {
+                editor_scheme.string_fg_color = wxColour(r, g, b);
+                editor_scheme.string_fg_color_set = true;
+            }
+            else if(property.compare(_("comment_fg_color"))==0)
+            {
+                editor_scheme.comment_fg_color = wxColour(r, g, b);
+                editor_scheme.comment_fg_color_set = true;
+            }
+            else if(property.compare(_("identifier_fg_color"))==0)
+            {
+                editor_scheme.identifier_fg_color = wxColour(r, g, b);
+                editor_scheme.identifier_fg_color_set = true;
+            }
+            else if(property.compare(_("operator_fg_color"))==0)
+            {
+                editor_scheme.operator_fg_color = wxColour(r, g, b);
+                editor_scheme.operator_fg_color_set = true;
+            }
+            else if(property.compare(_("caret_fg_color"))==0)
+            {
+                //wxPrintf(_("Caret: %d, %d, %d"), r, g, b);
+                editor_scheme.caret_fg_color = wxColour(r, g, b);
+                editor_scheme.caret_fg_color_set = true;
+            }
+            else if(property.compare(_("selection_fg_color"))==0)
+            {
+                editor_scheme.selection_fg_color = wxColour(r, g, b);
+                editor_scheme.selection_fg_color_set = true;
+            }
+            else if(property.compare(_("selection_bkg_color"))==0)
+            {
+                editor_scheme.selection_bkg_color = wxColour(r, g, b);
+                editor_scheme.selection_bkg_color_set = true;
+            }
+            else if(property.compare(_("current_line_bkg_color"))==0)
+            {
+                editor_scheme.current_line_bkg_color = wxColour(r, g, b);
+                editor_scheme.current_line_bkg_color_set = true;
+            }
+            else if(property.compare(_("current_line_fg_color"))==0)
+            {
+                editor_scheme.current_line_fg_color = wxColour(r, g, b);
+                editor_scheme.current_line_fg_color_set = true;
+            }
+
+
+            scheme_data = scheme_data.substr(scheme_data.find_first_of(_("\n"))+1);
+
+            //wxPuts(_("PROPERTY: ") + property);
+            //wxPrintf(_("RGB: %d %d %d\n"), r, g, b);
+
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
+{
+    rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_DEFAULT, editor_scheme.style_bkg_color);
+    rc_txtCtrl->StyleClearAll();
+
+    if(editor_scheme.keyword_fg_color_set)
+        rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD, editor_scheme.keyword_fg_color);
+
+    if(editor_scheme.keyword2_fg_color_set)
+        rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD2, editor_scheme.keyword2_fg_color);
+
+    if(editor_scheme.number_fg_color_set)
+        rc_txtCtrl->StyleSetForeground(wxSTC_B_NUMBER, editor_scheme.number_fg_color);
+
+    if(editor_scheme.string_fg_color_set)
+        rc_txtCtrl->StyleSetForeground(wxSTC_B_STRING, editor_scheme.string_fg_color);
+
+    if(editor_scheme.comment_fg_color_set)
+        rc_txtCtrl->StyleSetForeground(wxSTC_B_COMMENT, editor_scheme.comment_fg_color);
+
+    if(editor_scheme.identifier_fg_color_set)
+        rc_txtCtrl->StyleSetForeground(wxSTC_B_IDENTIFIER, editor_scheme.identifier_fg_color);
+
+    if(editor_scheme.operator_fg_color_set)
+        rc_txtCtrl->StyleSetForeground(wxSTC_B_OPERATOR, editor_scheme.operator_fg_color);
+
+    if(editor_scheme.caret_fg_color_set)
+        rc_txtCtrl->SetCaretForeground(editor_scheme.caret_fg_color);
+
+    if(editor_scheme.selection_fg_color_set)
+        rc_txtCtrl->SetSelForeground(true, editor_scheme.selection_fg_color);
+
+    if(editor_scheme.selection_bkg_color_set)
+        rc_txtCtrl->SetSelBackground(true, editor_scheme.selection_bkg_color);
+
+    updateFont(rc_txtCtrl);
 }
 
 void rcbasic_edit_frame::onRecentProjectSelect( wxCommandEvent& event )
@@ -246,6 +608,16 @@ void rcbasic_edit_frame::onRecentFileSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
 {
+    if(token_parser->IsAlive())
+    {
+        sym_sem = new wxSemaphore();
+        token_parser->Delete();
+        sym_sem->Wait();
+        delete sym_sem;
+    }
+
+    wxPuts(_("thread successfully ended"));
+
     wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
     wxFileName data_path(editor_path);
     data_path.AppendDir(_("data"));
@@ -1005,6 +1377,12 @@ void rcbasic_edit_frame::onCommentMenuSelect( wxCommandEvent& event )
         return;
 
     wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+
+    if(!t)
+        return;
+
+    t->BeginUndoAction();
+
     //wxPrintf(_("Line: %d to %d"), t->LineFromPosition(t->GetSelectionStart()), t->LineFromPosition(t->GetSelectionEnd()));
     int start_line = t->LineFromPosition(t->GetSelectionStart());
     int end_line = t->LineFromPosition(t->GetSelectionEnd());
@@ -1017,6 +1395,8 @@ void rcbasic_edit_frame::onCommentMenuSelect( wxCommandEvent& event )
         new_line.Replace(_("\n"), _(""));
         t->Replace(t->PositionFromLine(i), t->GetLineEndPosition(i), _("\'") + new_line);
     }
+
+    t->EndUndoAction();
 }
 
 void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
@@ -1027,6 +1407,12 @@ void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
         return;
 
     wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+
+    if(!t)
+        return;
+
+    t->BeginUndoAction();
+
     //wxPrintf(_("Line: %d to %d"), t->LineFromPosition(t->GetSelectionStart()), t->LineFromPosition(t->GetSelectionEnd()));
     int start_line = t->LineFromPosition(t->GetSelectionStart());
     int end_line = t->LineFromPosition(t->GetSelectionEnd());
@@ -1040,6 +1426,8 @@ void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
     new_line = t->GetLine(end_line);
     new_line.Replace(_("\n"), _(""));
     t->Replace(t->PositionFromLine(end_line), t->GetLineEndPosition(end_line), new_line + _("\'/"));
+
+    t->EndUndoAction();
 }
 
 int rcbasic_edit_frame::getOpenFileFromPath(wxFileName f_path)
@@ -1524,6 +1912,56 @@ void rcbasic_edit_frame::onReplaceMenuSelect(wxCommandEvent& event)
     }
 }
 
+
+void rcbasic_edit_frame::onGotoMenuSelect( wxCommandEvent& event )
+{
+    rcbasic_edit_gotoLine_dialog goto_dialog(this);
+    goto_dialog.ShowModal();
+}
+
+void rcbasic_edit_frame::updateFont(wxStyledTextCtrl* t)
+{
+    t->StyleSetFont(wxSTC_B_COMMENT, editor_font);
+    t->StyleSetFont(wxSTC_B_CONSTANT, editor_font);
+    t->StyleSetFont(wxSTC_B_DATE, editor_font);
+    t->StyleSetFont(wxSTC_B_DEFAULT, editor_font);
+    t->StyleSetFont(wxSTC_B_ERROR, editor_font);
+    t->StyleSetFont(wxSTC_B_HEXNUMBER, editor_font);
+    t->StyleSetFont(wxSTC_B_IDENTIFIER, editor_font);
+    t->StyleSetFont(wxSTC_B_KEYWORD, editor_font);
+    t->StyleSetFont(wxSTC_B_KEYWORD2, editor_font);
+    t->StyleSetFont(wxSTC_B_KEYWORD3, editor_font);
+    t->StyleSetFont(wxSTC_B_KEYWORD4, editor_font);
+    t->StyleSetFont(wxSTC_B_LABEL, editor_font);
+    t->StyleSetFont(wxSTC_B_NUMBER, editor_font);
+    t->StyleSetFont(wxSTC_B_OPERATOR, editor_font);
+    t->StyleSetFont(wxSTC_B_PREPROCESSOR, editor_font);
+    t->StyleSetFont(wxSTC_B_STRING, editor_font);
+    t->StyleSetFont(wxSTC_B_STRINGEOL, editor_font);
+}
+
+void rcbasic_edit_frame::onChangeFontMenuSelect( wxCommandEvent& event )
+{
+    wxFontData font_data;
+    font_data.SetInitialFont(default_font);
+    wxFontDialog font_picker(this, font_data);
+    font_picker.ShowModal();
+
+    font_data = font_picker.GetFontData();
+    editor_font = font_data.GetChosenFont();
+
+    for(int i = 0; i < open_files.size(); i++)
+    {
+        applyScheme(open_files[i]->getTextCtrl());
+    }
+}
+
+void rcbasic_edit_frame::onChangeSchemeMenuSelect( wxCommandEvent& event )
+{
+
+}
+
+
 void rcbasic_edit_frame::toggleMessageWindow( wxCommandEvent& event )
 {
 // TODO: Implement toggleMessageWindow
@@ -1638,7 +2076,7 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
 
     if(txtCtrl)
     {
-        wxPuts(_("\nT CTRL\n"));
+        //wxPuts(_("\nT CTRL\n"));
         for(int i = 0; i < open_files.size(); i++)
         {
             if(open_files[i]->getTextCtrl()==txtCtrl)
@@ -1647,13 +2085,13 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         //No need to check for project value here because index will be -1 if project is NULL
         if(index >= 0)
         {
-            wxPrintf(_("Set txtCtrl to %p\n"), txtCtrl);
+            //wxPrintf(_("Set txtCtrl to %p\n"), txtCtrl);
             project->getSourceFiles()[index]->setTextCtrl(txtCtrl);
         }
     }
     else
     {
-        wxPrintf("\nIndex = %d\n", index);
+        //wxPrintf("\nIndex = %d\n", index);
         txtCtrl_obj = new rcbasic_edit_txtCtrl(newFile, sourceFile_auinotebook);
 
         //apply settings here
@@ -1676,15 +2114,24 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         wxStyledTextCtrl* rc_txtCtrl = txtCtrl_obj->getTextCtrl();
         //wxPuts(_("Set event"));
         rc_txtCtrl->Connect( wxEVT_STC_CHANGE, wxStyledTextEventHandler( rcbasic_edit_frame::onTextCtrlUpdated ), NULL, this );
+        rc_txtCtrl->Connect( wxEVT_STC_CHARADDED, wxStyledTextEventHandler( rcbasic_edit_frame::onTextCtrlModified ), NULL, this );
 
         rc_txtCtrl->SetMarginType(0, wxSTC_MARGIN_NUMBER);
-        rc_txtCtrl->SetMarginWidth(0, 40);
+        rc_txtCtrl->SetMarginWidth(0, 55);
         rc_txtCtrl->SetUndoCollection(true);
         rc_txtCtrl->EmptyUndoBuffer();
         rc_txtCtrl->SetLexer(wxSTC_LEX_FREEBASIC);
+
+        rc_txtCtrl->SetKeyWords(0, rcbasic_edit_keywords);
+        rc_txtCtrl->SetKeyWords(1, rcbasic_edit_keywords2);
+        //rc_txtCtrl->StyleSetFont(wxSTC_STYLE_DEFAULT, editor_font);
+        rc_txtCtrl->SetTabWidth(4);
+
+        applyScheme(rc_txtCtrl);
     }
 
     txtCtrl_obj->setTextChangedFlag(false);
+
 
     return txtCtrl_obj;
 }
@@ -1836,17 +2283,17 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
             for(int file_node_index = 0; file_node_index < open_projects[i]->getSourceFiles().size(); file_node_index++)
             {
                 file_node = open_projects[i]->getSourceFiles()[file_node_index];
-                wxPrintf(_("CMP: %p\n"), file_node->getTextCtrl());
+                //wxPrintf(_("CMP: %p\n"), file_node->getTextCtrl());
                 if(file_node->getNode()==selected_node)
                 {
-                    wxPuts(_("Request open"));
+                    //wxPuts(_("Request open"));
                     if(sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl())<0)
                     {
-                        wxPrintf(_("Open a tab: %d\n"), sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl()));
+                        //wxPrintf(_("Open a tab: %d\n"), sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl()));
                         if(file_node->getTextCtrl())
                             file_node->setTextCtrl(NULL);
                         file_node->setTextCtrl(openFileTab(open_projects[i], file_node->getPath())->getTextCtrl());
-                        wxPrintf(_("file_node t_Ctrl = %p\n"), file_node->getTextCtrl());
+                        //wxPrintf(_("file_node t_Ctrl = %p\n"), file_node->getTextCtrl());
                         return;
                     }
                     else
@@ -1979,44 +2426,118 @@ void rcbasic_edit_frame::onTextCtrlUpdated( wxStyledTextEvent& event )
             open_files[i]->setTextChangedFlag(true);
         }
     }
-
-    if(symbolUpdateInProgress)
-        return;
-
-    symbolUpdateInProgress = true;
-    token_parser = new parserThread(this, 0, rc_txtCtrl->GetText(), this);
-    //token_parser->Connect( wxEVT_MYTHREAD, wxEventHandler( rcbasic_edit_frame::OnParserThread ), NULL, this );
-    token_parser->Run();
-
-    /*
-    wxString l_token;
-
-    //wxPuts(_("UPDATING SYMBOLS"));
-
-    for(int i = 0; i < rc_txtCtrl->GetLineCount(); i++)
-    {
-        rc_eval(std::string(rc_txtCtrl->GetLine(i).mb_str()));
-        //wxPuts(_("EVAL RAN"));
-        for(int t_count = 0; t_count < id_tokens.size(); t_count++)
-        {
-            //wxPrintf( wxString(id_tokens[t_count].name.c_str(), wxConvUTF8) + _("[%d]:%d\n"), id_tokens[t_count].dimensions, i+1 );
-            rcbasic_symbol sym;
-            sym.id = id_tokens[t_count].name;
-            sym.line = i;
-            sym.dimensions = id_tokens[t_count].dimensions;
-            sym.token_type = id_tokens[t_count].token_type;
-            addSymbol(sym);
-        }
-
-    }
-
-    symbolUpdateInProgress = false;
-
-    */
 }
 
-
-void rcbasic_edit_frame::addSymbol(rcbasic_symbol sym)
+void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
 {
+    if(sourceFile_auinotebook->GetSelection() < 0)
+        return;
 
+    wxStyledTextCtrl * t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection());
+
+    if(!t)
+        return;
+
+    char chr = event.GetKey();
+    int currentLine = t->GetCurrentLine();
+    int indent = 0;
+
+    if(chr == '\n')
+    {
+        //wxMessageBox(_("Current Line = ") + wxString::Format("%i",currentLine));
+        if(currentLine > 0)
+        {
+            indent = t->GetLineIndentation(currentLine-1);
+        }
+        if(indent == 0)
+            return;
+        //wxMessageBox(_("Position from line = ") + wxString::Format("%i",t->PositionFromLine(currentLine)));
+        t->SetLineIndentation(currentLine, indent);
+        t->GotoPos(t->GetLineIndentPosition(currentLine));
+    }
+}
+
+void rcbasic_edit_frame::addSymbol(rcbasic_symbol* sym)
+{
+    wxString node_label = sym->id;
+
+    if(sym->dimensions > 0)
+        node_label.Printf(node_label + _(" [ %dd ]"), sym->dimensions);
+
+    node_label.Printf(node_label + _(" : %d"), sym->line+1);
+
+    //wxPrintf(_("token_type = %d"), sym->token_type);
+
+    switch(sym->token_type)
+    {
+        case TOKEN_TYPE_VARIABLE:
+            var_nodes.push_back(symbol_tree->AppendItem( variable_root_node, node_label, symbol_tree_varImage, -1, new rc_symbol_treeItem_data(*sym)));
+            break;
+        case TOKEN_TYPE_FUNCTION:
+            //wxPuts(_("ADD FUNCTION NODE")+sym->id);
+            fn_nodes.push_back(symbol_tree->AppendItem( function_root_node, node_label, symbol_tree_fnImage, -1, new rc_symbol_treeItem_data(*sym)));
+            break;
+    }
+}
+
+void rcbasic_edit_frame::setSymbol(wxTreeItemId s_node, rcbasic_symbol* sym)
+{
+    wxString node_label = sym->id;
+
+    if(s_node == variable_root_node || s_node == function_root_node)
+        return;
+
+    if(sym->dimensions > 0)
+        node_label.Printf(node_label + _(" [ %dd ]"), sym->dimensions);
+
+    node_label.Printf(node_label + _(" : %d"), sym->line+1);
+
+    rc_symbol_treeItem_data* old_data = (rc_symbol_treeItem_data*)symbol_tree->GetItemData(s_node);
+    delete old_data;
+
+    symbol_tree->SetItemText(s_node, node_label);
+    symbol_tree->SetItemData(s_node, new rc_symbol_treeItem_data(*sym));
+    symbol_tree->SetItemImage(s_node, sym->token_type==TOKEN_TYPE_VARIABLE ? symbol_tree_varImage : symbol_tree_fnImage);
+}
+
+void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
+{
+    wxTreeItemId selected_symbol = event.GetItem();
+
+    if(sourceFile_auinotebook->GetSelection()<0)
+        return;
+
+    if(sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection())!=parsed_page)
+        return;
+
+    if(selected_symbol==symbol_tree->GetRootItem() || selected_symbol==variable_root_node || selected_symbol==function_root_node)
+        return;
+
+    wxString symbol_txt = symbol_tree->GetItemText(selected_symbol);
+    rc_symbol_treeItem_data* sym_data = (rc_symbol_treeItem_data*)symbol_tree->GetItemData(selected_symbol);
+    rcbasic_symbol sym = sym_data->symbol;
+
+    //wxPrintf(_("Symbol: ") + sym.id + _(" -- line=%d"), sym.line );
+
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*) sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection());
+
+    if(!t)
+        return;
+
+    if(sym.line >= 0)
+    {
+        t->GotoLine(sym.line);
+        t->SetSelection(t->GetCurrentPos(), t->GetCurrentPos() + t->GetLineText(sym.line).length());
+    }
+
+}
+
+void rcbasic_edit_frame::onNotebookPageChanged( wxAuiNotebookEvent& event )
+{
+    symbol_ui_state = UI_STATE_TAB_SWITCH;
+}
+
+void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
+{
 }

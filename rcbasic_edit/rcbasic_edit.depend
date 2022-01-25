@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1640919704 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.cpp
+1642656110 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.cpp
 	"rc_ideApp.h"
 	"rcbasic_edit_frame.h"
 	<wx/image.h>
@@ -3227,10 +3227,10 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1642141844 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1643092462 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1642141844 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1643092462 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3259,7 +3259,7 @@
 	<wx/button.h>
 	<wx/dialog.h>
 	<wx/checkbox.h>
-	<wx/combobox.h>
+	<wx/collpane.h>
 
 1587560968 c:\dev_libs\wx\include\wx\xrc\xmlres.h
 	"wx/defs.h"
@@ -3376,23 +3376,31 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1642141592 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1643095815 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
 	"rc_closeFileSavePrompt_dialog.h"
 	"projects.h"
+	"eval.h"
+	"rcbasic_symbol.h"
+	"parserThread.h"
 	<wx/imaglist.h>
 	<wx/stc/stc.h>
 	<wx/stdpaths.h>
+	<wx/fontdlg.h>
+	<wx/fontdata.h>
 	<vector>
 
-1642138454 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1643096415 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_find_dialog.h"
+	"rcbasic_edit_searchWrap_dialog.h"
+	"rcbasic_edit_replace_dialog.h"
+	"rcbasic_edit_gotoLine_dialog.h"
 
 1587560968 c:\dev_libs\wx\include\wx\filepicker.h
 	"wx/defs.h"
@@ -3468,11 +3476,132 @@
 1641786166 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_closefilesaveprompt_dialog.h
 	"rcbasic_edit.h"
 
-1642139658 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_find_dialog.cpp
+1642320286 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_find_dialog.cpp
 	"rc_find_dialog.h"
 
-1642139587 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_find_dialog.h
+1642299144 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_find_dialog.h
 	"rcbasic_edit.h"
 	"rcbasic_edit_frame.h"
 	"projects.h"
+
+1642300963 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_searchwrap_dialog.cpp
+	"rcbasic_edit_searchWrap_dialog.h"
+
+1642299410 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_searchwrap_dialog.h
+	"rcbasic_edit.h"
+
+1642365671 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_replace_dialog.cpp
+	"rcbasic_edit_replace_dialog.h"
+
+1642361606 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_replace_dialog.h
+	"rcbasic_edit.h"
+	"rcbasic_edit_frame.h"
+	"projects.h"
+
+1587560968 c:\dev_libs\wx\include\wx\collpane.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/gtk/collpane.h"
+	"wx/generic/collpaneg.h"
+
+1587560968 c:\dev_libs\wx\include\wx\gtk\collpane.h
+
+1587560968 c:\dev_libs\wx\include\wx\generic\collpaneg.h
+	"wx/containr.h"
+
+1642893323 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\eval.h
+	<iostream>
+	"tokenizer.h"
+
+1643081394 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\tokenizer.h
+	<iostream>
+	<string>
+	<cctype>
+	<vector>
+	"rc_utility.h"
+	"keywords.h"
+	"constants.h"
+
+1623894952 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_utility.h
+	<fstream>
+	<sstream>
+	<ctype.h>
+
+1633399289 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\keywords.h
+
+1623894952 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\constants.h
+	<vector>
+
+1643093026 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\parserthread.cpp
+	"parserThread.h"
+	"rcbasic_symbol.h"
+	"eval.h"
+	"rcbasic_edit_frame.h"
+	<wx/stopwatch.h>
+
+1643080202 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\parserthread.h
+	<vector>
+	<wx/wx.h>
+	<wx/thread.h>
+	<wx/event.h>
+	"rcbasic_symbol.h"
+
+1642812234 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_symbol.h
+	<wx/wx.h>
+	<wx/treectrl.h>
+
+1642985706 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_gotoline_dialog.h
+	"rcbasic_edit.h"
+	"rcbasic_edit_frame.h"
+
+1642987421 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_gotoline_dialog.cpp
+	"rcbasic_edit_gotoLine_dialog.h"
+
+1587560968 c:\dev_libs\wx\include\wx\fontpicker.h
+	"wx/defs.h"
+	"wx/pickerbase.h"
+	"wx/gtk/fontpicker.h"
+	"wx/generic/fontpickerg.h"
+
+1587560968 c:\dev_libs\wx\include\wx\gtk\fontpicker.h
+	"wx/button.h"
+
+1587560968 c:\dev_libs\wx\include\wx\generic\fontpickerg.h
+	"wx/button.h"
+	"wx/fontdata.h"
+
+1587560968 c:\dev_libs\wx\include\wx\fontdata.h
+	"wx/font.h"
+	"wx/colour.h"
+	"wx/encinfo.h"
+
+1587560968 c:\dev_libs\wx\include\wx\encinfo.h
+	"wx/string.h"
+
+1587560968 c:\dev_libs\wx\include\wx\fontdlg.h
+	"wx/defs.h"
+	"wx/dialog.h"
+	"wx/fontdata.h"
+	"wx/generic/fontdlgg.h"
+	"wx/msw/fontdlg.h"
+	"wx/gtk/fontdlg.h"
+	"wx/gtk1/fontdlg.h"
+	"wx/os2/fontdlg.h"
+	"wx/osx/fontdlg.h"
+
+1587560968 c:\dev_libs\wx\include\wx\generic\fontdlgg.h
+	"wx/gdicmn.h"
+	"wx/font.h"
+
+1587560968 c:\dev_libs\wx\include\wx\msw\fontdlg.h
+
+1587560968 c:\dev_libs\wx\include\wx\gtk\fontdlg.h
+
+1587560968 c:\dev_libs\wx\include\wx\gtk1\fontdlg.h
+
+1587560968 c:\dev_libs\wx\include\wx\os2\fontdlg.h
+	"wx/dialog.h"
+
+1587560968 c:\dev_libs\wx\include\wx\osx\fontdlg.h
+	"wx/dialog.h"
 

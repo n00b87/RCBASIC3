@@ -58,6 +58,14 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add option="-Wl,--allow-multiple-definition" />
+		</Linker>
+		<Unit filename="constants.h" />
+		<Unit filename="eval.h" />
+		<Unit filename="keywords.h" />
+		<Unit filename="parserThread.cpp" />
+		<Unit filename="parserThread.h" />
 		<Unit filename="projects.cpp" />
 		<Unit filename="projects.h" />
 		<Unit filename="rc_closeFileSavePrompt_dialog.cpp" />
@@ -70,12 +78,21 @@
 		<Unit filename="rc_ideApp.h" />
 		<Unit filename="rc_newFile_dialog.cpp" />
 		<Unit filename="rc_newFile_dialog.h" />
+		<Unit filename="rc_utility.h" />
 		<Unit filename="rcbasic_edit.cpp" />
 		<Unit filename="rcbasic_edit.h" />
 		<Unit filename="rcbasic_edit_frame.cpp" />
 		<Unit filename="rcbasic_edit_frame.h" />
+		<Unit filename="rcbasic_edit_gotoLine_dialog.cpp" />
+		<Unit filename="rcbasic_edit_gotoLine_dialog.h" />
 		<Unit filename="rcbasic_edit_newProject_dialog.cpp" />
 		<Unit filename="rcbasic_edit_newProject_dialog.h" />
+		<Unit filename="rcbasic_edit_replace_dialog.cpp" />
+		<Unit filename="rcbasic_edit_replace_dialog.h" />
+		<Unit filename="rcbasic_edit_searchWrap_dialog.cpp" />
+		<Unit filename="rcbasic_edit_searchWrap_dialog.h" />
+		<Unit filename="rcbasic_symbol.h" />
+		<Unit filename="tokenizer.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

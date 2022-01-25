@@ -36,7 +36,6 @@
 #include <wx/dialog.h>
 #include <wx/checkbox.h>
 #include <wx/collpane.h>
-#include <wx/combobox.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -134,6 +133,8 @@ class rc_ideFrame : public wxFrame
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onEditorClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void onEditorIdle( wxIdleEvent& event ) { event.Skip(); }
+		virtual void onEditorUpdateUI( wxUpdateUIEvent& event ) { event.Skip(); }
 		virtual void newProjectMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void newFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void openProjectMenuSelect( wxCommandEvent& event ) { event.Skip(); }
@@ -160,11 +161,15 @@ class rc_ideFrame : public wxFrame
 		virtual void onFindPreviousMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onReplaceMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onGotoMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onChangeFontMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onChangeSchemeMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleToolbar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleSideBar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleMessageWindow( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeNodeActivated( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeContextMenu( wxTreeEvent& event ) { event.Skip(); }
+		virtual void onSymbolSelectionChanged( wxTreeEvent& event ) { event.Skip(); }
+		virtual void onNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void onSourceFileTabClose( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void onSearchResultSelection( wxCommandEvent& event ) { event.Skip(); }
 
@@ -394,61 +399,20 @@ class rc_gotoLine_dialog : public wxDialog
 
 	protected:
 		wxStaticText* m_staticText17;
-		wxTextCtrl* m_textCtrl10;
+		wxTextCtrl* m_goto_textCtrl;
 		wxButton* m_button28;
 		wxButton* m_button29;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
+
 
 	public:
 
 		rc_gotoLine_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Go To Line"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 310,118 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_gotoLine_dialog();
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class rc_changeFont_dialog
-///////////////////////////////////////////////////////////////////////////////
-class rc_changeFont_dialog : public wxDialog
-{
-	private:
-
-	protected:
-		wxStaticText* m_staticText18;
-		wxComboBox* m_comboBox1;
-		wxStaticText* m_staticText19;
-		wxComboBox* m_comboBox2;
-		wxStaticText* m_staticText20;
-		wxComboBox* m_comboBox3;
-		wxStaticText* m_staticText21;
-		wxTextCtrl* m_textCtrl11;
-		wxButton* m_button30;
-		wxButton* m_button31;
-
-	public:
-
-		rc_changeFont_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Font"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 346,280 ), long style = wxDEFAULT_DIALOG_STYLE );
-
-		~rc_changeFont_dialog();
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class rc_setColorScheme_dialog
-///////////////////////////////////////////////////////////////////////////////
-class rc_setColorScheme_dialog : public wxDialog
-{
-	private:
-
-	protected:
-		wxListBox* m_listBox2;
-		wxButton* m_button32;
-
-	public:
-
-		rc_setColorScheme_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color Schemes"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 418,353 ), long style = wxDEFAULT_DIALOG_STYLE );
-
-		~rc_setColorScheme_dialog();
 
 };
 
@@ -476,6 +440,25 @@ class rc_closeFileSavePrompt_dialog : public wxDialog
 		rc_closeFileSavePrompt_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Close File"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
 
 		~rc_closeFileSavePrompt_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_setColorScheme_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_setColorScheme_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxListBox* m_listBox2;
+		wxButton* m_button32;
+
+	public:
+
+		rc_setColorScheme_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color Schemes"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 418,353 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~rc_setColorScheme_dialog();
 
 };
 

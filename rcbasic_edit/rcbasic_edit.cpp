@@ -271,7 +271,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_project_panel->SetSizer( bSizer8 );
 	m_project_panel->Layout();
 	bSizer8->Fit( m_project_panel );
-	m_notebook4->AddPage( m_project_panel, wxT("Projects"), true );
+	m_notebook4->AddPage( m_project_panel, wxT("Projects"), false );
 	m_ = new wxPanel( m_notebook4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
@@ -283,7 +283,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_->SetSizer( bSizer7 );
 	m_->Layout();
 	bSizer7->Fit( m_ );
-	m_notebook4->AddPage( m_, wxT("Symbols"), false );
+	m_notebook4->AddPage( m_, wxT("Symbols"), true );
 
 	bSizer5->Add( m_notebook4, 1, wxEXPAND | wxALL, 5 );
 
@@ -360,6 +360,8 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( rc_ideFrame::onEditorClose ) );
+	this->Connect( wxEVT_IDLE, wxIdleEventHandler( rc_ideFrame::onEditorIdle ) );
+	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( rc_ideFrame::onEditorUpdateUI ) );
 	m_new_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::newProjectMenuSelect ), this, m_newProject_menuItem->GetId());
 	m_new_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::newFileMenuSelect ), this, m_newFile_menuItem->GetId());
 	m_open_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::openProjectMenuSelect ), this, m_openProject_menuItem->GetId());
@@ -386,11 +388,15 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindPreviousMenuSelect ), this, m_findPrevious_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onReplaceMenuSelect ), this, m_replace_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onGotoMenuSelect ), this, m_goto_menuItem->GetId());
+	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onChangeFontMenuSelect ), this, m_changeFont_menuItem->GetId());
+	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onChangeSchemeMenuSelect ), this, m_changeColors_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleToolbar ), this, m_showToolbar_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleSideBar ), this, m_showSideBar_menuItem->GetId());
 	m_view_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::toggleMessageWindow ), this, m_showMessageWindow_menuItem->GetId());
 	project_tree->Connect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Connect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
+	symbol_tree->Connect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( rc_ideFrame::onSymbolSelectionChanged ), NULL, this );
+	sourceFile_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( rc_ideFrame::onNotebookPageChanged ), NULL, this );
 	sourceFile_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
 	m_searchResults_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
 	m_searchResults_listBox->Connect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
@@ -400,8 +406,12 @@ rc_ideFrame::~rc_ideFrame()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( rc_ideFrame::onEditorClose ) );
+	this->Disconnect( wxEVT_IDLE, wxIdleEventHandler( rc_ideFrame::onEditorIdle ) );
+	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( rc_ideFrame::onEditorUpdateUI ) );
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
+	symbol_tree->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( rc_ideFrame::onSymbolSelectionChanged ), NULL, this );
+	sourceFile_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( rc_ideFrame::onNotebookPageChanged ), NULL, this );
 	sourceFile_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
 	m_searchResults_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
 	m_searchResults_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
@@ -1154,8 +1164,8 @@ rc_gotoLine_dialog::rc_gotoLine_dialog( wxWindow* parent, wxWindowID id, const w
 	m_staticText17->Wrap( -1 );
 	bSizer48->Add( m_staticText17, 2, wxALL, 5 );
 
-	m_textCtrl10 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer48->Add( m_textCtrl10, 8, wxALL, 5 );
+	m_goto_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer48->Add( m_goto_textCtrl, 8, wxALL, 5 );
 
 
 	bSizer48->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -1186,173 +1196,18 @@ rc_gotoLine_dialog::rc_gotoLine_dialog( wxWindow* parent, wxWindowID id, const w
 	this->Layout();
 
 	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_button28->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_gotoLine_dialog::onCancelButtonClick ), NULL, this );
+	m_button29->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_gotoLine_dialog::onOKButtonClick ), NULL, this );
 }
 
 rc_gotoLine_dialog::~rc_gotoLine_dialog()
 {
-}
+	// Disconnect Events
+	m_button28->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_gotoLine_dialog::onCancelButtonClick ), NULL, this );
+	m_button29->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_gotoLine_dialog::onOKButtonClick ), NULL, this );
 
-rc_changeFont_dialog::rc_changeFont_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
-{
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-
-	wxBoxSizer* bSizer50;
-	bSizer50 = new wxBoxSizer( wxVERTICAL );
-
-	wxBoxSizer* bSizer51;
-	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText18 = new wxStaticText( this, wxID_ANY, wxT("Font"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText18->Wrap( -1 );
-	bSizer51->Add( m_staticText18, 1, wxALL, 5 );
-
-	m_comboBox1 = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer51->Add( m_comboBox1, 4, wxALL, 5 );
-
-
-	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer50->Add( bSizer51, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer52;
-	bSizer52 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer52->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText19 = new wxStaticText( this, wxID_ANY, wxT("Size  "), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText19->Wrap( -1 );
-	bSizer52->Add( m_staticText19, 1, wxALL, 5 );
-
-	m_comboBox2 = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer52->Add( m_comboBox2, 4, wxALL, 5 );
-
-
-	bSizer52->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer50->Add( bSizer52, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer53;
-	bSizer53 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer53->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText20 = new wxStaticText( this, wxID_ANY, wxT("Style"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText20->Wrap( -1 );
-	bSizer53->Add( m_staticText20, 1, wxALL, 5 );
-
-	m_comboBox3 = new wxComboBox( this, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer53->Add( m_comboBox3, 4, wxALL, 5 );
-
-
-	bSizer53->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer50->Add( bSizer53, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer55;
-	bSizer55 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer55->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText21 = new wxStaticText( this, wxID_ANY, wxT("Preview"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText21->Wrap( -1 );
-	bSizer55->Add( m_staticText21, 1, wxALIGN_BOTTOM|wxALL, 5 );
-
-	m_textCtrl11 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-	bSizer55->Add( m_textCtrl11, 4, wxALIGN_BOTTOM|wxALL, 5 );
-
-
-	bSizer55->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer50->Add( bSizer55, 4, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer54;
-	bSizer54 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer54->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_button30 = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer54->Add( m_button30, 0, wxALIGN_BOTTOM|wxALL, 5 );
-
-	m_button31 = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer54->Add( m_button31, 0, wxALIGN_BOTTOM|wxALL, 5 );
-
-
-	bSizer54->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer50->Add( bSizer54, 4, wxEXPAND, 5 );
-
-
-	bSizer50->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	this->SetSizer( bSizer50 );
-	this->Layout();
-
-	this->Centre( wxBOTH );
-}
-
-rc_changeFont_dialog::~rc_changeFont_dialog()
-{
-}
-
-rc_setColorScheme_dialog::rc_setColorScheme_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
-{
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-
-	wxBoxSizer* bSizer57;
-	bSizer57 = new wxBoxSizer( wxVERTICAL );
-
-	wxBoxSizer* bSizer58;
-	bSizer58 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer58->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_listBox2 = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	bSizer58->Add( m_listBox2, 8, wxALL|wxEXPAND, 5 );
-
-
-	bSizer58->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer57->Add( bSizer58, 8, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer59;
-	bSizer59 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer59->Add( 0, 0, 8, wxEXPAND, 5 );
-
-	m_button32 = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer59->Add( m_button32, 1, wxALL, 5 );
-
-
-	bSizer59->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer57->Add( bSizer59, 1, wxEXPAND, 5 );
-
-
-	this->SetSizer( bSizer57 );
-	this->Layout();
-
-	this->Centre( wxBOTH );
-}
-
-rc_setColorScheme_dialog::~rc_setColorScheme_dialog()
-{
 }
 
 rc_closeFileSavePrompt_dialog::rc_closeFileSavePrompt_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
@@ -1426,4 +1281,52 @@ rc_closeFileSavePrompt_dialog::~rc_closeFileSavePrompt_dialog()
 	closeFileSave_dontSaveButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeFileSavePrompt_dialog::onCloseFileSaveDontSave ), NULL, this );
 	closeFileSave_saveButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_closeFileSavePrompt_dialog::onCloseFileSaveOk ), NULL, this );
 
+}
+
+rc_setColorScheme_dialog::rc_setColorScheme_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer57;
+	bSizer57 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer58;
+	bSizer58 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer58->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_listBox2 = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer58->Add( m_listBox2, 8, wxALL|wxEXPAND, 5 );
+
+
+	bSizer58->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer57->Add( bSizer58, 8, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer59;
+	bSizer59 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer59->Add( 0, 0, 8, wxEXPAND, 5 );
+
+	m_button32 = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer59->Add( m_button32, 1, wxALL, 5 );
+
+
+	bSizer59->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer57->Add( bSizer59, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer57 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+}
+
+rc_setColorScheme_dialog::~rc_setColorScheme_dialog()
+{
 }
