@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1642656110 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.cpp
+1643183803 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.cpp
 	"rc_ideApp.h"
 	"rcbasic_edit_frame.h"
 	<wx/image.h>
@@ -77,7 +77,7 @@
 
 1587560968 c:\dev_libs\wx\include\wx\compiler.h
 
-1587564568 c:\dev_libs\wx\lib\gcc510tdm_dll\mswud\wx\setup.h
+1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswud\wx\setup.h
 
 1587560968 c:\dev_libs\wx\include\wx\msw\wince\libraries.h
 
@@ -3376,7 +3376,7 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1643095815 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1643247195 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -3392,7 +3392,7 @@
 	<wx/fontdata.h>
 	<vector>
 
-1643096415 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1643250077 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -3532,14 +3532,14 @@
 1623894952 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\constants.h
 	<vector>
 
-1643093026 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\parserthread.cpp
+1643247325 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\parserthread.cpp
 	"parserThread.h"
 	"rcbasic_symbol.h"
 	"eval.h"
 	"rcbasic_edit_frame.h"
 	<wx/stopwatch.h>
 
-1643080202 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\parserthread.h
+1643247341 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\parserthread.h
 	<vector>
 	<wx/wx.h>
 	<wx/thread.h>

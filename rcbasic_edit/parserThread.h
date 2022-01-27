@@ -26,15 +26,15 @@ class parserThread : public wxThread
 
         bool runParser(wxCommandEvent evt);
 
-        std::vector<rcbasic_symbol*> s_list;
-        std::vector<rcbasic_symbol*>* sym_list;
+        std::vector<rcbasic_symbol> s_list;
+        std::vector<rcbasic_symbol>* sym_list;
 
 
         void readContents();
 
         bool inSymbolList(rcbasic_symbol sym);
 
-        void addSymbol(rcbasic_symbol* sym);
+        void addSymbol(rcbasic_symbol sym);
     protected:
         wxEvtHandler* m_pParent;
 
