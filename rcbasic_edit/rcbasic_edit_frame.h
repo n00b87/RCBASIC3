@@ -82,6 +82,8 @@ struct rcbasic_edit_scheme
     wxColour selection_bkg_color;
     wxColour current_line_bkg_color;
     wxColour current_line_fg_color;
+    wxColour line_number_fg_color;
+    wxColour line_number_bkg_color;
 
     bool style_bkg_color_set;
     bool keyword_fg_color_set;
@@ -97,6 +99,8 @@ struct rcbasic_edit_scheme
     bool selection_bkg_color_set;
     bool current_line_bkg_color_set;
     bool current_line_fg_color_set;
+    bool line_number_bkg_color_set;
+    bool line_number_fg_color_set;
 };
 
 /** Implementing rc_ideFrame */
@@ -198,6 +202,11 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onNotebookPageChanged( wxAuiNotebookEvent& event );
 		void onChangeFontMenuSelect( wxCommandEvent& event );
 		void onChangeSchemeMenuSelect( wxCommandEvent& event );
+		void onZoomInMenuSelect( wxCommandEvent& event );
+		void onZoomOutMenuSelect( wxCommandEvent& event );
+		void onNormalSizeMenuSelect( wxCommandEvent& event );
+		void onProjectSettingsMenuSelect( wxCommandEvent& event );
+		void onProjectEnvironmentMenuSelect( wxCommandEvent& event );
 
 		void onTextCtrlUpdated( wxStyledTextEvent& event );
 		void onTextCtrlModified( wxStyledTextEvent& event );

@@ -3227,10 +3227,10 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1643092462 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1643351976 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1643092462 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1643351976 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3251,6 +3251,7 @@
 	<wx/splitter.h>
 	<wx/richtext/richtextctrl.h>
 	<wx/listbox.h>
+	<wx/statusbr.h>
 	<wx/frame.h>
 	<wx/stattext.h>
 	<wx/textctrl.h>
@@ -3260,6 +3261,7 @@
 	<wx/dialog.h>
 	<wx/checkbox.h>
 	<wx/collpane.h>
+	<wx/listctrl.h>
 
 1587560968 c:\dev_libs\wx\include\wx\xrc\xmlres.h
 	"wx/defs.h"
@@ -3376,7 +3378,7 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1643247195 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1643340765 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -3392,7 +3394,7 @@
 	<wx/fontdata.h>
 	<vector>
 
-1643250077 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1643340765 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -3401,6 +3403,8 @@
 	"rcbasic_edit_searchWrap_dialog.h"
 	"rcbasic_edit_replace_dialog.h"
 	"rcbasic_edit_gotoLine_dialog.h"
+	"rcbasic_edit_setColorScheme_dialog.h"
+	"rcbasic_edit_projectSettings_dialog.h"
 
 1587560968 c:\dev_libs\wx\include\wx\filepicker.h
 	"wx/defs.h"
@@ -3430,10 +3434,10 @@
 	"rcbasic_edit.h"
 	"projects.h"
 
-1641681429 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
+1643355366 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
 	"projects.h"
 
-1641681429 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
+1643358327 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
 	<wx/wx.h>
 	<wx/treectrl.h>
 	<wx/file.h>
@@ -3513,7 +3517,7 @@
 	<iostream>
 	"tokenizer.h"
 
-1643081394 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\tokenizer.h
+1643294877 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\tokenizer.h
 	<iostream>
 	<string>
 	<cctype>
@@ -3532,7 +3536,7 @@
 1623894952 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\constants.h
 	<vector>
 
-1643247325 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\parserthread.cpp
+1643250227 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\parserthread.cpp
 	"parserThread.h"
 	"rcbasic_symbol.h"
 	"eval.h"
@@ -3604,4 +3608,25 @@
 
 1587560968 c:\dev_libs\wx\include\wx\osx\fontdlg.h
 	"wx/dialog.h"
+
+1643264094 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_setcolorscheme_dialog.h
+	"rcbasic_edit.h"
+	"rcbasic_edit_frame.h"
+
+1643265867 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_setcolorscheme_dialog.cpp
+	"rcbasic_edit_setColorScheme_dialog.h"
+	<wx/dir.h>
+	<wx/stdpaths.h>
+
+1587560968 c:\dev_libs\wx\include\wx\dir.h
+	"wx/longlong.h"
+	"wx/string.h"
+	"wx/filefn.h"
+
+1643355958 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectsettings_dialog.h
+	"rcbasic_edit.h"
+	"rcbasic_edit_frame.h"
+
+1643358245 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectsettings_dialog.cpp
+	"rcbasic_edit_projectSettings_dialog.h"
 

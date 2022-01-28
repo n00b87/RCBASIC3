@@ -17,6 +17,9 @@
 #define RCBASIC_PROJECT_SOURCE_EXISTING 1
 #define RCBASIC_PROJECT_SOURCE_OPEN 2
 
+#define STORE_LOCATION_RELATIVE 0
+#define STORE_LOCATION_ABSOLUTE 1
+
 class rcbasic_project_node
 {
     private:
@@ -27,6 +30,7 @@ class rcbasic_project_node
         uintptr_t notebook_page_addr;
         bool text_changed;
         wxString txt_backup;
+        int store_location_type;
     public:
         rcbasic_project_node(wxFileName node_path);
         void setNode(wxTreeItemId node);
@@ -49,7 +53,6 @@ class rcbasic_project
         wxString website;
         wxString description;
         std::vector<rcbasic_project_node*> source_files;
-        std::vector<wxString> src;
         wxTreeItemId root_node_id;
 
         wxString location;
@@ -83,6 +86,22 @@ class rcbasic_project
         wxString getWebsite();
         wxString getDescription();
         std::vector<rcbasic_project_node*> getSourceFiles();
+        void removeSourceFile(wxString fname)
+        {
+            for(int i = 0; i < source_files.size(); i++)
+            {
+                wxFileName tmp = source_files[i]->getPath();
+                tmp.MakeRelativeTo(location);
+                if(tmp.GetFullPath().compare(fname)==0)
+                {
+                    //wxPuts(_("match: ")+tmp.GetFullPath());
+                    delete source_files[i];
+                    source_files.erase(source_files.begin() + i);
+                    i--;
+                    break;
+                }
+            }
+        }
         int getSourceFileIndex(wxFileName file_path);
 
         wxTreeItemId getRootNode();

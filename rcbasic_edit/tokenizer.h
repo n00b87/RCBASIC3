@@ -430,7 +430,7 @@ bool tokens(const std::string &data)
                 }
                 else
                 {
-                    cout << "illegal character found" << endl;
+                    //cout << "illegal character found" << endl;
                     return false;
                 }
                 break;

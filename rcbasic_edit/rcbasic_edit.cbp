@@ -87,10 +87,14 @@
 		<Unit filename="rcbasic_edit_gotoLine_dialog.h" />
 		<Unit filename="rcbasic_edit_newProject_dialog.cpp" />
 		<Unit filename="rcbasic_edit_newProject_dialog.h" />
+		<Unit filename="rcbasic_edit_projectSettings_dialog.cpp" />
+		<Unit filename="rcbasic_edit_projectSettings_dialog.h" />
 		<Unit filename="rcbasic_edit_replace_dialog.cpp" />
 		<Unit filename="rcbasic_edit_replace_dialog.h" />
 		<Unit filename="rcbasic_edit_searchWrap_dialog.cpp" />
 		<Unit filename="rcbasic_edit_searchWrap_dialog.h" />
+		<Unit filename="rcbasic_edit_setColorScheme_dialog.cpp" />
+		<Unit filename="rcbasic_edit_setColorScheme_dialog.h" />
 		<Unit filename="rcbasic_symbol.h" />
 		<Unit filename="tokenizer.h" />
 		<Extensions>

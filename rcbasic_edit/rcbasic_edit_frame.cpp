@@ -7,6 +7,8 @@
 #include "rcbasic_edit_searchWrap_dialog.h"
 #include "rcbasic_edit_replace_dialog.h"
 #include "rcbasic_edit_gotoLine_dialog.h"
+#include "rcbasic_edit_setColorScheme_dialog.h"
+#include "rcbasic_edit_projectSettings_dialog.h"
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
 {
@@ -343,7 +345,7 @@ rc_ideFrame( parent )
     wxFileName scheme_path(editor_path);
     scheme_path.AppendDir(_("config"));
     scheme_path.AppendDir(_("schemes"));
-    scheme_path.SetFullName(_("dark theme.scheme"));
+    scheme_path.SetFullName(_("default.scheme"));
     loadScheme(scheme_path);
 
     token_parser = new parserThread(this, 0, this);
@@ -444,6 +446,8 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
         editor_scheme.selection_fg_color_set = false;
         editor_scheme.string_fg_color_set = false;
         editor_scheme.style_bkg_color_set = false;
+        editor_scheme.line_number_bkg_color_set = false;
+        editor_scheme.line_number_fg_color_set = false;
 
         for(int i = 0; i < scheme_data.length(); i++)
         {
@@ -537,6 +541,16 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
                 editor_scheme.current_line_fg_color = wxColour(r, g, b);
                 editor_scheme.current_line_fg_color_set = true;
             }
+            else if(property.compare(_("line_number_fg_color"))==0)
+            {
+                editor_scheme.line_number_fg_color = wxColour(r, g, b);
+                editor_scheme.line_number_fg_color_set = true;
+            }
+            else if(property.compare(_("line_number_bkg_color"))==0)
+            {
+                editor_scheme.line_number_bkg_color = wxColour(r, g, b);
+                editor_scheme.line_number_bkg_color_set = true;
+            }
 
 
             scheme_data = scheme_data.substr(scheme_data.find_first_of(_("\n"))+1);
@@ -556,6 +570,8 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
 {
     rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_DEFAULT, editor_scheme.style_bkg_color);
     rc_txtCtrl->StyleClearAll();
+
+    updateFont(rc_txtCtrl);
 
     if(editor_scheme.keyword_fg_color_set)
         rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD, editor_scheme.keyword_fg_color);
@@ -587,7 +603,18 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
     if(editor_scheme.selection_bkg_color_set)
         rc_txtCtrl->SetSelBackground(true, editor_scheme.selection_bkg_color);
 
-    updateFont(rc_txtCtrl);
+    rc_txtCtrl->StyleSetForeground(wxSTC_B_ERROR, editor_scheme.string_fg_color);
+    rc_txtCtrl->StyleSetBold(wxSTC_B_ERROR, true);
+
+    rc_txtCtrl->StyleSetBold(wxSTC_B_KEYWORD2, true);
+
+    if(editor_scheme.line_number_bkg_color_set)
+        rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_LINENUMBER, editor_scheme.line_number_bkg_color);
+
+    if(editor_scheme.line_number_fg_color_set)
+        rc_txtCtrl->StyleSetForeground(wxSTC_STYLE_LINENUMBER, editor_scheme.line_number_fg_color);
+
+    //updateFont(rc_txtCtrl);
 }
 
 void rcbasic_edit_frame::onRecentProjectSelect( wxCommandEvent& event )
@@ -2081,7 +2108,8 @@ void rcbasic_edit_frame::onChangeFontMenuSelect( wxCommandEvent& event )
     wxFontData font_data;
     font_data.SetInitialFont(default_font);
     wxFontDialog font_picker(this, font_data);
-    font_picker.ShowModal();
+    if(font_picker.ShowModal()==wxID_CANCEL)
+        return;
 
     font_data = font_picker.GetFontData();
     editor_font = font_data.GetChosenFont();
@@ -2096,7 +2124,12 @@ void rcbasic_edit_frame::onChangeFontMenuSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::onChangeSchemeMenuSelect( wxCommandEvent& event )
 {
+    notebook_mutex.Lock();
 
+    rcbasic_edit_setColorScheme_dialog scheme_dialog(this);
+    scheme_dialog.ShowModal();
+
+    notebook_mutex.Unlock();
 }
 
 
@@ -2145,6 +2178,97 @@ void rcbasic_edit_frame::toggleSideBar( wxCommandEvent& event )
     sideBarVisible = !sideBarVisible;
     m_showSideBar_menuItem->Check(sideBarVisible);
 }
+
+
+void rcbasic_edit_frame::onZoomInMenuSelect( wxCommandEvent& event )
+{
+    notebook_mutex.Lock();
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+
+    if(!t)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    t->ZoomIn();
+
+    notebook_mutex.Unlock();
+}
+
+void rcbasic_edit_frame::onZoomOutMenuSelect( wxCommandEvent& event )
+{
+    notebook_mutex.Lock();
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+
+    if(!t)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    t->ZoomOut();
+
+    notebook_mutex.Unlock();
+}
+
+void rcbasic_edit_frame::onNormalSizeMenuSelect( wxCommandEvent& event )
+{
+    notebook_mutex.Lock();
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+
+    if(!t)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    t->SetZoom(0);
+
+    notebook_mutex.Unlock();
+}
+
+
+void rcbasic_edit_frame::onProjectSettingsMenuSelect( wxCommandEvent& event )
+{
+    if((!active_project) || open_projects.size()<=0)
+        return;
+
+    rcbasic_edit_projectSettings_dialog ps_dialog(this);
+    ps_dialog.ShowModal();
+
+    int project_index = getProjectFromRoot(active_project->getRootNode());
+    updateProjectTree(project_index);
+}
+
+void rcbasic_edit_frame::onProjectEnvironmentMenuSelect( wxCommandEvent& event )
+{
+}
+
 
 #define SAVE_PROJECT 1001
 #define CLOSE_PROJECT 1002
@@ -2708,4 +2832,34 @@ void rcbasic_edit_frame::onNotebookPageChanged( wxAuiNotebookEvent& event )
 
 void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
 {
+    notebook_mutex.Lock();
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    int line_num = 0;
+    int total_lines = 0;
+    int col_num = 0;
+    int total_col = 0;
+
+    if(selected_page >= 0)
+    {
+        wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+
+        if(t)
+        {
+            line_num = t->GetCurrentLine();
+            total_lines = t->GetLineCount();
+            col_num = t->GetColumn(t->GetCurrentPos());
+            total_col = t->GetLineText(line_num).Length();
+        }
+    }
+
+    notebook_mutex.Unlock();
+
+    wxString line_status;
+    wxString column_status;
+
+    line_status.Printf(_("Line: %d / %d"), line_num+1, total_lines);
+    column_status.Printf(_("Column: %d / %d"), col_num, total_col);
+
+    m_statusBar->SetStatusText(line_status + _("   ") + column_status, 0);
 }
