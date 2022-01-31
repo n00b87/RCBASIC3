@@ -97,7 +97,7 @@ class rc_ideFrame : public wxFrame
 		wxMenuItem* m_build_menuItem;
 		wxMenuItem* m_run_menuItem;
 		wxMenuItem* m_buildRun_menuItem;
-		wxMenuItem* m_debugRun_menuItem;
+		wxMenuItem* m_abort_menuItem;
 		wxMenu* m_tools_menu;
 		wxMenuItem* m_genKeystore_menuItem;
 		wxMenuItem* m_distribute_menuItem;
@@ -174,6 +174,15 @@ class rc_ideFrame : public wxFrame
 		virtual void onNormalSizeMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onProjectSettingsMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onProjectEnvironmentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onBuildMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onRunMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onBuildRunMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onStopExecuteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onGenKeystoreMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onDistributeMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onDocMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onEditorManualMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onAboutMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeNodeActivated( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeContextMenu( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onSymbolSelectionChanged( wxTreeEvent& event ) { event.Skip(); }
@@ -489,6 +498,7 @@ class rc_projectSettings_dialog : public wxDialog
 		wxTextCtrl* m_projectName_textCtrl;
 		wxStaticText* m_staticText17;
 		wxTextCtrl* m_mainSource_textCtrl;
+		wxListBox* m_mainSource_listBox;
 		wxStaticText* m_staticText18;
 		wxTextCtrl* m_author_textCtrl;
 		wxStaticText* m_staticText19;
@@ -500,11 +510,14 @@ class rc_projectSettings_dialog : public wxDialog
 		wxButton* m_addFile_button;
 		wxButton* m_removeFile_button;
 		wxButton* m_fileProperties_button;
+		wxPanel* m_panel11;
 		wxButton* m_cancel_button;
 		wxButton* m_ok_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onMainSourceListBoxSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFileSelection( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onFileDoubleClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAddFilesButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onRemoveSelectedButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFilePropertiesButtonClick( wxCommandEvent& event ) { event.Skip(); }
@@ -514,7 +527,7 @@ class rc_projectSettings_dialog : public wxDialog
 
 	public:
 
-		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 416,458 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 517,553 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectSettings_dialog();
 
@@ -563,6 +576,7 @@ class rc_projectEnvironment_dialog : public wxDialog
 		wxButton* m_clearAll_button;
 		wxButton* m_removeSelected_button;
 		wxButton* m_addVariable_button;
+		wxButton* m_editVariable_button;
 		wxButton* m_cancel_button;
 		wxButton* m_ok_button;
 
@@ -570,6 +584,7 @@ class rc_projectEnvironment_dialog : public wxDialog
 		virtual void onClearAllButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onRemoveSelectedButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAddVariableButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onEditVariableButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
 
@@ -579,6 +594,34 @@ class rc_projectEnvironment_dialog : public wxDialog
 		rc_projectEnvironment_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Environment Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 487,298 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectEnvironment_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_projectVariableEdit_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_projectVariableEdit_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText25;
+		wxTextCtrl* m_variable_textCtrl;
+		wxStaticText* m_staticText26;
+		wxTextCtrl* m_value_textCtrl;
+		wxButton* m_cancel_button;
+		wxButton* m_ok_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		rc_projectVariableEdit_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 489,176 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~rc_projectVariableEdit_dialog();
 
 };
 

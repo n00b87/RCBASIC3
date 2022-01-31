@@ -9,6 +9,7 @@
 #include "rcbasic_edit_gotoLine_dialog.h"
 #include "rcbasic_edit_setColorScheme_dialog.h"
 #include "rcbasic_edit_projectSettings_dialog.h"
+#include "rcbasic_edit_projectEnvironment_dialog.h"
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
 {
@@ -199,6 +200,15 @@ rc_ideFrame( parent )
     thread_returned = false;
     sym_sem = NULL;
     symbolUpdateInProgress = false;
+
+    build_process = NULL;
+    run_process = NULL;
+
+    isBuilding = false;
+    isRunning = false;
+    isBuildingAndRunning = false;
+    build_pid = -1;
+    run_pid = -1;
 
     default_font = wxFont(12,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
     editor_font = default_font;
@@ -728,6 +738,12 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
     if(newProject_win->getNewProjectValue())
     {
         wxString project_name = newProject_win->projectName_field->GetValue();
+
+        wxString p_name_tmp = project_name;
+        p_name_tmp.Replace(_(" "), _(""));
+        if(p_name_tmp.size() <= 0)
+            return;
+
         wxString project_location = newProject_win->projectLocation_picker->GetPath();
         int main_source_flag = newProject_win->projectCreateMain_radio->GetValue() ? 0 : 1;
         wxString main_source_value = main_source_flag==0 ? newProject_win->projectNewMain_field->GetValue() : newProject_win->projectExistingFile_picker->GetTextCtrlValue();
@@ -742,7 +758,7 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
             return;
         }
         new_project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
-        new_project->addSourceFile(new_project->getMainSource().GetFullPath());
+        new_project->addSourceFile(new_project->getMainSource().GetFullPath(), STORE_LOCATION_RELATIVE);
 
         new_project->setLastProjectSave();
 
@@ -821,6 +837,8 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
     }
     else
     {
+        wxString cwd = wxGetCwd();
+        wxSetWorkingDirectory(project_path.GetPath());
 
         wxString contents;
         project_file.ReadAll(&contents);
@@ -835,6 +853,9 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         wxString project_website;
         wxString project_description;
         std::vector<wxString> project_source;
+        std::vector<int> project_source_store_type;
+
+        std::vector<rcbasic_edit_env_var> project_vars;
 
         wxString property_name;
         wxString property_value;
@@ -866,9 +887,29 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
                 {
                     project_description = property_value;
                 }
-                else if(property_name.compare(_("SOURCE"))==0)
+                else if(property_name.compare(_("SOURCE_ABS"))==0)
                 {
                     project_source.push_back(property_value);
+                    project_source_store_type.push_back(STORE_LOCATION_ABSOLUTE);
+                }
+                else if(property_name.compare(_("SOURCE_REL"))==0)
+                {
+                    wxFileName fname(property_value);
+                    fname.SetCwd(project_path.GetPath());
+                    fname.MakeAbsolute();
+                    property_value = fname.GetFullPath();
+                    project_source.push_back(property_value);
+                    project_source_store_type.push_back(STORE_LOCATION_RELATIVE);
+                }
+                else if(property_name.compare(_("ENV"))==0)
+                {
+                    rcbasic_edit_env_var p_var;
+                    p_var.var_name = property_value.substr(0, property_value.find_first_of(_("=")));
+                    p_var.var_value = property_value.substr(property_value.find_first_of(_("="))+1);
+                    project_vars.push_back(p_var);
+                    //wxPuts(_("VAR:")+p_var.var_name);
+                    //wxPuts(_("VAL:")+p_var.var_value);
+                    //wxPuts(_(""));
                 }
                 project_property = _("");
             }
@@ -878,18 +919,24 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
             }
         }
 
+        wxSetWorkingDirectory(cwd);
+
         rcbasic_project* project = new rcbasic_project(project_name, project_path.GetPath(true), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description);
         for(int i = 0; i < project_source.size(); i++)
         {
-            project->addSourceFile(project_source[i]);
+            //wxPuts(_("Adding Source: ") + project_source[i]);
+            project->addSourceFile(project_source[i], project_source_store_type[i]);
         }
 
+        project->setVars(project_vars);
         project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
         project->setLastProjectSave();
         open_projects.push_back(project);
 
+
         project->setProjectFileLocation(project_path.GetFullPath());
         addRecentProject(project);
+
 
         if(!active_project)
         {
@@ -1196,7 +1243,10 @@ void rcbasic_edit_frame::updateProjectTree(int project_index)
     {
         node_label = wxFileName(source_files[i]->getPath().GetFullPath());
         data = new rcbasic_treeItem_data(node_label, open_projects[project_index]);
-        node_label.MakeRelativeTo(open_projects[project_index]->getLocation());
+        if(source_files[i]->getLocationStoreType()==STORE_LOCATION_RELATIVE)
+            node_label.MakeRelativeTo(open_projects[project_index]->getLocation());
+        else
+            node_label.MakeAbsolute();
         source_files[i]->setNode( project_tree->AppendItem( project_node, node_label.GetFullPath(), project_tree_fileImage, -1, data) );
     }
     notebook_mutex.Unlock();
@@ -1231,7 +1281,7 @@ void rcbasic_edit_frame::addFileToProject(wxFileName sourceFile)
     if(context_project==NULL)
         return;
 
-    context_project->addSourceFile(sourceFile.GetFullPath());
+    context_project->addSourceFile(sourceFile.GetFullPath(), STORE_LOCATION_RELATIVE);
     updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
 }
 
@@ -1259,7 +1309,7 @@ int rcbasic_edit_frame::closeProject(rcbasic_project* project)
     if(!project)
         return -1;
 
-    int rtn_val = -1;
+    int rtn_val = projectCloseFlag_SAVE;
 
     if(project->projectHasChanged())
     {
@@ -1320,7 +1370,7 @@ int rcbasic_edit_frame::closeProject(rcbasic_project* project)
     project_file.SetName(project->getName());
     project_file.SetExt(_("rcprj"));
 
-    if(project->projectHasChanged())
+    if(rtn_val == projectCloseFlag_SAVE)
     {
         project->saveProject(project_file);
     }
@@ -2261,12 +2311,28 @@ void rcbasic_edit_frame::onProjectSettingsMenuSelect( wxCommandEvent& event )
     rcbasic_edit_projectSettings_dialog ps_dialog(this);
     ps_dialog.ShowModal();
 
+    if(ps_dialog.getFlag()==PROJECT_SETTINGS_CANCEL)
+        return;
+
+    active_project = ps_dialog.getNewProject();
+
     int project_index = getProjectFromRoot(active_project->getRootNode());
     updateProjectTree(project_index);
 }
 
 void rcbasic_edit_frame::onProjectEnvironmentMenuSelect( wxCommandEvent& event )
 {
+    if(!active_project || open_projects.size()<=0)
+        return;
+
+    rcbasic_edit_projectEnvironment_dialog p_dialog(this, active_project->getVars());
+    p_dialog.ShowModal();
+
+    if(p_dialog.getFlag()==PROJECT_ENVIRONMENT_DLG_CANCEL)
+        return;
+
+    active_project->clearEnvVars();
+    active_project->setVars(p_dialog.getVars());
 }
 
 
@@ -2293,7 +2359,7 @@ void rcbasic_edit_frame::addMultipleFilesToProject()
         if(!fname.Exists())
             continue;
 
-        context_project->addSourceFile(fname.GetFullPath());
+        context_project->addSourceFile(fname.GetFullPath(), STORE_LOCATION_RELATIVE);
     }
 
     updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
@@ -2337,6 +2403,8 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
     {
         //wxPrintf("\nIndex = %d\n", index);
         txtCtrl_obj = new rcbasic_edit_txtCtrl(newFile, sourceFile_auinotebook);
+
+        //wxPuts(_("OT DEBUG 2"));
 
         //apply settings here
 
@@ -2410,7 +2478,7 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
         //wxPuts("Adding to project");
         if(project)
         {
-            project->addSourceFile(newFile.GetFullPath());
+            project->addSourceFile(newFile.GetFullPath(), STORE_LOCATION_RELATIVE);
         }
         else
         {
@@ -2537,13 +2605,15 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
                 //wxPrintf(_("CMP: %p\n"), file_node->getTextCtrl());
                 if(file_node->getNode()==selected_node)
                 {
-                    //wxPuts(_("Request open"));
+                    //wxPuts(_("Request open: ")+file_node->getPath().GetFullPath());
                     if(sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl())<0)
                     {
                         //wxPrintf(_("Open a tab: %d\n"), sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl()));
                         if(file_node->getTextCtrl())
                             file_node->setTextCtrl(NULL);
+                        //wxPuts(_("OPENING FILE: ") + file_node->getPath().GetFullPath());
                         file_node->setTextCtrl(openFileTab(open_projects[i], file_node->getPath())->getTextCtrl());
+                        //wxPuts(_("File Opened"));
                         //wxPrintf(_("file_node t_Ctrl = %p\n"), file_node->getTextCtrl());
                         notebook_mutex.Unlock();
                         return;
@@ -2862,4 +2932,14 @@ void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
     column_status.Printf(_("Column: %d / %d"), col_num, total_col);
 
     m_statusBar->SetStatusText(line_status + _("   ") + column_status, 0);
+
+    if(isBuilding && build_process != NULL)
+    {
+        wxTextInputStream build_stream(*build_process->GetInputStream());
+
+        while(build_process->IsInputAvailable())
+        {
+            m_messageWindow_richText->AppendText(build_stream.ReadLine() + _("\n"));
+        }
+    }
 }

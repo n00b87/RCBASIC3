@@ -6,6 +6,19 @@ rcbasic_project_node::rcbasic_project_node(wxFileName node_path)
     rc_txtCtrl = NULL;
     notebook_page = NULL;
     text_changed = false;
+    temp_flag = false;
+    add_remove_state = 1;
+}
+
+void rcbasic_project_node::setLocationStoreType(int store_loc_type)
+{
+    store_location_type = store_loc_type;
+
+}
+
+int rcbasic_project_node::getLocationStoreType()
+{
+    return store_location_type;
 }
 
 void rcbasic_project_node::setNode(wxTreeItemId node)
@@ -254,6 +267,46 @@ rcbasic_project::rcbasic_project()
     last_saved_project = NULL;
 }
 
+void rcbasic_project::copyFromProject(rcbasic_project* p)
+{
+    name = p->getName();
+    main_source = p->getMainSource();
+    author = p->getAuthor();
+    website = p->getWebsite();
+    description = p->getDescription();
+
+    source_files.clear();
+
+    for(int i = 0; i < p->getSourceFiles().size(); i++)
+    {
+        rcbasic_project_node* p_node = p->getSourceFiles()[i];
+        rcbasic_project_node* node = new rcbasic_project_node(p_node->getPath());
+        node->setNode(p_node->getNode());
+        node->setLocationStoreType(p_node->getLocationStoreType());
+        node->setNotebookPage(p_node->getNotebookPage());
+        node->setTextChangedFlag(p_node->getTextChangedFlag());
+        node->setTextCtrl(p_node->getTextCtrl());
+        source_files.push_back(node);
+    }
+
+    root_node_id = p->getRootNode();
+
+    location = p->getLocation();
+    project_file_location = p->getProjectFileLocation();
+
+    project_valid = p->projectExists();
+    last_saved_project = p->getLastProjectSave();
+}
+
+void rcbasic_project::setPointersNull()
+{
+    last_saved_project = NULL;
+    for(int i = 0; i < source_files.size(); i++)
+    {
+        source_files[i] = NULL;
+    }
+}
+
 rcbasic_project::~rcbasic_project()
 {
     if(last_saved_project)
@@ -300,7 +353,22 @@ bool rcbasic_project::saveProject(wxFileName save_file)
         project_file.Write(_("DESCRIPTION:")+description+_("\n"));
         for(int i = 0; i < source_files.size(); i++)
         {
-            project_file.Write(_("SOURCE:")+source_files[i]->getPath().GetFullPath()+_("\n"));
+            if(source_files[i]->getLocationStoreType()==STORE_LOCATION_RELATIVE)
+            {
+                wxFileName fname = source_files[i]->getPath();
+                fname.MakeRelativeTo(location);
+                project_file.Write(_("SOURCE_REL:")+fname.GetFullPath()+_("\n"));
+            }
+            else
+            {
+                wxFileName fname = source_files[i]->getPath();
+                fname.MakeAbsolute();
+                project_file.Write(_("SOURCE_ABS:")+fname.GetFullPath()+_("\n"));
+            }
+        }
+        for(int i = 0; i < env_vars.size(); i++)
+        {
+            project_file.Write(_("ENV:")+env_vars[i].var_name+_("=")+env_vars[i].var_value+_("\n"));
         }
         project_file.Close();
         location = save_file.GetPath();
@@ -327,7 +395,7 @@ void rcbasic_project::setLastProjectSave()
     last_saved_project->getSourceFiles().clear();
     for(int i = 0; i < source_files.size(); i++)
     {
-        last_saved_project->addSourceFile(source_files[i]->getPath().GetFullPath());
+        last_saved_project->addSourceFile(source_files[i]->getPath().GetFullPath(), source_files[i]->getLocationStoreType());
     }
 }
 
@@ -349,7 +417,8 @@ bool rcbasic_project::projectHasChanged()
     {
         for(int i = 0; i < source_files.size(); i++)
         {
-            if(source_files[i]->getPath().GetFullPath() != last_saved_project->getSourceFiles()[i]->getPath().GetFullPath())
+            if(source_files[i]->getPath().GetFullPath() != last_saved_project->getSourceFiles()[i]->getPath().GetFullPath() ||
+               source_files[i]->getLocationStoreType() != last_saved_project->getSourceFiles()[i]->getLocationStoreType())
             {
                 cmp = false;
                 break;
@@ -402,28 +471,111 @@ void rcbasic_project::setDescription(wxString new_description)
     description = new_description;
 }
 
-void rcbasic_project::addSourceFile(wxString filePath)
+bool rcbasic_project::addSourceFile(wxString filePath, int store_loc_type)
 {
+    //wxString cwd = wxGetCwd();
+    //wxPuts(_("DEBUG 1"));
+    //wxSetWorkingDirectory(location);
+    //wxPuts(_("DEBUG 2"));
     wxFileName fname(filePath);
+
+    wxFileName fname_rel(filePath);
+    fname.MakeRelativeTo(location);
+
+    wxFileName fname_abs(filePath);
+    fname_abs.MakeAbsolute();
+
+    //wxSetWorkingDirectory(cwd);
 
     for(int i = 0; i < source_files.size(); i++)
     {
-        if(fname.GetFullPath()==source_files[i]->getPath().GetFullPath())
-            return;
+        if(fname.GetFullPath().compare(source_files[i]->getPath().GetFullPath())==0 ||
+           fname_abs.GetFullPath().compare(source_files[i]->getPath().GetFullPath())==0 ||
+           fname_rel.GetFullPath().compare(source_files[i]->getPath().GetFullPath())==0)
+            return false;
     }
 
-    rcbasic_project_node* src_file = new rcbasic_project_node(fname);
+    rcbasic_project_node* src_file;
+
+    if(store_loc_type==STORE_LOCATION_RELATIVE)
+        src_file = new rcbasic_project_node(fname_rel);
+    else
+        src_file = new rcbasic_project_node(fname_abs);
+
+    src_file->setLocationStoreType(store_loc_type);
     //fname.MakeRelativeTo(location);
     source_files.push_back(src_file);
+    return true;
+}
+
+bool rcbasic_project::addTempSourceFile(wxString filePath, int store_loc_type)
+{
+    wxFileName fname(filePath);
+    wxFileName fname_rel(filePath);
+
+    wxFileName fname_abs(filePath);
+    fname_abs.MakeAbsolute();
+
+    int p_index = -1;
+    bool should_add = true;
+
+    for(int i = 0; i < source_files.size(); i++)
+    {
+        if(fname.GetFullPath().compare(source_files[i]->getPath().GetFullPath())==0 ||
+           fname_abs.GetFullPath().compare(source_files[i]->getPath().GetFullPath())==0 ||
+           fname_rel.GetFullPath().compare(source_files[i]->getPath().GetFullPath())==0)
+        {
+            p_index = i;
+
+            if(source_files[i]->getAddRemoveFlag()==1)
+                wxPuts(_("file in project already: ")+fname.GetFullPath());
+
+            if(source_files[i]->getAddRemoveFlag()==1)
+                should_add = false;
+        }
+    }
+
+    if(!should_add)
+        return false;
+
+    rcbasic_project_node* src_file;
+
+    if(p_index < 0)
+        src_file = new rcbasic_project_node(fname);
+    else
+    {
+        src_file = source_files[p_index];
+        src_file->setAsAddFile(true);
+        src_file->setLocationStoreType(store_loc_type);
+        //src_file->setAsTemp(true);
+        return true;
+    }
+
+    src_file->setLocationStoreType(store_loc_type);
+    src_file->setAsTemp(true);
+    src_file->setAsAddFile(true);
+    //fname.MakeRelativeTo(location);
+    source_files.push_back(src_file);
+    return true;
 }
 
 int rcbasic_project::getSourceFileIndex(wxFileName file_path)
 {
     int index = -1;
 
+    wxFileName fname_abs = file_path;
+    file_path.MakeAbsolute();
+
+    wxFileName fname_rel = file_path;
+    fname_rel.MakeRelativeTo(location);
+
     for(int i = 0; i < source_files.size(); i++)
     {
-        if(source_files[i]->getPath().GetFullPath()==file_path.GetFullPath())
+        //wxPuts(_("File path compare[1] : ") + file_path.GetFullPath());
+        //wxPuts(_("File path compare[2] : ") + source_files[i]->getPath().GetFullPath());
+        if(source_files[i]->getPath().GetFullPath().compare(fname_abs.GetFullPath())==0 ||
+           source_files[i]->getPath().GetFullPath().compare(fname_rel.GetFullPath())==0 ||
+           source_files[i]->getPath().GetFullPath().compare(file_path.GetFullPath())==0)
         {
             index = i;
             break;
@@ -441,6 +593,7 @@ bool rcbasic_project::createNewSourceFile(wxString filePath)
     f.Close();
     //fname.MakeRelativeTo(location);
     rcbasic_project_node* src_file = new rcbasic_project_node(fname);
+    src_file->setLocationStoreType(STORE_LOCATION_RELATIVE);
     source_files.push_back(src_file);
     return true;
 }
@@ -494,4 +647,27 @@ void rcbasic_project::setProjectFileLocation(wxString pfile_loc)
 wxString rcbasic_project::getProjectFileLocation()
 {
     return project_file_location;
+}
+
+void rcbasic_project::addEnvVar(wxString var_name, wxString var_value)
+{
+    rcbasic_edit_env_var new_var;
+    new_var.var_name = var_name;
+    new_var.var_value = var_value;
+    env_vars.push_back(new_var);
+}
+
+void rcbasic_project::clearEnvVars()
+{
+    env_vars.clear();
+}
+
+std::vector<rcbasic_edit_env_var> rcbasic_project::getVars()
+{
+    return env_vars;
+}
+
+void rcbasic_project::setVars(std::vector<rcbasic_edit_env_var> v)
+{
+    env_vars = v;
 }
