@@ -118,6 +118,9 @@ class rcbasic_edit_frame : public rc_ideFrame
         rcbasic_project* active_project; //for everything else
         rcbasic_project* closing_project;
 
+        wxTreeItemId selected_project_item;
+        wxTreeItemId selected_symbol_item;
+
         wxImageList* project_tree_imageList;
         int project_tree_rootImage;
         int project_tree_folderImage;
@@ -170,6 +173,12 @@ class rcbasic_edit_frame : public rc_ideFrame
         int build_pid;
         int run_pid;
 
+        wxString rcbasic_path;
+        wxFileName rcbasic_build_path;
+        wxFileName rcbasic_run_path;
+
+        rcbasic_project* build_run_project;
+
 	protected:
 		// Handlers for rc_ideFrame events.
 		void onEditorClose( wxCloseEvent& event );
@@ -206,11 +215,14 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onProjectTreeContextMenu( wxTreeEvent& event );
 		void onTreeContextClick( wxCommandEvent &evt );
 		void onProjectTreeNodeActivated( wxTreeEvent& event );
+		void onProjectTreeSelectionChanged( wxTreeEvent& event );
+		void onProjectTreeSelectionChanging( wxTreeEvent& event );
 		void onSaveProject( wxCommandEvent& event );
 		void onSaveProjectAs( wxCommandEvent& event );
 		void onSourceFileTabClose( wxAuiNotebookEvent& event );
 		void onSearchResultSelection( wxCommandEvent& event );
 		void onSymbolSelectionChanged( wxTreeEvent& event );
+		void onSymbolSelectionChanging( wxTreeEvent& event );
 		void onNotebookPageChanged( wxAuiNotebookEvent& event );
 		void onChangeFontMenuSelect( wxCommandEvent& event );
 		void onChangeSchemeMenuSelect( wxCommandEvent& event );
@@ -221,10 +233,10 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onProjectEnvironmentMenuSelect( wxCommandEvent& event );
 		void onBuildMenuSelect( wxCommandEvent& event );
 		void onRunMenuSelect( wxCommandEvent& event );
-		//void onBuildRunMenuSelect( wxCommandEvent& event );
-		//void onStopExecuteMenuSelect( wxCommandEvent& event );
+		void onBuildRunMenuSelect( wxCommandEvent& event );
+		void onStopExecuteMenuSelect( wxCommandEvent& event );
 		//void onGenKeystoreMenuSelect( wxCommandEvent& event );
-		//void onDistributeMenuSelect( wxCommandEvent& event );
+		void onDistributeMenuSelect( wxCommandEvent& event );
 		//void onDocMenuSelect( wxCommandEvent& event );
 		//void onEditorManualMenuSelect( wxCommandEvent& event );
 		//void onAboutMenuSelect( wxCommandEvent& event );
@@ -235,8 +247,12 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onRecentFileSelect( wxCommandEvent& event );
 
 		void onBuildProcessTerminate( wxProcessEvent& event );
+		void onRunProcessTerminate( wxProcessEvent& event );
 
 	public:
+	    wxFileName getRCRunnerPath() { return rcbasic_run_path; }
+	    void buildProject();
+	    void runProject();
 	    void OnParserThread(wxCommandEvent& event);
 		/** Constructor */
 		rcbasic_edit_frame( wxWindow* parent );

@@ -38,6 +38,9 @@
 #include <wx/checkbox.h>
 #include <wx/collpane.h>
 #include <wx/listctrl.h>
+#include <wx/combobox.h>
+#include <wx/checklst.h>
+#include <wx/gauge.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -76,7 +79,6 @@ class rc_ideFrame : public wxFrame
 		wxMenuItem* m_paste_menuItem;
 		wxMenuItem* m_delete_menuItem;
 		wxMenuItem* m_comment_menuItem;
-		wxMenuItem* m_blockComment_menuItem;
 		wxMenu* m_search_menu;
 		wxMenuItem* m_find_menuItem;
 		wxMenuItem* m_findNext_menuItem;
@@ -128,9 +130,9 @@ class rc_ideFrame : public wxFrame
 		wxAuiNotebook* sourceFile_auinotebook;
 		wxPanel* m_panel7;
 		wxNotebook* m_notebook2;
-		wxPanel* m_panel71;
+		wxPanel* m_buildLog_panel;
 		wxRichTextCtrl* m_messageWindow_richText;
-		wxPanel* m_panel8;
+		wxPanel* m_searchResults_panel;
 		wxListBox* m_searchResults_listBox;
 		wxStatusBar* m_statusBar;
 
@@ -158,7 +160,6 @@ class rc_ideFrame : public wxFrame
 		virtual void onPasteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onDeleteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onBlockCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindNextMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindPreviousMenuSelect( wxCommandEvent& event ) { event.Skip(); }
@@ -185,7 +186,10 @@ class rc_ideFrame : public wxFrame
 		virtual void onAboutMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeNodeActivated( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeContextMenu( wxTreeEvent& event ) { event.Skip(); }
+		virtual void onProjectTreeSelectionChanged( wxTreeEvent& event ) { event.Skip(); }
+		virtual void onProjectTreeSelectionChanging( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onSymbolSelectionChanged( wxTreeEvent& event ) { event.Skip(); }
+		virtual void onSymbolSelectionChanging( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void onSourceFileTabClose( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void onSearchResultSelection( wxCommandEvent& event ) { event.Skip(); }
@@ -622,6 +626,162 @@ class rc_projectVariableEdit_dialog : public wxDialog
 		rc_projectVariableEdit_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 489,176 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectVariableEdit_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_genKey_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_genKey_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText27;
+		wxTextCtrl* m_keystore_textCtrl;
+		wxStaticText* m_staticText28;
+		wxTextCtrl* m_alias_textCtrl;
+		wxStaticText* m_staticText29;
+		wxTextCtrl* m_password_textCtrl;
+		wxStaticText* m_staticText30;
+		wxTextCtrl* m_confirmPassword_textCtrl;
+		wxStaticText* m_staticText31;
+		wxTextCtrl* m_name_textCtrl;
+		wxStaticText* m_staticText32;
+		wxTextCtrl* m_orgUnit_textCtrl;
+		wxStaticText* m_staticText33;
+		wxTextCtrl* m_org_textCtrl;
+		wxStaticText* m_staticText34;
+		wxTextCtrl* m_city_textCtrl;
+		wxStaticText* m_staticText35;
+		wxTextCtrl* m_state_textCtrl;
+		wxStaticText* m_staticText36;
+		wxTextCtrl* m_country_textCtrl;
+		wxButton* m_ok_button;
+		wxButton* m_cancel_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		rc_genKey_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Generate Keystore"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 639,552 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~rc_genKey_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_distribute_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_distribute_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxNotebook* m_notebook4;
+		wxPanel* m_panel12;
+		wxStaticText* m_staticText37;
+		wxTextCtrl* m_projectName_textCtrl;
+		wxStaticText* m_staticText38;
+		wxComboBox* m_category_comboBox;
+		wxStaticText* m_staticText39;
+		wxFilePickerCtrl* m_icon_filePicker;
+		wxStaticText* m_staticText41;
+		wxCheckBox* m_enableTerminal_checkBox;
+		wxCheckBox* m_enableWebThreads_checkBox;
+		wxStaticText* m_staticText49;
+		wxDirPickerCtrl* m_outputDir_dirPicker;
+		wxPanel* m_panel20;
+		wxStaticText* m_staticText42;
+		wxCheckListBox* m_targetPlatforms_checkList;
+		wxPanel* m_panel13;
+		wxStaticText* m_staticText43;
+		wxTextCtrl* m_appID_textCtrl;
+		wxStaticText* m_staticText44;
+		wxComboBox* m_orientation_comboBox;
+		wxStaticText* m_staticText45;
+		wxFilePickerCtrl* m_keystore_filePicker;
+		wxStaticText* m_staticText46;
+		wxTextCtrl* m_alias_textCtrl;
+		wxStaticText* m_staticText47;
+		wxTextCtrl* m_password_textCtrl;
+		wxStaticText* m_staticText48;
+		wxDirPickerCtrl* m_javaPath_dirPicker;
+		wxButton* m_initJavaPath_button;
+		wxCheckBox* m_androidDebug_checkBox;
+		wxCheckBox* m_androidRelease_checkBox;
+		wxButton* m_saveSettings_button;
+		wxButton* m_makeApp_button;
+		wxButton* m_close_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onInitJavaPathButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSaveSettingsButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onMakeAppButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCloseButtonClick( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 576,359 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~rc_distribute_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_distProcess_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_distProcess_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText49;
+		wxGauge* m_status_gauge;
+		wxTextCtrl* m_consoleLog_textCtrl;
+		wxButton* m_cancel_button;
+		wxButton* m_close_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onDistProcessUpdateUI( wxUpdateUIEvent& event ) { event.Skip(); }
+		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCloseButtonClick( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		rc_distProcess_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Building Application"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 655,330 ), long style = wxCAPTION );
+
+		~rc_distProcess_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_cancelDistProcess_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_cancelDistProcess_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText50;
+		wxButton* m_yes_button;
+		wxButton* m_no_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onYesButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onNoButtonClick( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		rc_cancelDistProcess_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Cancel Building App"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 389,150 ), long style = wxCAPTION|wxSTAY_ON_TOP );
+
+		~rc_cancelDistProcess_dialog();
 
 };
 

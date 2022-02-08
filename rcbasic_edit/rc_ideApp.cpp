@@ -29,3 +29,10 @@ bool rc_ideApp::OnInit()
     return wxsOK;
 
 }
+
+int rc_ideApp::OnExit()
+{
+    //wxPuts(_("THIS IS A TEST"));
+    //ExitMainLoop();
+    return 0;
+}

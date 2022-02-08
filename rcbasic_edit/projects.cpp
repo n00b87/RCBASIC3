@@ -185,11 +185,11 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
                 main_source = fname;
                 project_valid = true;
                 //main_source.MakeRelativeTo(location);
-                source_file.Write("This is a test\n");
-                source_file.Write("The end");
+                source_file.Write("Print \"Hello World\"\n");
                 source_file.Close();
             }
 
+            main_source.MakeRelativeTo(project_dir.GetFullPath());
 
             if(!project_file.Create(project_file_name.GetFullPath()))
             {
@@ -209,7 +209,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
                 description.Replace("\r","");
                 description.Replace("\n","");
                 project_file.Write(_("DESCRIPTION:")+description+_("\n"));
-                project_file.Write(_("SOURCE:")+main_source.GetFullPath()+_("\n"));
+                project_file.Write(_("SOURCE_REL:")+main_source.GetFullPath()+_("\n"));
                 project_file.Close();
             }
             break;
@@ -227,6 +227,8 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
                 project_valid = true;
             }
 
+            main_source.MakeRelativeTo(project_dir.GetFullPath());
+
             if(!project_file.Create(project_file_name.GetFullPath()))
             {
                 wxMessageBox(_("Could not create project file"));
@@ -245,7 +247,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
                 description.Replace("\r","");
                 description.Replace("\n","");
                 project_file.Write(_("DESCRIPTION:")+description+_("\n"));
-                project_file.Write(_("SOURCE:")+main_source.GetFullPath()+_("\n"));
+                project_file.Write(_("SOURCE_REL:")+main_source.GetFullPath()+_("\n"));
                 project_file.Close();
             }
             break;
@@ -572,6 +574,8 @@ int rcbasic_project::getSourceFileIndex(wxFileName file_path)
     for(int i = 0; i < source_files.size(); i++)
     {
         //wxPuts(_("File path compare[1] : ") + file_path.GetFullPath());
+        //wxPuts(_("File path compare[1.1] : ") + fname_abs.GetFullPath());
+        //wxPuts(_("File path compare[1.2] : ") + fname_rel.GetFullPath());
         //wxPuts(_("File path compare[2] : ") + source_files[i]->getPath().GetFullPath());
         if(source_files[i]->getPath().GetFullPath().compare(fname_abs.GetFullPath())==0 ||
            source_files[i]->getPath().GetFullPath().compare(fname_rel.GetFullPath())==0 ||

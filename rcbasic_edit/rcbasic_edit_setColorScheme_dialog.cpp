@@ -62,6 +62,7 @@ void rcbasic_edit_setColorScheme_dialog::onSchemeSelected( wxCommandEvent& event
 
         p_frame->applyScheme(txtCtrl_obj->getTextCtrl());
     }
+    p_frame->applyScheme(NULL);
 }
 
 void rcbasic_edit_setColorScheme_dialog::onSchemeCloseButtonClick( wxCommandEvent& event )

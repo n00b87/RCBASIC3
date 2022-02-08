@@ -8,3 +8,5 @@ identifier_fg_color= 236, 236, 236
 operator_fg_color= 252, 175, 62
 caret_fg_color= 200, 200, 200
 selection_bkg_color= 51, 57, 100
+line_number_bkg_color= 58, 65, 69
+line_number_fg_color= 236, 236, 236

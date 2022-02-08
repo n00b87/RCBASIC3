@@ -197,6 +197,8 @@ rcbasic_edit_frame::rcbasic_edit_frame( wxWindow* parent )
 :
 rc_ideFrame( parent )
 {
+    build_run_project = NULL;
+
     thread_returned = false;
     sym_sem = NULL;
     symbolUpdateInProgress = false;
@@ -225,8 +227,24 @@ rc_ideFrame( parent )
     context_project = NULL;
     active_project = NULL;
 
+    wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+    wxFileName gfx_path(editor_path);
+    gfx_path.AppendDir(_("gfx"));
+
+    wxFileName root_image = gfx_path;
+    root_image.SetFullName(_("rcbasic16.png"));
+
+    wxFileName symbol_root_image = gfx_path;
+    symbol_root_image.SetFullName(_("symbol_root.png"));
+
+    wxFileName symbol_item_image = gfx_path;
+    symbol_item_image.SetFullName(_("symbol_item.png"));
+
+    wxFileName symbol_fn_item_image = gfx_path;
+    symbol_fn_item_image.SetFullName(_("symbol_fn_item.png"));
+
     project_tree_imageList = new wxImageList(16,16,true);
-    project_tree_rootImage = project_tree_imageList->Add(wxBitmap(wxImage("gfx/rcbasic16.png")));
+    project_tree_rootImage = project_tree_imageList->Add(wxBitmap(wxImage(root_image.GetFullPath())));
     project_tree_folderImage  = project_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ));
     project_tree_fileImage = project_tree_imageList->Add(wxArtProvider::GetBitmap( wxART_NORMAL_FILE, wxART_MENU ));
     project_tree->AssignImageList(project_tree_imageList);
@@ -234,9 +252,9 @@ rc_ideFrame( parent )
     project_tree->AddRoot(_("Projects"), project_tree_rootImage);
 
     symbol_tree_imageList = new wxImageList(16,16,true);
-    symbol_tree_rootImage = symbol_tree_imageList->Add(wxBitmap(wxImage("gfx/symbol_root.png")));
-    symbol_tree_varImage  = symbol_tree_imageList->Add(wxBitmap(wxImage("gfx/symbol_item.png")));
-    symbol_tree_fnImage = symbol_tree_imageList->Add(wxBitmap(wxImage("gfx/symbol_fn_item.png")));
+    symbol_tree_rootImage = symbol_tree_imageList->Add(wxBitmap(wxImage(symbol_root_image.GetFullPath())));
+    symbol_tree_varImage  = symbol_tree_imageList->Add(wxBitmap(wxImage(symbol_item_image.GetFullPath())));
+    symbol_tree_fnImage = symbol_tree_imageList->Add(wxBitmap(wxImage(symbol_fn_item_image.GetFullPath())));
     symbol_tree->AssignImageList(symbol_tree_imageList);
 
     symbol_tree->AddRoot(_("Symbols"), symbol_tree_rootImage);
@@ -248,7 +266,6 @@ rc_ideFrame( parent )
     symbol_tree->SetDoubleBuffered(true);
 
     //Load recent files and projects
-    wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
     wxFileName data_path(editor_path);
     data_path.AppendDir(_("data"));
 
@@ -402,6 +419,24 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         else if(property.compare(_("keywords2"))==0)
         {
             rcbasic_edit_keywords2 = value;
+        }
+        else if(property.compare(_("RCBASIC_PATH"))==0)
+        {
+            wxFileName rcbasic_path_fname(value);
+            rcbasic_path_fname.MakeAbsolute();
+            rcbasic_path = rcbasic_path_fname.GetFullPath();
+        }
+        else if(property.compare(_("RCBASIC_BUILD"))==0)
+        {
+            rcbasic_build_path = wxFileName(value);
+            rcbasic_build_path.MakeAbsolute();
+            wxSetEnv(_("RCBASIC_BUILD_PATH"), rcbasic_build_path.GetFullPath());
+        }
+        else if(property.compare(_("RCBASIC_RUN"))==0)
+        {
+            rcbasic_run_path = wxFileName(value);
+            rcbasic_run_path.MakeAbsolute();
+            wxSetEnv(_("RCBASIC_RUN_PATH"), rcbasic_run_path.GetFullPath());
         }
 
         properties = properties.substr(properties.find_first_of(_("\n"))+1);
@@ -578,53 +613,201 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
 
 void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
 {
-    rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_DEFAULT, editor_scheme.style_bkg_color);
-    rc_txtCtrl->StyleClearAll();
+    project_tree->SetBackgroundColour(editor_scheme.style_bkg_color);
+    symbol_tree->SetBackgroundColour(editor_scheme.style_bkg_color);
+    m_messageWindow_richText->SetBackgroundColour(editor_scheme.style_bkg_color);
+    m_searchResults_listBox->SetBackgroundColour(editor_scheme.style_bkg_color);
 
-    updateFont(rc_txtCtrl);
+    if(rc_txtCtrl)
+    {
+        rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_DEFAULT, editor_scheme.style_bkg_color);
+        rc_txtCtrl->StyleClearAll();
+
+        updateFont(rc_txtCtrl);
+    }
+
+    //project_tree->SetItemDropHighlight(project_tree->GetRootItem(), false);
+
+    //project_tree->SelectItem(project_tree->GetRootItem(), true);
 
     if(editor_scheme.keyword_fg_color_set)
-        rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD, editor_scheme.keyword_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD, editor_scheme.keyword_fg_color);
+    }
 
     if(editor_scheme.keyword2_fg_color_set)
-        rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD2, editor_scheme.keyword2_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD2, editor_scheme.keyword2_fg_color);
+    }
 
     if(editor_scheme.number_fg_color_set)
-        rc_txtCtrl->StyleSetForeground(wxSTC_B_NUMBER, editor_scheme.number_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetForeground(wxSTC_B_NUMBER, editor_scheme.number_fg_color);
+    }
 
     if(editor_scheme.string_fg_color_set)
-        rc_txtCtrl->StyleSetForeground(wxSTC_B_STRING, editor_scheme.string_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetForeground(wxSTC_B_STRING, editor_scheme.string_fg_color);
+    }
 
     if(editor_scheme.comment_fg_color_set)
-        rc_txtCtrl->StyleSetForeground(wxSTC_B_COMMENT, editor_scheme.comment_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetForeground(wxSTC_B_COMMENT, editor_scheme.comment_fg_color);
+    }
 
     if(editor_scheme.identifier_fg_color_set)
-        rc_txtCtrl->StyleSetForeground(wxSTC_B_IDENTIFIER, editor_scheme.identifier_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetForeground(wxSTC_B_IDENTIFIER, editor_scheme.identifier_fg_color);
+        project_tree->SetForegroundColour(editor_scheme.identifier_fg_color);
+        symbol_tree->SetForegroundColour(editor_scheme.identifier_fg_color);
+        m_messageWindow_richText->SetDefaultStyle(wxTextAttr( editor_scheme.identifier_fg_color, m_messageWindow_richText->GetBackgroundColour()) );
+        wxString current_value = m_messageWindow_richText->GetValue();
+        m_messageWindow_richText->Clear();
+        m_messageWindow_richText->SetValue(current_value);
+        m_messageWindow_richText->Refresh();
+        m_searchResults_listBox->SetForegroundColour(editor_scheme.identifier_fg_color);
+        m_searchResults_listBox->Refresh();
+    }
 
     if(editor_scheme.operator_fg_color_set)
-        rc_txtCtrl->StyleSetForeground(wxSTC_B_OPERATOR, editor_scheme.operator_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetForeground(wxSTC_B_OPERATOR, editor_scheme.operator_fg_color);
+    }
 
     if(editor_scheme.caret_fg_color_set)
-        rc_txtCtrl->SetCaretForeground(editor_scheme.caret_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->SetCaretForeground(editor_scheme.caret_fg_color);
+    }
 
     if(editor_scheme.selection_fg_color_set)
-        rc_txtCtrl->SetSelForeground(true, editor_scheme.selection_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->SetSelForeground(true, editor_scheme.selection_fg_color);
+    }
 
     if(editor_scheme.selection_bkg_color_set)
-        rc_txtCtrl->SetSelBackground(true, editor_scheme.selection_bkg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->SetSelBackground(true, editor_scheme.selection_bkg_color);
+    }
 
-    rc_txtCtrl->StyleSetForeground(wxSTC_B_ERROR, editor_scheme.string_fg_color);
-    rc_txtCtrl->StyleSetBold(wxSTC_B_ERROR, true);
+    if(rc_txtCtrl)
+    {
+        rc_txtCtrl->StyleSetForeground(wxSTC_B_ERROR, editor_scheme.string_fg_color);
+        rc_txtCtrl->StyleSetBold(wxSTC_B_ERROR, true);
 
-    rc_txtCtrl->StyleSetBold(wxSTC_B_KEYWORD2, true);
+        rc_txtCtrl->StyleSetBold(wxSTC_B_KEYWORD2, true);
+    }
 
     if(editor_scheme.line_number_bkg_color_set)
-        rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_LINENUMBER, editor_scheme.line_number_bkg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_LINENUMBER, editor_scheme.line_number_bkg_color);
+    }
 
     if(editor_scheme.line_number_fg_color_set)
-        rc_txtCtrl->StyleSetForeground(wxSTC_STYLE_LINENUMBER, editor_scheme.line_number_fg_color);
+    {
+        if(rc_txtCtrl)
+            rc_txtCtrl->StyleSetForeground(wxSTC_STYLE_LINENUMBER, editor_scheme.line_number_fg_color);
+    }
 
     //updateFont(rc_txtCtrl);
+
+    project_tree->UnselectAll();
+    symbol_tree->UnselectAll();
+
+
+    wxColour item_bkg = project_tree->GetBackgroundColour();
+    wxColour item_fg = project_tree->GetForegroundColour();
+
+    if(project_tree->GetRootItem().IsOk())
+    {
+        project_tree->SetItemBackgroundColour(project_tree->GetRootItem(), item_bkg);
+        project_tree->SetItemTextColour(project_tree->GetRootItem(), item_fg);
+
+    }
+
+    for(int i = 0; i < open_projects.size(); i++)
+    {
+        if(open_projects[i]->getRootNode().IsOk())
+        {
+            project_tree->SetItemBackgroundColour(open_projects[i]->getRootNode(), item_bkg);
+            project_tree->SetItemTextColour(open_projects[i]->getRootNode(), item_fg);
+        }
+        std::vector<rcbasic_project_node*> sourceFiles = open_projects[i]->getSourceFiles();
+        for(int pnode = 0; pnode < sourceFiles.size(); pnode++)
+        {
+            wxTreeItemId p_item = sourceFiles[pnode]->getNode();
+            if(p_item.IsOk())
+            {
+                project_tree->SetItemBackgroundColour(p_item, item_bkg);
+                project_tree->SetItemTextColour(p_item, item_fg);
+            }
+        }
+    }
+
+
+    if(selected_project_item.IsOk())
+    {
+        //project_tree->SelectItem(selected_project_item);
+        project_tree->SetItemBackgroundColour(selected_project_item, wxColour(0, 120, 215));
+        project_tree->SetItemTextColour(selected_project_item, wxColour(240, 240, 240));
+    }
+
+
+    //////////////
+
+    if(symbol_tree->GetRootItem().IsOk())
+    {
+        symbol_tree->SetItemBackgroundColour(symbol_tree->GetRootItem(), item_bkg);
+        symbol_tree->SetItemTextColour(symbol_tree->GetRootItem(), item_fg);
+    }
+
+    if(variable_root_node.IsOk())
+    {
+        symbol_tree->SetItemBackgroundColour(variable_root_node, item_bkg);
+        symbol_tree->SetItemTextColour(variable_root_node, item_fg);
+    }
+
+    if(function_root_node.IsOk())
+    {
+        symbol_tree->SetItemBackgroundColour(function_root_node, item_bkg);
+        symbol_tree->SetItemTextColour(function_root_node, item_fg);
+    }
+
+    for(int i = 0; i < var_nodes.size(); i++)
+    {
+        if(var_nodes[i].IsOk())
+        {
+            symbol_tree->SetItemBackgroundColour(var_nodes[i], item_bkg);
+            symbol_tree->SetItemTextColour(var_nodes[i], item_fg);
+        }
+    }
+
+    for(int i = 0; i < fn_nodes.size(); i++)
+    {
+        if(fn_nodes[i].IsOk())
+        {
+            symbol_tree->SetItemBackgroundColour(fn_nodes[i], item_bkg);
+            symbol_tree->SetItemTextColour(fn_nodes[i], item_fg);
+        }
+    }
+
+
+    if(selected_symbol_item.IsOk())
+    {
+        //symbol_tree->SelectItem(selected_symbol_item);
+        symbol_tree->SetItemBackgroundColour(selected_symbol_item, wxColour(0, 120, 215));
+        symbol_tree->SetItemTextColour(selected_symbol_item, wxColour(240, 240, 240));
+    }
 }
 
 void rcbasic_edit_frame::onRecentProjectSelect( wxCommandEvent& event )
@@ -665,9 +848,8 @@ void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
         token_parser->Delete();
         sym_sem->Wait();
         delete sym_sem;
+        wxPuts(_("thread successfully ended"));
     }
-
-    wxPuts(_("thread successfully ended"));
 
     wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
     wxFileName data_path(editor_path);
@@ -807,6 +989,7 @@ void rcbasic_edit_frame::openProjectMenuSelect( wxCommandEvent& event )
 {
     notebook_mutex.Lock();
     wxFileName project_fname = openFileDialog(_("Open Project"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    //wxPuts(_("project_fname: ") + project_fname.GetLongPath());
     openProject(project_fname);
     notebook_mutex.Unlock();
 }
@@ -921,7 +1104,16 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
 
         wxSetWorkingDirectory(cwd);
 
-        rcbasic_project* project = new rcbasic_project(project_name, project_path.GetPath(true), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description);
+        wxFileName project_location = project_path;
+        project_location.SetFullName(_(""));
+
+        wxFileName p_main_fname;
+        p_main_fname.SetPath(project_location.GetLongPath());
+        p_main_fname.SetFullName(project_main);
+        p_main_fname.MakeAbsolute();
+        project_main = p_main_fname.GetFullPath();
+
+        rcbasic_project* project = new rcbasic_project(project_name, project_location.GetLongPath(), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description);
         for(int i = 0; i < project_source.size(); i++)
         {
             //wxPuts(_("Adding Source: ") + project_source[i]);
@@ -956,6 +1148,7 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         rcbasic_edit_txtCtrl* txtCtrl_obj;
         txtCtrl_obj = openFileTab(project, project->getMainSource());
         txtCtrl_obj->setTextChangedFlag(false);
+
     }
 }
 
@@ -978,6 +1171,10 @@ void rcbasic_edit_frame::openSourceFile(wxFileName source_path)
         addRecentFile(source_path);
 
         rcbasic_edit_txtCtrl* txtCtrl_obj = openFileTab(NULL, source_path);
+        if(!txtCtrl_obj)
+        {
+            return;
+        }
         txtCtrl_obj->getTextCtrl()->ClearAll();
         txtCtrl_obj->getTextCtrl()->SetText(contents);
         txtCtrl_obj->getTextCtrl()->EmptyUndoBuffer();
@@ -1090,13 +1287,20 @@ void rcbasic_edit_frame::onSaveProjectMenuSelect( wxCommandEvent& event )
     }
 
     notebook_mutex.Lock();
+    //SAVE FILES IN PROJECT
+    std::vector<rcbasic_project_node*> pf_nodes = active_project->getSourceFiles();
     for(int i = 0; i < open_files.size(); i++)
     {
-        for(int pf = 0; pf < active_project->getSourceFiles().size(); pf++)
+        wxFileName o_fname = open_files[i]->getSourcePath();
+        o_fname.MakeAbsolute();
+        for(int p_file = 0; p_file < pf_nodes.size(); p_file++)
         {
-            if(open_files[i]->getSourcePath().GetFullPath().compare(active_project->getSourceFiles()[pf]->getPath().GetFullPath()) == 0)
+            wxFileName p_fname = pf_nodes[p_file]->getPath();
+            p_fname.MakeAbsolute();
+            if(o_fname.GetFullPath().compare(p_fname.GetFullPath())==0)
             {
-                saveFile(i);
+                //wxPuts(_("SAVING: ") + o_fname.GetFullPath());
+                saveFile(i, 0);
             }
         }
     }
@@ -1611,9 +1815,17 @@ void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
 
 int rcbasic_edit_frame::getOpenFileFromPath(wxFileName f_path)
 {
+    wxFileName f_path_abs = f_path;
+    f_path_abs.MakeAbsolute();
+
+    wxFileName o_fname_abs;
+
     for(int i = 0; i < open_files.size(); i++)
     {
-        if(open_files[i]->getSourcePath().GetFullPath().compare(f_path.GetFullPath())==0)
+        o_fname_abs = open_files[i]->getSourcePath();
+        o_fname_abs.MakeAbsolute();
+
+        if(o_fname_abs.GetFullPath().compare(f_path_abs.GetFullPath())==0)
             return i;
     }
     return -1;
@@ -1632,7 +1844,6 @@ void rcbasic_edit_frame::onSearchResultSelection(wxCommandEvent& event)
 
     if(open_files_index < 0)
     {
-        //wxPuts(_("DEBUG OP"));
         openSourceFile(search_results[selection].result_file);
         open_files_index = getOpenFileFromPath(search_results[selection].result_file);
         if(open_files_index < 0)
@@ -2374,6 +2585,7 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
     {
         if(open_files[i]->getSourcePath().GetFullPath()==newFile.GetFullPath())
         {
+            //wxPuts(_("TEST 1"));
             txtCtrl = open_files[i]->getTextCtrl();
             break;
         }
@@ -2382,7 +2594,11 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
     int index = -1;
 
     if(project)
+    {
+        newFile.MakeAbsolute();
+        //wxPuts(_("Search for: ") + newFile.GetFullPath());
         index = project->getSourceFileIndex(newFile);
+    }
 
     if(txtCtrl)
     {
@@ -2402,6 +2618,9 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
     else
     {
         //wxPrintf("\nIndex = %d\n", index);
+        if(project && index < 0)
+            return NULL;
+
         txtCtrl_obj = new rcbasic_edit_txtCtrl(newFile, sourceFile_auinotebook);
 
         //wxPuts(_("OT DEBUG 2"));
@@ -2562,6 +2781,10 @@ void rcbasic_edit_frame::onProjectTreeContextMenu( wxTreeEvent& event )
             projectTreeContextMenu();
         }
     }
+    if(selected_node.IsOk())
+    {
+        project_tree->SelectItem(selected_node, true);
+    }
 }
 
 void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
@@ -2592,6 +2815,7 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
             }
 
             project_tree->SetItemBold(active_project->getRootNode(), true);
+            //project_tree->SelectItem(active_project->getRootNode(), true);
             notebook_mutex.Unlock();
             return;
         }
@@ -2632,6 +2856,39 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
         }
     }
     notebook_mutex.Unlock();
+}
+
+void rcbasic_edit_frame::onProjectTreeSelectionChanged( wxTreeEvent& event )
+{
+    project_tree->UnselectAll();
+    event.Veto();
+}
+
+void rcbasic_edit_frame::onProjectTreeSelectionChanging( wxTreeEvent& event )
+{
+    project_tree->UnselectAll();
+
+    wxColour item_bkg = project_tree->GetBackgroundColour();
+    wxColour item_fg = project_tree->GetForegroundColour();
+
+    //wxTreeItemId old_item = event.GetOldItem();
+    //if(old_item.IsOk())
+    //    project_tree->SetItemBackgroundColour(old_item, item_bkg);
+
+    if(selected_project_item.IsOk())
+    {
+        project_tree->SetItemBackgroundColour(selected_project_item, item_bkg);
+        project_tree->SetItemTextColour(selected_project_item, item_fg);
+    }
+
+    selected_project_item  = event.GetItem();
+    if(selected_project_item.IsOk())
+    {
+        project_tree->SetItemBackgroundColour(selected_project_item, wxColour(0, 120, 215));
+        project_tree->SetItemTextColour(selected_project_item, wxColour(240, 240, 240));
+    }
+
+    event.Veto();
 }
 
 void rcbasic_edit_frame::onSourceFileTabClose( wxAuiNotebookEvent& event )
@@ -2829,7 +3086,7 @@ void rcbasic_edit_frame::setSymbol(wxTreeItemId s_node, rcbasic_symbol sym)
 
 void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
 {
-    wxTreeItemId selected_symbol = event.GetItem();
+    wxTreeItemId selected_symbol = selected_symbol_item;
 
     notebook_mutex.Lock();
     if(sourceFile_auinotebook->GetSelection()<0)
@@ -2841,12 +3098,14 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
     if(sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection())!=parsed_page)
     {
         notebook_mutex.Unlock();
+        symbol_tree->UnselectAll();
         return;
     }
 
     if(selected_symbol==symbol_tree->GetRootItem() || selected_symbol==variable_root_node || selected_symbol==function_root_node)
     {
         notebook_mutex.Unlock();
+        symbol_tree->UnselectAll();
         return;
     }
 
@@ -2862,6 +3121,7 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
     if(!t)
     {
         notebook_mutex.Unlock();
+        symbol_tree->UnselectAll();
         return;
     }
 
@@ -2872,6 +3132,29 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
     }
 
     notebook_mutex.Unlock();
+    symbol_tree->UnselectAll();
+
+}
+
+void rcbasic_edit_frame::onSymbolSelectionChanging( wxTreeEvent& event )
+{
+    symbol_tree->UnselectAll();
+
+    wxColour item_bkg = symbol_tree->GetBackgroundColour();
+    wxColour item_fg = symbol_tree->GetForegroundColour();
+
+    if(selected_symbol_item.IsOk())
+    {
+        symbol_tree->SetItemBackgroundColour(selected_symbol_item, item_bkg);
+        symbol_tree->SetItemTextColour(selected_symbol_item, item_fg);
+    }
+
+    selected_symbol_item  = event.GetItem();
+    if(selected_symbol_item.IsOk())
+    {
+        symbol_tree->SetItemBackgroundColour(selected_symbol_item, wxColour(0, 120, 215));
+        symbol_tree->SetItemTextColour(selected_symbol_item, wxColour(240, 240, 240));
+    }
 
 }
 
@@ -2933,7 +3216,7 @@ void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
 
     m_statusBar->SetStatusText(line_status + _("   ") + column_status, 0);
 
-    if(isBuilding && build_process != NULL)
+    if(isBuilding && (build_process != NULL))
     {
         wxTextInputStream build_stream(*build_process->GetInputStream());
 

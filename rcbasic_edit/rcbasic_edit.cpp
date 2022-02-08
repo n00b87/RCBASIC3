@@ -115,9 +115,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_comment_menuItem = new wxMenuItem( m_edit_menu, wxID_ANY, wxString( wxT("Comment Selected") ) , wxEmptyString, wxITEM_NORMAL );
 	m_edit_menu->Append( m_comment_menuItem );
 
-	m_blockComment_menuItem = new wxMenuItem( m_edit_menu, wxID_ANY, wxString( wxT("Block Comment Selected") ) , wxEmptyString, wxITEM_NORMAL );
-	m_edit_menu->Append( m_blockComment_menuItem );
-
 	m_menubar1->Append( m_edit_menu, wxT("Edit") );
 
 	m_search_menu = new wxMenu();
@@ -271,7 +268,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_project_panel->SetSizer( bSizer8 );
 	m_project_panel->Layout();
 	bSizer8->Fit( m_project_panel );
-	m_notebook4->AddPage( m_project_panel, wxT("Projects"), true );
+	m_notebook4->AddPage( m_project_panel, wxT("Projects"), false );
 	m_ = new wxPanel( m_notebook4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
@@ -283,7 +280,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_->SetSizer( bSizer7 );
 	m_->Layout();
 	bSizer7->Fit( m_ );
-	m_notebook4->AddPage( m_, wxT("Symbols"), false );
+	m_notebook4->AddPage( m_, wxT("Symbols"), true );
 
 	bSizer5->Add( m_notebook4, 1, wxEXPAND | wxALL, 5 );
 
@@ -315,30 +312,30 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizer17 = new wxBoxSizer( wxVERTICAL );
 
 	m_notebook2 = new wxNotebook( m_panel7, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_panel71 = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
+	m_buildLog_panel = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer56;
 	bSizer56 = new wxBoxSizer( wxVERTICAL );
 
-	m_messageWindow_richText = new wxRichTextCtrl( m_panel71, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxVSCROLL|wxHSCROLL|wxNO_BORDER|wxWANTS_CHARS );
+	m_messageWindow_richText = new wxRichTextCtrl( m_buildLog_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxVSCROLL|wxHSCROLL|wxNO_BORDER|wxWANTS_CHARS );
 	bSizer56->Add( m_messageWindow_richText, 1, wxEXPAND | wxALL, 5 );
 
 
-	m_panel71->SetSizer( bSizer56 );
-	m_panel71->Layout();
-	bSizer56->Fit( m_panel71 );
-	m_notebook2->AddPage( m_panel71, wxT("Build Log"), false );
-	m_panel8 = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
+	m_buildLog_panel->SetSizer( bSizer56 );
+	m_buildLog_panel->Layout();
+	bSizer56->Fit( m_buildLog_panel );
+	m_notebook2->AddPage( m_buildLog_panel, wxT("Build Log"), true );
+	m_searchResults_panel = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer57;
 	bSizer57 = new wxBoxSizer( wxVERTICAL );
 
-	m_searchResults_listBox = new wxListBox( m_panel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0|wxBORDER_NONE );
+	m_searchResults_listBox = new wxListBox( m_searchResults_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0|wxBORDER_NONE );
 	bSizer57->Add( m_searchResults_listBox, 1, wxALL|wxEXPAND, 5 );
 
 
-	m_panel8->SetSizer( bSizer57 );
-	m_panel8->Layout();
-	bSizer57->Fit( m_panel8 );
-	m_notebook2->AddPage( m_panel8, wxT("Search Results"), true );
+	m_searchResults_panel->SetSizer( bSizer57 );
+	m_searchResults_panel->Layout();
+	bSizer57->Fit( m_searchResults_panel );
+	m_notebook2->AddPage( m_searchResults_panel, wxT("Search Results"), false );
 
 	bSizer17->Add( m_notebook2, 1, wxEXPAND | wxALL, 5 );
 
@@ -383,7 +380,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onPasteMenuSelect ), this, m_paste_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDeleteMenuSelect ), this, m_delete_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onCommentMenuSelect ), this, m_comment_menuItem->GetId());
-	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBlockCommentMenuSelect ), this, m_blockComment_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindMenuSelect ), this, m_find_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindNextMenuSelect ), this, m_findNext_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindPreviousMenuSelect ), this, m_findPrevious_menuItem->GetId());
@@ -408,9 +404,18 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDocMenuSelect ), this, m_doc_menuItem->GetId());
 	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onEditorManualMenuSelect ), this, m_editorManual_menuItem->GetId());
 	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onAboutMenuSelect ), this, m_about_menuItem->GetId());
+	this->Connect( m_new_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::newFileMenuSelect ) );
+	this->Connect( m_open_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::openFileMenuSelect ) );
+	this->Connect( m_save_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::onSaveFileMenuSelect ) );
+	this->Connect( m_saveas_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::onSaveFileAsMenuSelect ) );
+	this->Connect( m_run_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::onBuildRunMenuSelect ) );
+	this->Connect( m_abort_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::onStopExecuteMenuSelect ) );
 	project_tree->Connect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Connect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
+	project_tree->Connect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( rc_ideFrame::onProjectTreeSelectionChanged ), NULL, this );
+	project_tree->Connect( wxEVT_COMMAND_TREE_SEL_CHANGING, wxTreeEventHandler( rc_ideFrame::onProjectTreeSelectionChanging ), NULL, this );
 	symbol_tree->Connect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( rc_ideFrame::onSymbolSelectionChanged ), NULL, this );
+	symbol_tree->Connect( wxEVT_COMMAND_TREE_SEL_CHANGING, wxTreeEventHandler( rc_ideFrame::onSymbolSelectionChanging ), NULL, this );
 	sourceFile_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( rc_ideFrame::onNotebookPageChanged ), NULL, this );
 	sourceFile_auinotebook->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
 	m_searchResults_listBox->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
@@ -423,9 +428,18 @@ rc_ideFrame::~rc_ideFrame()
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( rc_ideFrame::onEditorClose ) );
 	this->Disconnect( wxEVT_IDLE, wxIdleEventHandler( rc_ideFrame::onEditorIdle ) );
 	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( rc_ideFrame::onEditorUpdateUI ) );
+	this->Disconnect( m_new_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::newFileMenuSelect ) );
+	this->Disconnect( m_open_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::openFileMenuSelect ) );
+	this->Disconnect( m_save_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::onSaveFileMenuSelect ) );
+	this->Disconnect( m_saveas_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::onSaveFileAsMenuSelect ) );
+	this->Disconnect( m_run_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::onBuildRunMenuSelect ) );
+	this->Disconnect( m_abort_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::onStopExecuteMenuSelect ) );
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_ACTIVATED, wxTreeEventHandler( rc_ideFrame::onProjectTreeNodeActivated ), NULL, this );
 	project_tree->Disconnect( wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEventHandler( rc_ideFrame::onProjectTreeContextMenu ), NULL, this );
+	project_tree->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( rc_ideFrame::onProjectTreeSelectionChanged ), NULL, this );
+	project_tree->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGING, wxTreeEventHandler( rc_ideFrame::onProjectTreeSelectionChanging ), NULL, this );
 	symbol_tree->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGED, wxTreeEventHandler( rc_ideFrame::onSymbolSelectionChanged ), NULL, this );
+	symbol_tree->Disconnect( wxEVT_COMMAND_TREE_SEL_CHANGING, wxTreeEventHandler( rc_ideFrame::onSymbolSelectionChanging ), NULL, this );
 	sourceFile_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( rc_ideFrame::onNotebookPageChanged ), NULL, this );
 	sourceFile_auinotebook->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEventHandler( rc_ideFrame::onSourceFileTabClose ), NULL, this );
 	m_searchResults_listBox->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( rc_ideFrame::onSearchResultSelection ), NULL, this );
@@ -1834,5 +1848,720 @@ rc_projectVariableEdit_dialog::~rc_projectVariableEdit_dialog()
 	// Disconnect Events
 	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_projectVariableEdit_dialog::onCancelButtonClick ), NULL, this );
 	m_ok_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_projectVariableEdit_dialog::onOKButtonClick ), NULL, this );
+
+}
+
+rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer80;
+	bSizer80 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer81;
+	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer81->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText27 = new wxStaticText( this, wxID_ANY, wxT("Keystore"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText27->Wrap( -1 );
+	bSizer81->Add( m_staticText27, 1, wxALL, 5 );
+
+	m_keystore_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer81->Add( m_keystore_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer81->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer81, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer82;
+	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText28 = new wxStaticText( this, wxID_ANY, wxT("Alias"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText28->Wrap( -1 );
+	bSizer82->Add( m_staticText28, 1, wxALL, 5 );
+
+	m_alias_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer82->Add( m_alias_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer82, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer83;
+	bSizer83 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer83->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText29 = new wxStaticText( this, wxID_ANY, wxT("Password               "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText29->Wrap( -1 );
+	bSizer83->Add( m_staticText29, 1, wxALL, 5 );
+
+	m_password_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer83->Add( m_password_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer83->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer83, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer84;
+	bSizer84 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer84->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText30 = new wxStaticText( this, wxID_ANY, wxT("Confirm Password"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText30->Wrap( -1 );
+	bSizer84->Add( m_staticText30, 1, wxALL, 5 );
+
+	m_confirmPassword_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer84->Add( m_confirmPassword_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer84->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer84, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer85;
+	bSizer85 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer85->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText31 = new wxStaticText( this, wxID_ANY, wxT("First and Last Name"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText31->Wrap( -1 );
+	bSizer85->Add( m_staticText31, 1, wxALL, 5 );
+
+	m_name_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer85->Add( m_name_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer85->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer85, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer86;
+	bSizer86 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer86->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText32 = new wxStaticText( this, wxID_ANY, wxT("Organizational Unit"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText32->Wrap( -1 );
+	bSizer86->Add( m_staticText32, 1, wxALL, 5 );
+
+	m_orgUnit_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer86->Add( m_orgUnit_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer86->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer86, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer87;
+	bSizer87 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer87->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText33 = new wxStaticText( this, wxID_ANY, wxT("Organization       "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText33->Wrap( -1 );
+	bSizer87->Add( m_staticText33, 1, wxALL, 5 );
+
+	m_org_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer87->Add( m_org_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer87->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer87, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer88;
+	bSizer88 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer88->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText34 = new wxStaticText( this, wxID_ANY, wxT("City or Locality   "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText34->Wrap( -1 );
+	bSizer88->Add( m_staticText34, 1, wxALL, 5 );
+
+	m_city_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer88->Add( m_city_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer88->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer88, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer89;
+	bSizer89 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer89->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText35 = new wxStaticText( this, wxID_ANY, wxT("State or Province"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText35->Wrap( -1 );
+	bSizer89->Add( m_staticText35, 1, wxALL, 5 );
+
+	m_state_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer89->Add( m_state_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer89->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer89, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer90;
+	bSizer90 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer90->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText36 = new wxStaticText( this, wxID_ANY, wxT("Country               "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText36->Wrap( -1 );
+	bSizer90->Add( m_staticText36, 1, wxALL, 5 );
+
+	m_country_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer90->Add( m_country_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer90->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer90, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer91;
+	bSizer91 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer91->Add( 0, 0, 6, wxEXPAND, 5 );
+
+	m_ok_button = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer91->Add( m_ok_button, 1, wxALL, 5 );
+
+	m_cancel_button = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer91->Add( m_cancel_button, 1, wxALL, 5 );
+
+
+	bSizer91->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer91, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer80 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_ok_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_genKey_dialog::onOKButtonClick ), NULL, this );
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_genKey_dialog::onCancelButtonClick ), NULL, this );
+}
+
+rc_genKey_dialog::~rc_genKey_dialog()
+{
+	// Disconnect Events
+	m_ok_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_genKey_dialog::onOKButtonClick ), NULL, this );
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_genKey_dialog::onCancelButtonClick ), NULL, this );
+
+}
+
+rc_distribute_dialog::rc_distribute_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer92;
+	bSizer92 = new wxBoxSizer( wxVERTICAL );
+
+	m_notebook4 = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_panel12 = new wxPanel( m_notebook4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer95;
+	bSizer95 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer93;
+	bSizer93 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer93->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText37 = new wxStaticText( m_panel12, wxID_ANY, wxT("Project Name"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText37->Wrap( -1 );
+	bSizer93->Add( m_staticText37, 1, wxALL, 5 );
+
+	m_projectName_textCtrl = new wxTextCtrl( m_panel12, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	bSizer93->Add( m_projectName_textCtrl, 7, wxALL, 5 );
+
+
+	bSizer93->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer95->Add( bSizer93, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer98;
+	bSizer98 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer98->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText38 = new wxStaticText( m_panel12, wxID_ANY, wxT("Category"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText38->Wrap( -1 );
+	bSizer98->Add( m_staticText38, 1, wxALL, 5 );
+
+	m_category_comboBox = new wxComboBox( m_panel12, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer98->Add( m_category_comboBox, 7, wxALL, 5 );
+
+
+	bSizer98->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer95->Add( bSizer98, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer99;
+	bSizer99 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer99->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText39 = new wxStaticText( m_panel12, wxID_ANY, wxT("Icon"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText39->Wrap( -1 );
+	bSizer99->Add( m_staticText39, 1, wxALL, 5 );
+
+	m_icon_filePicker = new wxFilePickerCtrl( m_panel12, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	bSizer99->Add( m_icon_filePicker, 6, wxALL, 5 );
+
+
+	bSizer99->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer95->Add( bSizer99, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer102;
+	bSizer102 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer102->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText41 = new wxStaticText( m_panel12, wxID_ANY, wxT("Additional Settings"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText41->Wrap( -1 );
+	bSizer102->Add( m_staticText41, 1, wxALL, 5 );
+
+	m_enableTerminal_checkBox = new wxCheckBox( m_panel12, wxID_ANY, wxT("Enable Terminal"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer102->Add( m_enableTerminal_checkBox, 2, wxALL, 5 );
+
+	m_enableWebThreads_checkBox = new wxCheckBox( m_panel12, wxID_ANY, wxT("Enable Web Threads (Web Build Only)"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer102->Add( m_enableWebThreads_checkBox, 2, wxALL, 5 );
+
+
+	bSizer102->Add( 0, 0, 4, wxEXPAND, 5 );
+
+
+	bSizer95->Add( bSizer102, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer124;
+	bSizer124 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer124->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText49 = new wxStaticText( m_panel12, wxID_ANY, wxT("Output Dir"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText49->Wrap( -1 );
+	bSizer124->Add( m_staticText49, 1, wxALL, 5 );
+
+	m_outputDir_dirPicker = new wxDirPickerCtrl( m_panel12, wxID_ANY, wxEmptyString, wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	bSizer124->Add( m_outputDir_dirPicker, 7, wxALL, 5 );
+
+
+	bSizer124->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer95->Add( bSizer124, 1, wxEXPAND, 5 );
+
+
+	m_panel12->SetSizer( bSizer95 );
+	m_panel12->Layout();
+	bSizer95->Fit( m_panel12 );
+	m_notebook4->AddPage( m_panel12, wxT("General Settings"), false );
+	m_panel20 = new wxPanel( m_notebook4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer114;
+	bSizer114 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer115;
+	bSizer115 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer115->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText42 = new wxStaticText( m_panel20, wxID_ANY, wxT("Platforms"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText42->Wrap( -1 );
+	bSizer115->Add( m_staticText42, 1, wxALL, 5 );
+
+	wxArrayString m_targetPlatforms_checkListChoices;
+	m_targetPlatforms_checkList = new wxCheckListBox( m_panel20, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_targetPlatforms_checkListChoices, 0 );
+	bSizer115->Add( m_targetPlatforms_checkList, 7, wxALL|wxEXPAND, 5 );
+
+
+	bSizer115->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer114->Add( bSizer115, 1, wxEXPAND, 5 );
+
+
+	m_panel20->SetSizer( bSizer114 );
+	m_panel20->Layout();
+	bSizer114->Fit( m_panel20 );
+	m_notebook4->AddPage( m_panel20, wxT("Target Platforms"), false );
+	m_panel13 = new wxPanel( m_notebook4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer116;
+	bSizer116 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer117;
+	bSizer117 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer117->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText43 = new wxStaticText( m_panel13, wxID_ANY, wxT("App ID"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText43->Wrap( -1 );
+	bSizer117->Add( m_staticText43, 1, wxALL, 5 );
+
+	m_appID_textCtrl = new wxTextCtrl( m_panel13, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer117->Add( m_appID_textCtrl, 7, wxALL, 5 );
+
+
+	bSizer117->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer116->Add( bSizer117, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer118;
+	bSizer118 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer118->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText44 = new wxStaticText( m_panel13, wxID_ANY, wxT("Orientation"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText44->Wrap( -1 );
+	bSizer118->Add( m_staticText44, 1, wxALL, 5 );
+
+	m_orientation_comboBox = new wxComboBox( m_panel13, wxID_ANY, wxT("Combo!"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer118->Add( m_orientation_comboBox, 7, wxALL, 5 );
+
+
+	bSizer118->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer116->Add( bSizer118, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer119;
+	bSizer119 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer119->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText45 = new wxStaticText( m_panel13, wxID_ANY, wxT("Keystore"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText45->Wrap( -1 );
+	bSizer119->Add( m_staticText45, 1, wxALL, 5 );
+
+	m_keystore_filePicker = new wxFilePickerCtrl( m_panel13, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	bSizer119->Add( m_keystore_filePicker, 7, wxALL, 5 );
+
+
+	bSizer119->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer116->Add( bSizer119, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer120;
+	bSizer120 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer120->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText46 = new wxStaticText( m_panel13, wxID_ANY, wxT("Alias"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText46->Wrap( -1 );
+	bSizer120->Add( m_staticText46, 1, wxALL, 5 );
+
+	m_alias_textCtrl = new wxTextCtrl( m_panel13, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer120->Add( m_alias_textCtrl, 7, wxALL, 5 );
+
+
+	bSizer120->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer116->Add( bSizer120, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer121;
+	bSizer121 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer121->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText47 = new wxStaticText( m_panel13, wxID_ANY, wxT("Password"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText47->Wrap( -1 );
+	bSizer121->Add( m_staticText47, 1, wxALL, 5 );
+
+	m_password_textCtrl = new wxTextCtrl( m_panel13, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer121->Add( m_password_textCtrl, 7, wxALL, 5 );
+
+
+	bSizer121->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer116->Add( bSizer121, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer122;
+	bSizer122 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer122->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText48 = new wxStaticText( m_panel13, wxID_ANY, wxT("Java Src Path"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText48->Wrap( -1 );
+	bSizer122->Add( m_staticText48, 1, wxALL, 5 );
+
+	m_javaPath_dirPicker = new wxDirPickerCtrl( m_panel13, wxID_ANY, wxEmptyString, wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	bSizer122->Add( m_javaPath_dirPicker, 6, wxALL, 5 );
+
+	m_initJavaPath_button = new wxButton( m_panel13, wxID_ANY, wxT("Initialize"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer122->Add( m_initJavaPath_button, 1, wxALL, 5 );
+
+
+	bSizer122->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer116->Add( bSizer122, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer125;
+	bSizer125 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer125->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_androidDebug_checkBox = new wxCheckBox( m_panel13, wxID_ANY, wxT("Debug"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer125->Add( m_androidDebug_checkBox, 2, wxALL, 5 );
+
+	m_androidRelease_checkBox = new wxCheckBox( m_panel13, wxID_ANY, wxT("Release (Requires Keystore)"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer125->Add( m_androidRelease_checkBox, 2, wxALL, 5 );
+
+
+	bSizer125->Add( 0, 0, 4, wxEXPAND, 5 );
+
+
+	bSizer116->Add( bSizer125, 1, wxEXPAND, 5 );
+
+
+	m_panel13->SetSizer( bSizer116 );
+	m_panel13->Layout();
+	bSizer116->Fit( m_panel13 );
+	m_notebook4->AddPage( m_panel13, wxT("Android Settings"), true );
+
+	bSizer92->Add( m_notebook4, 1, wxALL|wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer109;
+	bSizer109 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_saveSettings_button = new wxButton( this, wxID_ANY, wxT("Save Settings"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer109->Add( m_saveSettings_button, 1, wxALL|wxEXPAND, 5 );
+
+	m_makeApp_button = new wxButton( this, wxID_ANY, wxT("Make App"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer109->Add( m_makeApp_button, 1, wxALL|wxEXPAND, 5 );
+
+	m_close_button = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer109->Add( m_close_button, 1, wxALL|wxEXPAND, 5 );
+
+
+	bSizer92->Add( bSizer109, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer92 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_initJavaPath_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distribute_dialog::onInitJavaPathButtonClick ), NULL, this );
+	m_saveSettings_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distribute_dialog::onSaveSettingsButtonClick ), NULL, this );
+	m_makeApp_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distribute_dialog::onMakeAppButtonClick ), NULL, this );
+	m_close_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distribute_dialog::onCloseButtonClick ), NULL, this );
+}
+
+rc_distribute_dialog::~rc_distribute_dialog()
+{
+	// Disconnect Events
+	m_initJavaPath_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distribute_dialog::onInitJavaPathButtonClick ), NULL, this );
+	m_saveSettings_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distribute_dialog::onSaveSettingsButtonClick ), NULL, this );
+	m_makeApp_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distribute_dialog::onMakeAppButtonClick ), NULL, this );
+	m_close_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distribute_dialog::onCloseButtonClick ), NULL, this );
+
+}
+
+rc_distProcess_dialog::rc_distProcess_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer110;
+	bSizer110 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer111;
+	bSizer111 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer111->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText49 = new wxStaticText( this, wxID_ANY, wxT("Status"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText49->Wrap( -1 );
+	bSizer111->Add( m_staticText49, 1, wxALL, 5 );
+
+	m_status_gauge = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
+	m_status_gauge->SetValue( 0 );
+	bSizer111->Add( m_status_gauge, 7, wxALL, 5 );
+
+
+	bSizer111->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer110->Add( bSizer111, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer112;
+	bSizer112 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer112->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_consoleLog_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
+	bSizer112->Add( m_consoleLog_textCtrl, 8, wxALL|wxEXPAND, 5 );
+
+
+	bSizer112->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer110->Add( bSizer112, 7, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer113;
+	bSizer113 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer113->Add( 0, 0, 7, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer113->Add( m_cancel_button, 1, wxALL, 5 );
+
+	m_close_button = new wxButton( this, wxID_ANY, wxT("Finished"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_close_button->Enable( false );
+
+	bSizer113->Add( m_close_button, 1, wxALL, 5 );
+
+
+	bSizer113->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer110->Add( bSizer113, 1, wxEXPAND, 5 );
+
+
+	bSizer110->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer110 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( rc_distProcess_dialog::onDistProcessUpdateUI ) );
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distProcess_dialog::onCancelButtonClick ), NULL, this );
+	m_close_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distProcess_dialog::onCloseButtonClick ), NULL, this );
+}
+
+rc_distProcess_dialog::~rc_distProcess_dialog()
+{
+	// Disconnect Events
+	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( rc_distProcess_dialog::onDistProcessUpdateUI ) );
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distProcess_dialog::onCancelButtonClick ), NULL, this );
+	m_close_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_distProcess_dialog::onCloseButtonClick ), NULL, this );
+
+}
+
+rc_cancelDistProcess_dialog::rc_cancelDistProcess_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer114;
+	bSizer114 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer114->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer115;
+	bSizer115 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer115->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText50 = new wxStaticText( this, wxID_ANY, wxT("Your App is still being packaged.  \nAre you sure you want to cancel?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText50->Wrap( -1 );
+	bSizer115->Add( m_staticText50, 0, wxALL, 5 );
+
+
+	bSizer115->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer114->Add( bSizer115, 2, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer116;
+	bSizer116 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer116->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_yes_button = new wxButton( this, wxID_ANY, wxT("Yes"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer116->Add( m_yes_button, 0, wxALL, 5 );
+
+	m_no_button = new wxButton( this, wxID_ANY, wxT("No"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer116->Add( m_no_button, 0, wxALL, 5 );
+
+
+	bSizer116->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer114->Add( bSizer116, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer114 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_yes_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_cancelDistProcess_dialog::onYesButtonClick ), NULL, this );
+	m_no_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_cancelDistProcess_dialog::onNoButtonClick ), NULL, this );
+}
+
+rc_cancelDistProcess_dialog::~rc_cancelDistProcess_dialog()
+{
+	// Disconnect Events
+	m_yes_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_cancelDistProcess_dialog::onYesButtonClick ), NULL, this );
+	m_no_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_cancelDistProcess_dialog::onNoButtonClick ), NULL, this );
 
 }

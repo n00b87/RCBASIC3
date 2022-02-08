@@ -16,6 +16,7 @@ class rc_ideApp : public wxApp
 {
     public:
         virtual bool OnInit();
+        virtual int OnExit();
 };
 
 #endif // RC_IDEAPP_H

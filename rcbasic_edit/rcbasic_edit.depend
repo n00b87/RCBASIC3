@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1643183803 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.cpp
+1644301088 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.cpp
 	"rc_ideApp.h"
 	"rcbasic_edit_frame.h"
 	<wx/image.h>
 
-1633399289 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.h
+1644300366 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rc_ideapp.h
 	<wx/app.h>
 
 1587560968 c:\dev_libs\wx\include\wx\app.h
@@ -3227,10 +3227,10 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1643351976 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1644202865 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1643351976 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1644199629 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3262,6 +3262,9 @@
 	<wx/checkbox.h>
 	<wx/collpane.h>
 	<wx/listctrl.h>
+	<wx/combobox.h>
+	<wx/checklst.h>
+	<wx/gauge.h>
 
 1587560968 c:\dev_libs\wx\include\wx\xrc\xmlres.h
 	"wx/defs.h"
@@ -3378,7 +3381,7 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1643340765 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1644193152 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -3392,9 +3395,11 @@
 	<wx/stdpaths.h>
 	<wx/fontdlg.h>
 	<wx/fontdata.h>
+	<wx/process.h>
+	<wx/txtstrm.h>
 	<vector>
 
-1643340765 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1644299629 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -3405,6 +3410,7 @@
 	"rcbasic_edit_gotoLine_dialog.h"
 	"rcbasic_edit_setColorScheme_dialog.h"
 	"rcbasic_edit_projectSettings_dialog.h"
+	"rcbasic_edit_projectEnvironment_dialog.h"
 
 1587560968 c:\dev_libs\wx\include\wx\filepicker.h
 	"wx/defs.h"
@@ -3434,10 +3440,10 @@
 	"rcbasic_edit.h"
 	"projects.h"
 
-1643355366 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
+1644016408 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
 	"projects.h"
 
-1643358327 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
+1643516245 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
 	<wx/wx.h>
 	<wx/treectrl.h>
 	<wx/file.h>
@@ -3613,7 +3619,7 @@
 	"rcbasic_edit.h"
 	"rcbasic_edit_frame.h"
 
-1643265867 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_setcolorscheme_dialog.cpp
+1644137266 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_setcolorscheme_dialog.cpp
 	"rcbasic_edit_setColorScheme_dialog.h"
 	<wx/dir.h>
 	<wx/stdpaths.h>
@@ -3623,10 +3629,85 @@
 	"wx/string.h"
 	"wx/filefn.h"
 
-1643355958 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectsettings_dialog.h
+1643519636 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectsettings_dialog.h
 	"rcbasic_edit.h"
 	"rcbasic_edit_frame.h"
 
-1643358245 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectsettings_dialog.cpp
+1643519720 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectsettings_dialog.cpp
 	"rcbasic_edit_projectSettings_dialog.h"
+	"rcbasic_edit_fileProperties_dialog.h"
+
+1643443152 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_fileproperties_dialog.cpp
+	"rcbasic_edit_fileProperties_dialog.h"
+	"projects.h"
+
+1643494776 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_fileproperties_dialog.h
+	"rcbasic_edit.h"
+	"projects.h"
+
+1643516726 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectenvironment_dialog.cpp
+	"rcbasic_edit_projectEnvironment_dialog.h"
+	"rcbasic_edit_projectVariableEdit_dialog.h"
+	<wx/msgdlg.h>
+	<vector>
+
+1643516034 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectenvironment_dialog.h
+	"rcbasic_edit.h"
+	"projects.h"
+	<vector>
+
+1643510512 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectvariableedit_dialog.cpp
+	"rcbasic_edit_projectVariableEdit_dialog.h"
+
+1643510435 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectvariableedit_dialog.h
+	"rcbasic_edit.h"
+
+1644039470 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\build_menu.cpp
+	"rcbasic_edit_frame.h"
+	<wx/process.h>
+	<wx/txtstrm.h>
+	<wx/utils.h>
+
+1643599760 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\exec_process.cpp
+
+1643860040 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_console_dialog.cpp
+	"rcbasic_edit_console_dialog.h"
+	"rcbasic_edit_frame.h"
+	<wx/process.h>
+	<wx/txtstrm.h>
+	<wx/utils.h>
+
+1643859928 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_console_dialog.h
+	"rcbasic_edit.h"
+	<wx/process.h>
+	<vector>
+
+1644304263 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distribute_dialog.cpp
+	"rcbasic_editrc_distribute_dialog.h"
+	"rcbasic_editrc_distProcess_dialog.h"
+	<wx/msgdlg.h>
+
+1644294219 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distribute_dialog.h
+	"rcbasic_edit.h"
+	"rcbasic_edit_frame.h"
+	<vector>
+
+1644304263 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\tools_menu.cpp
+	"rcbasic_edit_frame.h"
+	"rcbasic_editrc_distribute_dialog.h"
+
+1644199211 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_canceldistprocess_dialog.cpp
+	"rcbasic_editrc_cancelDistProcess_dialog.h"
+
+1644199211 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_canceldistprocess_dialog.h
+	"rcbasic_edit.h"
+
+1644207628 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distprocess_dialog.h
+	"rcbasic_edit.h"
+	<wx/process.h>
+
+1644304263 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distprocess_dialog.cpp
+	"rcbasic_editrc_distProcess_dialog.h"
+	<wx/txtstrm.h>
+	<wx/msgdlg.h>
 
