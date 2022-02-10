@@ -104,8 +104,14 @@
 		<Unit filename="rcbasic_edit_searchWrap_dialog.h" />
 		<Unit filename="rcbasic_edit_setColorScheme_dialog.cpp" />
 		<Unit filename="rcbasic_edit_setColorScheme_dialog.h" />
+		<Unit filename="rcbasic_editrc_cancelDistProcess_dialog.cpp" />
+		<Unit filename="rcbasic_editrc_cancelDistProcess_dialog.h" />
+		<Unit filename="rcbasic_editrc_distProcess_dialog.cpp" />
+		<Unit filename="rcbasic_editrc_distProcess_dialog.h" />
 		<Unit filename="rcbasic_editrc_distribute_dialog.cpp" />
 		<Unit filename="rcbasic_editrc_distribute_dialog.h" />
+		<Unit filename="rcbasic_editrc_genKey_dialog.cpp" />
+		<Unit filename="rcbasic_editrc_genKey_dialog.h" />
 		<Unit filename="rcbasic_symbol.h" />
 		<Unit filename="tokenizer.h" />
 		<Unit filename="tools_menu.cpp" />

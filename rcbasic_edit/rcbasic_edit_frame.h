@@ -235,7 +235,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onRunMenuSelect( wxCommandEvent& event );
 		void onBuildRunMenuSelect( wxCommandEvent& event );
 		void onStopExecuteMenuSelect( wxCommandEvent& event );
-		//void onGenKeystoreMenuSelect( wxCommandEvent& event );
+		void onGenKeystoreMenuSelect( wxCommandEvent& event );
 		void onDistributeMenuSelect( wxCommandEvent& event );
 		//void onDocMenuSelect( wxCommandEvent& event );
 		//void onEditorManualMenuSelect( wxCommandEvent& event );
@@ -321,6 +321,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxStyledTextCtrl* parsed_page;
         bool symbolUpdateInProgress;
         int symbol_ui_state;
+        long win_os_bit;
 
 		DECLARE_EVENT_TABLE();
 		//void replaceInSelection(int findDialog_flag, wxString txt);

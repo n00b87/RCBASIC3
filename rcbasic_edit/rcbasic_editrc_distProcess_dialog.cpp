@@ -22,6 +22,10 @@ rc_distProcess_dialog( parent )
 	wxGetEnv(_("RC_PKG_HOME"), &pkg_home);
 	wxSetWorkingDirectory(pkg_home);
 
+	wxString p;
+	wxGetEnv(_("PATH"), &p);
+	//wxPuts(_("PATH: ") + p );
+
 	dist_pid = wxExecute(dist_cmd, wxEXEC_ASYNC, dist_process, NULL);
 
 	if(dist_pid < 0)
@@ -33,7 +37,7 @@ rc_distProcess_dialog( parent )
 	isRunning = true;
 	target_count = num_targets;
 
-	wxPrintf(_("Num Targets: %d\n"), target_count);
+	//wxPrintf(_("Num Targets: %d\n"), target_count);
 
 	m_status_gauge->SetRange(target_count);
 	current_count = 0;
@@ -55,7 +59,7 @@ void rcbasic_editrc_distProcess_dialog::onDistProcessUpdateUI( wxUpdateUIEvent& 
         {
             current_count++;
             m_status_gauge->SetValue(current_count);
-            wxPrintf(_("Current Value = %d out of %d\n"), m_status_gauge->GetValue(), m_status_gauge->GetRange());
+            //wxPrintf(_("Current Value = %d out of %d\n"), m_status_gauge->GetValue(), m_status_gauge->GetRange());
         }
 
         m_consoleLog_textCtrl->AppendText(console_line + _("\n"));

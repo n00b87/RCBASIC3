@@ -228,6 +228,40 @@ rc_ideFrame( parent )
     active_project = NULL;
 
     wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+
+    wxFileName rcbasic_dir(editor_path);
+    rcbasic_dir.AppendDir(_("rcbasic"));
+    rcbasic_dir.SetFullName(_(""));
+    rcbasic_dir.MakeAbsolute();
+
+    wxFileName tools_dir = rcbasic_dir;
+    tools_dir.AppendDir(_("tools"));
+
+    wxFileName rc32_dir = rcbasic_dir;
+    rc32_dir.AppendDir(_("rcbasic_32"));
+
+    wxFileName rc64_dir = rcbasic_dir;
+    rc64_dir.AppendDir(_("rcbasic_64"));
+
+    wxFileName pkg_home_dir = tools_dir;
+    pkg_home_dir.AppendDir(_("dist"));
+
+    wxFileName keystore_dir(editor_path);
+    keystore_dir.AppendDir(_("keystore"));
+
+    wxFileName android_dir = tools_dir;
+    android_dir.AppendDir(_("rcbasic_android"));
+
+    wxSetEnv(_("RCBASIC_HOME"), rcbasic_dir.GetFullPath());
+    wxSetEnv(_("RCBASIC_TOOLS"), tools_dir.GetFullPath());
+    wxSetEnv(_("RCBASIC_D32"), rc32_dir.GetFullPath());
+    wxSetEnv(_("RCBASIC_D64"), rc64_dir.GetFullPath());
+    wxSetEnv(_("RC_PKG_HOME"), pkg_home_dir.GetFullPath());
+    wxSetEnv(_("RC_KEYSTORE_DIR"), keystore_dir.GetFullPath());
+    wxSetEnv(_("RCBASIC_WIN"), rcbasic_dir.GetFullPath());
+    wxSetEnv(_("RCBASIC_ANDROID_DIR"), android_dir.GetFullPath());
+
+
     wxFileName gfx_path(editor_path);
     gfx_path.AppendDir(_("gfx"));
 
@@ -375,6 +409,14 @@ rc_ideFrame( parent )
     scheme_path.SetFullName(_("default.scheme"));
     loadScheme(scheme_path);
 
+    wxString path;
+    wxGetEnv(_("PATH"), &path);
+
+    if(win_os_bit==64)
+        wxSetEnv(_("PATH"), path + _(";") + rc64_dir.GetFullPath());
+    else
+        wxSetEnv(_("PATH"), path + _(";") + rc32_dir.GetFullPath());
+
     token_parser = new parserThread(this, 0, this);
     token_parser->Run();
 }
@@ -437,6 +479,11 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
             rcbasic_run_path = wxFileName(value);
             rcbasic_run_path.MakeAbsolute();
             wxSetEnv(_("RCBASIC_RUN_PATH"), rcbasic_run_path.GetFullPath());
+        }
+        else if(property.compare(_("RCBASIC_WIN_BIT"))==0)
+        {
+            wxPuts(_("WIN_BIT = ") + value);
+            value.ToLong(&win_os_bit);
         }
 
         properties = properties.substr(properties.find_first_of(_("\n"))+1);
@@ -939,6 +986,7 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
             delete new_project;
             return;
         }
+
         new_project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
         new_project->addSourceFile(new_project->getMainSource().GetFullPath(), STORE_LOCATION_RELATIVE);
 
@@ -966,7 +1014,12 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
 
         //----
         notebook_mutex.Lock();
+        wxString cwd = wxGetCwd();
+        wxSetWorkingDirectory(new_project->getLocation());
+        wxFileName main_fname = new_project->getMainSource();
+        main_fname.MakeAbsolute();
         rcbasic_edit_txtCtrl* txtCtrl_obj = openFileTab(new_project, new_project->getMainSource());
+        wxSetWorkingDirectory(cwd);
         txtCtrl_obj->setTextChangedFlag(false);
         notebook_mutex.Unlock();
     }

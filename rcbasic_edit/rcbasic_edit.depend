@@ -3381,7 +3381,7 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1644193152 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1644472704 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -3399,7 +3399,7 @@
 	<wx/txtstrm.h>
 	<vector>
 
-1644299629 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1644469902 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -3440,7 +3440,7 @@
 	"rcbasic_edit.h"
 	"projects.h"
 
-1644016408 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
+1644469902 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.cpp
 	"projects.h"
 
 1643516245 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\projects.h
@@ -3682,7 +3682,7 @@
 	<wx/process.h>
 	<vector>
 
-1644304263 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distribute_dialog.cpp
+1644370411 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distribute_dialog.cpp
 	"rcbasic_editrc_distribute_dialog.h"
 	"rcbasic_editrc_distProcess_dialog.h"
 	<wx/msgdlg.h>
@@ -3692,9 +3692,10 @@
 	"rcbasic_edit_frame.h"
 	<vector>
 
-1644304263 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\tools_menu.cpp
+1644472865 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\tools_menu.cpp
 	"rcbasic_edit_frame.h"
 	"rcbasic_editrc_distribute_dialog.h"
+	"rcbasic_editrc_genKey_dialog.h"
 
 1644199211 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_canceldistprocess_dialog.cpp
 	"rcbasic_editrc_cancelDistProcess_dialog.h"
@@ -3706,8 +3707,15 @@
 	"rcbasic_edit.h"
 	<wx/process.h>
 
-1644304263 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distprocess_dialog.cpp
+1644471428 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distprocess_dialog.cpp
 	"rcbasic_editrc_distProcess_dialog.h"
 	<wx/txtstrm.h>
+	<wx/msgdlg.h>
+
+1644471374 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_genkey_dialog.h
+	"rcbasic_edit.h"
+
+1644477749 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_genkey_dialog.cpp
+	"rcbasic_editrc_genKey_dialog.h"
 	<wx/msgdlg.h>
 

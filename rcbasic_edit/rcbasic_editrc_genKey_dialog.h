@@ -23,6 +23,7 @@ class rcbasic_editrc_genKey_dialog : public rc_genKey_dialog
 	//// end generated class members
 
 
+
 };
 
 #endif // __rcbasic_editrc_genKey_dialog__

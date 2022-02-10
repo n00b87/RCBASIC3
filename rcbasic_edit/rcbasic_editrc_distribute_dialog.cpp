@@ -25,6 +25,7 @@ rc_distribute_dialog( parent )
     m_category_comboBox->Append(_("Settings"));
     m_category_comboBox->Append(_("System"));
     m_category_comboBox->Append(_("Utility"));
+    m_category_comboBox->SetSelection(0);
 
     //wxCheckListBox m_targetPlatforms_checkList;
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Windows 32-Bit"));
@@ -39,44 +40,7 @@ rc_distribute_dialog( parent )
     m_orientation_comboBox->Append(_("Default"));
     m_orientation_comboBox->Append(_("Landscape"));
     m_orientation_comboBox->Append(_("Portrait"));
-
-    editor_path = wxStandardPaths::Get().GetExecutablePath();
-
-    wxFileName rcbasic_dir(editor_path);
-    rcbasic_dir.AppendDir(_("rcbasic"));
-    rcbasic_dir.SetFullName(_(""));
-    rcbasic_dir.MakeAbsolute();
-
-    wxFileName tools_dir = rcbasic_dir;
-    tools_dir.AppendDir(_("tools"));
-
-    wxFileName rc32_dir = rcbasic_dir;
-    rc32_dir.AppendDir(_("rcbasic_32"));
-
-    wxFileName rc64_dir = rcbasic_dir;
-    rc64_dir.AppendDir(_("rcbasic_64"));
-
-    wxFileName pkg_home_dir = tools_dir;
-    pkg_home_dir.AppendDir(_("dist"));
-
-    wxFileName keystore_dir(editor_path);
-    rc32_dir.AppendDir(_("keystore"));
-
-    wxFileName android_dir = tools_dir;
-    android_dir.AppendDir(_("rcbasic_android"));
-
-    wxSetEnv(_("RCBASIC_HOME"), rcbasic_dir.GetFullPath());
-    wxSetEnv(_("RCBASIC_TOOLS"), tools_dir.GetFullPath());
-    wxSetEnv(_("RCBASIC_D32"), rc32_dir.GetFullPath());
-    wxSetEnv(_("RCBASIC_D64"), rc64_dir.GetFullPath());
-    wxSetEnv(_("RC_PKG_HOME"), pkg_home_dir.GetFullPath());
-    wxSetEnv(_("RC_KEYSTORE_DIR"), keystore_dir.GetFullPath());
-    wxSetEnv(_("RCBASIC_WIN"), rcbasic_dir.GetFullPath());
-    wxSetEnv(_("RCBASIC_ANDROID_DIR"), android_dir.GetFullPath());
-
-    wxString path;
-    wxGetEnv(_("PATH"), &path);
-    wxSetEnv(_("PATH"), path + _(";") + rc64_dir.GetFullPath());
+    m_orientation_comboBox->SetSelection(0);
 
     loadAppProperties();
 }
@@ -302,10 +266,11 @@ void rcbasic_editrc_distribute_dialog::saveAppProperties()
 	android_java_dir = android_java_dir.substr(0, android_java_dir.Length()-1);
 	setProperty(_("ANDROID_JAVA_DIR"), android_java_dir);
 
-	wxString pkg_dir;
-	wxGetEnv(_("RC_PKG_HOME"), &pkg_dir);
-	wxFileName app_properties(pkg_dir);
-	app_properties.SetFullName(_("app2.properties"));
+	wxString p_dir = project_dir;
+	//wxGetEnv(_("RC_PKG_HOME"), &pkg_dir);
+	wxFileName app_properties;
+	app_properties.SetPath(p_dir);
+	app_properties.SetFullName(_("app.properties"));
 	wxFile app_file;
 	if(!app_file.Open(app_properties.GetFullPath(), wxFile::write))
     {
@@ -323,10 +288,13 @@ void rcbasic_editrc_distribute_dialog::saveAppProperties()
 
 void rcbasic_editrc_distribute_dialog::loadAppProperties()
 {
-    wxString pkg_dir;
-	wxGetEnv(_("RC_PKG_HOME"), &pkg_dir);
-	wxFileName app_properties(pkg_dir);
-	app_properties.SetFullName(_("app2.properties"));
+    wxString p_dir = getPropertyValue(_("PROJECT_DIR"));
+	//wxGetEnv(_("RC_PKG_HOME"), &pkg_dir);
+	wxFileName app_properties;
+	app_properties.SetPath(p_dir);
+	app_properties.SetFullName(_("app.properties"));
+	if(!app_properties.Exists())
+        return;
 	wxFile app_file;
 	if(!app_file.Open(app_properties.GetFullPath()))
     {
@@ -410,9 +378,9 @@ void rcbasic_editrc_distribute_dialog::loadAppProperties()
         }
         else
         {
-            wxPuts(_("PROPERTY: ") + property);
-            wxPuts(_("VALUE: ") + value);
-            wxPuts(_(""));
+            //wxPuts(_("PROPERTY: ") + property);
+            //wxPuts(_("VALUE: ") + value);
+            //wxPuts(_(""));
         }
 
         app_file_data = app_file_data.substr(app_file_data.find_first_of(_("\n"))+1);
@@ -481,10 +449,10 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
 	wxFileName rcbasic_run_fname = parent_frame->getRCRunnerPath();
 	rcbasic_run_fname.MakeAbsolute();
 	//wxString dist_cmd = _("\"") + rcbasic_run_fname.GetFullPath() + _("\" \"") + pkg_path.GetFullPath() + _("\" ") +app_pkg_args;
-	wxString dist_cmd = _("rcbasic_studio_run  studio_app_build \"") + getPropertyValue(_("PROJECT_DIR")) + _("\" \"") + getPropertyValue(_("SOURCE")) + _("\"");
+	wxString dist_cmd = _("rcbasic_studio_run  studio_app_build \"") + getPropertyValue(_("PROJECT_DIR")) + _("\" \"") + getPropertyValue(_("SOURCE")) + _("\" ") + m_password_textCtrl->GetValue();
 	//wxPrintf(_("\nTGTS: %d\n"), getTargetPlatformCount());
 	//return;
-	//wxPuts(_("\n\nCMD: ") + dist_cmd + _("\n\n"));//return;
+	//wxPuts(_("\n\nCMD: ") + dist_cmd + _("\n\n")); return;
 	rcbasic_editrc_distProcess_dialog dp_dialog(this, dist_cmd, getTargetPlatformCount());
 	dp_dialog.ShowModal();
 	//wxSystem(_("taskkill /F /IM rcbasic_studio_run.exe"));

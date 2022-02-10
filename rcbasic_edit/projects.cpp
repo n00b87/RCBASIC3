@@ -216,6 +216,8 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
         case RCBASIC_PROJECT_SOURCE_EXISTING:
             fname = wxFileName(main_source_value);
             fname.SetPath(location);
+            //wxPuts(_("FileName = ") + fname.GetFullPath());
+            //wxPuts(_("NAME ONLY = ") + fname.GetFullName());
             if(!wxCopyFile(main_source_value, fname.GetFullPath() ))
             {
                 wxMessageBox(_("Could not copy main source file into project"));
@@ -226,6 +228,8 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
                 main_source = fname;
                 project_valid = true;
             }
+
+            //wxPuts(_("MAIN source = ") + main_source.GetFullPath());
 
             main_source.MakeRelativeTo(project_dir.GetFullPath());
 
@@ -529,8 +533,8 @@ bool rcbasic_project::addTempSourceFile(wxString filePath, int store_loc_type)
         {
             p_index = i;
 
-            if(source_files[i]->getAddRemoveFlag()==1)
-                wxPuts(_("file in project already: ")+fname.GetFullPath());
+            //if(source_files[i]->getAddRemoveFlag()==1)
+              //  wxPuts(_("file in project already: ")+fname.GetFullPath());
 
             if(source_files[i]->getAddRemoveFlag()==1)
                 should_add = false;
