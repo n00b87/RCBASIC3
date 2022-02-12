@@ -79,6 +79,8 @@ void rcbasic_edit_frame::buildProject()
     else
         return;
 
+    m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
+
 
     //SAVE FILES IN PROJECT
     notebook_mutex.Lock();
@@ -270,6 +272,8 @@ void rcbasic_edit_frame::onBuildRunMenuSelect( wxCommandEvent& event )
 {
     if(isBuilding || isRunning || isBuildingAndRunning)
         return;
+
+    m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
 
     isBuildingAndRunning = true;
     buildProject();

@@ -311,8 +311,8 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer17;
 	bSizer17 = new wxBoxSizer( wxVERTICAL );
 
-	m_notebook2 = new wxNotebook( m_panel7, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_buildLog_panel = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
+	m_results_notebook = new wxNotebook( m_panel7, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_buildLog_panel = new wxPanel( m_results_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer56;
 	bSizer56 = new wxBoxSizer( wxVERTICAL );
 
@@ -323,8 +323,8 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_buildLog_panel->SetSizer( bSizer56 );
 	m_buildLog_panel->Layout();
 	bSizer56->Fit( m_buildLog_panel );
-	m_notebook2->AddPage( m_buildLog_panel, wxT("Build Log"), true );
-	m_searchResults_panel = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
+	m_results_notebook->AddPage( m_buildLog_panel, wxT("Build Log"), true );
+	m_searchResults_panel = new wxPanel( m_results_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer57;
 	bSizer57 = new wxBoxSizer( wxVERTICAL );
 
@@ -335,9 +335,9 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_searchResults_panel->SetSizer( bSizer57 );
 	m_searchResults_panel->Layout();
 	bSizer57->Fit( m_searchResults_panel );
-	m_notebook2->AddPage( m_searchResults_panel, wxT("Search Results"), false );
+	m_results_notebook->AddPage( m_searchResults_panel, wxT("Search Results"), false );
 
-	bSizer17->Add( m_notebook2, 1, wxEXPAND | wxALL, 5 );
+	bSizer17->Add( m_results_notebook, 1, wxEXPAND | wxALL, 5 );
 
 
 	m_panel7->SetSizer( bSizer17 );

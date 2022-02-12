@@ -129,7 +129,7 @@ class rc_ideFrame : public wxFrame
 		wxPanel* m_panel6;
 		wxAuiNotebook* sourceFile_auinotebook;
 		wxPanel* m_panel7;
-		wxNotebook* m_notebook2;
+		wxNotebook* m_results_notebook;
 		wxPanel* m_buildLog_panel;
 		wxRichTextCtrl* m_messageWindow_richText;
 		wxPanel* m_searchResults_panel;
