@@ -582,7 +582,9 @@ inline int rc_intern_fileClose(int fc_stream)
 inline int rc_intern_fileReadByte(int f_stream)
 {
     unsigned char buf;
-    SDL_RWread(rc_fstream[f_stream], &buf, 1, 1);
+    if(SDL_RWread(rc_fstream[f_stream], &buf, 1, 1)==0)
+        rc_eof[f_stream] = true;
+
     //SDL_RWtell(rc_fstream[f_stream]);
     return (int)buf;
 }
@@ -591,6 +593,9 @@ inline uint64_t rc_intern_fileReadByteBuffer(int f_stream, double * buf, uint64_
 {
     uint8_t c_buf[buf_size];
     uint64_t actual_size = SDL_RWread(rc_fstream[f_stream], &c_buf, 1, buf_size);
+
+    if(actual_size==0)
+        rc_eof[f_stream] = true;
 
     for(uint64_t i = 0; i < actual_size; i ++)
         buf[i] = (double)c_buf[i];
