@@ -164,6 +164,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 
         bool re_update_symbols;
         parserThread * token_parser;
+        bool enable_parser;
 
         rcbasic_edit_scheme editor_scheme;
         wxString rcbasic_edit_keywords;

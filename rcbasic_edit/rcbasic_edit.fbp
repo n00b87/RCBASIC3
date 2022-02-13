@@ -1267,7 +1267,7 @@
                                                                         <object class="notebookpage" expanded="0">
                                                                             <property name="bitmap"></property>
                                                                             <property name="label">Projects</property>
-                                                                            <property name="select">0</property>
+                                                                            <property name="select">1</property>
                                                                             <object class="wxPanel" expanded="0">
                                                                                 <property name="BottomDockable">1</property>
                                                                                 <property name="LeftDockable">1</property>
@@ -1392,7 +1392,7 @@
                                                                         <object class="notebookpage" expanded="0">
                                                                             <property name="bitmap"></property>
                                                                             <property name="label">Symbols</property>
-                                                                            <property name="select">1</property>
+                                                                            <property name="select">0</property>
                                                                             <object class="wxPanel" expanded="0">
                                                                                 <property name="BottomDockable">1</property>
                                                                                 <property name="LeftDockable">1</property>
@@ -13144,7 +13144,7 @@
                         <object class="notebookpage" expanded="0">
                             <property name="bitmap"></property>
                             <property name="label">General Settings</property>
-                            <property name="select">0</property>
+                            <property name="select">1</property>
                             <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
@@ -14271,7 +14271,7 @@
                         <object class="notebookpage" expanded="0">
                             <property name="bitmap"></property>
                             <property name="label">Android Settings</property>
-                            <property name="select">1</property>
+                            <property name="select">0</property>
                             <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>

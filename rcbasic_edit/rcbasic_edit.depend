@@ -3227,7 +3227,7 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1644687397 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1644718650 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
 1644713348 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
@@ -3381,7 +3381,7 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1644714529 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1644719861 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -3399,7 +3399,7 @@
 	<wx/txtstrm.h>
 	<vector>
 
-1644703564 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1644720100 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -3721,4 +3721,6 @@
 
 1644703910 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\help_menu.cpp
 	"rcbasic_edit_frame.h"
+
+1644719018 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\resource.rc
 

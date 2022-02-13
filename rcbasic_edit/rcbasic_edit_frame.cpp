@@ -231,6 +231,15 @@ rc_ideFrame( parent )
 
     wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
 
+    wxIcon FrameIcon;
+
+    wxFileName frameIcon_path(editor_path);
+    frameIcon_path.SetFullName(_("rcbasic.png"));
+    frameIcon_path.AppendDir(_("gfx"));
+
+    FrameIcon.CopyFromBitmap(wxBitmap(wxImage(frameIcon_path.GetFullPath())));
+    SetIcon(FrameIcon);
+
     wxFileName rcbasic_dir(editor_path);
     rcbasic_dir.AppendDir(_("rcbasic"));
     rcbasic_dir.SetFullName(_(""));
@@ -419,13 +428,17 @@ rc_ideFrame( parent )
     else
         wxSetEnv(_("PATH"), path + _(";") + rc32_dir.GetFullPath());
 
-    token_parser = new parserThread(this, 0, this);
-    token_parser->Run();
+    if(enable_parser)
+    {
+        token_parser = new parserThread(this, 0, this);
+        token_parser->Run();
+    }
 }
 
 bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
 {
     wxFile properties_file;
+    enable_parser = false;
 
     if(!fname.Exists())
     {
@@ -494,6 +507,10 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         else if(property.compare(_("STUDIO_DOC_URL"))==0)
         {
             Studio_Documentation_Link = value;
+        }
+        else if(property.compare(_("ENABLE_PARSER"))==0)
+        {
+            enable_parser = value.compare(_("TRUE")) == 0 ? true : false;
         }
 
 
@@ -900,13 +917,16 @@ void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
 {
     notebook_mutex.Unlock();
 
-    if(token_parser->IsAlive())
+    if(enable_parser)
     {
-        sym_sem = new wxSemaphore();
-        token_parser->Delete();
-        sym_sem->Wait();
-        delete sym_sem;
-        wxPuts(_("thread successfully ended"));
+        if(token_parser->IsAlive())
+        {
+            sym_sem = new wxSemaphore();
+            token_parser->Delete();
+            sym_sem->Wait();
+            delete sym_sem;
+            wxPuts(_("thread successfully ended"));
+        }
     }
 
     for(int i = 0; i < open_files.size(); i++)
