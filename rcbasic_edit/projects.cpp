@@ -257,6 +257,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
             break;
         case RCBASIC_PROJECT_SOURCE_OPEN:
             main_source = wxFileName(main_source_value);
+            main_source.MakeRelativeTo(project_dir.GetFullPath());
             //wxPuts(_("Proj Loc: ") + location + _("\n"));
             //wxPuts(_("Main: ") + main_source.GetFullPath() + _("\n"));
             break;

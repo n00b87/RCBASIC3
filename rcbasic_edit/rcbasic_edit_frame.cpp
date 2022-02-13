@@ -417,8 +417,11 @@ rc_ideFrame( parent )
     wxFileName scheme_path(editor_path);
     scheme_path.AppendDir(_("config"));
     scheme_path.AppendDir(_("schemes"));
-    scheme_path.SetFullName(_("default.scheme"));
+    if(default_scheme.compare("")==0)
+        default_scheme = _("default.scheme");
+    scheme_path.SetFullName(default_scheme);
     loadScheme(scheme_path);
+    applyScheme(NULL);
 
     wxString path;
     wxGetEnv(_("PATH"), &path);
@@ -439,6 +442,7 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
 {
     wxFile properties_file;
     enable_parser = false;
+    conv_rel = false;
 
     if(!fname.Exists())
     {
@@ -497,7 +501,7 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         }
         else if(property.compare(_("RCBASIC_WIN_BIT"))==0)
         {
-            wxPuts(_("WIN_BIT = ") + value);
+            //wxPuts(_("WIN_BIT = ") + value);
             value.ToLong(&win_os_bit);
         }
         else if(property.compare(_("DOC_URL"))==0)
@@ -511,6 +515,14 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         else if(property.compare(_("ENABLE_PARSER"))==0)
         {
             enable_parser = value.compare(_("TRUE")) == 0 ? true : false;
+        }
+        else if(property.compare(_("CONVERT_REL"))==0)
+        {
+            conv_rel = value.compare(_("TRUE")) == 0 ? true : false;
+        }
+        else if(property.compare(_("DEFAULT_SCHEME"))==0)
+        {
+            default_scheme = value;
         }
 
 
@@ -1156,6 +1168,14 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
                 }
                 else if(property_name.compare(_("PROJECT_MAIN"))==0)
                 {
+                    if(conv_rel)
+                    {
+                        #ifdef _WIN32
+                        property_value.Replace(_("/"), _("\\"));
+                        #else
+                        property_value.Replace(_("\\"), _("/"));
+                        #endif // _WIN32
+                    }
                     project_main = property_value;
                 }
                 else if(property_name.compare(_("AUTHOR"))==0)
@@ -1177,6 +1197,14 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
                 }
                 else if(property_name.compare(_("SOURCE_REL"))==0)
                 {
+                    if(conv_rel)
+                    {
+                        #ifdef _WIN32
+                        property_value.Replace(_("/"), _("\\"));
+                        #else
+                        property_value.Replace(_("\\"), _("/"));
+                        #endif // _WIN32
+                    }
                     wxFileName fname(property_value);
                     fname.SetCwd(project_path.GetPath());
                     fname.MakeAbsolute();
@@ -1202,7 +1230,6 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
             }
         }
 
-        wxSetWorkingDirectory(cwd);
 
         wxFileName project_location = project_path;
         project_location.SetFullName(_(""));
@@ -1212,6 +1239,8 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         p_main_fname.SetFullName(project_main);
         p_main_fname.MakeAbsolute();
         project_main = p_main_fname.GetFullPath();
+
+        wxSetWorkingDirectory(cwd);
 
         rcbasic_project* project = new rcbasic_project(project_name, project_location.GetLongPath(), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description);
         for(int i = 0; i < project_source.size(); i++)

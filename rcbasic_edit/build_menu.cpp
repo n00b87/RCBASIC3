@@ -26,6 +26,7 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
 
     if(isBuildingAndRunning)
     {
+        isBuildingAndRunning = false;
         runProject();
     }
 
@@ -63,6 +64,7 @@ void rcbasic_edit_frame::buildProject()
 
     if(isBuilding || isRunning)
         return;
+
 
     if(build_process || run_process)
         return;
@@ -115,7 +117,6 @@ void rcbasic_edit_frame::buildProject()
 
     m_messageWindow_richText->Clear();
 
-    isBuilding = true;
     build_process->Redirect();
 
     wxEnvVariableHashMap build_env_vars;
@@ -137,7 +138,15 @@ void rcbasic_edit_frame::buildProject()
     //NEED TO SAVE FILES IN PROJECT
     //ALSO NEED TO SWITCH TO BUILD TAB
 
+    //wxString c =  _("+++\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\"---");
+    //wxPuts(_("CMD: ") + c);
+
     build_pid = wxExecute(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\""), wxEXEC_ASYNC, build_process, &env);
+
+    if(build_pid >= 0)
+    {
+        isBuilding = true;
+    }
 
     //wxTextInputStream build_stream(*build_process->GetInputStream());
 
@@ -258,10 +267,12 @@ void rcbasic_edit_frame::runProject()
     run_file.Write(_("PAUSE\r\n"));
     run_file.Close();
 
-    isRunning = true;
-
     run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
 
+    if(run_pid >= 0)
+    {
+        isRunning = true;
+    }
     //run_pid = wxExecute(_("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
 
 }
