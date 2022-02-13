@@ -1977,7 +1977,15 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
                     if(token[n].size()>0)
                     {
                         if(token[n].substr(0,1).compare("n")==0 || token[n].substr(0,1).compare("s")==0 || token[n].substr(0,4).compare("<id>") == 0)
-                           arg_result = token[n];
+                        {
+                            if(arg_result.compare("")==0)
+                                arg_result = token[n];
+                            else
+                            {
+                                cout << "Error: Found multiple args not separated by a comma" << endl;
+                                return false;
+                            }
+                        }
                     }
                     token[n] = "";
                 }
