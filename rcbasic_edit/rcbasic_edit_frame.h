@@ -116,6 +116,10 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxString RCBasic_Documentation_Link;
         wxString Studio_Documentation_Link;
 
+        bool conv_rel;
+
+        wxString default_scheme;
+
         bool toolbarVisible;
         bool sideBarVisible;
         bool messageWindowVisible;
