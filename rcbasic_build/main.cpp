@@ -750,7 +750,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("--version")==0)
     {
-        cout << "RCBASIC Compiler v3.17" << endl;
+        cout << "RCBASIC Compiler v3.18" << endl;
         return 0;
     }
 
