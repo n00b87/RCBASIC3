@@ -638,8 +638,6 @@ class rc_genKey_dialog : public wxDialog
 	private:
 
 	protected:
-		wxStaticText* m_staticText27;
-		wxTextCtrl* m_keystore_textCtrl;
 		wxStaticText* m_staticText28;
 		wxTextCtrl* m_alias_textCtrl;
 		wxStaticText* m_staticText29;

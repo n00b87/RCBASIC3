@@ -1863,25 +1863,6 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* bSizer80;
 	bSizer80 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer81;
-	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer81->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText27 = new wxStaticText( this, wxID_ANY, wxT("Keystore"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText27->Wrap( -1 );
-	bSizer81->Add( m_staticText27, 1, wxALL, 5 );
-
-	m_keystore_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer81->Add( m_keystore_textCtrl, 5, wxALL, 5 );
-
-
-	bSizer81->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer80->Add( bSizer81, 1, wxEXPAND, 5 );
-
 	wxBoxSizer* bSizer82;
 	bSizer82 = new wxBoxSizer( wxHORIZONTAL );
 

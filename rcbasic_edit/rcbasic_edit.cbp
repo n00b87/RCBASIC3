@@ -44,6 +44,7 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-mwindows" />
 					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxbase30u.a" />
 					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30u_aui.a" />
 					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30u_core.a" />
