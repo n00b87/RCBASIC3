@@ -1880,13 +1880,56 @@ void rcbasic_edit_frame::onBlockCommentMenuSelect( wxCommandEvent& event )
 
     wxString new_line;
 
-    new_line = t->GetLine(start_line);
-    new_line.Replace(_("\n"), _(""));
-    t->Replace(t->PositionFromLine(start_line), t->GetLineEndPosition(start_line), _("/\'") + new_line);
+    for(int line_num = start_line; line_num < end_line; line_num++)
+    {
+        new_line = t->GetLine(line_num);
+        new_line.Replace(_("\n"), _(""));
+        t->Replace(t->PositionFromLine(line_num), t->GetLineEndPosition(line_num), _("/\'") + new_line);
+    }
 
-    new_line = t->GetLine(end_line);
-    new_line.Replace(_("\n"), _(""));
-    t->Replace(t->PositionFromLine(end_line), t->GetLineEndPosition(end_line), new_line + _("\'/"));
+    t->EndUndoAction();
+
+    notebook_mutex.Unlock();
+}
+
+void rcbasic_edit_frame::onUnCommentMenuSelect( wxCommandEvent& event )
+{
+    notebook_mutex.Lock();
+
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+
+    if(!t)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    t->BeginUndoAction();
+
+    //wxPrintf(_("Line: %d to %d"), t->LineFromPosition(t->GetSelectionStart()), t->LineFromPosition(t->GetSelectionEnd()));
+    int start_line = t->LineFromPosition(t->GetSelectionStart());
+    int end_line = t->LineFromPosition(t->GetSelectionEnd());
+
+    wxString new_line;
+
+    for(int line_num = start_line; line_num <= end_line; line_num++)
+    {
+        new_line = t->GetLine(line_num);
+        new_line.Replace(_("\n"), _(""));
+
+        if(new_line.substr(0,1).compare(_("\'"))==0)
+            new_line = new_line.substr(1);
+
+        t->Replace(t->PositionFromLine(line_num), t->GetLineEndPosition(line_num), new_line);
+    }
 
     t->EndUndoAction();
 

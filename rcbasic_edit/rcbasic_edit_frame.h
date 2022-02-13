@@ -215,6 +215,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onPasteMenuSelect( wxCommandEvent& event );
 		void onDeleteMenuSelect( wxCommandEvent& event );
 		void onCommentMenuSelect( wxCommandEvent& event );
+		void onUnCommentMenuSelect( wxCommandEvent& event );
 		void onBlockCommentMenuSelect( wxCommandEvent& event );
 		void onFindMenuSelect( wxCommandEvent& event );
 		void onFindNextMenuSelect( wxCommandEvent& event );

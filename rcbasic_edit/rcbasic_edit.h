@@ -160,6 +160,7 @@ class rc_ideFrame : public wxFrame
 		virtual void onPasteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onDeleteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onUnCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindNextMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindPreviousMenuSelect( wxCommandEvent& event ) { event.Skip(); }

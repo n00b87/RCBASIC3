@@ -3227,10 +3227,10 @@
 
 1587560968 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1644202865 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1644687397 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1644199629 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1644713348 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3381,7 +3381,7 @@
 1587560968 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1644472704 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1644714529 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -3399,7 +3399,7 @@
 	<wx/txtstrm.h>
 	<vector>
 
-1644469902 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1644703564 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -3662,7 +3662,7 @@
 1643510435 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_projectvariableedit_dialog.h
 	"rcbasic_edit.h"
 
-1644039470 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\build_menu.cpp
+1644692649 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\build_menu.cpp
 	"rcbasic_edit_frame.h"
 	<wx/process.h>
 	<wx/txtstrm.h>
@@ -3682,7 +3682,7 @@
 	<wx/process.h>
 	<vector>
 
-1644370411 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distribute_dialog.cpp
+1644480023 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_distribute_dialog.cpp
 	"rcbasic_editrc_distribute_dialog.h"
 	"rcbasic_editrc_distProcess_dialog.h"
 	<wx/msgdlg.h>
@@ -3718,4 +3718,7 @@
 1644477749 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_editrc_genkey_dialog.cpp
 	"rcbasic_editrc_genKey_dialog.h"
 	<wx/msgdlg.h>
+
+1644703910 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\help_menu.cpp
+	"rcbasic_edit_frame.h"
 

@@ -115,6 +115,10 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_comment_menuItem = new wxMenuItem( m_edit_menu, wxID_ANY, wxString( wxT("Comment Selected") ) , wxEmptyString, wxITEM_NORMAL );
 	m_edit_menu->Append( m_comment_menuItem );
 
+	wxMenuItem* m_uncomment_menuItem;
+	m_uncomment_menuItem = new wxMenuItem( m_edit_menu, wxID_ANY, wxString( wxT("UnComment Selected") ) , wxEmptyString, wxITEM_NORMAL );
+	m_edit_menu->Append( m_uncomment_menuItem );
+
 	m_menubar1->Append( m_edit_menu, wxT("Edit") );
 
 	m_search_menu = new wxMenu();
@@ -380,6 +384,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onPasteMenuSelect ), this, m_paste_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDeleteMenuSelect ), this, m_delete_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onCommentMenuSelect ), this, m_comment_menuItem->GetId());
+	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onUnCommentMenuSelect ), this, m_uncomment_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindMenuSelect ), this, m_find_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindNextMenuSelect ), this, m_findNext_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindPreviousMenuSelect ), this, m_findPrevious_menuItem->GetId());
