@@ -318,6 +318,8 @@ void rc_ideFrame::OnNewPage(wxCommandEvent& event)
     rc_txtCtrl->SetUndoCollection(true);
     rc_txtCtrl->EmptyUndoBuffer();
     rc_txtCtrl->SetLexer(wxSTC_LEX_FREEBASIC);
+    //rc_txtCtrl->StyleSetBackground(wxSTC_STYLE_DEFAULT, wxColour(0,255,0));
+    //rc_txtCtrl->StyleClearAll();
     rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD, wxColour(0, 0, 210));
     rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD2, wxColour(0, 180, 0));
     rc_txtCtrl->StyleSetForeground(wxSTC_B_NUMBER, wxColour(200, 40, 40));
@@ -1017,5 +1019,40 @@ void rc_ideFrame::OnStop(wxCommandEvent& event)
         wxKill(pid, wxSIGKILL, NULL, wxKILL_CHILDREN);
         //std::cout << "program aborted" << endl;
         pid = -1;
+    }
+}
+
+
+
+void sciselectFrame::onSciDblClick(wxStyledTextEvent& event)
+{
+    int selStart=m_stc->GetSelectionStart();
+    int selEnd =m_stc->GetSelectionEnd();
+    wxString selText=m_stc->GetSelectedText();
+    int selLen = selText.Len();
+
+    int totalLen = m_stc->GetTextLength();
+    int searchStart=0;
+    int foundLoc = 0;
+
+    m_stc->SetSearchFlags(wxSTC_FIND_WHOLEWORD|wxSTC_FIND_MATCHCASE);
+
+    m_stc->IndicatorSetStyle(8,wxSTC_INDIC_STRAIGHTBOX);
+    m_stc->SetIndicatorCurrent(8);
+    m_stc->IndicatorSetForeground(8, wxColour(255,128,0) );
+    m_stc->IndicatorClearRange(0,totalLen);
+
+    while(foundLoc!=-1)
+    {
+        m_stc->SetTargetStart(searchStart);
+        m_stc->SetTargetEnd(totalLen);
+
+        foundLoc=m_stc->SearchInTarget(selText);
+        searchStart=foundLoc+selLen;
+
+        if(foundLoc!=-1)
+        {
+            m_stc->IndicatorFillRange(foundLoc,selLen);
+        }
     }
 }

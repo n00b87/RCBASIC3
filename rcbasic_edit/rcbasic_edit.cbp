@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="rcbasic_edit" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/rcbasic_edit" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="C:/dev_libs/wx/include" />
+					<Add directory="C:/dev_libs/wx/lib/gcc510TDM_dll/mswud" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="C:/dev_libs/wx/include" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxbase30ud.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30ud_aui.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30ud_core.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30ud_stc.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxscintillad.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30ud_richtext.a" />
+					<Add directory="C:/dev_libs/wx/lib/gcc510TDM_dll" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/rcbasic_edit" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="C:/dev_libs/wx/include" />
+					<Add directory="C:/dev_libs/wx/lib/gcc510TDM_dll/mswu" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="C:/dev_libs/wx/include" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxbase30u.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30u_aui.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30u_core.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30u_stc.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxscintilla.a" />
+					<Add library="C:/dev_libs/wx/lib/gcc510TDM_dll/libwxmsw30u_richtext.a" />
+					<Add directory="C:/dev_libs/wx/lib/gcc510TDM_dll" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--allow-multiple-definition" />
+		</Linker>
+		<Unit filename="build_menu.cpp" />
+		<Unit filename="constants.h" />
+		<Unit filename="eval.h" />
+		<Unit filename="exec_process.cpp" />
+		<Unit filename="exec_process.h" />
+		<Unit filename="help_menu.cpp" />
+		<Unit filename="keywords.h" />
+		<Unit filename="parserThread.cpp" />
+		<Unit filename="parserThread.h" />
+		<Unit filename="projects.cpp" />
+		<Unit filename="projects.h" />
+		<Unit filename="rc_closeFileSavePrompt_dialog.cpp" />
+		<Unit filename="rc_closeFileSavePrompt_dialog.h" />
+		<Unit filename="rc_closeProjectSavePrompt_dialog.cpp" />
+		<Unit filename="rc_closeProjectSavePrompt_dialog.h" />
+		<Unit filename="rc_find_dialog.cpp" />
+		<Unit filename="rc_find_dialog.h" />
+		<Unit filename="rc_ideApp.cpp" />
+		<Unit filename="rc_ideApp.h" />
+		<Unit filename="rc_newFile_dialog.cpp" />
+		<Unit filename="rc_newFile_dialog.h" />
+		<Unit filename="rc_utility.h" />
+		<Unit filename="rcbasic_edit.cpp" />
+		<Unit filename="rcbasic_edit.h" />
+		<Unit filename="rcbasic_edit_fileProperties_dialog.cpp" />
+		<Unit filename="rcbasic_edit_fileProperties_dialog.h" />
+		<Unit filename="rcbasic_edit_frame.cpp" />
+		<Unit filename="rcbasic_edit_frame.h" />
+		<Unit filename="rcbasic_edit_gotoLine_dialog.cpp" />
+		<Unit filename="rcbasic_edit_gotoLine_dialog.h" />
+		<Unit filename="rcbasic_edit_newProject_dialog.cpp" />
+		<Unit filename="rcbasic_edit_newProject_dialog.h" />
+		<Unit filename="rcbasic_edit_projectEnvironment_dialog.cpp" />
+		<Unit filename="rcbasic_edit_projectEnvironment_dialog.h" />
+		<Unit filename="rcbasic_edit_projectSettings_dialog.cpp" />
+		<Unit filename="rcbasic_edit_projectSettings_dialog.h" />
+		<Unit filename="rcbasic_edit_projectVariableEdit_dialog.cpp" />
+		<Unit filename="rcbasic_edit_projectVariableEdit_dialog.h" />
+		<Unit filename="rcbasic_edit_replace_dialog.cpp" />
+		<Unit filename="rcbasic_edit_replace_dialog.h" />
+		<Unit filename="rcbasic_edit_searchWrap_dialog.cpp" />
+		<Unit filename="rcbasic_edit_searchWrap_dialog.h" />
+		<Unit filename="rcbasic_edit_setColorScheme_dialog.cpp" />
+		<Unit filename="rcbasic_edit_setColorScheme_dialog.h" />
+		<Unit filename="rcbasic_editrc_cancelDistProcess_dialog.cpp" />
+		<Unit filename="rcbasic_editrc_cancelDistProcess_dialog.h" />
+		<Unit filename="rcbasic_editrc_distProcess_dialog.cpp" />
+		<Unit filename="rcbasic_editrc_distProcess_dialog.h" />
+		<Unit filename="rcbasic_editrc_distribute_dialog.cpp" />
+		<Unit filename="rcbasic_editrc_distribute_dialog.h" />
+		<Unit filename="rcbasic_editrc_genKey_dialog.cpp" />
+		<Unit filename="rcbasic_editrc_genKey_dialog.h" />
+		<Unit filename="rcbasic_symbol.h" />
+		<Unit filename="resource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="tokenizer.h" />
+		<Unit filename="tools_menu.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -19,6 +19,7 @@ Dim base_dir$ : base_dir$ = Dir$
 If OS$ = "WINDOWS" Then
 	path_join$ = "\\"
 	HOME$=Env$("USERPROFILE")
+	SetEnv("PATH", Env$("PATH")+";"+Env$("ENVPATH"), 1)
 	SetEnv("PATH", Env$("PATH")+";%RC_PKG_HOME%\\cmake\\bin", 1)
 Else
 	path_join$ = "/"
@@ -51,6 +52,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 			status = System(cmd$)
 			If status <> 0 Then
 				Print "Error: Junction could not be created for web build"
+				Print "RCBASIC PACKAGE FAIL: Failed to package web app"
 				Return False
 			Else
 				project_dir$ = web_junction$
@@ -66,6 +68,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 			status = System(cmd$)
 			If status <> 0 Then
 				Print "Error: Junction could not be created for web build"
+				Print "RCBASIC PACKAGE FAIL: Failed to package web app"
 				Return False
 			Else
 				project_dir$ = web_junction$
@@ -192,6 +195,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 		Print "....PROG_NAME: ";PROG_NAME$
 		Print "....PROG_LOCATION: ";PROG_LOCATION$
 		Print "....OUT_HTML: ";OUT_HTML$
+		Print "RCBASIC PACKAGE FAIL: Failed to package web app"
 		Return False
 	End If
 
@@ -218,6 +222,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 		FileClose(f)
 	Else
 		Print "Missing RCBASIC html template. Using emscripten default"
+		Print "RCBASIC PACKAGE SUCCESS: Successfully packaged web app"
 		Return True
 	End If
 
@@ -232,6 +237,8 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 		FileClose(f)
 	End If
 	
+	Print "RCBASIC PACKAGE SUCCESS: Successfully packaged web app"
+	
 	Return True
 End Function
 
@@ -244,7 +251,7 @@ Sub CopyDir(src_path$, dst_path$)
 		If Right$(Trim$(dst_path$),1) = path_join$ Then
 			dst_path$ = Left$(Trim$(dst_path$), Len(dst_path$)-1)
 		End If
-		System("Xcopy /E /I \q" + src_path$ + "\q \q" + dst_path$ + "\q")
+		System("%SYSTEMROOT%\\System32\\xcopy /E /I \q" + src_path$ + "\q \q" + dst_path$ + "\q")
 	Default
 		If Right$(Trim$(src_path$),1) <> "." Then
 			src_path$ = src_path$ + "."
@@ -254,6 +261,25 @@ Sub CopyDir(src_path$, dst_path$)
 		End If
 		System("cp -a \q" + src_path$ + "\q \q" + dst_path$ + "\q")
 	End Select
+End Sub
+
+Sub CopyProject(src_path$, dst_path$)
+	cwd$ = Dir$ : ChangeDir(src_path$)
+	f$ = DirFirst$()
+	While f$ <> ""
+		If f$ = "." Or f$ = ".." Then
+			f$ = DirNext$()
+			continue
+		ElseIf DirExists(f$) Then
+			'Print "Directory: ";f$
+			CopyDir(f$, dst_path$ + path_join$ + f$)
+		ElseIf Right$(f$, 4) <> ".bas" Then
+			'Print "File: ";f$
+			CopyFile(f$, dst_path$ + path_join$ + f$)
+		End If
+		f$ = DirNext$()
+	Wend
+	ChangeDir(cwd$)
 End Sub
 
 Function Build_App_64(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_TYPE$, TERMINAL_FLAG$, PROJECT_CATEGORY$, icon_path$)
@@ -285,7 +311,8 @@ Function Build_App_64(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_T
 	MakeDir(output_dir$ + APP_NAME$ + ".AppDir")
 	Print "Directory: ";"Copy " + dir + "/rcbasic.AppDir/usr/. >-- to --> " + USR_PATH$ +"/"
 	CopyDir(dir + path_join$ + "rcbasic.AppDir" + path_join$ + "usr" + path_join$,  USR_PATH$)
-	CopyDir(project_dir$, USR_PATH$)
+	'CopyDir(project_dir$, USR_PATH$)
+	CopyProject(project_dir$, USR_PATH$)
 	CopyFile(dir + path_join$ + "rcbasic.AppDir" + path_join$ +"AppRun", output_dir$ + APP_NAME$ + ".AppDir" + path_join$ + "AppRun")
 	
 	If OS$ <> "WINDOWS" Then
@@ -339,17 +366,17 @@ Function Build_App_64(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_T
 	
 	If OS$ = "LINUX" Then
 		If FileExists(output_dir$ + "/" + APP_NAME$ + "_LX64.AppImage") Then
-			Print "Successfully packaged Linux 64-bit Program"
+			Print "RCBASIC PACKAGE SUCCESS: Successfully packaged Linux 64-bit Program"
 			Return True
 		Else
-			Print "Error: Failed to packaged Linux 64-bit Program"
+			Print "RCBASIC PACKAGE FAIL: Error: Failed to packaged Linux 64-bit Program"
 		End If
 	Else
 		If DirExists(output_dir$ + APP_NAME$ + "_LX64B") Then
-			Print "Successfully packaged Linux 64-bit Program"
+			Print "RCBASIC PACKAGE SUCCESS: Successfully packaged Linux 64-bit Program"
 			Return True
 		Else
-			Print "Error: Failed to packaged Linux 64-bit Program: "
+			Print "RCBASIC PACKAGE FAIL: Error: Failed to packaged Linux 64-bit Program: "
 		End If
 	End If
 	
@@ -384,7 +411,8 @@ Function Build_App_32(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_T
 	MakeDir(APP_PATH$)
 	CopyDir(dir + path_join$ + "linux_dist_32" + path_join$ + "bin" + path_join$, APP_PATH$ + path_join$ + "bin")
 	CopyDir(dir + path_join$ + "linux_dist_32" + path_join$ + "lib" + path_join$, APP_PATH$ + path_join$ + "lib")
-	CopyDir(project_dir$, APP_PATH$ + path_join$ + "assets")
+	'CopyDir(project_dir$, APP_PATH$ + path_join$ + "assets")
+	CopyProject(project_dir$, APP_PATH$ + path_join$ + "assets")
 	CopyFile("linux_dist_32" + path_join$ + "rc_app_run", APP_PATH$ + path_join$ + APP_NAME$)
 	
 	If OS$ <> "WINDOWS" Then
@@ -392,10 +420,10 @@ Function Build_App_32(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_T
 	End If
 	
 	If FileExists(APP_PATH$ + path_join$ + APP_NAME$) Then
-		Print "Successfully packaged Linux 32-bit Program"
+		Print "RCBASIC PACKAGE SUCCESS: Successfully packaged Linux 32-bit Program"
 		Return True
 	Else
-		Print "Error: Failed to packaged Linux 32-bit Program"
+		Print "RCBASIC PACKAGE FAIL: Error: Failed to packaged Linux 32-bit Program"
 	End If
 	
 	Return False
@@ -428,15 +456,16 @@ Function Build_App_Win_32(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, A
 	
 	MakeDir(WIN_PKG_PATH)
 	CopyDir(dir + path_join$ + "rcbasic_win_dist" + path_join$ + "dist_32" + path_join$, WIN_PKG_PATH)
-	CopyDir(project_dir$, WIN_PKG_PATH + path_join$ + "assets")
-	RenameFile(WIN_PKG_PATH + path_join$ + "launcher.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
+	'CopyDir(project_dir$, WIN_PKG_PATH)
+	CopyProject(project_dir$, WIN_PKG_PATH)
+	RenameFile(WIN_PKG_PATH + path_join$ + "rcbasic.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
 	
 	
 	If FileExists(WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe") Then
-		Print "Successfully packaged Windows 32-bit Program"
+		Print "RCBASIC PACKAGE SUCCESS: Successfully packaged Windows 32-bit Program"
 		Return True
 	Else
-		Print "Error: Failed to packaged Windows 32-bit Program"
+		Print "RCBASIC PACKAGE FAIL: Error: Failed to packaged Windows 32-bit Program"
 	End If
 	
 	Return False
@@ -469,15 +498,16 @@ Function Build_App_Win_64(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, A
 	
 	MakeDir(WIN_PKG_PATH)
 	CopyDir(dir + path_join$ + "rcbasic_win_dist" + path_join$ + "dist_64" + path_join$, WIN_PKG_PATH)
-	CopyDir(project_dir$, WIN_PKG_PATH + path_join$ + "assets")
-	RenameFile(WIN_PKG_PATH + path_join$ + "launcher.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
+	'CopyDir(project_dir$, WIN_PKG_PATH)
+	CopyProject(project_dir$, WIN_PKG_PATH)
+	RenameFile(WIN_PKG_PATH + path_join$ + "rcbasic.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
 	
 	
 	If FileExists(WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe") Then
-		Print "Successfully packaged Windows 64-bit Program"
+		Print "RCBASIC PACKAGE SUCCESS: Successfully packaged Windows 64-bit Program"
 		Return True
 	Else
-		Print "Error: Failed to packaged Windows 64-bit Program"
+		Print "RCBASIC PACKAGE FAIL: Error: Failed to packaged Windows 64-bit Program"
 	End If
 	
 	Return False
@@ -556,17 +586,18 @@ Function Build_App_MacOS(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, AP
 	ChangeDir(base_dir$)
 	
 	If Not FileExists(APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + "Contents" + path_join$ + "Resources" + path_join$ + "Icon.icns") Then
-		Print "MAC Icon failed to generate"
+		Print "RCBASIC PACKAGE FAIL: MAC Icon failed to generate"
 		Return False
 	End If
 	
-	CopyDir(project_dir$, APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + "Contents" + path_join$ + "assets")
+	'CopyDir(project_dir$, APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + "Contents" + path_join$ + "assets")
+	CopyProject(project_dir$, APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + "Contents" + path_join$ + "assets")
 	
 	If DirExists(APP_PATH$ + path_join$ + MAC_APP$) Then
-		Print "Successfully packaged Mac OS Program"
+		Print "RCBASIC PACKAGE SUCCESS: Successfully packaged Mac OS Program"
 		Return True
 	Else
-		Print "Error: Failed to packaged Mac OS Program"
+		Print "RCBASIC PACKAGE FAIL: Error: Failed to packaged Mac OS Program"
 	End If
 	
 	Return False
@@ -600,16 +631,17 @@ Function Build_App_MacOS_2(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 	MakeDir(APP_PATH$)
 	CopyDir(base_dir$ + path_join$ + "RCBasic_MACOS" + path_join$ + "runtime" + path_join$, APP_PATH$ + path_join$ + MAC_APP$)
 	
-	CopyDir(project_dir$, APP_PATH$ + path_join$ + MAC_APP$)
+	'CopyDir(project_dir$, APP_PATH$ + path_join$ + MAC_APP$)
+	CopyProject(project_dir$, APP_PATH$ + path_join$ + MAC_APP$)
 	
 	RenameFile(APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + "rcbasic", APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + MAC_APP$)
 	RenameFile(APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + "main.cbc", APP_PATH$ + path_join$ + MAC_APP$ + path_join$ + MAC_APP$ + ".cbc")
 	
 	If DirExists(APP_PATH$ + path_join$ + MAC_APP$) Then
-		Print "Successfully packaged Mac OS Program"
+		Print "RCBASIC PACKAGE SUCCESS: Successfully packaged Mac OS Program"
 		Return True
 	Else
-		Print "Error: Failed to packaged Mac OS Program"
+		Print "RCBASIC PACKAGE FAIL: Error: Failed to packaged Mac OS Program"
 	End If
 	
 	Return False
@@ -730,7 +762,7 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 	f = FreeFile
 	
 	If Not FileOpen(f, base_dir$ + path_join$ + "rcbasic_android" + path_join$ + "android-project" + path_join$ + "local.properties", TEXT_OUTPUT) Then
-		Print "Could not write to local.properties"
+		Print "RCBASIC PACKAGE FAIL: Could not write to local.properties"
 		Return False
 	End If
 	
@@ -748,7 +780,7 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 	
 	in_file = FreeFile
 	If Not FileOpen(in_file, base_dir$ + Replace("/rcbasic_android/scripts/java/org/libsdl/app/SDLActivity.java", "/", path_join$), TEXT_INPUT) Then
-		Print "Could not find SDLActivity Base"
+		Print "RCBASIC PACKAGE FAIL: Could not find SDLActivity Base"
 		Return False
 	End If
 	
@@ -764,7 +796,7 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 			WriteLine(out_file, ln$)
 		Wend
 	Else
-		Print "Could not output SDLActivity in Project"
+		Print "RCBASIC PACKAGE FAIL: Could not output SDLActivity in Project"
 		Return False
 	End If
 	FileClose(in_file)
@@ -783,7 +815,7 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 				CopyDir(ANDROID_JAVA_DIR$, app_id_path$)
 			End If
 		Else
-			Print "Error: Could not create path for APP_ID("; ANDROID_APP_ID$;")"
+			Print "RCBASIC PACKAGE FAIL: Error: Could not create path for APP_ID("; ANDROID_APP_ID$;")"
 			Return False
 		End If
 	End If
@@ -798,7 +830,7 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 		build_cmd$ = build_cmd$ + "cd " + project_dir$ + " && chmod u+x $RCBASIC_ANDROID_DIR/rcbasic_android_build.sh && $RCBASIC_ANDROID_DIR/rcbasic_android_build.sh "
 	End Select
 	
-	Print "\n\nRCBASIC_ANDROID_DIR=";env("RCBASIC_ANDROID_DIR");"\n\n"
+	Print "\n\n!!!!RCBASIC_ANDROID_DIR=";env("RCBASIC_ANDROID_DIR");"!!!!\n\n"
 	
 	System(build_cmd$)
 	
@@ -822,6 +854,7 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 				RemoveFile(output_dir$ + APP_NAME$ + "-debug.apk")
 			End If
 			RenameFile(base_dir$ + Replace("/rcbasic_android/android-project/app/build/outputs/apk/debug/", "/", path_join$) + "app-debug.apk", output_dir$ + APP_NAME$ + "-debug.apk")
+			'Print "!!!!!Attempted to output to ";output_dir$ + APP_NAME$ + "-debug.apk"
 			If FileExists(output_dir$ + APP_NAME$ + "-debug.apk") Then
 				debug_success = 1
 			End If
@@ -848,15 +881,15 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 	status = debug_status + ( release_status shl 1 )
 	
 	If debug_success Then
-		Print "Successfully built Android Debug APK"
+		Print "RCBASIC PACKAGE SUCCESS: Successfully built Android Debug APK"
 	ElseIf ANDROID_BUILD_DEBUG Then
-		Print "Error: Failed to build Android Debug APK"
+		Print "RCBASIC PACKAGE FAIL: Error: Failed to build Android Debug APK"
 	End If
 	
 	If release_success Then
-		Print "Successfully built Android Release APK"
+		Print "RCBASIC PACKAGE SUCCESS: Successfully built Android Release APK"
 	ElseIf ANDROID_BUILD_RELEASE Then
-		Print "Error: Failed to build Android Release APK"
+		Print "RCBASIC PACKAGE FAIL: Error: Failed to build Android Release APK"
 	End If
 	
 	Return status
@@ -1002,8 +1035,9 @@ error = 0
 
 
 ChangeDir(project_dir$)
+Print "Build Path: ";Env("RCBASIC_BUILD_PATH")
 Print "Build Command: rcbasic_build " + src_file$ + " in " + Dir$
-System("rcbasic_build \q" + src_file$ + "\q")
+System(Env("RCBASIC_BUILD_PATH") + " \q" + src_file$ + "\q")
 
 cbc_file$ = CompiledSrc$(src_file$)
 
@@ -1153,16 +1187,20 @@ ElseIf TGT_PLATFORM[PLATFORM_WEB] Then
 End If
 
 If android_flag Then
-	If AndBit(android_flag, 1) Then
-		Print "Successfully Created Android Debug App"
-	Else
-		Print "Failed to Create Android Debug App"
+	If ANDROID_BUILD_DEBUG Then
+		If AndBit(android_flag, 1) Then
+			Print "Successfully Created Android Debug App"
+		Else
+			Print "Failed to Create Android Debug App"
+		End If
 	End If
 	
-	If AndBit(android_flag SHR 1, 1) Then
-		Print "Successfully Created Android Release App"
-	Else
-		Print "Failed to Create Android Release App"
+	If ANDROID_BUILD_RELEASE Then
+		If AndBit(android_flag SHR 1, 1) Then
+			Print "Successfully Created Android Release App"
+		Else
+			Print "Failed to Create Android Release App"
+		End If
 	End If
 	
 ElseIf TGT_PLATFORM[PLATFORM_ANDROID] Then

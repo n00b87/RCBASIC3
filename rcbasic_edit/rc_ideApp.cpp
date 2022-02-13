@@ -10,25 +10,29 @@
 //#include "wx_pch.h"
 #include "rc_ideApp.h"
 
-//(*AppHeaders
-#include "rc_ideMain.h"
+
+#include "rcbasic_edit_frame.h"
 #include <wx/image.h>
-//*)
 
 IMPLEMENT_APP_CONSOLE(rc_ideApp);
 
 bool rc_ideApp::OnInit()
 {
-    //(*AppInitialize
     bool wxsOK = true;
     wxInitAllImageHandlers();
     if ( wxsOK )
     {
-    	rc_ideFrame* Frame = new rc_ideFrame(0);
+    	rcbasic_edit_frame* Frame = new rcbasic_edit_frame(0);
     	Frame->Show();
     	SetTopWindow(Frame);
     }
-    //*)
     return wxsOK;
 
+}
+
+int rc_ideApp::OnExit()
+{
+    //wxPuts(_("THIS IS A TEST"));
+    //ExitMainLoop();
+    return 0;
 }
