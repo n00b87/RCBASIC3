@@ -448,6 +448,26 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
 	pkg_path.SetFullName(_("pkg.cbc"));
 	wxFileName rcbasic_run_fname = parent_frame->getRCRunnerPath();
 	rcbasic_run_fname.MakeAbsolute();
+
+	wxFile pf_file;
+	wxFileName pf_file_fname = pkg_path;
+	pf_file_fname.SetFullName(_("current_build_pfiles.txt"));
+
+	if(pf_file.Create(pf_file_fname.GetFullPath(), true))
+    {
+        rcbasic_project* current_project = parent_frame->getActiveProject();
+        std::vector<rcbasic_project_node*> source_files = current_project->getSourceFiles();
+
+        for(int i = 0; i < source_files.size(); i++)
+        {
+            wxFileName fname = source_files[i]->getPath();
+            fname.MakeRelativeTo(current_project->getLocation());
+            pf_file.Write(fname.GetFullPath() + _("\n"));
+        }
+        pf_file.Close();
+    }
+
+
 	//wxString dist_cmd = _("\"") + rcbasic_run_fname.GetFullPath() + _("\" \"") + pkg_path.GetFullPath() + _("\" ") +app_pkg_args;
 	wxString dist_cmd = _("rcbasic_studio_run  studio_app_build \"") + getPropertyValue(_("PROJECT_DIR")) + _("\" \"") + getPropertyValue(_("SOURCE")) + _("\" ") + m_password_textCtrl->GetValue();
 	//wxPrintf(_("\nTGTS: %d\n"), getTargetPlatformCount());

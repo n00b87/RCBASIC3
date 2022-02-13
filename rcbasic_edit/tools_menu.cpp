@@ -10,6 +10,15 @@ void rcbasic_edit_frame::onDistributeMenuSelect( wxCommandEvent& event )
     rcbasic_editrc_distribute_dialog r(this);
     r.ShowModal();
     notebook_mutex.Unlock();
+
+    //---ACTIVATE CONTEXT PROJECT
+    if(active_project)
+    {
+        wxSetWorkingDirectory(active_project->getLocation());
+    }
+
+    //---------
+
 }
 
 void rcbasic_edit_frame::onGenKeystoreMenuSelect( wxCommandEvent& event )

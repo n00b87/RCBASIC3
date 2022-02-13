@@ -1435,13 +1435,15 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 	bSizer74->Add( 0, 0, 2, wxEXPAND, 5 );
 
 	m_mainSource_listBox = new wxListBox( m_panel9, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_ALWAYS_SB|wxLB_SORT );
+	m_mainSource_listBox->SetMaxSize( wxSize( -1,100 ) );
+
 	bSizer74->Add( m_mainSource_listBox, 4, wxALL|wxEXPAND, 5 );
 
 
 	bSizer74->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer63->Add( bSizer74, 3, wxEXPAND, 5 );
+	bSizer63->Add( bSizer74, 3, wxEXPAND|wxFIXED_MINSIZE, 5 );
 
 
 	bSizer63->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -1495,13 +1497,15 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 	bSizer60->Add( m_staticText20, 1, wxALL, 5 );
 
 	m_description_textCtrl = new wxTextCtrl( m_panel9, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
-	bSizer60->Add( m_description_textCtrl, 4, wxALL|wxEXPAND, 5 );
+	m_description_textCtrl->SetMaxSize( wxSize( -1,100 ) );
+
+	bSizer60->Add( m_description_textCtrl, 4, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5 );
 
 
 	bSizer60->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer63->Add( bSizer60, 2, wxEXPAND, 5 );
+	bSizer63->Add( bSizer60, 2, wxEXPAND|wxFIXED_MINSIZE, 5 );
 
 
 	bSizer63->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -1510,13 +1514,15 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 	m_panel9->SetSizer( bSizer63 );
 	m_panel9->Layout();
 	bSizer63->Fit( m_panel9 );
-	m_notebook3->AddPage( m_panel9, wxT("General"), true );
+	m_notebook3->AddPage( m_panel9, wxT("General"), false );
 	m_panel10 = new wxPanel( m_notebook3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer64;
 	bSizer64 = new wxBoxSizer( wxVERTICAL );
 
 	m_files_listBox = new wxListBox( m_panel10, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_SORT );
-	bSizer64->Add( m_files_listBox, 3, wxALL|wxEXPAND, 5 );
+	m_files_listBox->SetMaxSize( wxSize( -1,250 ) );
+
+	bSizer64->Add( m_files_listBox, 3, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5 );
 
 	wxBoxSizer* bSizer65;
 	bSizer65 = new wxBoxSizer( wxHORIZONTAL );
@@ -1540,7 +1546,7 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 	m_panel10->SetSizer( bSizer64 );
 	m_panel10->Layout();
 	bSizer64->Fit( m_panel10 );
-	m_notebook3->AddPage( m_panel10, wxT("Files"), false );
+	m_notebook3->AddPage( m_panel10, wxT("Files"), true );
 
 	bSizer75->Add( m_notebook3, 1, wxEXPAND | wxALL, 5 );
 
