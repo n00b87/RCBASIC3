@@ -66,6 +66,7 @@
 		<Unit filename="eval.h" />
 		<Unit filename="exec_process.cpp" />
 		<Unit filename="exec_process.h" />
+		<Unit filename="help_menu.cpp" />
 		<Unit filename="keywords.h" />
 		<Unit filename="parserThread.cpp" />
 		<Unit filename="parserThread.h" />
@@ -113,6 +114,9 @@
 		<Unit filename="rcbasic_editrc_genKey_dialog.cpp" />
 		<Unit filename="rcbasic_editrc_genKey_dialog.h" />
 		<Unit filename="rcbasic_symbol.h" />
+		<Unit filename="resource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="tokenizer.h" />
 		<Unit filename="tools_menu.cpp" />
 		<Extensions>
