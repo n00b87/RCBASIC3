@@ -8,6 +8,11 @@ rc_replace_dialog( parent )
     current_project = parent_frame->getActiveProject();
     current_file = parent_frame->getCurrentFile();
     current_search_pos = -1;
+    wxString selected_text = current_file->getTextCtrl()->GetSelectedText();
+    if(selected_text.Length() > 0 && selected_text.Length() <= 80)
+        m_search_textCtrl->SetValue(current_file->getTextCtrl()->GetSelectedText());
+    else
+        m_search_textCtrl->SetValue(parent_frame->search_term);
 }
 
 
