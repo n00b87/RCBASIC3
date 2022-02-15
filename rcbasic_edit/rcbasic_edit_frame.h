@@ -160,7 +160,6 @@ class rcbasic_edit_frame : public rc_ideFrame
         bool close_event_called;
         bool last_fileSave_flag;
 
-        wxString search_term;
         int search_flags;
         std::vector<rcbasic_search_result> search_results;
 
@@ -268,6 +267,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onRunProcessTerminate( wxProcessEvent& event );
 
 	public:
+	    wxString search_term;
 	    wxFileName getRCRunnerPath() { return rcbasic_run_path; }
 	    void buildProject();
 	    void runProject();

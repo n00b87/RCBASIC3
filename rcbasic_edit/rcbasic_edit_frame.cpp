@@ -295,6 +295,7 @@ rc_ideFrame( parent )
     project_tree->AssignImageList(project_tree_imageList);
 
     project_tree->AddRoot(_("Projects"), project_tree_rootImage);
+    selected_project_item = project_tree->GetRootItem();
 
     symbol_tree_imageList = new wxImageList(16,16,true);
     symbol_tree_rootImage = symbol_tree_imageList->Add(wxBitmap(wxImage(symbol_root_image.GetFullPath())));
@@ -1116,6 +1117,7 @@ void rcbasic_edit_frame::openFileMenuSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::openProject(wxFileName project_path)
 {
+    wxSetWorkingDirectory(project_path.GetPath());
     for(int i = 0; i < open_projects.size(); i++)
     {
         if(open_projects[i]->getProjectFileLocation().compare(project_path.GetFullPath())==0)
@@ -1377,6 +1379,10 @@ void rcbasic_edit_frame::saveFile(int openFile_index, int flag=0)
 
         sourceFile_auinotebook->SetPageText(selected_page, fname.GetFullName());
         open_files[openFile_index]->setFileName(fname);
+    }
+    else
+    {
+        sourceFile_auinotebook->SetPageText(selected_page, fname.GetFullName());
     }
 
     open_files[openFile_index]->setTextChangedFlag(false);
@@ -3258,6 +3264,12 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
         notebook_mutex.Unlock();
         return;
     }
+
+    int selected_tab = sourceFile_auinotebook->GetSelection();
+    wxString selection_string = sourceFile_auinotebook->GetPageText(selected_tab);
+
+    sourceFile_auinotebook->SetPageText(selected_tab, _("[*]") + selection_string.substr(selection_string.find_first_not_of(_("[*]"))) );
+    //t->SetLabel(_("[*]") + t->GetLabel().substr(t->GetLabel().find_first_not_of(_("]"))));
 
     char chr = event.GetKey();
     int currentLine = t->GetCurrentLine();
