@@ -9,7 +9,6 @@ rcbasic_edit_projectEnvironment_dialog::rcbasic_edit_projectEnvironment_dialog( 
 rc_projectEnvironment_dialog( parent )
 {
     rcbasic_edit_frame* parent_frame = (rcbasic_edit_frame*) parent;
-
     if(!parent_frame->getActiveProject())
         return;
 

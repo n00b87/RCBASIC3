@@ -204,7 +204,12 @@ rc_ideFrame( parent )
     thread_returned = false;
     sym_sem = NULL;
     symbolUpdateInProgress = false;
+    pre_parsed_page = NULL;
+    parsed_page = NULL;
+    sym_sem = NULL;
+    token_parser = NULL;
 
+    build_run_project = NULL;
     build_process = NULL;
     run_process = NULL;
 
@@ -241,12 +246,20 @@ rc_ideFrame( parent )
     SetIcon(FrameIcon);
 
     wxFileName rcbasic_dir(editor_path);
+#ifdef _WIN32
     rcbasic_dir.AppendDir(_("rcbasic"));
+#endif
     rcbasic_dir.SetFullName(_(""));
     rcbasic_dir.MakeAbsolute();
 
+#ifdef _WIN32
     wxFileName tools_dir = rcbasic_dir;
+#else
+    wxFileName tools_dir(editor_path);
+#endif
     tools_dir.AppendDir(_("tools"));
+    tools_dir.SetFullName(_(""));
+    tools_dir.MakeAbsolute();
 
     wxFileName rc32_dir = rcbasic_dir;
     rc32_dir.AppendDir(_("rcbasic_32"));
@@ -260,7 +273,11 @@ rc_ideFrame( parent )
     wxFileName keystore_dir(editor_path);
     keystore_dir.AppendDir(_("keystore"));
 
+#ifdef _WIN32
     wxFileName android_dir = tools_dir;
+#else
+    wxFileName android_dir = pkg_home_dir;
+#endif
     android_dir.AppendDir(_("rcbasic_android"));
 
     wxSetEnv(_("RCBASIC_HOME"), rcbasic_dir.GetFullPath());
@@ -295,7 +312,14 @@ rc_ideFrame( parent )
     project_tree->AssignImageList(project_tree_imageList);
 
     project_tree->AddRoot(_("Projects"), project_tree_rootImage);
+    #ifdef _WIN32
     selected_project_item = project_tree->GetRootItem();
+    #endif // _WIN32
+
+    active_project = NULL;
+    context_project = NULL;
+    closing_project = NULL;
+
 
     symbol_tree_imageList = new wxImageList(16,16,true);
     symbol_tree_rootImage = symbol_tree_imageList->Add(wxBitmap(wxImage(symbol_root_image.GetFullPath())));
@@ -348,7 +372,7 @@ rc_ideFrame( parent )
                     if(c_line.compare(_(""))==0)
                         continue;
                     recent_item = m_recentFiles_menu->Append(RECENT_ID, c_line);
-                    m_recentFiles_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( onRecentFileSelect ), this, recent_item->GetId());
+                    m_recentFiles_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rcbasic_edit_frame::onRecentFileSelect ), this, recent_item->GetId());
                     RECENT_ID++;
                     c_line.clear();
                 }
@@ -396,7 +420,7 @@ rc_ideFrame( parent )
                     if(c_line.compare(_(""))==0)
                         continue;
                     recent_item = m_recentProjects_menu->Append(RECENT_ID, c_line);
-                    m_recentProjects_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( onRecentProjectSelect ), this, recent_item->GetId());
+                    m_recentProjects_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rcbasic_edit_frame::onRecentProjectSelect ), this, recent_item->GetId());
                     RECENT_ID++;
                     c_line.clear();
                 }
@@ -487,6 +511,11 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
             wxFileName rcbasic_path_fname(value);
             rcbasic_path_fname.MakeAbsolute();
             rcbasic_path = rcbasic_path_fname.GetFullPath();
+            #ifndef _WIN32
+            wxString path_var;
+            wxGetEnv(_("PATH"), &path_var);
+            wxSetEnv(_("PATH"), rcbasic_path + _(":") + path_var);
+            #endif
         }
         else if(property.compare(_("RCBASIC_BUILD"))==0)
         {
@@ -524,6 +553,30 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         else if(property.compare(_("DEFAULT_SCHEME"))==0)
         {
             default_scheme = value;
+        }
+        else if(property.compare(_("RCBASIC_HOME"))==0)
+        {
+            wxFileName rcbasic_home_fname(value);
+            rcbasic_home_fname.MakeAbsolute();
+            wxSetEnv(_("RCBASIC_HOME"), rcbasic_home_fname.GetFullPath());
+        }
+        else if(property.compare(_("RCBASIC_TOOLS"))==0)
+        {
+            wxFileName rcbasic_tools_fname(value);
+            rcbasic_tools_fname.MakeAbsolute();
+            wxSetEnv(_("RCBASIC_TOOLS"), rcbasic_tools_fname.GetFullPath());
+        }
+        else if(property.compare(_("RC_PKG_HOME"))==0)
+        {
+            wxFileName rcbasic_pkg_fname(value);
+            rcbasic_pkg_fname.MakeAbsolute();
+            wxSetEnv(_("RC_PKG_HOME"), rcbasic_pkg_fname.GetFullPath());
+        }
+        else if(property.compare(_("RCBASIC_ANDROID_DIR"))==0)
+        {
+            wxFileName rcbasic_android_fname(value);
+            rcbasic_android_fname.MakeAbsolute();
+            wxSetEnv(_("RCBASIC_ANDROID_DIR"), rcbasic_android_fname.GetFullPath());
         }
 
 
@@ -701,10 +754,13 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
 
 void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
 {
+    //wxPuts(_("Debug 1"));
     project_tree->SetBackgroundColour(editor_scheme.style_bkg_color);
     symbol_tree->SetBackgroundColour(editor_scheme.style_bkg_color);
     m_messageWindow_richText->SetBackgroundColour(editor_scheme.style_bkg_color);
     m_searchResults_listBox->SetBackgroundColour(editor_scheme.style_bkg_color);
+
+    //wxPuts(_("Debug 2"));
 
     if(rc_txtCtrl)
     {
@@ -713,6 +769,8 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
 
         updateFont(rc_txtCtrl);
     }
+
+    //wxPuts(_("Debug 3"));
 
     //project_tree->SetItemDropHighlight(project_tree->GetRootItem(), false);
 
@@ -724,11 +782,15 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
             rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD, editor_scheme.keyword_fg_color);
     }
 
+    //wxPuts(_("Debug 4"));
+
     if(editor_scheme.keyword2_fg_color_set)
     {
         if(rc_txtCtrl)
             rc_txtCtrl->StyleSetForeground(wxSTC_B_KEYWORD2, editor_scheme.keyword2_fg_color);
     }
+
+    //wxPuts(_("Debug 5"));
 
     if(editor_scheme.number_fg_color_set)
     {
@@ -736,17 +798,23 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
             rc_txtCtrl->StyleSetForeground(wxSTC_B_NUMBER, editor_scheme.number_fg_color);
     }
 
+    //wxPuts(_("Debug 6"));
+
     if(editor_scheme.string_fg_color_set)
     {
         if(rc_txtCtrl)
             rc_txtCtrl->StyleSetForeground(wxSTC_B_STRING, editor_scheme.string_fg_color);
     }
 
+    //wxPuts(_("Debug 7"));
+
     if(editor_scheme.comment_fg_color_set)
     {
         if(rc_txtCtrl)
             rc_txtCtrl->StyleSetForeground(wxSTC_B_COMMENT, editor_scheme.comment_fg_color);
     }
+
+    //wxPuts(_("Debug 8"));
 
     if(editor_scheme.identifier_fg_color_set)
     {
@@ -762,6 +830,8 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
         m_searchResults_listBox->SetForegroundColour(editor_scheme.identifier_fg_color);
         m_searchResults_listBox->Refresh();
     }
+
+    //wxPuts(_("Debug 9"));
 
     if(editor_scheme.operator_fg_color_set)
     {
@@ -808,6 +878,7 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
     }
 
     //updateFont(rc_txtCtrl);
+#ifdef _WIN32
 
     project_tree->UnselectAll();
     symbol_tree->UnselectAll();
@@ -896,6 +967,7 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
         symbol_tree->SetItemBackgroundColour(selected_symbol_item, wxColour(0, 120, 215));
         symbol_tree->SetItemTextColour(selected_symbol_item, wxColour(240, 240, 240));
     }
+#endif
 }
 
 void rcbasic_edit_frame::onRecentProjectSelect( wxCommandEvent& event )
@@ -930,7 +1002,7 @@ void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
 {
     notebook_mutex.Unlock();
 
-    if(enable_parser)
+    if(enable_parser && token_parser)
     {
         if(token_parser->IsAlive())
         {
@@ -1117,6 +1189,7 @@ void rcbasic_edit_frame::openFileMenuSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::openProject(wxFileName project_path)
 {
+    //wxPuts(_("Openning Project [[[ ") + project_path.GetFullPath());
     wxSetWorkingDirectory(project_path.GetPath());
     for(int i = 0; i < open_projects.size(); i++)
     {
@@ -2840,7 +2913,9 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         //rc_txtCtrl->StyleSetFont(wxSTC_STYLE_DEFAULT, editor_font);
         rc_txtCtrl->SetTabWidth(4);
 
+        //wxPuts(_("Applying scheme"));
         applyScheme(rc_txtCtrl);
+        //wxPuts(_("Scheme has been applied"));
     }
 
     txtCtrl_obj->setTextChangedFlag(false);
@@ -3006,7 +3081,14 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
 {
     //wxPrintf("Node Activated: %d\n\n", 0);
     wxTreeItemId selected_node = event.GetItem();
+#ifdef _WIN32
     rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)project_tree->GetItemData(selected_node);
+#else
+    if(!selected_node.IsOk())
+        return;
+
+    //rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)project_tree->GetItemData(selected_node);
+#endif
 
     /*if(data)
     {
@@ -3044,8 +3126,10 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
                 //wxPrintf(_("CMP: %p\n"), file_node->getTextCtrl());
                 if(file_node->getNode()==selected_node)
                 {
+                    #ifdef _WIN32
                     activated_project_item = selected_node;
                     activated_project_item_flag = true;
+                    #endif
                     //wxPuts(_("Request open: ")+file_node->getPath().GetFullPath());
                     if(sourceFile_auinotebook->GetPageIndex(file_node->getTextCtrl())<0)
                     {
@@ -3058,11 +3142,15 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
                         //wxPrintf(_("file_node t_Ctrl = %p\n"), file_node->getTextCtrl());
                         notebook_mutex.Unlock();
                         int new_page_index = sourceFile_auinotebook->GetPageCount()-1;
+                        //wxPrintf(_("new_page_index=%d\n"), new_page_index);
                         sourceFile_auinotebook->SetSelection(new_page_index);
+                        //wxPuts(_("page has been switched"));
                         //project_tree->SelectItem(selected_node);
                         //wxPuts(_("TREE NODE SELECTED: ")+ project_tree->GetItemText(selected_node) );
+                        #ifdef _WIN32
                         activated_project_item_flag2 = true;
                         selected_project_node = file_node;
+                        #endif
                         return;
                     }
                     else
@@ -3084,6 +3172,7 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
 void rcbasic_edit_frame::onProjectTreeSelectionChanged( wxTreeEvent& event )
 {
     //wxPuts(_("Changed"));
+    #ifdef _WIN32
     if(activated_project_item_flag2)
     {
         if(selected_project_node)
@@ -3096,11 +3185,13 @@ void rcbasic_edit_frame::onProjectTreeSelectionChanged( wxTreeEvent& event )
     }
     //project_tree->UnselectAll();
     event.Veto();
+    #endif
 }
 
 void rcbasic_edit_frame::onProjectTreeSelectionChanging( wxTreeEvent& event )
 {
     //wxPuts(_("Changing"));
+    #ifdef _WIN32
     project_tree->UnselectAll();
 
     wxColour item_bkg = project_tree->GetBackgroundColour();
@@ -3138,6 +3229,7 @@ void rcbasic_edit_frame::onProjectTreeSelectionChanging( wxTreeEvent& event )
     }
 
     event.Veto();
+    #endif
 }
 
 void rcbasic_edit_frame::onSourceFileTabClose( wxAuiNotebookEvent& event )
@@ -3341,7 +3433,11 @@ void rcbasic_edit_frame::setSymbol(wxTreeItemId s_node, rcbasic_symbol sym)
 
 void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
 {
+    #ifdef _WIN32
     wxTreeItemId selected_symbol = selected_symbol_item;
+    #else
+    wxTreeItemId selected_symbol = event.GetItem();
+    #endif
 
     notebook_mutex.Lock();
     if(sourceFile_auinotebook->GetSelection()<0)
@@ -3353,14 +3449,18 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
     if(sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection())!=parsed_page)
     {
         notebook_mutex.Unlock();
+        #ifdef _WIN32
         symbol_tree->UnselectAll();
+        #endif
         return;
     }
 
     if(selected_symbol==symbol_tree->GetRootItem() || selected_symbol==variable_root_node || selected_symbol==function_root_node)
     {
         notebook_mutex.Unlock();
+        #ifdef _WIN32
         symbol_tree->UnselectAll();
+        #endif
         return;
     }
 
@@ -3376,7 +3476,9 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
     if(!t)
     {
         notebook_mutex.Unlock();
+        #ifdef _WIN32
         symbol_tree->UnselectAll();
+        #endif
         return;
     }
 
@@ -3387,12 +3489,15 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
     }
 
     notebook_mutex.Unlock();
+    #ifdef _WIN32
     symbol_tree->UnselectAll();
+    #endif
 
 }
 
 void rcbasic_edit_frame::onSymbolSelectionChanging( wxTreeEvent& event )
 {
+    #ifdef _WIN32
     symbol_tree->UnselectAll();
 
     wxColour item_bkg = symbol_tree->GetBackgroundColour();
@@ -3410,6 +3515,7 @@ void rcbasic_edit_frame::onSymbolSelectionChanging( wxTreeEvent& event )
         symbol_tree->SetItemBackgroundColour(selected_symbol_item, wxColour(0, 120, 215));
         symbol_tree->SetItemTextColour(selected_symbol_item, wxColour(240, 240, 240));
     }
+    #endif
 
 }
 

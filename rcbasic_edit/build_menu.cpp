@@ -220,6 +220,7 @@ void rcbasic_edit_frame::runProject()
     wxFileName run_file_fname(rcbasic_path);
     run_file_fname.SetFullName(_("run_rc.bat"));
 
+    #ifdef _WIN32
     if(run_file_fname.Exists())
     {
         wxRemove(run_file_fname.GetFullPath());
@@ -239,6 +240,7 @@ void rcbasic_edit_frame::runProject()
 
     run_file.Write(_("@echo OFF \r\n"));
     run_file.Write(_("cd ") + build_run_project->getLocation() + _("\r\n"));
+    #endif
 
     wxEnvVariableHashMap run_env_vars;
 
@@ -249,7 +251,9 @@ void rcbasic_edit_frame::runProject()
 
         for(int i = 0; i < vars.size(); i++)
         {
+            #ifdef _WIN32
             run_file.Write(_("set ") + vars[i].var_name + _("=") + vars[i].var_value + _("\r\n"));
+            #endif
             run_env_vars[vars[i].var_name] = vars[i].var_value;
         }
 
@@ -263,11 +267,19 @@ void rcbasic_edit_frame::runProject()
     wxFileName main_source = build_run_project->getMainSource();
     main_source.SetExt(_("cbc"));
 
+    #ifdef _WIN32
     run_file.Write(_("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\" \r\n"));
     run_file.Write(_("PAUSE\r\n"));
     run_file.Close();
-
+    
     run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
+    #else
+
+    wxString run_cmd = _("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\" \r\n");
+
+    //run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
+    run_pid = wxExecute( run_cmd , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, &env);
+    #endif
 
     if(run_pid >= 0)
     {
@@ -295,6 +307,27 @@ void rcbasic_edit_frame::onStopExecuteMenuSelect( wxCommandEvent& event )
 {
     if(isRunning)
     {
+        #ifndef _WIN32
+        wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+        wxFileName editor_path_dir(editor_path);
+        editor_path_dir.SetFullName(_(""));
+        wxProcess* term_process = new wxProcess(this);
+        term_process->Redirect();
+        wxString term_cmd = _("get_run_pid.sh [editor_path]");
+        term_cmd.Replace(_("[editor_path]"), editor_path_dir.GetFullPath());
+        wxExecute(term_cmd, wxEXEC_SYNC, term_process, NULL);
+
+        wxTextInputStream term_stream(*term_process->GetInputStream());
+
+        while(term_process->IsInputAvailable())
+        {
+            wxString term_out = term_stream.ReadLine();
+            term_out = term_out.substr(term_out.find_first_not_of(_(" ")));
+            term_out = term_out.substr(0, term_out.find_first_of(_(" ")));
+            wxPuts(_("TERMINATE PID = ") + term_out);
+        }
+        return;
+        #else
         //wxPuts(_("STOPPING NOW: ") + _("taskkill /f /im ") + rcbasic_run_path.GetFullName());
         wxSystem(_("taskkill /f /im ") + rcbasic_run_path.GetFullName());
         isRunning = false;
@@ -303,6 +336,7 @@ void rcbasic_edit_frame::onStopExecuteMenuSelect( wxCommandEvent& event )
         delete run_process;
         run_process = NULL;
         build_run_project = NULL;
+        #endif
     }
 
     isBuilding = false;

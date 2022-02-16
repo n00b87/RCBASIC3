@@ -129,6 +129,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         rcbasic_project* active_project; //for everything else
         rcbasic_project* closing_project;
 
+        #ifdef _WIN32
         wxTreeItemId selected_project_item;
         wxTreeItemId activated_project_item;
         bool activated_project_item_flag;
@@ -136,6 +137,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxTreeItemId selected_symbol_item;
         wxStyledTextCtrl* activated_project_item_page;
         rcbasic_project_node* selected_project_node;
+        #endif
 
         wxImageList* project_tree_imageList;
         int project_tree_rootImage;
