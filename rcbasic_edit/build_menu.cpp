@@ -275,7 +275,7 @@ void rcbasic_edit_frame::runProject()
     run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
     #else
 
-    wxString run_cmd = _("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\" \r\n");
+    wxString run_cmd = _("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\"");
 
     //run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
     run_pid = wxExecute( run_cmd , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, &env);

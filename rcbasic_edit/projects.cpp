@@ -229,7 +229,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
                 project_valid = true;
             }
 
-            //wxPuts(_("MAIN source = ") + main_source.GetFullPath());
+            wxPuts(_("MAIN source = ") + main_source.GetFullPath());
 
             main_source.MakeRelativeTo(project_dir.GetFullPath());
 
