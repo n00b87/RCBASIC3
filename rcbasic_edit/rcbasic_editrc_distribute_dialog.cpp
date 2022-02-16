@@ -9,6 +9,8 @@ rc_distribute_dialog( parent )
     //wxComboBox m_category_comboBox;
     parent_frame = (rcbasic_edit_frame*)parent;
 
+    wxPuts(_("PROJECT LOCATUON: ") + parent_frame->getActiveProject()->getLocation());
+
     m_projectName_textCtrl->SetValue(parent_frame->getActiveProject()->getName());
 
     m_category_comboBox->Clear();

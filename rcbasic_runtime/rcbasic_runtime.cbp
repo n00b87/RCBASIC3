@@ -51,7 +51,6 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-mwindows" />
 				</Linker>
 			</Target>
 			<Target title="Release64Win">
@@ -66,7 +65,6 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-m64" />
-					<Add option="-mwindows" />
 				</Linker>
 			</Target>
 		</Build>
