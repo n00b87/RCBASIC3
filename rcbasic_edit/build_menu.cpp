@@ -271,7 +271,7 @@ void rcbasic_edit_frame::runProject()
     run_file.Write(_("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\" \r\n"));
     run_file.Write(_("PAUSE\r\n"));
     run_file.Close();
-    
+
     run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
     #else
 
@@ -308,25 +308,42 @@ void rcbasic_edit_frame::onStopExecuteMenuSelect( wxCommandEvent& event )
     if(isRunning)
     {
         #ifndef _WIN32
+        isRunning = false;
+        isBuildingAndRunning = false;
         wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
         wxFileName editor_path_dir(editor_path);
         editor_path_dir.SetFullName(_(""));
-        wxProcess* term_process = new wxProcess(this);
-        term_process->Redirect();
-        wxString term_cmd = _("get_run_pid.sh [editor_path]");
-        term_cmd.Replace(_("[editor_path]"), editor_path_dir.GetFullPath());
-        wxExecute(term_cmd, wxEXEC_SYNC, term_process, NULL);
 
-        wxTextInputStream term_stream(*term_process->GetInputStream());
+        wxFileName pid_filename = editor_path_dir;
+        pid_filename.SetFullName(_("run_pid.txt"));
 
-        while(term_process->IsInputAvailable())
+        if(pid_filename.Exists())
         {
-            wxString term_out = term_stream.ReadLine();
-            term_out = term_out.substr(term_out.find_first_not_of(_(" ")));
-            term_out = term_out.substr(0, term_out.find_first_of(_(" ")));
-            wxPuts(_("TERMINATE PID = ") + term_out);
+            wxRemove(pid_filename.GetFullPath());
         }
-        return;
+
+        wxString term_cmd = _("cd [editor_path] && echo $( ps ax | grep rcbasic_studio_run | grep [editor_path] ) > run_pid.txt");
+        term_cmd.Replace(_("[editor_path]"), editor_path_dir.GetFullPath());
+        //wxPuts(_("-------------DEBUG-----------------"));
+        //wxPuts(_("get pid: ") + term_cmd);
+        wxSystem(term_cmd);
+
+        wxFile pid_file;
+
+        if(pid_file.Open(pid_filename.GetFullPath()))
+        {
+            wxString rpid;
+            pid_file.ReadAll(&rpid);
+            pid_file.Close();
+            rpid = rpid.substr(rpid.find_first_not_of(_(" ")));
+            rpid = rpid.substr(0, rpid.find_first_of(_(" ")));
+            if(rpid.Length() > 0)
+            {
+                //wxPuts(_("Stop Prog: kill ") + rpid);
+                wxSystem(_("kill ") + rpid);
+            }
+        }
+
         #else
         //wxPuts(_("STOPPING NOW: ") + _("taskkill /f /im ") + rcbasic_run_path.GetFullName());
         wxSystem(_("taskkill /f /im ") + rcbasic_run_path.GetFullName());
