@@ -578,6 +578,14 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
             rcbasic_android_fname.MakeAbsolute();
             wxSetEnv(_("RCBASIC_ANDROID_DIR"), rcbasic_android_fname.GetFullPath());
         }
+        else if(property.compare(_("RCBASIC_LIB_PATH"))==0)
+        {
+            wxFileName rcbasic_lib_fname(value);
+            rcbasic_lib_fname.MakeAbsolute();
+            wxString current_lib_path;
+            wxGetEnv(_("LD_LIBRARY_PATH"), &current_lib_path);
+            wxSetEnv(_("LD_LIBRARY_PATH"), current_lib_path + _(":") + rcbasic_lib_fname.GetFullPath());
+        }
 
 
         properties = properties.substr(properties.find_first_of(_("\n"))+1);
