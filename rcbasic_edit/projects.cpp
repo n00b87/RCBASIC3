@@ -166,6 +166,11 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
             fname.SetPath(location);
             fname.SetName(main_source_value);
 
+            if(fname.GetFullName().Length() < 4)
+                fname.SetExt(_("bas"));
+            else if(fname.GetFullName().Right(4).Lower().compare(_(".bas")) != 0)
+                fname.SetExt(_("bas"));
+
             if(!source_file.Create(fname.GetFullPath()))
             {
                 if(!source_file.Open(fname.GetFullPath()))

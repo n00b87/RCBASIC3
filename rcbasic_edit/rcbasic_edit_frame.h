@@ -199,6 +199,8 @@ class rcbasic_edit_frame : public rc_ideFrame
 
         rcbasic_project* build_run_project;
 
+        int remove_file_node_flag;
+
 	protected:
 		// Handlers for rc_ideFrame events.
 		void onEditorClose( wxCloseEvent& event );

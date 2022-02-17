@@ -84,8 +84,19 @@ void rcbasic_edit_frame::buildProject()
     m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
 
 
-    //SAVE FILES IN PROJECT
     notebook_mutex.Lock();
+
+    //-----------
+    wxFileName project_fname = wxFileName(build_run_project->getProjectFileLocation());
+
+    if(!wxDirExists(build_run_project->getLocation()))
+    {
+        project_fname = openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_SAVE);
+        if(project_fname.GetFullPath().compare(_(""))==0)
+            return;
+    }
+
+    //SAVE FILES IN PROJECT
     std::vector<rcbasic_project_node*> pf_nodes = build_run_project->getSourceFiles();
     for(int i = 0; i < open_files.size(); i++)
     {
@@ -102,6 +113,10 @@ void rcbasic_edit_frame::buildProject()
             }
         }
     }
+
+    build_run_project->saveProject(project_fname);
+    //------------------
+
     notebook_mutex.Unlock();
 
     //wxPuts(_("BUILD START"));

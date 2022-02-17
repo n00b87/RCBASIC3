@@ -50,6 +50,7 @@ class rcbasic_project_node
         bool isTemp() { return temp_flag; }
         void setAsAddFile(bool flag) { add_remove_state = flag ? 1 : 0; }
         int getAddRemoveFlag() { return add_remove_state; }
+        void setPath( wxFileName new_path ) { path = new_path; }
 };
 
 struct rcbasic_edit_env_var
