@@ -1,6 +1,7 @@
 #include "rcbasic_editrc_distribute_dialog.h"
 #include "rcbasic_editrc_distProcess_dialog.h"
 #include <wx/msgdlg.h>
+#include <wx/dir.h>
 
 rcbasic_editrc_distribute_dialog::rcbasic_editrc_distribute_dialog( wxWindow* parent )
 :
@@ -9,7 +10,7 @@ rc_distribute_dialog( parent )
     //wxComboBox m_category_comboBox;
     parent_frame = (rcbasic_edit_frame*)parent;
 
-    wxPuts(_("PROJECT LOCATUON: ") + parent_frame->getActiveProject()->getLocation());
+    //wxPuts(_("PROJECT LOCATUON: ") + parent_frame->getActiveProject()->getLocation());
 
     m_projectName_textCtrl->SetValue(parent_frame->getActiveProject()->getName());
 
@@ -402,6 +403,25 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
 {
 // TODO: Implement onMakeAppButtonClick
     saveAppProperties();
+
+    wxDir out_dir(getPropertyValue(_("OUTPUT_DIR")));
+
+    if( (!out_dir.IsOpened()) || (!wxDirExists(getPropertyValue(_("OUTPUT_DIR")))) )
+    {
+        if(out_dir.IsOpened())
+            out_dir.Close();
+        wxMessageBox(_("Output Directory was not found or not accessible"));
+        return;
+    }
+
+    if(out_dir.HasFiles())
+    {
+        out_dir.Close();
+        wxMessageBox(_("You must select an empty directory for output"));
+        return;
+    }
+
+    out_dir.Close();
 
     wxString app_pkg_args;
     app_pkg_args.Append(_("TGT_PLATFORM=[TGT_ARGS] PROJECT_NAME=\"[PRJ_NAME]\" "));
