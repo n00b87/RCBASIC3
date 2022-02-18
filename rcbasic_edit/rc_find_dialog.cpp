@@ -139,6 +139,7 @@ void rcbasic_edit_find_dialog::onPreviousButtonClick( wxCommandEvent& event )
     {
         t->GotoPos(previous_pos);
         t->SetSelection(t->GetCurrentPos(), t->GetCurrentPos() + m_search_textCtrl->GetLineText(0).length());
+        current_search_pos = previous_pos+1;
     }
 }
 

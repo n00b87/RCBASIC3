@@ -129,6 +129,8 @@ class rcbasic_edit_frame : public rc_ideFrame
         rcbasic_project* active_project; //for everything else
         rcbasic_project* closing_project;
 
+        rcbasic_project_node* context_file;
+
         #ifdef _WIN32
         wxTreeItemId selected_project_item;
         wxTreeItemId activated_project_item;
@@ -197,6 +199,8 @@ class rcbasic_edit_frame : public rc_ideFrame
 
         rcbasic_project* build_run_project;
 
+        int remove_file_node_flag;
+
 	protected:
 		// Handlers for rc_ideFrame events.
 		void onEditorClose( wxCloseEvent& event );
@@ -233,6 +237,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void toggleMessageWindow( wxCommandEvent& event );
 		void onProjectTreeContextMenu( wxTreeEvent& event );
 		void onTreeContextClick( wxCommandEvent &evt );
+		void onTreeFileContextClick( wxCommandEvent &evt );
 		void onProjectTreeNodeActivated( wxTreeEvent& event );
 		void onProjectTreeSelectionChanged( wxTreeEvent& event );
 		void onProjectTreeSelectionChanging( wxTreeEvent& event );
@@ -269,6 +274,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onRunProcessTerminate( wxProcessEvent& event );
 
 	public:
+	    void openFileProperties(rcbasic_project* f_project, rcbasic_project_node* f_node);
 	    wxString search_term;
 	    wxFileName getRCRunnerPath() { return rcbasic_run_path; }
 	    void buildProject();
@@ -282,6 +288,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void addFileToProject(wxFileName sourceFile);
 		void addMultipleFilesToProject();
 		void projectTreeContextMenu();
+		void projectTreeFileContextMenu();
 		wxFileName openFileDialog(wxString title, wxString default_wildcard, int flag);
 		wxArrayString openMultiFileDialog(wxString title, wxString default_wildcard, int flag);
 		void saveProject(rcbasic_project* project);

@@ -72,7 +72,10 @@ void rcbasic_edit_frame::buildProject()
     if(!build_run_project)
     {
         if(!active_project)
+        {
+            wxMessageBox(_("No project has been selected"));
             return;
+        }
         else
         {
             build_run_project = active_project;
@@ -84,8 +87,19 @@ void rcbasic_edit_frame::buildProject()
     m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
 
 
-    //SAVE FILES IN PROJECT
     notebook_mutex.Lock();
+
+    //-----------
+    wxFileName project_fname = wxFileName(build_run_project->getProjectFileLocation());
+
+    if(!wxDirExists(build_run_project->getLocation()))
+    {
+        project_fname = openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_SAVE);
+        if(project_fname.GetFullPath().compare(_(""))==0)
+            return;
+    }
+
+    //SAVE FILES IN PROJECT
     std::vector<rcbasic_project_node*> pf_nodes = build_run_project->getSourceFiles();
     for(int i = 0; i < open_files.size(); i++)
     {
@@ -102,6 +116,10 @@ void rcbasic_edit_frame::buildProject()
             }
         }
     }
+
+    build_run_project->saveProject(project_fname);
+    //------------------
+
     notebook_mutex.Unlock();
 
     //wxPuts(_("BUILD START"));
@@ -194,7 +212,10 @@ void rcbasic_edit_frame::runProject()
     if(!build_run_project)
     {
         if(!active_project)
+        {
+            wxMessageBox(_("No project has been selected"));
             return;
+        }
         else
         {
             build_run_project = active_project;
@@ -275,7 +296,7 @@ void rcbasic_edit_frame::runProject()
     run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
     #else
 
-    wxString run_cmd = _("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\" \r\n");
+    wxString run_cmd = _("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\"");
 
     //run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
     run_pid = wxExecute( run_cmd , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, &env);
@@ -295,6 +316,12 @@ void rcbasic_edit_frame::onBuildRunMenuSelect( wxCommandEvent& event )
 {
     if(isBuilding || isRunning || isBuildingAndRunning)
         return;
+
+    if(!active_project)
+    {
+        wxMessageBox(_("No project has been selected"));
+        return;
+    }
 
     m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
 

@@ -26,6 +26,8 @@ void rcbasic_edit_replace_dialog::replaceInFile(rcbasic_edit_txtCtrl* txtCtrl_ob
     if(!t)
         return;
 
+    t->BeginUndoAction();
+
 
     wxString selText= search_txt;
     int selLen = selText.Len();
@@ -71,8 +73,7 @@ void rcbasic_edit_replace_dialog::replaceInFile(rcbasic_edit_txtCtrl* txtCtrl_ob
         }
     }
 
-    //if(m_searchResults_listBox->GetCount() > 0)
-    //    m_searchResults_listBox->SetSelection(0);
+    t->EndUndoAction();
 }
 
 void rcbasic_edit_replace_dialog::replaceInSelection(rcbasic_edit_txtCtrl* txtCtrl_obj, wxString search_txt, wxString replace_txt, int flag)
@@ -99,6 +100,8 @@ void rcbasic_edit_replace_dialog::replaceInSelection(rcbasic_edit_txtCtrl* txtCt
 
     if(searchStart < 0 || searchEnd < 0)
         return;
+
+    t->BeginUndoAction();
 
     t->SetSearchFlags(flag);
 
@@ -136,8 +139,7 @@ void rcbasic_edit_replace_dialog::replaceInSelection(rcbasic_edit_txtCtrl* txtCt
         }
     }
 
-    //if(m_searchResults_listBox->GetCount() > 0)
-    //    m_searchResults_listBox->SetSelection(0);
+    t->EndUndoAction();
 }
 
 
@@ -305,7 +307,9 @@ void rcbasic_edit_replace_dialog::onReplaceClick( wxCommandEvent& event )
 
     //wxTextCtrl* p;
 
+    t->BeginUndoAction();
     t->Replace(from_pos, to_pos, m_replace_textCtrl->GetValue());
+    t->EndUndoAction();
 }
 
 void rcbasic_edit_replace_dialog::onReplaceCloseClick( wxCommandEvent& event )

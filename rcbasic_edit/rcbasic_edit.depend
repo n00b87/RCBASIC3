@@ -3724,13 +3724,13 @@
 
 1644728363 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\resource.rc
 
-1644979060 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/build_menu.cpp
+1645127471 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/build_menu.cpp
 	"rcbasic_edit_frame.h"
 	<wx/process.h>
 	<wx/txtstrm.h>
 	<wx/utils.h>
 
-1644903863 /home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_frame.h
+1645059394 /home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -5357,7 +5357,7 @@
 1644781089 /home/n00b/projects/RCBASIC3/rcbasic_edit/rc_closeFileSavePrompt_dialog.h
 	"rcbasic_edit.h"
 
-1644781089 /home/n00b/projects/RCBASIC3/rcbasic_edit/projects.h
+1645067204 /home/n00b/projects/RCBASIC3/rcbasic_edit/projects.h
 	<wx/wx.h>
 	<wx/treectrl.h>
 	<wx/file.h>
@@ -5763,7 +5763,7 @@
 	"rcbasic_edit_frame.h"
 	<wx/stopwatch.h>
 
-1644781089 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/projects.cpp
+1645078725 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/projects.cpp
 	"projects.h"
 
 1644781089 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rc_closeFileSavePrompt_dialog.cpp
@@ -5772,7 +5772,7 @@
 1644781089 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rc_closeProjectSavePrompt_dialog.cpp
 	"rc_closeProjectSavePrompt_dialog.h"
 
-1644904312 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rc_find_dialog.cpp
+1644991416 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rc_find_dialog.cpp
 	"rc_find_dialog.h"
 
 1644904450 /home/n00b/projects/RCBASIC3/rcbasic_edit/rc_find_dialog.h
@@ -5788,13 +5788,13 @@
 1644781089 /home/n00b/projects/RCBASIC3/rcbasic_edit/rc_ideApp.h
 	<wx/app.h>
 
-1644781089 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rc_newFile_dialog.cpp
+1645117133 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rc_newFile_dialog.cpp
 	"rc_newFile_dialog.h"
 
-1644813027 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit.cpp
+1645117107 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1644781089 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_fileProperties_dialog.cpp
+1645147814 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_fileProperties_dialog.cpp
 	"rcbasic_edit_fileProperties_dialog.h"
 	"projects.h"
 
@@ -5802,7 +5802,8 @@
 	"rcbasic_edit.h"
 	"projects.h"
 
-1644977877 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_frame.cpp
+1645147980 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_frame.cpp
+
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
@@ -5814,6 +5815,7 @@
 	"rcbasic_edit_setColorScheme_dialog.h"
 	"rcbasic_edit_projectSettings_dialog.h"
 	"rcbasic_edit_projectEnvironment_dialog.h"
+	"rcbasic_edit_fileProperties_dialog.h"
 
 1644781089 /home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_newProject_dialog.h
 	"rcbasic_edit.h"
@@ -5868,7 +5870,7 @@
 1644781089 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_projectVariableEdit_dialog.cpp
 	"rcbasic_edit_projectVariableEdit_dialog.h"
 
-1644904529 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_replace_dialog.cpp
+1645129023 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_replace_dialog.cpp
 	"rcbasic_edit_replace_dialog.h"
 
 1644781089 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_searchWrap_dialog.cpp
@@ -5899,10 +5901,11 @@
 	"rcbasic_edit.h"
 	<wx/process.h>
 
-1644977249 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_editrc_distribute_dialog.cpp
+1644989031 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_editrc_distribute_dialog.cpp
 	"rcbasic_editrc_distribute_dialog.h"
 	"rcbasic_editrc_distProcess_dialog.h"
 	<wx/msgdlg.h>
+	<wx/dir.h>
 
 1644781089 /home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_editrc_distribute_dialog.h
 	"rcbasic_edit.h"

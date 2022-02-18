@@ -774,7 +774,7 @@ rc_newFile_dialog::rc_newFile_dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText9->Wrap( -1 );
 	bSizer24->Add( m_staticText9, 1, wxALL, 5 );
 
-	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_SAVE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL );
+	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("New RCBasic Source file"), wxT("RCBasic Source files (*.bas)|*.bas"), wxDefaultPosition, wxDefaultSize, wxFLP_SAVE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL );
 	bSizer24->Add( createNewSource_fileDialog, 5, wxALL, 5 );
 
 

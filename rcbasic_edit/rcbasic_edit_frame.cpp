@@ -10,6 +10,7 @@
 #include "rcbasic_edit_setColorScheme_dialog.h"
 #include "rcbasic_edit_projectSettings_dialog.h"
 #include "rcbasic_edit_projectEnvironment_dialog.h"
+#include "rcbasic_edit_fileProperties_dialog.h"
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
 {
@@ -586,6 +587,13 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
             wxGetEnv(_("LD_LIBRARY_PATH"), &current_lib_path);
             wxSetEnv(_("LD_LIBRARY_PATH"), current_lib_path + _(":") + rcbasic_lib_fname.GetFullPath());
         }
+        else if(property.compare(_("ANDROID_HOME"))==0)
+        {
+            wxFileName rcbasic_droidHome_fname(value);
+            rcbasic_droidHome_fname.MakeAbsolute();
+            wxSetEnv(_("ANDROID_HOME"), rcbasic_droidHome_fname.GetFullPath());
+            wxSetEnv(_("ANDROID_SDK_ROOT"), rcbasic_droidHome_fname.GetFullPath());
+        }
 
 
         properties = properties.substr(properties.find_first_of(_("\n"))+1);
@@ -1018,7 +1026,7 @@ void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
             token_parser->Delete();
             sym_sem->Wait();
             delete sym_sem;
-            wxPuts(_("thread successfully ended"));
+            //wxPuts(_("thread successfully ended"));
         }
     }
 
@@ -1115,7 +1123,11 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
 
         wxString project_location = newProject_win->projectLocation_picker->GetPath();
         int main_source_flag = newProject_win->projectCreateMain_radio->GetValue() ? 0 : 1;
+        #ifdef _WIN32
         wxString main_source_value = main_source_flag==0 ? newProject_win->projectNewMain_field->GetValue() : newProject_win->projectExistingFile_picker->GetTextCtrlValue();
+        #else
+        wxString main_source_value = main_source_flag==0 ? newProject_win->projectNewMain_field->GetValue() : newProject_win->projectExistingFile_picker->GetFileName().GetFullPath();
+        #endif
         wxString project_author = newProject_win->projectAuthor_field->GetValue();
         wxString project_website = newProject_win->projectWebsite_field->GetValue();
         wxString project_description = newProject_win->projectDescription_field->GetValue();
@@ -1127,10 +1139,16 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
             return;
         }
 
+        //wxPuts(_("DEBUG 3"));
+
         new_project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
         new_project->addSourceFile(new_project->getMainSource().GetFullPath(), STORE_LOCATION_RELATIVE);
 
+        //wxPuts(_("DEBUG 4"));
+
         new_project->setLastProjectSave();
+
+        //wxPuts(_("DEBUG 5"));
 
         //project_tree->AppendItem(new_project->getRootNode(), new_project->getMainSource().GetFullPath());
 
@@ -1416,7 +1434,14 @@ void rcbasic_edit_frame::saveFile(int openFile_index, int flag=0)
     if(openFile_index < 0)
         return;
 
-    int selected_page = sourceFile_auinotebook->GetSelection();
+    //int selected_page = sourceFile_auinotebook->GetSelection();
+    int selected_page = -1;
+
+    if(open_files[openFile_index]->getTextCtrl())
+        selected_page = sourceFile_auinotebook->GetPageIndex(open_files[openFile_index]->getTextCtrl());
+
+    if(selected_page < 0)
+        return;
 
     wxFileName fname = open_files[openFile_index]->getSourcePath();
 
@@ -2820,6 +2845,10 @@ void rcbasic_edit_frame::onProjectEnvironmentMenuSelect( wxCommandEvent& event )
 #define RUN_PROJECT 1007
 #define PROJECT_PROPERTIES 1008
 
+#define PT_OPEN_FILE 2001
+#define PT_REMOVE_FILE 2002
+#define PT_FILE_PROPERTIES 2003
+
 void rcbasic_edit_frame::addMultipleFilesToProject()
 {
     if(context_project==NULL)
@@ -2941,6 +2970,7 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
         return;
 
     wxFileName newFile = newFile_dialog.getFileName();
+    newFile.SetExt(_("bas"));
 
     wxFile f;
 
@@ -3052,6 +3082,71 @@ void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)
     }
 }
 
+void rcbasic_edit_frame::openFileProperties(rcbasic_project* f_project, rcbasic_project_node* f_node)
+{
+    wxString cwd = wxGetCwd();
+    wxSetWorkingDirectory(f_project->getLocation());
+    rcbasic_edit_fileProperties_dialog fp_dialog(this, f_node);
+    fp_dialog.ShowModal();
+
+    wxFileName node_fname = f_node->getPath();
+    if(f_node->getLocationStoreType()==STORE_LOCATION_RELATIVE)
+        node_fname.MakeRelativeTo(f_project->getLocation());
+    else
+        node_fname.MakeAbsolute();
+
+    f_node->setPath(node_fname);
+
+
+    wxFileName node_fname_abs = node_fname;
+    node_fname_abs.MakeAbsolute();
+
+    wxFileName f_node_path = f_project->getMainSource();
+    f_node_path.MakeAbsolute();
+
+    if( node_fname.GetFullPath().compare(f_node_path.GetFullPath())==0 )
+    {
+        f_project->setMainSource(f_node->getPath().GetFullPath());
+    }
+
+    wxSetWorkingDirectory(cwd);
+}
+
+void rcbasic_edit_frame::onTreeFileContextClick(wxCommandEvent &evt)
+{
+    remove_file_node_flag = 0;
+
+    if(! (context_project || context_file) )
+        return;
+
+    wxString cwd = wxGetCwd();
+    wxSetWorkingDirectory(context_project->getLocation());
+
+    if(evt.GetId() == PT_OPEN_FILE)
+    {
+        remove_file_node_flag = PT_OPEN_FILE;
+        wxFileName node_fname = context_file->getPath();
+        node_fname.MakeAbsolute();
+        openSourceFile(node_fname);
+    }
+    else if(evt.GetId() == PT_REMOVE_FILE)
+    {
+        remove_file_node_flag = PT_REMOVE_FILE;
+        project_tree->Delete(context_file->getNode());
+        context_project->removeSourceFile(context_file->getPath().GetFullPath());
+        updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
+    }
+    else if(evt.GetId() == PT_FILE_PROPERTIES)
+    {
+        remove_file_node_flag = PT_FILE_PROPERTIES;
+        openFileProperties(context_project, context_file);
+        updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
+    }
+
+    wxSetWorkingDirectory(cwd);
+}
+
+
 void rcbasic_edit_frame::projectTreeContextMenu()
 {
     wxMenu menu;
@@ -3068,18 +3163,54 @@ void rcbasic_edit_frame::projectTreeContextMenu()
     PopupMenu(&menu);
 }
 
+void rcbasic_edit_frame::projectTreeFileContextMenu()
+{
+    wxMenu menu;
+    menu.Append(PT_OPEN_FILE, wxT("&Open File"));
+    menu.Append(PT_REMOVE_FILE, wxT("&Remove from Project"));
+    menu.Append(PT_FILE_PROPERTIES, wxT("&Properties"));
+    menu.Connect(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(rcbasic_edit_frame::onTreeFileContextClick), NULL, this);
+    PopupMenu(&menu);
+}
+
 void rcbasic_edit_frame::onProjectTreeContextMenu( wxTreeEvent& event )
 {
     wxTreeItemId selected_node = event.GetItem();
+    remove_file_node_flag = 0;
     for(int i = 0; i < open_projects.size(); i++)
     {
         if(open_projects[i]->getRootNode()==selected_node)
         {
             context_project = open_projects[i];
             projectTreeContextMenu();
+            break;
         }
+
+        std::vector<rcbasic_project_node*> p_files = open_projects[i]->getSourceFiles();
+        bool should_break = false;
+        for(int f = 0; f < p_files.size(); f++)
+        {
+            if(p_files[f]->getNode()==selected_node)
+            {
+                context_project = open_projects[i];
+                context_file = p_files[f];
+                projectTreeFileContextMenu();
+                should_break = true;
+                break;
+            }
+        }
+        if(should_break)
+            break;
     }
-    if(selected_node.IsOk())
+
+    if(!context_project)
+        return;
+
+    if(remove_file_node_flag == PT_REMOVE_FILE)
+    {
+        project_tree->SelectItem(context_project->getRootNode(), true);
+    }
+    else if(selected_node.IsOk() && remove_file_node_flag == 0)
     {
         project_tree->SelectItem(selected_node, true);
     }
