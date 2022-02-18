@@ -128,6 +128,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         rcbasic_project* context_project; //for context menu
         rcbasic_project* active_project; //for everything else
         rcbasic_project* closing_project;
+        std::vector<wxString> build_files;
 
         rcbasic_project_node* context_file;
 
@@ -340,6 +341,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void applyScheme(wxStyledTextCtrl* rc_txtCtrl);
 
 		bool loadEditorProperties(wxFileName fname);
+		bool loadDefaultViewProperties(wxFileName fname);
 
 		wxSemaphore* getSymSem() { return sym_sem; }
 

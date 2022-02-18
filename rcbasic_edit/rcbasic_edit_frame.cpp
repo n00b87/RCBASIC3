@@ -440,6 +440,10 @@ rc_ideFrame( parent )
     editor_properties_path.SetFullName(_("rcbasic_edit.config"));
     loadEditorProperties(editor_properties_path);
 
+    wxFileName view_def_path = editor_properties_path;
+    view_def_path.SetFullName(_("default_view.config"));
+    loadDefaultViewProperties(view_def_path);
+
     wxFileName scheme_path(editor_path);
     scheme_path.AppendDir(_("config"));
     scheme_path.AppendDir(_("schemes"));
@@ -462,6 +466,50 @@ rc_ideFrame( parent )
         token_parser = new parserThread(this, 0, this);
         token_parser->Run();
     }
+}
+
+bool rcbasic_edit_frame::loadDefaultViewProperties(wxFileName fname)
+{
+    wxFile properties_file;
+
+    if(!fname.Exists())
+    {
+        return false;
+    }
+
+    if(!properties_file.Open(fname.GetFullPath()))
+        return false;
+
+    wxString properties;
+    properties_file.ReadAll(&properties);
+    properties_file.Close();
+
+    properties.Append(_(" \n"));
+
+    wxString property;
+    wxString value;
+
+    for(int i = 0; i < properties.length(); i++)
+    {
+        int vpos = properties.find_first_of(_("="));
+        if(vpos == wxString::npos)
+            break;
+        property = properties.substr(0, vpos).Trim();
+        property = property.substr(property.find_first_not_of(_(" ")));
+
+        value = properties.substr(vpos+1);
+        value = value.substr(0, value.find_first_of(_("\n")));
+
+        if(property.compare(_("DEFAULT_SCHEME"))==0)
+        {
+            default_scheme = value;
+        }
+
+
+        properties = properties.substr(properties.find_first_of(_("\n"))+1);
+    }
+
+    return true;
 }
 
 bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
@@ -1142,7 +1190,7 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
         //wxPuts(_("DEBUG 3"));
 
         new_project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
-        new_project->addSourceFile(new_project->getMainSource().GetFullPath(), STORE_LOCATION_RELATIVE);
+        new_project->addSourceFile(new_project->getMainSource().GetFullPath(), STORE_LOCATION_RELATIVE, false);
 
         //wxPuts(_("DEBUG 4"));
 
@@ -1250,6 +1298,7 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         wxString project_description;
         std::vector<wxString> project_source;
         std::vector<int> project_source_store_type;
+        std::vector<bool> project_source_target_flag;
 
         std::vector<rcbasic_edit_env_var> project_vars;
 
@@ -1293,11 +1342,22 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
                 }
                 else if(property_name.compare(_("SOURCE_ABS"))==0)
                 {
+                    bool isTarget = property_value.find(_("${RCBASIC_STUDIO_TARGET}")) != wxString::npos ? true : false;
+                    //wxPrintf(_("File (") + property_value + _("): %d\n"), isTarget);
+
+                    property_value.Replace(_("${RCBASIC_STUDIO_TARGET}"), _(""));
+
                     project_source.push_back(property_value);
                     project_source_store_type.push_back(STORE_LOCATION_ABSOLUTE);
+                    project_source_target_flag.push_back(isTarget);
                 }
                 else if(property_name.compare(_("SOURCE_REL"))==0)
                 {
+                    bool isTarget = property_value.find(_("${RCBASIC_STUDIO_TARGET}")) != wxString::npos ? true : false;
+                    //wxPrintf(_("File (") + property_value + _("): %d\n"), isTarget);
+
+                    property_value.Replace(_("${RCBASIC_STUDIO_TARGET}"), _(""));
+
                     if(conv_rel)
                     {
                         #ifdef _WIN32
@@ -1312,6 +1372,7 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
                     property_value = fname.GetFullPath();
                     project_source.push_back(property_value);
                     project_source_store_type.push_back(STORE_LOCATION_RELATIVE);
+                    project_source_target_flag.push_back(isTarget);
                 }
                 else if(property_name.compare(_("ENV"))==0)
                 {
@@ -1347,7 +1408,7 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         for(int i = 0; i < project_source.size(); i++)
         {
             //wxPuts(_("Adding Source: ") + project_source[i]);
-            project->addSourceFile(project_source[i], project_source_store_type[i]);
+            project->addSourceFile(project_source[i], project_source_store_type[i], project_source_target_flag[i]);
         }
 
         project->setVars(project_vars);
@@ -1726,7 +1787,7 @@ void rcbasic_edit_frame::addFileToProject(wxFileName sourceFile)
     if(context_project==NULL)
         return;
 
-    context_project->addSourceFile(sourceFile.GetFullPath(), STORE_LOCATION_RELATIVE);
+    context_project->addSourceFile(sourceFile.GetFullPath(), STORE_LOCATION_RELATIVE, false);
     updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
 }
 
@@ -2862,7 +2923,7 @@ void rcbasic_edit_frame::addMultipleFilesToProject()
         if(!fname.Exists())
             continue;
 
-        context_project->addSourceFile(fname.GetFullPath(), STORE_LOCATION_RELATIVE);
+        context_project->addSourceFile(fname.GetFullPath(), STORE_LOCATION_RELATIVE, false);
     }
 
     updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
@@ -2992,7 +3053,7 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
         //wxPuts("Adding to project");
         if(project)
         {
-            project->addSourceFile(newFile.GetFullPath(), STORE_LOCATION_RELATIVE);
+            project->addSourceFile(newFile.GetFullPath(), STORE_LOCATION_RELATIVE, false);
         }
         else
         {

@@ -68,5 +68,24 @@ void rcbasic_edit_setColorScheme_dialog::onSchemeSelected( wxCommandEvent& event
 void rcbasic_edit_setColorScheme_dialog::onSchemeCloseButtonClick( wxCommandEvent& event )
 {
 // TODO: Implement onSchemeCloseButtonClick
+    wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+
+    wxFileName view_path(editor_path);
+    view_path.AppendDir(_("config"));
+    view_path.SetFullName(_("default_view.config"));
+
+    wxFile view_file;
+
+    int selection = m_scheme_listBox->GetSelection();
+
+    if(wxDirExists(view_path.GetPath()))
+    {
+        if(view_file.Create(view_path.GetFullPath(), true))
+        {
+            view_file.Write(_("DEFAULT_SCHEME=")+m_scheme_listBox->GetString(selection)+_(".scheme"));
+            view_file.Close();
+        }
+    }
+
     Close();
 }

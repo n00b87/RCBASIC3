@@ -158,7 +158,7 @@ void rcbasic_edit_projectSettings_dialog::onAddFilesButtonClick( wxCommandEvent&
             continue;
 
         fname.MakeRelativeTo(new_project->getLocation());
-        if(new_project->addSourceFile(fname.GetFullPath(), STORE_LOCATION_RELATIVE))
+        if(new_project->addSourceFile(fname.GetFullPath(), STORE_LOCATION_RELATIVE, false))
         {
             m_files_listBox->AppendAndEnsureVisible(fname.GetFullPath());
             m_mainSource_listBox->AppendAndEnsureVisible(fname.GetFullPath());

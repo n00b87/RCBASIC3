@@ -22,9 +22,38 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
     wxKill(build_pid);
     delete build_process;
     build_process = NULL;
+
+    wxFileName main_fname = build_run_project->getMainSource();
+
     build_run_project = NULL;
 
-    if(isBuildingAndRunning)
+    bool build_success = true;
+
+    main_fname.SetExt(_("cbc"));
+    main_fname.MakeAbsolute();
+    if(!main_fname.Exists())
+    {
+        wxMessageBox(_("Main Source Target failed to build.\nCheck the build log for more details."));
+        isBuildingAndRunning = false;
+        build_success = false;
+    }
+
+
+    for(int i = 0; i < build_files.size(); i++)
+    {
+        wxFileName bf_fname(build_files[i]);
+        bf_fname.SetExt("cbc");
+
+        if(!bf_fname.Exists())
+        {
+            wxMessageBox(_("1 or more of this projects sub-targets failed to build.\nCheck the build log for more details."));
+            isBuildingAndRunning = false;
+            build_success = false;
+            break;
+        }
+    }
+
+    if(isBuildingAndRunning && build_success)
     {
         isBuildingAndRunning = false;
         runProject();
@@ -105,6 +134,7 @@ void rcbasic_edit_frame::buildProject()
     {
         wxFileName o_fname = open_files[i]->getSourcePath();
         o_fname.MakeAbsolute();
+
         for(int p_file = 0; p_file < pf_nodes.size(); p_file++)
         {
             wxFileName p_fname = pf_nodes[p_file]->getPath();
@@ -117,10 +147,46 @@ void rcbasic_edit_frame::buildProject()
         }
     }
 
+    build_files.clear();
+    for(int p_file = 0; p_file < pf_nodes.size(); p_file++)
+    {
+        wxFileName p_fname = pf_nodes[p_file]->getPath();
+        p_fname.MakeAbsolute();
+
+        //wxPrintf(_("Target: ") + p_fname.GetFullName() + _(":--> %d\n"), pf_nodes[p_file]->getTargetFlag());
+
+        if(pf_nodes[p_file]->getTargetFlag())
+        {
+            build_files.push_back(p_fname.GetFullPath());
+        }
+    }
+
+
+
     build_run_project->saveProject(project_fname);
     //------------------
 
     notebook_mutex.Unlock();
+
+
+    wxFile build_script;
+
+    wxFileName build_script_fname(rcbasic_build_path);
+
+    #ifdef _WIN32
+    build_script_fname.SetFullName(_("build_project.bat"));
+    if(!build_script.Create(build_script_fname.GetFullPath(), true))
+        return;
+
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\" \r\n"));
+
+    for(int i = 0; i < build_files.size(); i ++)
+    {
+        build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_files[i] + _("\" \r\n"));
+    }
+
+    build_script.Close();
+    #endif // _WIN32
 
     //wxPuts(_("BUILD START"));
 
@@ -159,7 +225,9 @@ void rcbasic_edit_frame::buildProject()
     //wxString c =  _("+++\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\"---");
     //wxPuts(_("CMD: ") + c);
 
-    build_pid = wxExecute(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\""), wxEXEC_ASYNC, build_process, &env);
+    //build_pid = wxExecute(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\""), wxEXEC_ASYNC, build_process, &env);
+
+    build_pid = wxExecute(_("\"") + build_script_fname.GetFullPath() + _("\""), wxEXEC_ASYNC, build_process, NULL);
 
     if(build_pid >= 0)
     {
@@ -383,5 +451,7 @@ void rcbasic_edit_frame::onStopExecuteMenuSelect( wxCommandEvent& event )
         #endif
     }
 
+    isRunning = false;
+    isBuildingAndRunning = false;
     isBuilding = false;
 }
