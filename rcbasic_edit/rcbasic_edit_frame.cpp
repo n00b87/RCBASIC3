@@ -502,7 +502,10 @@ bool rcbasic_edit_frame::loadDefaultViewProperties(wxFileName fname)
 
         if(property.compare(_("DEFAULT_SCHEME"))==0)
         {
-            default_scheme = value;
+            wxFileName scheme_fname;
+            scheme_fname.SetFullName(value);
+            scheme_fname.SetExt(_("scheme"));
+            default_scheme = scheme_fname.GetFullName();
         }
 
 
