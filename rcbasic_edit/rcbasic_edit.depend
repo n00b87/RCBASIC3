@@ -5803,6 +5803,7 @@
 	"projects.h"
 
 1645147980 source:/home/n00b/projects/RCBASIC3/rcbasic_edit/rcbasic_edit_frame.cpp
+
 	<wx/string.h>
 	"rcbasic_edit_frame.h"
 	"rcbasic_edit_newProject_dialog.h"
