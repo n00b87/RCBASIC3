@@ -2073,6 +2073,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">cancelNewProject</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer16</property>
@@ -3621,6 +3622,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onCloseProjectSaveCancel</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer20</property>
@@ -3993,7 +3995,7 @@
                 </object>
             </object>
         </object>
-        <object class="Dialog" expanded="1">
+        <object class="Dialog" expanded="0">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -4011,7 +4013,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_newFile_dialog</property>
             <property name="pos"></property>
-            <property name="size">497,207</property>
+            <property name="size">497,200</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Create New Source File</property>
@@ -4020,7 +4022,8 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
-            <object class="wxBoxSizer" expanded="1">
+            <event name="OnClose">onCreateNewSourceCancel</event>
+            <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer23</property>
                 <property name="orient">wxVERTICAL</property>
@@ -4150,7 +4153,7 @@
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
-                                <property name="message">New RCBasic Source file</property>
+                                <property name="message">Select a file</property>
                                 <property name="min_size"></property>
                                 <property name="minimize_button">0</property>
                                 <property name="minimum_size"></property>
@@ -4174,7 +4177,7 @@
                                 <property name="validator_type">wxDefaultValidator</property>
                                 <property name="validator_variable"></property>
                                 <property name="value"></property>
-                                <property name="wildcard">RCBasic Source files (*.bas)|*.bas</property>
+                                <property name="wildcard">*.*</property>
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
@@ -4478,7 +4481,7 @@
                 </object>
             </object>
         </object>
-        <object class="Dialog" expanded="1">
+        <object class="Dialog" expanded="0">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -4496,7 +4499,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_find_dialog</property>
             <property name="pos"></property>
-            <property name="size">532,276</property>
+            <property name="size">438,163</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Find</property>
@@ -4505,7 +4508,8 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
-            <object class="wxBoxSizer" expanded="1">
+            <event name="OnClose">onCloseButtonClick</event>
+            <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer27</property>
                 <property name="orient">wxVERTICAL</property>
@@ -5342,6 +5346,16 @@
                         </object>
                     </object>
                 </object>
+                <object class="sizeritem" expanded="0">
+                    <property name="border">5</property>
+                    <property name="flag">wxEXPAND</property>
+                    <property name="proportion">1</property>
+                    <object class="spacer" expanded="0">
+                        <property name="height">0</property>
+                        <property name="permission">protected</property>
+                        <property name="width">0</property>
+                    </object>
+                </object>
             </object>
         </object>
         <object class="Dialog" expanded="0">
@@ -5363,7 +5377,7 @@
             <property name="name">rc_searchWrap_dialog</property>
             <property name="pos"></property>
             <property name="size">385,149</property>
-            <property name="style">wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP</property>
+            <property name="style">wxCAPTION|wxSTAY_ON_TOP</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Search</property>
             <property name="tooltip"></property>
@@ -5669,7 +5683,7 @@
                 </object>
             </object>
         </object>
-        <object class="Dialog" expanded="1">
+        <object class="Dialog" expanded="0">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -5687,7 +5701,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_replace_dialog</property>
             <property name="pos"></property>
-            <property name="size">598,340</property>
+            <property name="size">467,238</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Replace</property>
@@ -5696,7 +5710,8 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
-            <object class="wxBoxSizer" expanded="1">
+            <event name="OnClose">onReplaceCloseClick</event>
+            <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer27</property>
                 <property name="orient">wxVERTICAL</property>
@@ -6798,6 +6813,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onCancelButtonClick</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer47</property>
@@ -6945,6 +6961,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
+                                <event name="OnTextEnter">onOKButtonClick</event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="0">
@@ -7159,7 +7176,7 @@
             <property name="name">rc_closeFileSavePrompt_dialog</property>
             <property name="pos"></property>
             <property name="size">385,149</property>
-            <property name="style">wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP</property>
+            <property name="style">wxCAPTION|wxSTAY_ON_TOP</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Close File</property>
             <property name="tooltip"></property>
@@ -7566,6 +7583,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onSchemeCloseButtonClick</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer57</property>
@@ -7792,7 +7810,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_projectSettings_dialog</property>
             <property name="pos"></property>
-            <property name="size">614,617</property>
+            <property name="size">517,550</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Project Properties</property>
@@ -7801,6 +7819,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onCancelButtonClick</event>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer55</property>
@@ -9439,7 +9458,7 @@
                 </object>
             </object>
         </object>
-        <object class="Dialog" expanded="0">
+        <object class="Dialog" expanded="1">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -9466,7 +9485,8 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
-            <object class="wxBoxSizer" expanded="0">
+            <event name="OnClose">onCancelButtonClick</event>
+            <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer67</property>
                 <property name="orient">wxVERTICAL</property>
@@ -9847,6 +9867,101 @@
                         </object>
                     </object>
                 </object>
+                <object class="sizeritem" expanded="1">
+                    <property name="border">5</property>
+                    <property name="flag">wxEXPAND</property>
+                    <property name="proportion">1</property>
+                    <object class="wxBoxSizer" expanded="1">
+                        <property name="minimum_size"></property>
+                        <property name="name">bSizer116</property>
+                        <property name="orient">wxHORIZONTAL</property>
+                        <property name="permission">none</property>
+                        <object class="sizeritem" expanded="1">
+                            <property name="border">5</property>
+                            <property name="flag">wxEXPAND</property>
+                            <property name="proportion">1</property>
+                            <object class="spacer" expanded="1">
+                                <property name="height">0</property>
+                                <property name="permission">protected</property>
+                                <property name="width">0</property>
+                            </object>
+                        </object>
+                        <object class="sizeritem" expanded="1">
+                            <property name="border">5</property>
+                            <property name="flag">wxALL</property>
+                            <property name="proportion">0</property>
+                            <object class="wxCheckBox" expanded="1">
+                                <property name="BottomDockable">1</property>
+                                <property name="LeftDockable">1</property>
+                                <property name="RightDockable">1</property>
+                                <property name="TopDockable">1</property>
+                                <property name="aui_layer"></property>
+                                <property name="aui_name"></property>
+                                <property name="aui_position"></property>
+                                <property name="aui_row"></property>
+                                <property name="best_size"></property>
+                                <property name="bg"></property>
+                                <property name="caption"></property>
+                                <property name="caption_visible">1</property>
+                                <property name="center_pane">0</property>
+                                <property name="checked">0</property>
+                                <property name="close_button">1</property>
+                                <property name="context_help"></property>
+                                <property name="context_menu">1</property>
+                                <property name="default_pane">0</property>
+                                <property name="dock">Dock</property>
+                                <property name="dock_fixed">0</property>
+                                <property name="docking">Left</property>
+                                <property name="enabled">1</property>
+                                <property name="fg"></property>
+                                <property name="floatable">1</property>
+                                <property name="font"></property>
+                                <property name="gripper">0</property>
+                                <property name="hidden">0</property>
+                                <property name="id">wxID_ANY</property>
+                                <property name="label">Set As Sub-Target </property>
+                                <property name="max_size"></property>
+                                <property name="maximize_button">0</property>
+                                <property name="maximum_size"></property>
+                                <property name="min_size"></property>
+                                <property name="minimize_button">0</property>
+                                <property name="minimum_size"></property>
+                                <property name="moveable">1</property>
+                                <property name="name">m_subTarget_checkBox</property>
+                                <property name="pane_border">1</property>
+                                <property name="pane_position"></property>
+                                <property name="pane_size"></property>
+                                <property name="permission">protected</property>
+                                <property name="pin_button">1</property>
+                                <property name="pos"></property>
+                                <property name="resize">Resizable</property>
+                                <property name="show">1</property>
+                                <property name="size"></property>
+                                <property name="style">wxALIGN_RIGHT</property>
+                                <property name="subclass">; ; forward_declare</property>
+                                <property name="toolbar_pane">0</property>
+                                <property name="tooltip"></property>
+                                <property name="validator_data_type"></property>
+                                <property name="validator_style">wxFILTER_NONE</property>
+                                <property name="validator_type">wxDefaultValidator</property>
+                                <property name="validator_variable"></property>
+                                <property name="window_extra_style"></property>
+                                <property name="window_name"></property>
+                                <property name="window_style"></property>
+                            </object>
+                        </object>
+                        <object class="sizeritem" expanded="1">
+                            <property name="border">5</property>
+                            <property name="flag">wxEXPAND</property>
+                            <property name="proportion">11</property>
+                            <object class="spacer" expanded="1">
+                                <property name="height">0</property>
+                                <property name="permission">protected</property>
+                                <property name="width">0</property>
+                            </object>
+                        </object>
+                    </object>
+                </object>
                 <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
@@ -10036,7 +10151,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_projectEnvironment_dialog</property>
             <property name="pos"></property>
-            <property name="size">631,379</property>
+            <property name="size">487,298</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Project Environment Settings</property>
@@ -10045,6 +10160,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onCancelButtonClick</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer71</property>
@@ -10763,7 +10879,7 @@
             <property name="name">rc_projectVariableEdit_dialog</property>
             <property name="pos"></property>
             <property name="size">489,176</property>
-            <property name="style">wxCAPTION</property>
+            <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title"></property>
             <property name="tooltip"></property>
@@ -10771,6 +10887,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onCancelButtonClick</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer78</property>
@@ -11286,6 +11403,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onCancelButtonClick</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer80</property>
@@ -12904,7 +13022,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_distribute_dialog</property>
             <property name="pos"></property>
-            <property name="size">761,430</property>
+            <property name="size">576,359</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Distribute</property>
@@ -12913,6 +13031,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onCloseButtonClick</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer92</property>
@@ -15591,7 +15710,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_distProcess_dialog</property>
             <property name="pos"></property>
-            <property name="size">655,345</property>
+            <property name="size">655,330</property>
             <property name="style">wxCAPTION</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Building Application</property>

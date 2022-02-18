@@ -8,6 +8,7 @@ rcbasic_project_node::rcbasic_project_node(wxFileName node_path)
     text_changed = false;
     temp_flag = false;
     add_remove_state = 1;
+    target_flag = false;
 }
 
 void rcbasic_project_node::setLocationStoreType(int store_loc_type)
@@ -369,13 +370,25 @@ bool rcbasic_project::saveProject(wxFileName save_file)
             {
                 wxFileName fname = source_files[i]->getPath();
                 fname.MakeRelativeTo(location);
-                project_file.Write(_("SOURCE_REL:")+fname.GetFullPath()+_("\n"));
+
+                wxString file_args = _("");
+
+                if(source_files[i]->getTargetFlag())
+                file_args = _("${RCBASIC_STUDIO_TARGET}");
+
+                project_file.Write(_("SOURCE_REL:")+file_args+fname.GetFullPath()+_("\n"));
             }
             else
             {
                 wxFileName fname = source_files[i]->getPath();
                 fname.MakeAbsolute();
-                project_file.Write(_("SOURCE_ABS:")+fname.GetFullPath()+_("\n"));
+
+                wxString file_args = _("");
+
+                if(source_files[i]->getTargetFlag())
+                file_args = _("${RCBASIC_STUDIO_TARGET}");
+
+                project_file.Write(_("SOURCE_ABS:")+file_args+fname.GetFullPath()+_("\n"));
             }
         }
         for(int i = 0; i < env_vars.size(); i++)
@@ -407,7 +420,7 @@ void rcbasic_project::setLastProjectSave()
     last_saved_project->getSourceFiles().clear();
     for(int i = 0; i < source_files.size(); i++)
     {
-        last_saved_project->addSourceFile(source_files[i]->getPath().GetFullPath(), source_files[i]->getLocationStoreType());
+        last_saved_project->addSourceFile(source_files[i]->getPath().GetFullPath(), source_files[i]->getLocationStoreType(), source_files[i]->getTargetFlag());
     }
 }
 
@@ -483,7 +496,7 @@ void rcbasic_project::setDescription(wxString new_description)
     description = new_description;
 }
 
-bool rcbasic_project::addSourceFile(wxString filePath, int store_loc_type)
+bool rcbasic_project::addSourceFile(wxString filePath, int store_loc_type, bool target_flag)
 {
     //wxString cwd = wxGetCwd();
     //wxPuts(_("DEBUG 1"));
@@ -515,12 +528,13 @@ bool rcbasic_project::addSourceFile(wxString filePath, int store_loc_type)
         src_file = new rcbasic_project_node(fname_abs);
 
     src_file->setLocationStoreType(store_loc_type);
+    src_file->setTargetFlag(target_flag);
     //fname.MakeRelativeTo(location);
     source_files.push_back(src_file);
     return true;
 }
 
-bool rcbasic_project::addTempSourceFile(wxString filePath, int store_loc_type)
+bool rcbasic_project::addTempSourceFile(wxString filePath, int store_loc_type, bool target_flag)
 {
     wxFileName fname(filePath);
     wxFileName fname_rel(filePath);
@@ -564,6 +578,7 @@ bool rcbasic_project::addTempSourceFile(wxString filePath, int store_loc_type)
     }
 
     src_file->setLocationStoreType(store_loc_type);
+    src_file->setTargetFlag(target_flag);
     src_file->setAsTemp(true);
     src_file->setAsAddFile(true);
     //fname.MakeRelativeTo(location);

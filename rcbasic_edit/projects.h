@@ -33,6 +33,7 @@ class rcbasic_project_node
         int store_location_type;
         bool temp_flag;
         int add_remove_state;
+        bool target_flag;
     public:
         rcbasic_project_node(wxFileName node_path);
         void setNode(wxTreeItemId node);
@@ -51,6 +52,8 @@ class rcbasic_project_node
         void setAsAddFile(bool flag) { add_remove_state = flag ? 1 : 0; }
         int getAddRemoveFlag() { return add_remove_state; }
         void setPath( wxFileName new_path ) { path = new_path; }
+        bool getTargetFlag() { return target_flag; }
+        void setTargetFlag(bool flag_value) { target_flag = flag_value; }
 };
 
 struct rcbasic_edit_env_var
@@ -93,8 +96,8 @@ class rcbasic_project
         void setAuthor(wxString new_author);
         void setWebsite(wxString new_website);
         void setDescription(wxString new_description);
-        bool addSourceFile(wxString filePath, int store_loc_type);
-        bool addTempSourceFile(wxString filePath, int store_loc_type);
+        bool addSourceFile(wxString filePath, int store_loc_type, bool target_flag);
+        bool addTempSourceFile(wxString filePath, int store_loc_type, bool target_flag);
         bool createNewSourceFile(wxString filePath);
         void setRootNode(wxTreeItemId project_root);
 
@@ -151,6 +154,18 @@ class rcbasic_project
         void setVars(std::vector<rcbasic_edit_env_var> v);
         void clearEnvVars();
         std::vector<rcbasic_edit_env_var> getVars();
+        bool isMainFile(wxFileName fname)
+        {
+            fname.MakeAbsolute();
+
+            wxFileName main_fname = main_source;
+            main_fname.MakeAbsolute();
+
+            if(main_fname.GetFullPath().compare(fname.GetFullPath())==0)
+                return true;
+
+            return false;
+        }
 };
 
 class rcbasic_treeItem_data : public wxTreeItemData
