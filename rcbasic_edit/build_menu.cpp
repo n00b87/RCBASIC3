@@ -72,7 +72,10 @@ void rcbasic_edit_frame::buildProject()
     if(!build_run_project)
     {
         if(!active_project)
+        {
+            wxMessageBox(_("No project has been selected"));
             return;
+        }
         else
         {
             build_run_project = active_project;
@@ -209,7 +212,10 @@ void rcbasic_edit_frame::runProject()
     if(!build_run_project)
     {
         if(!active_project)
+        {
+            wxMessageBox(_("No project has been selected"));
             return;
+        }
         else
         {
             build_run_project = active_project;
@@ -310,6 +316,12 @@ void rcbasic_edit_frame::onBuildRunMenuSelect( wxCommandEvent& event )
 {
     if(isBuilding || isRunning || isBuildingAndRunning)
         return;
+
+    if(!active_project)
+    {
+        wxMessageBox(_("No project has been selected"));
+        return;
+    }
 
     m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
 

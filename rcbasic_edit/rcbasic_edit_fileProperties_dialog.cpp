@@ -11,9 +11,11 @@ rc_fileProperties_dialog( parent )
     wxFileName fname = file_node->getPath();
     fname.MakeAbsolute();
     m_fileName_textCtrl->SetValue(fname.GetFullPath());
-    //wxRadioButton m_relative_radioBtn, m_absolute_radioBtn;
-    m_relative_radioBtn->SetValue( file_node->getLocationStoreType()==STORE_LOCATION_RELATIVE ? true : false );
+    //SetValue on the radio buttons does not seem to work under linux. Upgrading to a new version of wxWidgets might fix this.
+    m_relative_radioBtn->SetValue( file_node->getLocationStoreType()==0 ? true : false );
     m_absolute_radioBtn->SetValue( !m_relative_radioBtn->GetValue() );
+
+    //wxPrintf(_("\nSTORE TYPE = %d, %d\n\n"), file_node->getLocationStoreType(), m_relative_radioBtn->GetValue());
 }
 
 void rcbasic_edit_fileProperties_dialog::onCancelButtonClick( wxCommandEvent& event )

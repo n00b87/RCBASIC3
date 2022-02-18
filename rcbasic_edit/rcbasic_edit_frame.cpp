@@ -1026,7 +1026,7 @@ void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
             token_parser->Delete();
             sym_sem->Wait();
             delete sym_sem;
-            wxPuts(_("thread successfully ended"));
+            //wxPuts(_("thread successfully ended"));
         }
     }
 
@@ -1139,16 +1139,16 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
             return;
         }
 
-        wxPuts(_("DEBUG 3"));
+        //wxPuts(_("DEBUG 3"));
 
         new_project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
         new_project->addSourceFile(new_project->getMainSource().GetFullPath(), STORE_LOCATION_RELATIVE);
 
-        wxPuts(_("DEBUG 4"));
+        //wxPuts(_("DEBUG 4"));
 
         new_project->setLastProjectSave();
 
-        wxPuts(_("DEBUG 5"));
+        //wxPuts(_("DEBUG 5"));
 
         //project_tree->AppendItem(new_project->getRootNode(), new_project->getMainSource().GetFullPath());
 
@@ -2970,6 +2970,7 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
         return;
 
     wxFileName newFile = newFile_dialog.getFileName();
+    newFile.SetExt(_("bas"));
 
     wxFile f;
 
