@@ -315,6 +315,9 @@ rc_ideFrame( parent )
     project_tree->AddRoot(_("Projects"), project_tree_rootImage);
     #ifdef _WIN32
     selected_project_item = project_tree->GetRootItem();
+    activated_project_item_flag = false;
+    activated_project_item_flag2 = false;
+    remove_file_node_flag = false;
     #endif // _WIN32
 
     active_project = NULL;
@@ -1263,8 +1266,9 @@ void rcbasic_edit_frame::openFileMenuSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::openProject(wxFileName project_path)
 {
-    //wxPuts(_("Openning Project [[[ ") + project_path.GetFullPath());
+    wxPuts(_("Openning Project [[[ ") + project_path.GetPath());
     wxSetWorkingDirectory(project_path.GetPath());
+
     for(int i = 0; i < open_projects.size(); i++)
     {
         if(open_projects[i]->getProjectFileLocation().compare(project_path.GetFullPath())==0)
@@ -1402,8 +1406,6 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         p_main_fname.MakeAbsolute();
         project_main = p_main_fname.GetFullPath();
 
-        wxSetWorkingDirectory(cwd);
-
         rcbasic_project* project = new rcbasic_project(project_name, project_location.GetLongPath(), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description);
         for(int i = 0; i < project_source.size(); i++)
         {
@@ -1436,11 +1438,17 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         if(project_index >= 0)
             updateProjectTree(project_index);
 
-        rcbasic_edit_txtCtrl* txtCtrl_obj;
+        rcbasic_edit_txtCtrl* txtCtrl_obj = NULL;
+        wxPuts(_("DEBUG P_INFO\nLocation: ") + project->getLocation() + _("\nMain: ") + project->getMainSource().GetFullPath() + _("\n"));
         txtCtrl_obj = openFileTab(project, project->getMainSource());
-        txtCtrl_obj->setTextChangedFlag(false);
+        if(txtCtrl_obj)
+        {
+            //wxMessageBox(_("DEBUG"));
+            txtCtrl_obj->setTextChangedFlag(false);
+        }
 
     }
+
 }
 
 void rcbasic_edit_frame::openSourceFile(wxFileName source_path)
@@ -2949,8 +2957,9 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
     if(project)
     {
         newFile.MakeAbsolute();
-        //wxPuts(_("Search for: ") + newFile.GetFullPath());
+        wxPuts(_("Search for: ") + newFile.GetFullPath());
         index = project->getSourceFileIndex(newFile);
+        wxPrintf(_("\nDEBUG [index] = %d\n\n"), index);
     }
 
     if(txtCtrl)
@@ -3011,6 +3020,8 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         //rc_txtCtrl->StyleSetFont(wxSTC_STYLE_DEFAULT, editor_font);
         rc_txtCtrl->SetTabWidth(4);
 
+        rc_txtCtrl->SetEOLMode(wxEOL_UNIX);
+
         //wxPuts(_("Applying scheme"));
         applyScheme(rc_txtCtrl);
         //wxPuts(_("Scheme has been applied"));
@@ -3024,11 +3035,20 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
 
 void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
 {
+    wxString cwd = wxGetCwd();
+    if(project)
+    {
+        wxSetWorkingDirectory(project->getLocation());
+        wxPuts(_("New Dir = ") + wxGetCwd());
+    }
     rcbasic_edit_newFile_dialog newFile_dialog(this);
     newFile_dialog.ShowModal();
 
     if(newFile_dialog.getNewFileFlag()==newFileFlag_CANCEL)
+    {
+        wxSetWorkingDirectory(cwd);
         return;
+    }
 
     wxFileName newFile = newFile_dialog.getFileName();
     newFile.SetExt(_("bas"));
@@ -3037,7 +3057,8 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
 
     if(!f.Create(newFile.GetFullPath()))
     {
-        wxMessageBox(_("Could not create new file"));
+        wxMessageBox(_("Could not create new file: ") + newFile.GetFullPath());
+        wxSetWorkingDirectory(cwd);
         return;
     }
     //wxPuts(_("\nCreated New File: ")+newFile.GetFullPath());
@@ -3046,7 +3067,7 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
 
     addRecentFile(newFile);
 
-    rcbasic_edit_txtCtrl* txtCtrl_obj;
+    rcbasic_edit_txtCtrl* txtCtrl_obj = NULL;
 
     if(newFile_dialog.getAddToProjectFlag())
     {
@@ -3071,8 +3092,11 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
     }
 
     notebook_mutex.Lock();
-    txtCtrl_obj->setTextChangedFlag(false);
+    if(txtCtrl_obj)
+        txtCtrl_obj->setTextChangedFlag(false);
+    updateProjectTree(getProjectFromRoot(project->getRootNode()));
     notebook_mutex.Unlock();
+    wxSetWorkingDirectory(cwd);
 }
 
 void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)

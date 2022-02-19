@@ -287,29 +287,19 @@ void rcbasic_edit_replace_dialog::onFindNextClick( wxCommandEvent& event )
 void rcbasic_edit_replace_dialog::onReplaceClick( wxCommandEvent& event )
 {
 // TODO: Implement onReplaceClick
+    replace_dialog_value = replace_dialog_INSELECTION;
+
     if(!current_file)
         return;
 
-    wxStyledTextCtrl* t = current_file->getTextCtrl();
+    int flag = m_matchWhole_checkBox->GetValue() ? wxSTC_FIND_WHOLEWORD : 0;
+    flag = m_caseSensitive_checkBox->GetValue() ? (flag | wxSTC_FIND_MATCHCASE) : flag;
 
-    if(!t)
-        return;
+    wxString search_txt= m_search_textCtrl->GetLineText(0);
 
-    if(current_search_pos < 0)
-        return;
+    wxString replace_txt = m_replace_textCtrl->GetLineText(0);
 
-    long from_pos = -1;
-    long to_pos = -1;
-    t->GetSelection(&from_pos, &to_pos);
-
-    if(from_pos < 0 || to_pos < 0)
-        return;
-
-    //wxTextCtrl* p;
-
-    t->BeginUndoAction();
-    t->Replace(from_pos, to_pos, m_replace_textCtrl->GetValue());
-    t->EndUndoAction();
+    replaceInSelection(current_file, search_txt, replace_txt, flag);
 }
 
 void rcbasic_edit_replace_dialog::onReplaceCloseClick( wxCommandEvent& event )
