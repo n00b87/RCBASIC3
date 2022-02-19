@@ -505,7 +505,10 @@ bool rcbasic_edit_frame::loadDefaultViewProperties(wxFileName fname)
 
         if(property.compare(_("DEFAULT_SCHEME"))==0)
         {
-            default_scheme = value;
+            wxFileName scheme_fname;
+            scheme_fname.SetFullName(value);
+            scheme_fname.SetExt(_("scheme"));
+            default_scheme = scheme_fname.GetFullName();
         }
 
 
@@ -1405,6 +1408,8 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         p_main_fname.SetFullName(project_main);
         p_main_fname.MakeAbsolute();
         project_main = p_main_fname.GetFullPath();
+
+        //wxSetWorkingDirectory(cwd);
 
         rcbasic_project* project = new rcbasic_project(project_name, project_location.GetLongPath(), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description);
         for(int i = 0; i < project_source.size(); i++)
@@ -3045,10 +3050,7 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
     newFile_dialog.ShowModal();
 
     if(newFile_dialog.getNewFileFlag()==newFileFlag_CANCEL)
-    {
-        wxSetWorkingDirectory(cwd);
         return;
-    }
 
     wxFileName newFile = newFile_dialog.getFileName();
     newFile.SetExt(_("bas"));
@@ -3057,8 +3059,7 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
 
     if(!f.Create(newFile.GetFullPath()))
     {
-        wxMessageBox(_("Could not create new file: ") + newFile.GetFullPath());
-        wxSetWorkingDirectory(cwd);
+        wxMessageBox(_("Could not create new file"));
         return;
     }
     //wxPuts(_("\nCreated New File: ")+newFile.GetFullPath());
@@ -3096,7 +3097,6 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
         txtCtrl_obj->setTextChangedFlag(false);
     updateProjectTree(getProjectFromRoot(project->getRootNode()));
     notebook_mutex.Unlock();
-    wxSetWorkingDirectory(cwd);
 }
 
 void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)
