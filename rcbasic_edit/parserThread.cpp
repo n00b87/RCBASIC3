@@ -190,7 +190,9 @@ bool parserThread::runParser(wxCommandEvent evt)
             if(!inSymbolList(sym))
                 contents_changed = 1;
 
+            notebook_mutex.Lock();
             addSymbol(sym);
+            notebook_mutex.Lock();
         }
 
         //if(i%200==0)
@@ -202,6 +204,7 @@ bool parserThread::runParser(wxCommandEvent evt)
 
     }
 
+    notebook_mutex.Lock();
     if(sym_list->size() != s_list.size())
         contents_changed = 1;
 
@@ -209,7 +212,7 @@ bool parserThread::runParser(wxCommandEvent evt)
     evt.SetInt(contents_changed);
 
     evt.SetClientData((void*)sym_list);
-    notebook_mutex.Lock();
+
     frame->parsed_page = frame->pre_parsed_page;
     notebook_mutex.Unlock();
     wxPostEvent(m_pParent, evt);

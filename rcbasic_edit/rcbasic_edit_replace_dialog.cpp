@@ -7,6 +7,8 @@ rc_replace_dialog( parent )
     parent_frame = (rcbasic_edit_frame*) parent;
     current_project = parent_frame->getActiveProject();
     current_file = parent_frame->getCurrentFile();
+    if(!current_file)
+        Close();
     current_search_pos = -1;
     wxString selected_text = current_file->getTextCtrl()->GetSelectedText();
     if(selected_text.Length() > 0 && selected_text.Length() <= 80)
@@ -287,19 +289,37 @@ void rcbasic_edit_replace_dialog::onFindNextClick( wxCommandEvent& event )
 void rcbasic_edit_replace_dialog::onReplaceClick( wxCommandEvent& event )
 {
 // TODO: Implement onReplaceClick
-    replace_dialog_value = replace_dialog_INSELECTION;
-
     if(!current_file)
         return;
 
+    wxStyledTextCtrl* t = current_file->getTextCtrl();
+
+    if(!t)
+        return;
+
+    //int previous_pos = t->FindText(t->GetCurrentPos()+1, t->GetLastPosition(), m_search_textCtrl->GetLineText(0));
+    if(m_search_textCtrl->GetLineText(0).compare(search_term)!=0 || current_search_pos < 0)
+    {
+        search_term = m_search_textCtrl->GetLineText(0);
+        current_search_pos = 0;
+    }
+
+    t->SetTargetStart(current_search_pos);
+    t->SetTargetEnd(t->GetTextLength());
+
     int flag = m_matchWhole_checkBox->GetValue() ? wxSTC_FIND_WHOLEWORD : 0;
     flag = m_caseSensitive_checkBox->GetValue() ? (flag | wxSTC_FIND_MATCHCASE) : flag;
-
-    wxString search_txt= m_search_textCtrl->GetLineText(0);
-
-    wxString replace_txt = m_replace_textCtrl->GetLineText(0);
-
-    replaceInSelection(current_file, search_txt, replace_txt, flag);
+    t->SetSearchFlags(flag);
+    t->SearchAnchor();
+    int next_pos = t->SearchInTarget(m_search_textCtrl->GetLineText(0));
+    //wxPrintf(_("Prev POS = %d\n"), previous_pos);
+    if(next_pos >= 0)
+    {
+        current_search_pos = next_pos + 1;
+        t->GotoPos(next_pos);
+        t->Replace(next_pos, next_pos + m_search_textCtrl->GetLineText(0).Length(), m_replace_textCtrl->GetValue());
+        t->SetSelection(t->GetCurrentPos(), t->GetCurrentPos() + m_search_textCtrl->GetLineText(0).length());
+    }
 }
 
 void rcbasic_edit_replace_dialog::onReplaceCloseClick( wxCommandEvent& event )

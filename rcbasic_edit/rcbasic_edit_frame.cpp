@@ -1269,7 +1269,7 @@ void rcbasic_edit_frame::openFileMenuSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::openProject(wxFileName project_path)
 {
-    wxPuts(_("Openning Project [[[ ") + project_path.GetPath());
+    //wxPuts(_("Openning Project [[[ ") + project_path.GetPath());
     wxSetWorkingDirectory(project_path.GetPath());
 
     for(int i = 0; i < open_projects.size(); i++)
@@ -1444,7 +1444,7 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
             updateProjectTree(project_index);
 
         rcbasic_edit_txtCtrl* txtCtrl_obj = NULL;
-        wxPuts(_("DEBUG P_INFO\nLocation: ") + project->getLocation() + _("\nMain: ") + project->getMainSource().GetFullPath() + _("\n"));
+        //wxPuts(_("DEBUG P_INFO\nLocation: ") + project->getLocation() + _("\nMain: ") + project->getMainSource().GetFullPath() + _("\n"));
         txtCtrl_obj = openFileTab(project, project->getMainSource());
         if(txtCtrl_obj)
         {
@@ -1489,8 +1489,15 @@ void rcbasic_edit_frame::openSourceFile(wxFileName source_path)
 int rcbasic_edit_frame::getOpenFileFromSelection()
 {
     int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+        return -1;
+
     for(int i = 0; i < open_files.size(); i++)
     {
+        if(!open_files[i])
+            continue;
+
         if(open_files[i]->getTextCtrl()==sourceFile_auinotebook->GetPage(selected_page))
         {
             //wxPuts(_("File = ") + open_files[i]->getSourcePath().GetFullPath());
@@ -1508,6 +1515,9 @@ void rcbasic_edit_frame::saveFile(int openFile_index, int flag=0)
     if(openFile_index < 0)
         return;
 
+    if(!open_files[openFile_index])
+        return;
+
     //int selected_page = sourceFile_auinotebook->GetSelection();
     int selected_page = -1;
 
@@ -1516,6 +1526,8 @@ void rcbasic_edit_frame::saveFile(int openFile_index, int flag=0)
 
     if(selected_page < 0)
         return;
+
+    open_files[openFile_index]->getTextCtrl()->ConvertEOLs(wxSTC_EOL_LF);
 
     wxFileName fname = open_files[openFile_index]->getSourcePath();
 
@@ -1544,9 +1556,15 @@ void rcbasic_edit_frame::saveFile(int openFile_index, int flag=0)
     {
         for(int p_index = 0; p_index < open_projects.size(); p_index++)
         {
+            if(!open_projects[p_index])
+                continue;
+
             std::vector<rcbasic_project_node*> source_files = open_projects[p_index]->getSourceFiles();
             for(int f_index = 0; f_index < source_files.size(); f_index++)
             {
+                if(!source_files[f_index])
+                    continue;
+
                 if(source_files[f_index]->getPath().GetFullPath().compare(fname.GetFullPath()))
                 {
                     source_files[f_index]->setTextCtrl(NULL);
@@ -1606,10 +1624,14 @@ void rcbasic_edit_frame::onSaveProjectMenuSelect( wxCommandEvent& event )
     std::vector<rcbasic_project_node*> pf_nodes = active_project->getSourceFiles();
     for(int i = 0; i < open_files.size(); i++)
     {
+        if(!open_files[i])
+            continue;
         wxFileName o_fname = open_files[i]->getSourcePath();
         o_fname.MakeAbsolute();
         for(int p_file = 0; p_file < pf_nodes.size(); p_file++)
         {
+            if(!pf_nodes[p_file])
+                continue;
             wxFileName p_fname = pf_nodes[p_file]->getPath();
             p_fname.MakeAbsolute();
             if(o_fname.GetFullPath().compare(p_fname.GetFullPath())==0)
@@ -1641,8 +1663,14 @@ void rcbasic_edit_frame::onSaveProjectAsMenuSelect( wxCommandEvent& event )
     notebook_mutex.Lock();
     for(int i = 0; i < open_files.size(); i++)
     {
+        if(!open_files[i])
+            continue;
+
         for(int pf = 0; pf < active_project->getSourceFiles().size(); pf++)
         {
+            if(!active_project->getSourceFiles()[pf])
+                continue;
+
             if(open_files[i]->getSourcePath().GetFullPath().compare(active_project->getSourceFiles()[pf]->getPath().GetFullPath()) == 0)
             {
                 saveFile(i);
@@ -1659,6 +1687,9 @@ void rcbasic_edit_frame::onSaveAllMenuSelect( wxCommandEvent& event )
     notebook_mutex.Lock();
     for(int i = 0; i < open_files.size(); i++)
     {
+        if(!open_files[i])
+            continue;
+
         if(open_files[i]->getTextChangedFlag())
         {
             saveFile(i);
@@ -1667,6 +1698,9 @@ void rcbasic_edit_frame::onSaveAllMenuSelect( wxCommandEvent& event )
 
     for(int i = 0; i < open_projects.size(); i++)
     {
+        if(!open_projects[i])
+            continue;
+
         open_projects[i]->saveProject(wxFileName(open_projects[i]->getProjectFileLocation()));
     }
     notebook_mutex.Unlock();
@@ -1681,6 +1715,9 @@ int rcbasic_edit_frame::closeFile(int notebook_page)
 
     for(int i = 0; i < open_files.size(); i++)
     {
+        if(!open_files[i])
+            continue;
+
         if(open_files[i]->getTextCtrl()==sourceFile_auinotebook->GetPage(notebook_page))
         {
             if(open_files[i]->getTextChangedFlag())
@@ -1740,6 +1777,9 @@ int rcbasic_edit_frame::getProjectFromRoot(wxTreeItemId node)
 {
     for(int i = 0; i < open_projects.size(); i++)
     {
+        if(!open_projects[i])
+            continue;
+
         if(open_projects[i]->getRootNode()==node)
             return i;
     }
@@ -1750,16 +1790,16 @@ void rcbasic_edit_frame::updateProjectTree(int project_index)
 {
     wxTreeItemId project_node = open_projects[project_index]->getRootNode();
     project_tree->DeleteChildren(project_node);
-    notebook_mutex.Lock();
     std::vector<rcbasic_project_node*> source_files = open_projects[project_index]->getSourceFiles();
-    notebook_mutex.Unlock();
 
     wxFileName node_label;
     rcbasic_treeItem_data* data;
 
-    notebook_mutex.Lock();
     for(int i = 0; i < source_files.size(); i++)
     {
+        if(!source_files[i])
+            continue;
+
         node_label = wxFileName(source_files[i]->getPath().GetFullPath());
         data = new rcbasic_treeItem_data(node_label, open_projects[project_index]);
         if(source_files[i]->getLocationStoreType()==STORE_LOCATION_RELATIVE)
@@ -1768,7 +1808,6 @@ void rcbasic_edit_frame::updateProjectTree(int project_index)
             node_label.MakeAbsolute();
         source_files[i]->setNode( project_tree->AppendItem( project_node, node_label.GetFullPath(), project_tree_fileImage, -1, data) );
     }
-    notebook_mutex.Unlock();
 }
 
 wxFileName rcbasic_edit_frame::openFileDialog(wxString title, wxString default_wildcard, int flag)
@@ -1808,6 +1847,27 @@ void rcbasic_edit_frame::saveProject(rcbasic_project* project)
 {
     if(!project)
         return;
+
+    std::vector<rcbasic_project_node*> pf_nodes = project->getSourceFiles();
+    for(int i = 0; i < open_files.size(); i++)
+    {
+        if(!open_files[i])
+            continue;
+        wxFileName o_fname = open_files[i]->getSourcePath();
+        o_fname.MakeAbsolute();
+        for(int p_file = 0; p_file < pf_nodes.size(); p_file++)
+        {
+            if(!pf_nodes[p_file])
+                continue;
+            wxFileName p_fname = pf_nodes[p_file]->getPath();
+            p_fname.MakeAbsolute();
+            if(o_fname.GetFullPath().compare(p_fname.GetFullPath())==0)
+            {
+                //wxPuts(_("SAVING: ") + o_fname.GetFullPath());
+                saveFile(i, 0);
+            }
+        }
+    }
 
     wxFileName project_file;
 
@@ -2888,10 +2948,12 @@ void rcbasic_edit_frame::onProjectSettingsMenuSelect( wxCommandEvent& event )
     if(ps_dialog.getFlag()==PROJECT_SETTINGS_CANCEL)
         return;
 
+    notebook_mutex.Lock();
     active_project = ps_dialog.getNewProject();
 
     int project_index = getProjectFromRoot(active_project->getRootNode());
     updateProjectTree(project_index);
+    notebook_mutex.Unlock();
 }
 
 void rcbasic_edit_frame::onProjectEnvironmentMenuSelect( wxCommandEvent& event )
@@ -2953,6 +3015,8 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         {
             //wxPuts(_("TEST 1"));
             txtCtrl = open_files[i]->getTextCtrl();
+            if(txtCtrl)
+                txtCtrl->SetEOLMode(wxSTC_EOL_LF);
             break;
         }
     }
@@ -2962,9 +3026,9 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
     if(project)
     {
         newFile.MakeAbsolute();
-        wxPuts(_("Search for: ") + newFile.GetFullPath());
+        //wxPuts(_("Search for: ") + newFile.GetFullPath());
         index = project->getSourceFileIndex(newFile);
-        wxPrintf(_("\nDEBUG [index] = %d\n\n"), index);
+        //wxPrintf(_("\nDEBUG [index] = %d\n\n"), index);
     }
 
     if(txtCtrl)
@@ -3025,7 +3089,7 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         //rc_txtCtrl->StyleSetFont(wxSTC_STYLE_DEFAULT, editor_font);
         rc_txtCtrl->SetTabWidth(4);
 
-        rc_txtCtrl->SetEOLMode(wxEOL_UNIX);
+        rc_txtCtrl->SetEOLMode(wxSTC_EOL_LF);
 
         //wxPuts(_("Applying scheme"));
         applyScheme(rc_txtCtrl);
@@ -3044,7 +3108,7 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
     if(project)
     {
         wxSetWorkingDirectory(project->getLocation());
-        wxPuts(_("New Dir = ") + wxGetCwd());
+        //wxPuts(_("New Dir = ") + wxGetCwd());
     }
     rcbasic_edit_newFile_dialog newFile_dialog(this);
     newFile_dialog.ShowModal();
@@ -3105,6 +3169,8 @@ void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)
     if((!context_project) || open_projects.size()<=0)
             return;
 
+    notebook_mutex.Lock();
+
     if(active_project != NULL)
     {
         project_tree->SetItemBold(active_project->getRootNode(), false);
@@ -3136,9 +3202,7 @@ void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)
             break;
         case NEW_FILE:
             //wxPuts(_("Remove Files"));
-            notebook_mutex.Lock();
             createNewFile(context_project);
-            notebook_mutex.Unlock();
             break;
         case BUILD_PROJECT:
             //wxPuts(_("Build Project"));
@@ -3155,7 +3219,10 @@ void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)
             ps_dialog.ShowModal();
 
             if(ps_dialog.getFlag()==PROJECT_SETTINGS_CANCEL)
+            {
+                notebook_mutex.Unlock();
                 return;
+            }
 
             active_project = ps_dialog.getNewProject();
             context_project = active_project;
@@ -3165,6 +3232,8 @@ void rcbasic_edit_frame::onTreeContextClick(wxCommandEvent &evt)
 
             break;
     }
+
+    notebook_mutex.Unlock();
 }
 
 void rcbasic_edit_frame::openFileProperties(rcbasic_project* f_project, rcbasic_project_node* f_node)
@@ -3207,6 +3276,8 @@ void rcbasic_edit_frame::onTreeFileContextClick(wxCommandEvent &evt)
     wxString cwd = wxGetCwd();
     wxSetWorkingDirectory(context_project->getLocation());
 
+    notebook_mutex.Lock();
+
     if(evt.GetId() == PT_OPEN_FILE)
     {
         remove_file_node_flag = PT_OPEN_FILE;
@@ -3227,6 +3298,8 @@ void rcbasic_edit_frame::onTreeFileContextClick(wxCommandEvent &evt)
         openFileProperties(context_project, context_file);
         updateProjectTree(getProjectFromRoot(context_project->getRootNode()));
     }
+
+    notebook_mutex.Unlock();
 
     wxSetWorkingDirectory(cwd);
 }
@@ -3458,14 +3531,21 @@ void rcbasic_edit_frame::onProjectTreeSelectionChanging( wxTreeEvent& event )
 
 void rcbasic_edit_frame::onSourceFileTabClose( wxAuiNotebookEvent& event )
 {
+    notebook_mutex.Lock();
+
     int selected_page = event.GetSelection();
+
+    if(selected_page < 0)
+        return;
 
     wxString temp_text;
     bool text_changed = false;
 
-    notebook_mutex.Lock();
     for(int i = 0; i < open_files.size(); i++)
     {
+        if(!open_files[i])
+            continue;
+
         if(sourceFile_auinotebook->GetPageIndex(open_files[i]->getTextCtrl()) == selected_page)
         {
             if(open_files[i]->getTextChangedFlag())
@@ -3497,8 +3577,14 @@ void rcbasic_edit_frame::onSourceFileTabClose( wxAuiNotebookEvent& event )
 
     for(int i = 0; i < open_projects.size(); i++)
     {
+        if(!open_projects[i])
+            continue;
+
         for(int file_node_index = 0; file_node_index < open_projects[i]->getSourceFiles().size(); file_node_index++)
         {
+            if(!open_projects[i]->getSourceFiles()[file_node_index])
+                continue;
+
             if(sourceFile_auinotebook->GetPageIndex(open_projects[i]->getSourceFiles()[file_node_index]->getTextCtrl()) == selected_page)
             {
                 open_projects[i]->getSourceFiles()[file_node_index]->setTextCtrl(NULL);
@@ -3553,12 +3639,19 @@ void rcbasic_edit_frame::addRecentFile(wxFileName file)
 void rcbasic_edit_frame::onTextCtrlUpdated( wxStyledTextEvent& event )
 {
     notebook_mutex.Lock();
-    wxStyledTextCtrl* rc_txtCtrl = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection());
+    int selected_tab = sourceFile_auinotebook->GetSelection();
+    wxString selection_string = sourceFile_auinotebook->GetPageText(selected_tab);
+    wxStyledTextCtrl* rc_txtCtrl = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_tab);
+
     for(int i = 0; i < open_files.size(); i++)
     {
+        if(!open_files[i])
+            continue;
+
         if(open_files[i]->getTextCtrl()==rc_txtCtrl)
         {
             open_files[i]->setTextChangedFlag(true);
+            sourceFile_auinotebook->SetPageText(selected_tab, _("[*]") + selection_string.substr(selection_string.find_first_not_of(_("[*]"))) );
         }
     }
     notebook_mutex.Unlock();
@@ -3581,10 +3674,10 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
         return;
     }
 
-    int selected_tab = sourceFile_auinotebook->GetSelection();
-    wxString selection_string = sourceFile_auinotebook->GetPageText(selected_tab);
+    //int selected_tab = sourceFile_auinotebook->GetSelection();
+    //wxString selection_string = sourceFile_auinotebook->GetPageText(selected_tab);
 
-    sourceFile_auinotebook->SetPageText(selected_tab, _("[*]") + selection_string.substr(selection_string.find_first_not_of(_("[*]"))) );
+    //sourceFile_auinotebook->SetPageText(selected_tab, _("[*]") + selection_string.substr(selection_string.find_first_not_of(_("[*]"))) );
     //t->SetLabel(_("[*]") + t->GetLabel().substr(t->GetLabel().find_first_not_of(_("]"))));
 
     char chr = event.GetKey();
@@ -3712,15 +3805,16 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
         t->SetSelection(t->GetCurrentPos(), t->GetCurrentPos() + t->GetLineText(sym.line).length());
     }
 
-    notebook_mutex.Unlock();
     #ifdef _WIN32
     symbol_tree->UnselectAll();
     #endif
 
+    notebook_mutex.Unlock();
 }
 
 void rcbasic_edit_frame::onSymbolSelectionChanging( wxTreeEvent& event )
 {
+    notebook_mutex.Lock();
     #ifdef _WIN32
     symbol_tree->UnselectAll();
 
@@ -3740,7 +3834,7 @@ void rcbasic_edit_frame::onSymbolSelectionChanging( wxTreeEvent& event )
         symbol_tree->SetItemTextColour(selected_symbol_item, wxColour(240, 240, 240));
     }
     #endif
-
+    notebook_mutex.Unlock();
 }
 
 void rcbasic_edit_frame::onNotebookPageChanged( wxAuiNotebookEvent& event )

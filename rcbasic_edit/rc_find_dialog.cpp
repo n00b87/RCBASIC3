@@ -7,6 +7,10 @@ rc_find_dialog( parent )
     parent_frame = (rcbasic_edit_frame*) parent;
     current_project = parent_frame->getActiveProject();
     current_file = parent_frame->getCurrentFile();
+
+    if(!current_file)
+        Close();
+
     wxString selected_text = current_file->getTextCtrl()->GetSelectedText();
     if(selected_text.Length() > 0 && selected_text.Length() <= 80)
         m_search_textCtrl->SetValue(current_file->getTextCtrl()->GetSelectedText());

@@ -312,7 +312,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		{
 		    int selected_page = sourceFile_auinotebook->GetSelection();
 
-		    if(selected_page < 0)
+		    if(selected_page < 0 || selected_page >= sourceFile_auinotebook->GetPageCount())
                 return NULL;
 
             for(int i = 0; i < open_files.size(); i++)
