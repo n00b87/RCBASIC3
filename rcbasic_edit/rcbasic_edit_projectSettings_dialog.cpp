@@ -11,7 +11,9 @@ rc_projectSettings_dialog( parent )
     projectSettings_flag = PROJECT_SETTINGS_CANCEL;
 
     if(!current_project)
-        return;
+    {
+        Close();
+    }
 
     new_project = new rcbasic_project();
     new_project->copyFromProject(current_project);
@@ -41,6 +43,8 @@ rc_projectSettings_dialog( parent )
 
     for(int i = 0; i < nodes.size(); i++)
     {
+        if(!nodes[i])
+            continue;
         wxFileName tmp = nodes[i]->getPath();
 
         switch(nodes[i]->getLocationStoreType())

@@ -159,8 +159,8 @@ void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
     {
         sym_list = (std::vector<rcbasic_symbol>*) event.GetClientData();
     }
-    //wxPrintf(_("Data Size:%d  ----> %d\n"), sym_list->size(), event.GetInt());
-    if(true)
+
+    if(sym_list)
     {
         /*for(int i = 0; i < symbols.size(); i++)
         {

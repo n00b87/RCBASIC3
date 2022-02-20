@@ -54,6 +54,7 @@ class rcbasic_project_node
         void setPath( wxFileName new_path ) { path = new_path; }
         bool getTargetFlag() { return target_flag; }
         void setTargetFlag(bool flag_value) { target_flag = flag_value; }
+        void setToOpenTextCtrl(wxStyledTextCtrl* txt_ctrl) { rc_txtCtrl = txt_ctrl; }
 };
 
 struct rcbasic_edit_env_var
