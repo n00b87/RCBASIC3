@@ -129,7 +129,8 @@ class rcbasic_project
                 if(tmp_rel.GetFullPath().compare(fname)==0 || tmp_abs.GetFullPath().compare(fname)==0)
                 {
                     //wxPuts(_("match: ")+tmp.GetFullPath());
-                    delete source_files[i];
+                    if(source_files[i])
+                        delete source_files[i];
                     source_files.erase(source_files.begin() + i);
                     i--;
                     break;

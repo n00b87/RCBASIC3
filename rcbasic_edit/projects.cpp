@@ -328,6 +328,8 @@ rcbasic_project::~rcbasic_project()
     if(last_saved_project)
         delete last_saved_project;
 
+    last_saved_project = NULL;
+
     source_files.clear();
 }
 

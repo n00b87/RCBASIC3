@@ -21,7 +21,8 @@ rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* p
 
 rcbasic_edit_txtCtrl::~rcbasic_edit_txtCtrl()
 {
-    delete txtCtrl;
+    if(txtCtrl)
+        delete txtCtrl;
 }
 
 wxStyledTextCtrl* rcbasic_edit_txtCtrl::getTextCtrl()
@@ -122,7 +123,8 @@ void rcbasic_edit_frame::updateSymbolTree()
     {
         rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(var_nodes[v_index]);
         symbol_tree->SetItemData(var_nodes[v_index], NULL);
-        delete data;
+        if(data)
+            delete data;
         //if(symbol_tree-> GetChildrenCount(variable_root_node))
             symbol_tree->Delete(var_nodes[v_index]);
         var_nodes.erase(var_nodes.begin()+v_index);
@@ -133,7 +135,8 @@ void rcbasic_edit_frame::updateSymbolTree()
     {
         rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(fn_nodes[f_index]);
         symbol_tree->SetItemData(fn_nodes[f_index], NULL);
-        delete data;
+        if(data)
+            delete data;
         symbol_tree->Delete(fn_nodes[f_index]);
         fn_nodes.erase(fn_nodes.begin()+f_index);
         //f_child = symbol_tree->GetNextChild(function_root_node, f_cookie);
@@ -149,7 +152,7 @@ void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
     notebook_mutex.Lock();
 
 
-    std::vector<rcbasic_symbol>* sym_list;
+    std::vector<rcbasic_symbol>* sym_list = NULL;
 
     if(!pre_parsed_page)
     {
@@ -1187,9 +1190,16 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
         wxString project_description = newProject_win->projectDescription_field->GetValue();
 
         rcbasic_project* new_project = new rcbasic_project(project_name, project_location, main_source_flag, main_source_value, project_author, project_website, project_description);
-        if(!new_project->projectExists())
+        if(!new_project)
         {
+            wxMessageBox(_("Error: Could not create New Project"));
+            return;
+        }
+        else if(!new_project->projectExists())
+        {
+            wxMessageBox(_("Error: Could not create New Project"));
             delete new_project;
+            new_project = NULL;
             return;
         }
 
@@ -1957,7 +1967,11 @@ int rcbasic_edit_frame::closeProject(rcbasic_project* project)
     project_tree->Delete(project->getRootNode());
 
     open_projects.erase(open_projects.begin()+getProjectFromRoot(project->getRootNode()));
-    delete project;
+    if(project)
+    {
+        delete project;
+        project = NULL;
+    }
 
     return rtn_val;
 }
@@ -2394,7 +2408,9 @@ void rcbasic_edit_frame::setSearchResultsInProject(int findDialog_flag, wxString
             wxFile f;
             if(!f.Open(p_node->getPath().GetFullPath()))
             {
-                delete t;
+                if(t)
+                    delete t;
+                t = NULL;
                 continue;
             }
             else
@@ -2445,7 +2461,11 @@ void rcbasic_edit_frame::setSearchResultsInProject(int findDialog_flag, wxString
         }
 
         if(t != p_node->getTextCtrl())
-            delete t;
+        {
+            if(t)
+                delete t;
+            t= NULL;
+        }
 
     }
 
@@ -2682,7 +2702,9 @@ void rcbasic_edit_frame::replaceInProject(int findDialog_flag, wxString txt, wxS
             wxFile f;
             if(!f.Open(p_node->getPath().GetFullPath()))
             {
-                delete t;
+                if(t)
+                    delete t;
+                t = NULL;
                 continue;
             }
             else
@@ -2733,7 +2755,11 @@ void rcbasic_edit_frame::replaceInProject(int findDialog_flag, wxString txt, wxS
         }
 
         if(t != p_node->getTextCtrl())
-            delete t;
+        {
+            if(t)
+                delete t;
+            t = NULL;
+        }
 
     }
 
@@ -3740,7 +3766,8 @@ void rcbasic_edit_frame::setSymbol(wxTreeItemId s_node, rcbasic_symbol sym)
 
     rc_symbol_treeItem_data* old_data = (rc_symbol_treeItem_data*)symbol_tree->GetItemData(s_node);
     symbol_tree->SetItemData(s_node, NULL);
-    delete old_data;
+    if(old_data)
+        delete old_data;
 
     symbol_tree->SetItemText(s_node, node_label);
     symbol_tree->SetItemData(s_node, new rc_symbol_treeItem_data(sym));
@@ -3842,16 +3869,20 @@ void rcbasic_edit_frame::onNotebookPageChanged( wxAuiNotebookEvent& event )
     notebook_mutex.Lock();
     for(int i = 0; i < var_nodes.size(); i++)
     {
-        rcbasic_treeItem_data * data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(var_nodes[i]);
+        rcbasic_treeItem_data * data = NULL;
+        data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(var_nodes[i]);
         symbol_tree->SetItemData(var_nodes[i], NULL);
-        delete data;
+        if(data)
+            delete data;
     }
 
     for(int i = 0; i < fn_nodes.size(); i++)
     {
-        rcbasic_treeItem_data * data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(fn_nodes[i]);
+        rcbasic_treeItem_data * data = NULL;
+        data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(fn_nodes[i]);
         symbol_tree->SetItemData(fn_nodes[i], NULL);
-        delete data;
+        if(data)
+            delete data;
     }
 
     symbol_tree->DeleteChildren(variable_root_node);

@@ -20,7 +20,8 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
     }
 
     wxKill(build_pid);
-    delete build_process;
+    if(build_process)
+        delete build_process;
     build_process = NULL;
 
     wxFileName main_fname = build_run_project->getMainSource();
@@ -70,7 +71,8 @@ void rcbasic_edit_frame::onRunProcessTerminate( wxProcessEvent& event )
     isBuildingAndRunning = false;
 
     wxKill(run_pid);
-    delete run_process;
+    if(run_process)
+        delete run_process;
     run_process = NULL;
     build_run_project = NULL;
 
@@ -320,7 +322,8 @@ void rcbasic_edit_frame::runProject()
         isRunning = false;
 
         wxKill(run_pid);
-        delete run_process;
+        if(run_process)
+            delete run_process;
         run_process = NULL;
         build_run_project = NULL;
 
@@ -445,7 +448,8 @@ void rcbasic_edit_frame::onStopExecuteMenuSelect( wxCommandEvent& event )
         isRunning = false;
         isBuildingAndRunning = false;
         wxKill(run_pid);
-        delete run_process;
+        if(run_process)
+            delete run_process;
         run_process = NULL;
         build_run_project = NULL;
         #endif

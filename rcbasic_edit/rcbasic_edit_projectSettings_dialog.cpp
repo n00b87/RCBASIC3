@@ -79,7 +79,8 @@ void rcbasic_edit_projectSettings_dialog::onCancelButtonClick( wxCommandEvent& e
 {
 // TODO: Implement onCancelButtonClick
     new_project->setPointersNull();
-    delete new_project;
+    if(new_project)
+        delete new_project;
 
     //wxPuts(_("THE END"));
 
@@ -127,10 +128,11 @@ void rcbasic_edit_projectSettings_dialog::onOKButtonClick( wxCommandEvent& event
 
     int i = parent_frame->getProjectFromRoot(new_project->getRootNode());
 
-    if(i >= 0)
+    if(i >= 0 && current_project != NULL)
     {
         current_project->setPointersNull();
         delete current_project;
+        current_project = NULL;
         parent_frame->setOpenProject(i, new_project);
     }
 

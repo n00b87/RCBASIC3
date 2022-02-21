@@ -192,7 +192,7 @@ bool parserThread::runParser(wxCommandEvent evt)
 
             notebook_mutex.Lock();
             addSymbol(sym);
-            notebook_mutex.Lock();
+            notebook_mutex.Unlock();
         }
 
         //if(i%200==0)
@@ -211,11 +211,12 @@ bool parserThread::runParser(wxCommandEvent evt)
     //can be used to set some identifier for the data
     evt.SetInt(contents_changed);
 
+    frame->parsed_page = frame->pre_parsed_page;
     evt.SetClientData((void*)sym_list);
 
-    frame->parsed_page = frame->pre_parsed_page;
-    notebook_mutex.Unlock();
     wxPostEvent(m_pParent, evt);
+
+    notebook_mutex.Unlock();
 
     return true;
 }

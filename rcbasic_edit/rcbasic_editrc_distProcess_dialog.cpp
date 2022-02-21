@@ -31,7 +31,9 @@ rc_distProcess_dialog( parent )
 
 	if(dist_pid < 0)
     {
-        delete dist_process;
+        if(dist_process)
+            delete dist_process;
+        dist_process = NULL;
         return;
     }
 
@@ -81,7 +83,8 @@ void rcbasic_editrc_distProcess_dialog::onCancelButtonClick( wxCommandEvent& eve
     wxExecute(_("taskkill /F /IM rcbasic_studio_run.exe"), wxEXEC_SYNC);
 
     wxKill(dist_pid);
-    delete dist_process;
+    if(dist_process)
+        delete dist_process;
     dist_process = NULL;
 
     Close();
@@ -113,7 +116,8 @@ void rcbasic_editrc_distProcess_dialog::onDistProcessTerminate( wxProcessEvent& 
     }
 
     wxKill(dist_pid);
-    delete dist_process;
+    if(dist_process)
+        delete dist_process;
     dist_process = NULL;
 
     m_cancel_button->Hide();
