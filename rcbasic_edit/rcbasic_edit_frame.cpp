@@ -148,9 +148,8 @@ void rcbasic_edit_frame::updateSymbolTree()
 
 void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
 {
-    thread_returned = true;
     notebook_mutex.Lock();
-
+    thread_returned = true;
 
     std::vector<rcbasic_symbol>* sym_list = NULL;
 
@@ -186,14 +185,15 @@ void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
             }
         }
 
-        if(sym_list)
-            delete sym_list;
+        //if(sym_list)
+          //  delete sym_list;
 
         updateSymbolTree();
     }
 
     parsed_page = pre_parsed_page;
     symbolUpdateInProgress = false;
+
     notebook_mutex.Unlock();
 }
 

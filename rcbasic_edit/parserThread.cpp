@@ -27,6 +27,7 @@ parserThread::parserThread(wxEvtHandler* pParent, int param, wxFrame* p_frame) :
     parent_frame = p_frame;
 
     rcbasic_edit_frame* frame = (rcbasic_edit_frame*) parent_frame;
+    sym_list = new std::vector<rcbasic_symbol>;
     //s_list = frame->getSymbols();
 }
 
@@ -121,7 +122,6 @@ void* parserThread::Entry()
         }
 
         notebook_mutex.Lock();
-        s_list = frame->getSymbols();
         current_file_flag = (frame->getCurrentFile()!=NULL);
 
         if(current_file_flag)
@@ -157,10 +157,16 @@ void* parserThread::Entry()
 
 bool parserThread::runParser(wxCommandEvent evt)
 {
-    sym_list = new std::vector<rcbasic_symbol>;
+    if(sym_list)
+    {
+        //delete sym_list;
+        //sym_list = NULL;
+        sym_list->clear();
+    }
 
     rcbasic_edit_frame* frame = (rcbasic_edit_frame*) parent_frame;
 
+    s_list = frame->getSymbols();
 
     readContents();
 
@@ -217,6 +223,7 @@ bool parserThread::runParser(wxCommandEvent evt)
     wxPostEvent(m_pParent, evt);
 
     notebook_mutex.Unlock();
+
 
     return true;
 }
