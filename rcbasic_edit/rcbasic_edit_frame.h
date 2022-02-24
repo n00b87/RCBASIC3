@@ -73,6 +73,8 @@ struct rcbasic_search_result
 
 struct rcbasic_edit_scheme
 {
+    wxString scheme_name;
+
     wxColour style_bkg_color;
     wxColour keyword_fg_color;
     wxColour keyword2_fg_color;
@@ -275,6 +277,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onRunProcessTerminate( wxProcessEvent& event );
 
 	public:
+	    rcbasic_edit_scheme getScheme() { return editor_scheme; }
 	    void openFileProperties(rcbasic_project* f_project, rcbasic_project_node* f_node);
 	    wxString search_term;
 	    wxFileName getRCRunnerPath() { return rcbasic_run_path; }

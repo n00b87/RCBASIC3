@@ -28,6 +28,7 @@ rc_projectSettings_dialog( parent )
     ms_fname_abs.MakeAbsolute();
 
     //m_mainSource_textCtrl->SetValue(ms_fname.GetFullPath());
+    m_projectLocation_textCtrl->SetValue(new_project->getLocation());
     m_author_textCtrl->SetValue(new_project->getAuthor());
     m_website_textCtrl->SetValue(new_project->getWebsite());
     m_description_textCtrl->SetValue(new_project->getDescription());

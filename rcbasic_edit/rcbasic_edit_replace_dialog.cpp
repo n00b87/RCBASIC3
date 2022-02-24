@@ -11,7 +11,7 @@ rc_replace_dialog( parent )
         Close();
     current_search_pos = -1;
     wxString selected_text = current_file->getTextCtrl()->GetSelectedText();
-    if(selected_text.Length() > 0 && selected_text.Length() <= 80)
+    if(selected_text.Length() > 0 && selected_text.Length() <= 300)
         m_search_textCtrl->SetValue(current_file->getTextCtrl()->GetSelectedText());
     else
         m_search_textCtrl->SetValue(parent_frame->search_term);
@@ -148,6 +148,10 @@ void rcbasic_edit_replace_dialog::replaceInSelection(rcbasic_edit_txtCtrl* txtCt
 void rcbasic_edit_replace_dialog::onReplaceInProjectClick( wxCommandEvent& event )
 {
 // TODO: Implement onReplaceInProjectClick
+
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
+
     replace_dialog_value = replace_dialog_INPROJECT;
 
     if(!current_project)
@@ -194,6 +198,9 @@ void rcbasic_edit_replace_dialog::onReplaceInProjectClick( wxCommandEvent& event
 void rcbasic_edit_replace_dialog::onReplaceInFileClick( wxCommandEvent& event )
 {
 // TODO: Implement onReplaceInFileClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
+
     replace_dialog_value = replace_dialog_INFILE;
 
     if(!current_file)
@@ -213,6 +220,9 @@ void rcbasic_edit_replace_dialog::onReplaceInFileClick( wxCommandEvent& event )
 void rcbasic_edit_replace_dialog::onReplaceInSelectionClick( wxCommandEvent& event )
 {
 // TODO: Implement onReplaceInSelectionClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
+
     replace_dialog_value = replace_dialog_INSELECTION;
 
     if(!current_file)
@@ -253,6 +263,8 @@ int rcbasic_edit_replace_dialog::getFlags()
 void rcbasic_edit_replace_dialog::onFindNextClick( wxCommandEvent& event )
 {
 // TODO: Implement onFindNextClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
 
     if(!current_file)
         return;
@@ -289,6 +301,9 @@ void rcbasic_edit_replace_dialog::onFindNextClick( wxCommandEvent& event )
 void rcbasic_edit_replace_dialog::onReplaceClick( wxCommandEvent& event )
 {
 // TODO: Implement onReplaceClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
+
     if(!current_file)
         return;
 
@@ -304,7 +319,10 @@ void rcbasic_edit_replace_dialog::onReplaceClick( wxCommandEvent& event )
         current_search_pos = 0;
     }
 
-    t->SetTargetStart(current_search_pos);
+    if(t->GetSelectedText().Length() > 0 && t->GetCurrentPos() > 0)
+        t->SetTargetStart(t->GetCurrentPos()-1);
+    else
+        t->SetTargetStart(t->GetCurrentPos());
     t->SetTargetEnd(t->GetTextLength());
 
     int flag = m_matchWhole_checkBox->GetValue() ? wxSTC_FIND_WHOLEWORD : 0;

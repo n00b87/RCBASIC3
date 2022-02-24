@@ -673,6 +673,8 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
         return false;
     }
 
+    editor_scheme.scheme_name = fname.GetName();
+
     if(scheme_file.Open(fname.GetFullPath()))
     {
         wxString scheme_data;
@@ -1052,7 +1054,11 @@ void rcbasic_edit_frame::onRecentProjectSelect( wxCommandEvent& event )
     if(item >= 0 && item < 10)
     {
         notebook_mutex.Lock();
-        openProject(wxFileName(recent_projects_items[item]));
+        wxFileName project_fname(recent_projects_items[item]);
+        if(project_fname.Exists())
+            openProject(project_fname);
+        else
+            wxMessageBox(_("Could not locate project:\n") + project_fname.GetFullPath());
         notebook_mutex.Unlock();
     }
 }
@@ -1066,7 +1072,11 @@ void rcbasic_edit_frame::onRecentFileSelect( wxCommandEvent& event )
     if(item >= 0 && item < 10)
     {
         notebook_mutex.Lock();
-        openSourceFile(wxFileName(recent_files_items[item]));
+        wxFileName fname(recent_files_items[item]);
+        if(fname.Exists())
+            openSourceFile(fname);
+        else
+            wxMessageBox(_("Could not locate file:\n") + fname.GetFullPath());
         notebook_mutex.Unlock();
     }
 }
@@ -2486,6 +2496,9 @@ void rcbasic_edit_frame::clearSearchResults()
 
 void rcbasic_edit_frame::onFindMenuSelect( wxCommandEvent& event )
 {
+    if(sourceFile_auinotebook->GetPageCount() <= 0)
+        return;
+
     rcbasic_edit_find_dialog find_dialog(this);
     find_dialog.ShowModal();
 
@@ -2513,6 +2526,8 @@ int rcbasic_edit_frame::searchNextPrev(wxStyledTextCtrl* t, int search_type)
 
     //int previous_pos = t->FindText(t->GetCurrentPos()+1, t->GetLastPosition(), m_search_textCtrl->GetLineText(0));
     int flag = search_flags;
+    if(t->GetSelectedText().Length() > 0)
+        search_term = t->GetSelectedText().substr(0, 100);
     //wxPrintf(_("CPOS = %d\n"), t->GetCurrentPos());
     t->GotoPos( t->GetCurrentPos() + (search_type==search_type_NEXT ? 1 : -1) );
     //wxPrintf(_("NEW CPOS = %d\n"), t->GetCurrentPos());
@@ -2772,6 +2787,9 @@ void rcbasic_edit_frame::replaceInProject(int findDialog_flag, wxString txt, wxS
 
 void rcbasic_edit_frame::onReplaceMenuSelect(wxCommandEvent& event)
 {
+    if(sourceFile_auinotebook->GetPageCount() <= 0)
+        return;
+
     rcbasic_edit_replace_dialog r_dialog(this);
     r_dialog.ShowModal();
 
@@ -3113,12 +3131,13 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         rc_txtCtrl->SetKeyWords(0, rcbasic_edit_keywords);
         rc_txtCtrl->SetKeyWords(1, rcbasic_edit_keywords2);
         //rc_txtCtrl->StyleSetFont(wxSTC_STYLE_DEFAULT, editor_font);
-        rc_txtCtrl->SetTabWidth(4);
+        //rc_txtCtrl->SetTabWidth(4);
 
         rc_txtCtrl->SetEOLMode(wxSTC_EOL_LF);
 
         //wxPuts(_("Applying scheme"));
         applyScheme(rc_txtCtrl);
+        //wxPrintf(_("TAB WIDTH = %d\n"), rc_txtCtrl->GetTabWidth());
         //wxPuts(_("Scheme has been applied"));
     }
 
@@ -3185,7 +3204,9 @@ void rcbasic_edit_frame::createNewFile(rcbasic_project* project)
     notebook_mutex.Lock();
     if(txtCtrl_obj)
         txtCtrl_obj->setTextChangedFlag(false);
-    updateProjectTree(getProjectFromRoot(project->getRootNode()));
+
+    if(project)
+        updateProjectTree(getProjectFromRoot(project->getRootNode()));
     notebook_mutex.Unlock();
 }
 
@@ -3646,6 +3667,8 @@ void rcbasic_edit_frame::addRecentProject(rcbasic_project* project)
 void rcbasic_edit_frame::addRecentFile(wxFileName file)
 {
     wxString tmp[10];
+    file.MakeAbsolute();
+
     for(int i = 0; i < 10; i++)
     {
         if(recent_files[i].compare(file.GetFullPath())==0)
@@ -3912,7 +3935,7 @@ void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
             line_num = t->GetCurrentLine();
             total_lines = t->GetLineCount();
             col_num = t->GetColumn(t->GetCurrentPos());
-            total_col = t->GetLineText(line_num).Length();
+            total_col = t->GetColumn(t->GetLineEndPosition(line_num));
         }
     }
 
