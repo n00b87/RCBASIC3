@@ -4,6 +4,29 @@ ChangeDir$(SourceDirectory$)
 Include "strings.bas"
 
 
+'Get Purge Files
+Dim purge_files$[999]
+num_purge_files = 0
+
+If FileExists("current_build_pfiles.txt") Then
+	If FileOpen(0, "current_build_pfiles.txt", TEXT_INPUT) Then
+		num_purge_files = 0
+		While Not EOF(0)
+			p_size = ArraySize(purge_files$, 1)
+			If num_purge_files >= p_size Then
+				ReDim purge_files$[p_size*2]
+			End If
+			pfile$ = ReadLine$(0)
+			If Trim(pfile$) <> "" Then
+				purge_files$[num_purge_files] = pfile$
+				num_purge_files = num_purge_files + 1
+			End If
+		Wend
+		FileClose(0)
+	End If
+End If
+
+
 If Trim$(Env$("RC_PKG_HOME")) = "" Then
 	SetEnv("RC_PKG_HOME", Dir$, 1)
 Else
@@ -27,6 +50,23 @@ Else
 End if
 
 Dim NODEJS_PATH$ : NODEJS_PATH$ = base_dir$ + path_join$ + "node"
+
+
+Sub CleanProjectSources(build_dir$)
+	cwd$ = Dir$
+	ChangeDir(build_dir$)
+	'Print "DIR CHANGED TO ";build_dir$
+	For i = 0 to num_purge_files-1
+		If Trim(purge_files$[i]) <> "" And FileExists(purge_files$[i]) Then
+			Print "Removing File From Build: ";purge_files$[i]
+			RemoveFile(purge_files$[i])
+		End If
+	Next
+	
+	ChangeDir(cwd$)
+	'Print "DIR IS BACK TO ";dir$
+End Sub
+
 
 Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_TYPE$, TERMINAL_FLAG$, PROJECT_CATEGORY$, icon_path$, enable_threads$)
 	If Right(output_dir$, 1) <> path_join$ Then
@@ -264,22 +304,9 @@ Sub CopyDir(src_path$, dst_path$)
 End Sub
 
 Sub CopyProject(src_path$, dst_path$)
-	cwd$ = Dir$ : ChangeDir(src_path$)
-	f$ = DirFirst$()
-	While f$ <> ""
-		If f$ = "." Or f$ = ".." Then
-			f$ = DirNext$()
-			continue
-		ElseIf DirExists(f$) Then
-			'Print "Directory: ";f$
-			CopyDir(f$, dst_path$ + path_join$ + f$)
-		ElseIf Right$(f$, 4) <> ".bas" Then
-			'Print "File: ";f$
-			CopyFile(f$, dst_path$ + path_join$ + f$)
-		End If
-		f$ = DirNext$()
-	Wend
-	ChangeDir(cwd$)
+	CopyDir(src_path$, dst_path$)
+	CleanProjectSources(dst_path$)
+	return
 End Sub
 
 Function Build_App_64(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_TYPE$, TERMINAL_FLAG$, PROJECT_CATEGORY$, icon_path$)
@@ -1089,8 +1116,11 @@ ElseIf Not DirExists(output_dir$) Then
 	error = 1
 Else
 	print "DEBUB: CLEAR ";output_dir$
-	RmDir(output_dir$)
-	MakeDir(output_dir$)
+	If DirExists(output_dir$ + path_join$ + APP_NAME$) Then
+		RmDir(output_dir$ + path_join$ + APP_NAME$)
+	End If
+	MakeDir(output_dir$ + path_join$ + APP_NAME$)
+	output_dir$ = output_dir$ + path_join$ + APP_NAME$
 End If
 
 If icon_path$ = "" Then
