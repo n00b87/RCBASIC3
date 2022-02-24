@@ -414,12 +414,12 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
         return;
     }
 
-    if(out_dir.HasFiles())
+    /*if(out_dir.HasFiles())
     {
         out_dir.Close();
         wxMessageBox(_("You must select an empty directory for output"));
         return;
-    }
+    }*/
 
     out_dir.Close();
 

@@ -282,6 +282,9 @@ rcbasic_project::rcbasic_project()
 
 void rcbasic_project::copyFromProject(rcbasic_project* p)
 {
+    if(!p)
+        return;
+
     name = p->getName();
     main_source = p->getMainSource();
     author = p->getAuthor();
@@ -298,7 +301,7 @@ void rcbasic_project::copyFromProject(rcbasic_project* p)
         node->setLocationStoreType(p_node->getLocationStoreType());
         node->setNotebookPage(p_node->getNotebookPage());
         node->setTextChangedFlag(p_node->getTextChangedFlag());
-        node->setTextCtrl(p_node->getTextCtrl());
+        node->setToOpenTextCtrl(p_node->getTextCtrl());
         source_files.push_back(node);
     }
 
@@ -324,6 +327,8 @@ rcbasic_project::~rcbasic_project()
 {
     if(last_saved_project)
         delete last_saved_project;
+
+    last_saved_project = NULL;
 
     source_files.clear();
 }

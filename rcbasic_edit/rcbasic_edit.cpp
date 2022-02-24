@@ -224,19 +224,19 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	mainWindowSizer = new wxBoxSizer( wxVERTICAL );
 
 	m_toolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL );
-	m_new_tool = m_toolBar->AddTool( wxID_ANY, wxT("New File"), wxArtProvider::GetBitmap( wxART_NEW, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_new_tool = m_toolBar->AddTool( wxID_ANY, wxT("New File"), wxArtProvider::GetBitmap( wxART_NEW, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxT("Create a New File"), wxEmptyString, NULL );
 
-	m_open_tool = m_toolBar->AddTool( wxID_ANY, wxT("Open"), wxArtProvider::GetBitmap( wxART_FILE_OPEN, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_open_tool = m_toolBar->AddTool( wxID_ANY, wxT("Open"), wxArtProvider::GetBitmap( wxART_FILE_OPEN, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxT("Open a File"), wxEmptyString, NULL );
 
-	m_save_tool = m_toolBar->AddTool( wxID_ANY, wxT("Save"), wxArtProvider::GetBitmap( wxART_FILE_SAVE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_save_tool = m_toolBar->AddTool( wxID_ANY, wxT("Save"), wxArtProvider::GetBitmap( wxART_FILE_SAVE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxT("Save the Current File"), wxEmptyString, NULL );
 
-	m_saveas_tool = m_toolBar->AddTool( wxID_ANY, wxT("Save As"), wxArtProvider::GetBitmap( wxART_FILE_SAVE_AS, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_saveas_tool = m_toolBar->AddTool( wxID_ANY, wxT("Save As"), wxArtProvider::GetBitmap( wxART_FILE_SAVE_AS, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxT("Save the Current File In Another Location"), wxEmptyString, NULL );
 
 	m_toolBar->AddSeparator();
 
-	m_run_tool = m_toolBar->AddTool( wxID_ANY, wxT("Build and Run"), wxBitmap( wxT("gfx/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_run_tool = m_toolBar->AddTool( wxID_ANY, wxT("Build and Run"), wxBitmap( wxT("gfx/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Build and Run Current Project"), wxEmptyString, NULL );
 
-	m_abort_tool = m_toolBar->AddTool( wxID_ANY, wxT("Abort"), wxBitmap( wxT("gfx/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_abort_tool = m_toolBar->AddTool( wxID_ANY, wxT("Abort"), wxBitmap( wxT("gfx/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Stop Execution if a Project is Running"), wxEmptyString, NULL );
 
 	m_toolBar->Realize();
 
@@ -774,7 +774,8 @@ rc_newFile_dialog::rc_newFile_dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText9->Wrap( -1 );
 	bSizer24->Add( m_staticText9, 1, wxALL, 5 );
 
-	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("New RCBasic Source file"), wxT("RCBasic Source files (*.bas)|*.bas"), wxDefaultPosition, wxDefaultSize, wxFLP_SAVE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL );
+	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Save a file"), wxT("RCBasic Source files (*.bas)|*.bas"), wxDefaultPosition, wxDefaultSize, wxFLP_SAVE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL );
+
 	bSizer24->Add( createNewSource_fileDialog, 5, wxALL, 5 );
 
 
@@ -1405,6 +1406,25 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 
 
 	bSizer63->Add( bSizer56, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer117;
+	bSizer117 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer117->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText50 = new wxStaticText( m_panel9, wxID_ANY, wxT("Location"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText50->Wrap( -1 );
+	bSizer117->Add( m_staticText50, 1, wxALL, 5 );
+
+	m_projectLocation_textCtrl = new wxTextCtrl( m_panel9, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	bSizer117->Add( m_projectLocation_textCtrl, 4, wxALL, 5 );
+
+
+	bSizer117->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer63->Add( bSizer117, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer57;
 	bSizer57 = new wxBoxSizer( wxHORIZONTAL );

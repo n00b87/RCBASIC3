@@ -501,6 +501,8 @@ class rc_projectSettings_dialog : public wxDialog
 		wxPanel* m_panel9;
 		wxStaticText* m_staticText16;
 		wxTextCtrl* m_projectName_textCtrl;
+		wxStaticText* m_staticText50;
+		wxTextCtrl* m_projectLocation_textCtrl;
 		wxStaticText* m_staticText17;
 		wxTextCtrl* m_mainSource_textCtrl;
 		wxListBox* m_mainSource_listBox;

@@ -7,8 +7,12 @@ rc_find_dialog( parent )
     parent_frame = (rcbasic_edit_frame*) parent;
     current_project = parent_frame->getActiveProject();
     current_file = parent_frame->getCurrentFile();
+
+    if(!current_file)
+        Close();
+
     wxString selected_text = current_file->getTextCtrl()->GetSelectedText();
-    if(selected_text.Length() > 0 && selected_text.Length() <= 80)
+    if(selected_text.Length() > 0 && selected_text.Length() <= 300)
         m_search_textCtrl->SetValue(current_file->getTextCtrl()->GetSelectedText());
     else
         m_search_textCtrl->SetValue(parent_frame->search_term);
@@ -33,6 +37,9 @@ wxString rcbasic_edit_find_dialog::getSearchText()
 void rcbasic_edit_find_dialog::onMarkButtonClick( wxCommandEvent& event )
 {
 // TODO: Implement onMarkButtonClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
+
     find_dialog_value = find_dialog_value_MARK;
 
     if(!current_file)
@@ -86,6 +93,9 @@ void rcbasic_edit_find_dialog::onMarkButtonClick( wxCommandEvent& event )
 void rcbasic_edit_find_dialog::onInProjectButtonClick( wxCommandEvent& event )
 {
 // TODO: Implement onInProjectButtonClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
+
     find_dialog_value = find_dialog_value_INPROJECT;
 
     int flag = m_matchWhole_checkBox->GetValue() ? wxSTC_FIND_WHOLEWORD : 0;
@@ -100,6 +110,9 @@ void rcbasic_edit_find_dialog::onInProjectButtonClick( wxCommandEvent& event )
 void rcbasic_edit_find_dialog::onInFileButtonClick( wxCommandEvent& event )
 {
 // TODO: Implement onInFileButtonClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
+
     find_dialog_value = find_dialog_value_INFILE;
 
     int flag = m_matchWhole_checkBox->GetValue() ? wxSTC_FIND_WHOLEWORD : 0;
@@ -121,6 +134,9 @@ void rcbasic_edit_find_dialog::onCloseButtonClick( wxCommandEvent& event )
 void rcbasic_edit_find_dialog::onPreviousButtonClick( wxCommandEvent& event )
 {
 // TODO: Implement onPreviousButtonClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
+
     if(!current_file)
         return;
 
@@ -146,6 +162,8 @@ void rcbasic_edit_find_dialog::onPreviousButtonClick( wxCommandEvent& event )
 void rcbasic_edit_find_dialog::onNextButtonClick( wxCommandEvent& event )
 {
 // TODO: Implement onFindNextClick
+    if(m_search_textCtrl->GetLineText(0).Length() <= 0)
+        return;
 
     if(!current_file)
         return;

@@ -54,6 +54,7 @@ class rcbasic_project_node
         void setPath( wxFileName new_path ) { path = new_path; }
         bool getTargetFlag() { return target_flag; }
         void setTargetFlag(bool flag_value) { target_flag = flag_value; }
+        void setToOpenTextCtrl(wxStyledTextCtrl* txt_ctrl) { rc_txtCtrl = txt_ctrl; }
 };
 
 struct rcbasic_edit_env_var
@@ -128,7 +129,8 @@ class rcbasic_project
                 if(tmp_rel.GetFullPath().compare(fname)==0 || tmp_abs.GetFullPath().compare(fname)==0)
                 {
                     //wxPuts(_("match: ")+tmp.GetFullPath());
-                    delete source_files[i];
+                    if(source_files[i])
+                        delete source_files[i];
                     source_files.erase(source_files.begin() + i);
                     i--;
                     break;
