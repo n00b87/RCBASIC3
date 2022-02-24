@@ -203,7 +203,8 @@ void rcbasic_edit_frame::buildProject()
 
     build_script.Close();
 
-    wxSystem(_("chmod u+x \"") + build_script_fname.GetFullPath() + _("\""));
+    wxSystem(_("chmod +x ") + build_script_fname.GetFullPath());
+
     #endif // _WIN32
 
     //wxPuts(_("BUILD START"));
