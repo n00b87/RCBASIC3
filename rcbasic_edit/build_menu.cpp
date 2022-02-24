@@ -188,6 +188,22 @@ void rcbasic_edit_frame::buildProject()
     }
 
     build_script.Close();
+
+    #else
+    build_script_fname.SetFullName(_("build_project.sh"));
+    if(!build_script.Create(build_script_fname.GetFullPath(), true))
+        return;
+
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\" \n"));
+
+    for(int i = 0; i < build_files.size(); i ++)
+    {
+        build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_files[i] + _("\" \n"));
+    }
+
+    build_script.Close();
+
+    wxSystem(_("chmod u+x \"") + build_script_fname.GetFullPath() + _("\""));
     #endif // _WIN32
 
     //wxPuts(_("BUILD START"));
