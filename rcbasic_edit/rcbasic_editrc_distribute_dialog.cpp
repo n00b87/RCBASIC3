@@ -242,11 +242,15 @@ void rcbasic_editrc_distribute_dialog::saveAppProperties()
     setProperty(_("TERMINAL_FLAG"), m_enableTerminal_checkBox->GetValue() ? _("true") : _("false"));
 
     wxString project_dir = parent_frame->getActiveProject()->getLocation();
-    project_dir = project_dir.substr(0, project_dir.Length()-1);
+    project_dir = project_dir.substr(0, project_dir.Length());
+    if(project_dir.substr(project_dir.Length()-1, 1).compare(_("\\"))==0 || project_dir.substr(project_dir.Length()-1, 1).compare(_("/"))==0)
+        project_dir = project_dir.substr(0, project_dir.Length()-1);
     setProperty(_("PROJECT_DIR"), project_dir);
 
     wxString out_dir = m_outputDir_dirPicker->GetDirName().GetFullPath();
-    out_dir = out_dir.substr(0, out_dir.Length()-1);
+    out_dir = out_dir.substr(0, out_dir.Length());
+    if(out_dir.substr(out_dir.Length()-1, 1).compare(_("\\"))==0 || out_dir.substr(out_dir.Length()-1, 1).compare(_("/"))==0)
+        out_dir = out_dir.substr(0, out_dir.Length()-1);
     setProperty(_("OUTPUT_DIR"), out_dir);
 
 	setProperty(_("ENABLE_WEB_THREADS"), m_enableWebThreads_checkBox->GetValue() ? _("true") : _("false"));
