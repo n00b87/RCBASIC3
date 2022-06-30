@@ -149,7 +149,7 @@ void* parserThread::Entry()
             wxPostEvent(m_pParent, evt);
         }
 
-        wxMilliSleep(5);
+        wxMilliSleep(500);
     }
 
     return NULL;
@@ -199,12 +199,18 @@ bool parserThread::runParser(wxCommandEvent evt)
             notebook_mutex.Lock();
             addSymbol(sym);
             notebook_mutex.Unlock();
+
+            if(sw_timer.Time()>5)
+            {
+                wxMilliSleep(5);
+                sw_timer.Start(0);
+            }
         }
 
         //if(i%200==0)
         if(sw_timer.Time()>1)
         {
-            wxMilliSleep(2);
+            wxMilliSleep(5);
             sw_timer.Start(0);
         }
 
