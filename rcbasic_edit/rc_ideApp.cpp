@@ -32,6 +32,7 @@ bool rc_ideApp::OnInit()
 
 int rc_ideApp::OnExit()
 {
-    wxPuts(_("RCBasic Studio Shutdown Complete"));
+    //wxPuts(_("THIS IS A TEST"));
+    //ExitMainLoop();
     return 0;
 }

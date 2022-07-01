@@ -2287,6 +2287,9 @@ void func_130(uint64_t fn)
         case FN_MusicIsPlaying:
             rc_push_num( rc_media_musicIsPlaying() );
             break;
+        case FN_DrawGeometry: //Number Function
+            rc_push_num( rc_media_drawGeometry(DRAWGEOMETRY_SLOT, DRAWGEOMETRY_NUM_VERTICES, &DRAWGEOMETRY_VERTICES, DRAWGEOMETRY_NUM_INDICES, &DRAWGEOMETRY_INDICES) );
+            break;
     }
 }
 
@@ -3166,7 +3169,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("--version")==0)
     {
-        cout << "RCBASIC Runtime v3.18" << endl;
+        cout << "RCBASIC Runtime v3.19" << endl;
         return 0;
     }
 

@@ -1027,6 +1027,12 @@ void init_embedded()
     add_embedded_arg("format", ID_TYPE_BYREF_NUM);
     add_embedded_arg("channels", ID_TYPE_BYREF_NUM);
     embed_function("MusicIsPlaying", ID_TYPE_FN_NUM);
+    embed_function("DrawGeometry", ID_TYPE_FN_NUM);
+    add_embedded_arg("slot", ID_TYPE_NUM);
+    add_embedded_arg("num_vertices", ID_TYPE_NUM);
+    add_embedded_arg("vertices", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("num_indices", ID_TYPE_NUM);
+    add_embedded_arg("Indices", ID_TYPE_BYREF_NUM);
 
 }
 

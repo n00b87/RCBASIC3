@@ -6,8 +6,6 @@ rc_gotoLine_dialog( parent )
 {
     parent_frame = (rcbasic_edit_frame*) parent;
     current_file = parent_frame->getCurrentFile();
-    if(!current_file)
-        Close();
 }
 
 void rcbasic_edit_gotoLine_dialog::onCancelButtonClick( wxCommandEvent& event )

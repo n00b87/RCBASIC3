@@ -8,7 +8,6 @@ rcbasic_project_node::rcbasic_project_node(wxFileName node_path)
     text_changed = false;
     temp_flag = false;
     add_remove_state = 1;
-    target_flag = false;
 }
 
 void rcbasic_project_node::setLocationStoreType(int store_loc_type)
@@ -167,11 +166,6 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
             fname.SetPath(location);
             fname.SetName(main_source_value);
 
-            if(fname.GetFullName().Length() < 4)
-                fname.SetExt(_("bas"));
-            else if(fname.GetFullName().Right(4).Lower().compare(_(".bas")) != 0)
-                fname.SetExt(_("bas"));
-
             if(!source_file.Create(fname.GetFullPath()))
             {
                 if(!source_file.Open(fname.GetFullPath()))
@@ -235,7 +229,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
                 project_valid = true;
             }
 
-            wxPuts(_("MAIN source = ") + main_source.GetFullPath());
+            //wxPuts(_("MAIN source = ") + main_source.GetFullPath());
 
             main_source.MakeRelativeTo(project_dir.GetFullPath());
 
@@ -263,7 +257,6 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
             break;
         case RCBASIC_PROJECT_SOURCE_OPEN:
             main_source = wxFileName(main_source_value);
-            main_source.MakeRelativeTo(project_dir.GetFullPath());
             //wxPuts(_("Proj Loc: ") + location + _("\n"));
             //wxPuts(_("Main: ") + main_source.GetFullPath() + _("\n"));
             break;
@@ -282,9 +275,6 @@ rcbasic_project::rcbasic_project()
 
 void rcbasic_project::copyFromProject(rcbasic_project* p)
 {
-    if(!p)
-        return;
-
     name = p->getName();
     main_source = p->getMainSource();
     author = p->getAuthor();
@@ -301,7 +291,7 @@ void rcbasic_project::copyFromProject(rcbasic_project* p)
         node->setLocationStoreType(p_node->getLocationStoreType());
         node->setNotebookPage(p_node->getNotebookPage());
         node->setTextChangedFlag(p_node->getTextChangedFlag());
-        node->setToOpenTextCtrl(p_node->getTextCtrl());
+        node->setTextCtrl(p_node->getTextCtrl());
         source_files.push_back(node);
     }
 
@@ -327,8 +317,6 @@ rcbasic_project::~rcbasic_project()
 {
     if(last_saved_project)
         delete last_saved_project;
-
-    last_saved_project = NULL;
 
     source_files.clear();
 }
@@ -375,25 +363,13 @@ bool rcbasic_project::saveProject(wxFileName save_file)
             {
                 wxFileName fname = source_files[i]->getPath();
                 fname.MakeRelativeTo(location);
-
-                wxString file_args = _("");
-
-                if(source_files[i]->getTargetFlag())
-                file_args = _("${RCBASIC_STUDIO_TARGET}");
-
-                project_file.Write(_("SOURCE_REL:")+file_args+fname.GetFullPath()+_("\n"));
+                project_file.Write(_("SOURCE_REL:")+fname.GetFullPath()+_("\n"));
             }
             else
             {
                 wxFileName fname = source_files[i]->getPath();
                 fname.MakeAbsolute();
-
-                wxString file_args = _("");
-
-                if(source_files[i]->getTargetFlag())
-                file_args = _("${RCBASIC_STUDIO_TARGET}");
-
-                project_file.Write(_("SOURCE_ABS:")+file_args+fname.GetFullPath()+_("\n"));
+                project_file.Write(_("SOURCE_ABS:")+fname.GetFullPath()+_("\n"));
             }
         }
         for(int i = 0; i < env_vars.size(); i++)
@@ -425,7 +401,7 @@ void rcbasic_project::setLastProjectSave()
     last_saved_project->getSourceFiles().clear();
     for(int i = 0; i < source_files.size(); i++)
     {
-        last_saved_project->addSourceFile(source_files[i]->getPath().GetFullPath(), source_files[i]->getLocationStoreType(), source_files[i]->getTargetFlag());
+        last_saved_project->addSourceFile(source_files[i]->getPath().GetFullPath(), source_files[i]->getLocationStoreType());
     }
 }
 
@@ -501,7 +477,7 @@ void rcbasic_project::setDescription(wxString new_description)
     description = new_description;
 }
 
-bool rcbasic_project::addSourceFile(wxString filePath, int store_loc_type, bool target_flag)
+bool rcbasic_project::addSourceFile(wxString filePath, int store_loc_type)
 {
     //wxString cwd = wxGetCwd();
     //wxPuts(_("DEBUG 1"));
@@ -533,13 +509,12 @@ bool rcbasic_project::addSourceFile(wxString filePath, int store_loc_type, bool 
         src_file = new rcbasic_project_node(fname_abs);
 
     src_file->setLocationStoreType(store_loc_type);
-    src_file->setTargetFlag(target_flag);
     //fname.MakeRelativeTo(location);
     source_files.push_back(src_file);
     return true;
 }
 
-bool rcbasic_project::addTempSourceFile(wxString filePath, int store_loc_type, bool target_flag)
+bool rcbasic_project::addTempSourceFile(wxString filePath, int store_loc_type)
 {
     wxFileName fname(filePath);
     wxFileName fname_rel(filePath);
@@ -583,7 +558,6 @@ bool rcbasic_project::addTempSourceFile(wxString filePath, int store_loc_type, b
     }
 
     src_file->setLocationStoreType(store_loc_type);
-    src_file->setTargetFlag(target_flag);
     src_file->setAsTemp(true);
     src_file->setAsAddFile(true);
     //fname.MakeRelativeTo(location);

@@ -1,6 +1,5 @@
 #include "rcbasic_edit_projectEnvironment_dialog.h"
 #include "rcbasic_edit_projectVariableEdit_dialog.h"
-#include "rcbasic_edit_frame.h"
 #include <wx/msgdlg.h>
 #include <vector>
 
@@ -8,12 +7,6 @@ rcbasic_edit_projectEnvironment_dialog::rcbasic_edit_projectEnvironment_dialog( 
 :
 rc_projectEnvironment_dialog( parent )
 {
-    rcbasic_edit_frame* parent_frame = (rcbasic_edit_frame*) parent;
-    if(!parent_frame->getActiveProject())
-        return;
-
-    m_projectName_staticText->SetLabel(parent_frame->getActiveProject()->getName());
-
     //wxListCtrl m_environment_listCtrl;
     m_environment_listCtrl->AppendColumn(_("NAME"));
     m_environment_listCtrl->AppendColumn(_("VALUE"));

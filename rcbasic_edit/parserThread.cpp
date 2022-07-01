@@ -27,7 +27,6 @@ parserThread::parserThread(wxEvtHandler* pParent, int param, wxFrame* p_frame) :
     parent_frame = p_frame;
 
     rcbasic_edit_frame* frame = (rcbasic_edit_frame*) parent_frame;
-    sym_list = new std::vector<rcbasic_symbol>;
     //s_list = frame->getSymbols();
 }
 
@@ -122,6 +121,7 @@ void* parserThread::Entry()
         }
 
         notebook_mutex.Lock();
+        s_list = frame->getSymbols();
         current_file_flag = (frame->getCurrentFile()!=NULL);
 
         if(current_file_flag)
@@ -157,16 +157,10 @@ void* parserThread::Entry()
 
 bool parserThread::runParser(wxCommandEvent evt)
 {
-    if(sym_list)
-    {
-        //delete sym_list;
-        //sym_list = NULL;
-        sym_list->clear();
-    }
+    sym_list = new std::vector<rcbasic_symbol>;
 
     rcbasic_edit_frame* frame = (rcbasic_edit_frame*) parent_frame;
 
-    s_list = frame->getSymbols();
 
     readContents();
 
@@ -196,9 +190,7 @@ bool parserThread::runParser(wxCommandEvent evt)
             if(!inSymbolList(sym))
                 contents_changed = 1;
 
-            notebook_mutex.Lock();
             addSymbol(sym);
-            notebook_mutex.Unlock();
         }
 
         //if(i%200==0)
@@ -210,20 +202,17 @@ bool parserThread::runParser(wxCommandEvent evt)
 
     }
 
-    notebook_mutex.Lock();
     if(sym_list->size() != s_list.size())
         contents_changed = 1;
 
     //can be used to set some identifier for the data
     evt.SetInt(contents_changed);
 
-    frame->parsed_page = frame->pre_parsed_page;
     evt.SetClientData((void*)sym_list);
-
-    wxPostEvent(m_pParent, evt);
-
+    notebook_mutex.Lock();
+    frame->parsed_page = frame->pre_parsed_page;
     notebook_mutex.Unlock();
-
+    wxPostEvent(m_pParent, evt);
 
     return true;
 }

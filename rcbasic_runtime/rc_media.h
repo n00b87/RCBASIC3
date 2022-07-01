@@ -3375,6 +3375,37 @@ void rc_media_drawImage_Transform(int slot, int x, int y, int w, int h, int src_
     SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window], &src, &dst, angle, &center, rf);
 }
 
+int rc_media_drawGeometry(int slot, int num_vertices, double* vertices, int num_indices, double* indices)
+{
+    SDL_Vertex geo_vert[( num_vertices >= 1 ? num_vertices : 1)];
+
+    int vert_size = 8;
+
+    for(int i = 0; i < num_vertices; i++)
+    {
+        geo_vert[i].position.x = vertices[i*vert_size+0];
+        geo_vert[i].position.y = vertices[i*vert_size+1];
+        geo_vert[i].color.r = (Uint8)vertices[i*vert_size+2];
+        geo_vert[i].color.g = (Uint8)vertices[i*vert_size+3];
+        geo_vert[i].color.b = (Uint8)vertices[i*vert_size+4];
+        geo_vert[i].color.a = (Uint8)vertices[i*vert_size+5];
+        geo_vert[i].tex_coord.x = vertices[i*vert_size+6];
+        geo_vert[i].tex_coord.y = vertices[i*vert_size+7];
+    }
+
+    int geo_index[(num_indices <= 0 ? 1 : num_indices)];
+
+    for(int i = 0; i < num_indices; i++)
+    {
+        geo_index[i] = (int) indices[i];
+    }
+
+    return SDL_RenderGeometry(rc_win_renderer[rc_active_window],
+                              (slot >= 0 ? rc_himage[slot][rc_active_window] : NULL),
+                              geo_vert, num_vertices,
+                              (num_indices <= 0 ? NULL : geo_index), num_indices);
+}
+
 void rc_media_getCursor(double * x, double * y)
 {
     *x = rc_sConsole_x[rc_active_window];

@@ -25,15 +25,12 @@ rc_distProcess_dialog( parent )
 	wxString p;
 	wxGetEnv(_("PATH"), &p);
 	//wxPuts(_("PATH: ") + p );
-	//wxPuts(_("\nCMD: ")+dist_cmd+_("\n\n"));
 
 	dist_pid = wxExecute(dist_cmd, wxEXEC_ASYNC, dist_process, NULL);
 
 	if(dist_pid < 0)
     {
-        if(dist_process)
-            delete dist_process;
-        dist_process = NULL;
+        delete dist_process;
         return;
     }
 
@@ -60,7 +57,6 @@ void rcbasic_editrc_distProcess_dialog::onDistProcessUpdateUI( wxUpdateUIEvent& 
 
         if(console_line.find(_("RCBASIC PACKAGE SUCCESS:")) != wxString::npos)
         {
-            //wxPuts(_("\n\n####FOUND IT#####\n\n"));
             current_count++;
             m_status_gauge->SetValue(current_count);
             //wxPrintf(_("Current Value = %d out of %d\n"), m_status_gauge->GetValue(), m_status_gauge->GetRange());
@@ -83,8 +79,7 @@ void rcbasic_editrc_distProcess_dialog::onCancelButtonClick( wxCommandEvent& eve
     wxExecute(_("taskkill /F /IM rcbasic_studio_run.exe"), wxEXEC_SYNC);
 
     wxKill(dist_pid);
-    if(dist_process)
-        delete dist_process;
+    delete dist_process;
     dist_process = NULL;
 
     Close();
@@ -116,8 +111,7 @@ void rcbasic_editrc_distProcess_dialog::onDistProcessTerminate( wxProcessEvent& 
     }
 
     wxKill(dist_pid);
-    if(dist_process)
-        delete dist_process;
+    delete dist_process;
     dist_process = NULL;
 
     m_cancel_button->Hide();

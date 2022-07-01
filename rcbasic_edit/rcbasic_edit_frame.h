@@ -73,8 +73,6 @@ struct rcbasic_search_result
 
 struct rcbasic_edit_scheme
 {
-    wxString scheme_name;
-
     wxColour style_bkg_color;
     wxColour keyword_fg_color;
     wxColour keyword2_fg_color;
@@ -118,10 +116,6 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxString RCBasic_Documentation_Link;
         wxString Studio_Documentation_Link;
 
-        bool conv_rel;
-
-        wxString default_scheme;
-
         bool toolbarVisible;
         bool sideBarVisible;
         bool messageWindowVisible;
@@ -130,11 +124,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         rcbasic_project* context_project; //for context menu
         rcbasic_project* active_project; //for everything else
         rcbasic_project* closing_project;
-        std::vector<wxString> build_files;
 
-        rcbasic_project_node* context_file;
-
-        #ifdef _WIN32
         wxTreeItemId selected_project_item;
         wxTreeItemId activated_project_item;
         bool activated_project_item_flag;
@@ -142,7 +132,6 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxTreeItemId selected_symbol_item;
         wxStyledTextCtrl* activated_project_item_page;
         rcbasic_project_node* selected_project_node;
-        #endif
 
         wxImageList* project_tree_imageList;
         int project_tree_rootImage;
@@ -167,6 +156,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         bool close_event_called;
         bool last_fileSave_flag;
 
+        wxString search_term;
         int search_flags;
         std::vector<rcbasic_search_result> search_results;
 
@@ -201,8 +191,6 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxFileName rcbasic_run_path;
 
         rcbasic_project* build_run_project;
-
-        int remove_file_node_flag;
 
 	protected:
 		// Handlers for rc_ideFrame events.
@@ -240,7 +228,6 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void toggleMessageWindow( wxCommandEvent& event );
 		void onProjectTreeContextMenu( wxTreeEvent& event );
 		void onTreeContextClick( wxCommandEvent &evt );
-		void onTreeFileContextClick( wxCommandEvent &evt );
 		void onProjectTreeNodeActivated( wxTreeEvent& event );
 		void onProjectTreeSelectionChanged( wxTreeEvent& event );
 		void onProjectTreeSelectionChanging( wxTreeEvent& event );
@@ -277,9 +264,6 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onRunProcessTerminate( wxProcessEvent& event );
 
 	public:
-	    rcbasic_edit_scheme getScheme() { return editor_scheme; }
-	    void openFileProperties(rcbasic_project* f_project, rcbasic_project_node* f_node);
-	    wxString search_term;
 	    wxFileName getRCRunnerPath() { return rcbasic_run_path; }
 	    void buildProject();
 	    void runProject();
@@ -292,7 +276,6 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void addFileToProject(wxFileName sourceFile);
 		void addMultipleFilesToProject();
 		void projectTreeContextMenu();
-		void projectTreeFileContextMenu();
 		wxFileName openFileDialog(wxString title, wxString default_wildcard, int flag);
 		wxArrayString openMultiFileDialog(wxString title, wxString default_wildcard, int flag);
 		void saveProject(rcbasic_project* project);
@@ -315,7 +298,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		{
 		    int selected_page = sourceFile_auinotebook->GetSelection();
 
-		    if(selected_page < 0 || selected_page >= sourceFile_auinotebook->GetPageCount())
+		    if(selected_page < 0)
                 return NULL;
 
             for(int i = 0; i < open_files.size(); i++)
@@ -344,7 +327,6 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void applyScheme(wxStyledTextCtrl* rc_txtCtrl);
 
 		bool loadEditorProperties(wxFileName fname);
-		bool loadDefaultViewProperties(wxFileName fname);
 
 		wxSemaphore* getSymSem() { return sym_sem; }
 

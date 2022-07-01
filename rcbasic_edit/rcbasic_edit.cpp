@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -224,19 +224,19 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	mainWindowSizer = new wxBoxSizer( wxVERTICAL );
 
 	m_toolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL );
-	m_new_tool = m_toolBar->AddTool( wxID_ANY, wxT("New File"), wxArtProvider::GetBitmap( wxART_NEW, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxT("Create a New File"), wxEmptyString, NULL );
+	m_new_tool = m_toolBar->AddTool( wxID_ANY, wxT("New File"), wxArtProvider::GetBitmap( wxART_NEW, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_open_tool = m_toolBar->AddTool( wxID_ANY, wxT("Open"), wxArtProvider::GetBitmap( wxART_FILE_OPEN, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxT("Open a File"), wxEmptyString, NULL );
+	m_open_tool = m_toolBar->AddTool( wxID_ANY, wxT("Open"), wxArtProvider::GetBitmap( wxART_FILE_OPEN, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_save_tool = m_toolBar->AddTool( wxID_ANY, wxT("Save"), wxArtProvider::GetBitmap( wxART_FILE_SAVE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxT("Save the Current File"), wxEmptyString, NULL );
+	m_save_tool = m_toolBar->AddTool( wxID_ANY, wxT("Save"), wxArtProvider::GetBitmap( wxART_FILE_SAVE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_saveas_tool = m_toolBar->AddTool( wxID_ANY, wxT("Save As"), wxArtProvider::GetBitmap( wxART_FILE_SAVE_AS, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxT("Save the Current File In Another Location"), wxEmptyString, NULL );
+	m_saveas_tool = m_toolBar->AddTool( wxID_ANY, wxT("Save As"), wxArtProvider::GetBitmap( wxART_FILE_SAVE_AS, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar->AddSeparator();
 
-	m_run_tool = m_toolBar->AddTool( wxID_ANY, wxT("Build and Run"), wxBitmap( wxT("gfx/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Build and Run Current Project"), wxEmptyString, NULL );
+	m_run_tool = m_toolBar->AddTool( wxID_ANY, wxT("Build and Run"), wxBitmap( wxT("gfx/play.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
-	m_abort_tool = m_toolBar->AddTool( wxID_ANY, wxT("Abort"), wxBitmap( wxT("gfx/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Stop Execution if a Project is Running"), wxEmptyString, NULL );
+	m_abort_tool = m_toolBar->AddTool( wxID_ANY, wxT("Abort"), wxBitmap( wxT("gfx/stop.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar->Realize();
 
@@ -699,7 +699,7 @@ rc_closeProjectSavePrompt_dialog::rc_closeProjectSavePrompt_dialog( wxWindow* pa
 
 	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("Do you want to save the project before closing?"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( -1 );
-	m_staticText8->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_staticText8->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 
 	bSizer21->Add( m_staticText8, 1, wxALL|wxEXPAND, 5 );
 
@@ -774,8 +774,7 @@ rc_newFile_dialog::rc_newFile_dialog( wxWindow* parent, wxWindowID id, const wxS
 	m_staticText9->Wrap( -1 );
 	bSizer24->Add( m_staticText9, 1, wxALL, 5 );
 
-	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Save a file"), wxT("RCBasic Source files (*.bas)|*.bas"), wxDefaultPosition, wxDefaultSize, wxFLP_SAVE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL );
-
+	createNewSource_fileDialog = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_SAVE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL );
 	bSizer24->Add( createNewSource_fileDialog, 5, wxALL, 5 );
 
 
@@ -932,6 +931,9 @@ rc_find_dialog::rc_find_dialog( wxWindow* parent, wxWindowID id, const wxString&
 	bSizer27->Add( bSizer30, 2, wxEXPAND, 5 );
 
 
+	bSizer27->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
 	this->SetSizer( bSizer27 );
 	this->Layout();
 
@@ -976,7 +978,7 @@ rc_searchWrap_dialog::rc_searchWrap_dialog( wxWindow* parent, wxWindowID id, con
 
 	m_searchWrapPrompt_staticText = new wxStaticText( this, wxID_ANY, wxT("Did not find \"[text]\".\nWrap and search again?"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_searchWrapPrompt_staticText->Wrap( -1 );
-	m_searchWrapPrompt_staticText->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_searchWrapPrompt_staticText->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 
 	bSizer21->Add( m_searchWrapPrompt_staticText, 1, wxALL|wxEXPAND, 5 );
 
@@ -1260,7 +1262,7 @@ rc_closeFileSavePrompt_dialog::rc_closeFileSavePrompt_dialog( wxWindow* parent, 
 
 	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("Do you wish to save this file before closing?"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( -1 );
-	m_staticText8->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_staticText8->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 
 	bSizer21->Add( m_staticText8, 1, wxALL|wxEXPAND, 5 );
 
@@ -1407,25 +1409,6 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 
 	bSizer63->Add( bSizer56, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer117;
-	bSizer117 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer117->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText50 = new wxStaticText( m_panel9, wxID_ANY, wxT("Location"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText50->Wrap( -1 );
-	bSizer117->Add( m_staticText50, 1, wxALL, 5 );
-
-	m_projectLocation_textCtrl = new wxTextCtrl( m_panel9, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-	bSizer117->Add( m_projectLocation_textCtrl, 4, wxALL, 5 );
-
-
-	bSizer117->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer63->Add( bSizer117, 1, wxEXPAND, 5 );
-
 	wxBoxSizer* bSizer57;
 	bSizer57 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -1452,15 +1435,13 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 	bSizer74->Add( 0, 0, 2, wxEXPAND, 5 );
 
 	m_mainSource_listBox = new wxListBox( m_panel9, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_ALWAYS_SB|wxLB_SORT );
-	m_mainSource_listBox->SetMaxSize( wxSize( -1,100 ) );
-
 	bSizer74->Add( m_mainSource_listBox, 4, wxALL|wxEXPAND, 5 );
 
 
 	bSizer74->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer63->Add( bSizer74, 3, wxEXPAND|wxFIXED_MINSIZE, 5 );
+	bSizer63->Add( bSizer74, 3, wxEXPAND, 5 );
 
 
 	bSizer63->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -1514,15 +1495,13 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 	bSizer60->Add( m_staticText20, 1, wxALL, 5 );
 
 	m_description_textCtrl = new wxTextCtrl( m_panel9, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
-	m_description_textCtrl->SetMaxSize( wxSize( -1,100 ) );
-
-	bSizer60->Add( m_description_textCtrl, 4, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5 );
+	bSizer60->Add( m_description_textCtrl, 4, wxALL|wxEXPAND, 5 );
 
 
 	bSizer60->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer63->Add( bSizer60, 2, wxEXPAND|wxFIXED_MINSIZE, 5 );
+	bSizer63->Add( bSizer60, 2, wxEXPAND, 5 );
 
 
 	bSizer63->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -1537,9 +1516,7 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 	bSizer64 = new wxBoxSizer( wxVERTICAL );
 
 	m_files_listBox = new wxListBox( m_panel10, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_SORT );
-	m_files_listBox->SetMaxSize( wxSize( -1,250 ) );
-
-	bSizer64->Add( m_files_listBox, 3, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5 );
+	bSizer64->Add( m_files_listBox, 3, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer65;
 	bSizer65 = new wxBoxSizer( wxHORIZONTAL );
@@ -1672,21 +1649,6 @@ rc_fileProperties_dialog::rc_fileProperties_dialog( wxWindow* parent, wxWindowID
 
 
 	bSizer67->Add( bSizer69, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer116;
-	bSizer116 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer116->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_subTarget_checkBox = new wxCheckBox( this, wxID_ANY, wxT("Set As Sub-Target"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-	bSizer116->Add( m_subTarget_checkBox, 0, wxALL, 5 );
-
-
-	bSizer116->Add( 0, 0, 11, wxEXPAND, 5 );
-
-
-	bSizer67->Add( bSizer116, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer70;
 	bSizer70 = new wxBoxSizer( wxHORIZONTAL );
@@ -1900,6 +1862,25 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 
 	wxBoxSizer* bSizer80;
 	bSizer80 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer81;
+	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer81->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText27 = new wxStaticText( this, wxID_ANY, wxT("Keystore"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText27->Wrap( -1 );
+	bSizer81->Add( m_staticText27, 1, wxALL, 5 );
+
+	m_keystore_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer81->Add( m_keystore_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer81->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( bSizer81, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer82;
 	bSizer82 = new wxBoxSizer( wxHORIZONTAL );

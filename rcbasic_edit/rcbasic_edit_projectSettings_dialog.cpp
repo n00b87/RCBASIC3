@@ -11,9 +11,7 @@ rc_projectSettings_dialog( parent )
     projectSettings_flag = PROJECT_SETTINGS_CANCEL;
 
     if(!current_project)
-    {
-        Close();
-    }
+        return;
 
     new_project = new rcbasic_project();
     new_project->copyFromProject(current_project);
@@ -28,7 +26,6 @@ rc_projectSettings_dialog( parent )
     ms_fname_abs.MakeAbsolute();
 
     //m_mainSource_textCtrl->SetValue(ms_fname.GetFullPath());
-    m_projectLocation_textCtrl->SetValue(new_project->getLocation());
     m_author_textCtrl->SetValue(new_project->getAuthor());
     m_website_textCtrl->SetValue(new_project->getWebsite());
     m_description_textCtrl->SetValue(new_project->getDescription());
@@ -44,8 +41,6 @@ rc_projectSettings_dialog( parent )
 
     for(int i = 0; i < nodes.size(); i++)
     {
-        if(!nodes[i])
-            continue;
         wxFileName tmp = nodes[i]->getPath();
 
         switch(nodes[i]->getLocationStoreType())
@@ -80,8 +75,7 @@ void rcbasic_edit_projectSettings_dialog::onCancelButtonClick( wxCommandEvent& e
 {
 // TODO: Implement onCancelButtonClick
     new_project->setPointersNull();
-    if(new_project)
-        delete new_project;
+    delete new_project;
 
     //wxPuts(_("THE END"));
 
@@ -129,11 +123,10 @@ void rcbasic_edit_projectSettings_dialog::onOKButtonClick( wxCommandEvent& event
 
     int i = parent_frame->getProjectFromRoot(new_project->getRootNode());
 
-    if(i >= 0 && current_project != NULL)
+    if(i >= 0)
     {
         current_project->setPointersNull();
         delete current_project;
-        current_project = NULL;
         parent_frame->setOpenProject(i, new_project);
     }
 
@@ -165,7 +158,7 @@ void rcbasic_edit_projectSettings_dialog::onAddFilesButtonClick( wxCommandEvent&
             continue;
 
         fname.MakeRelativeTo(new_project->getLocation());
-        if(new_project->addSourceFile(fname.GetFullPath(), STORE_LOCATION_RELATIVE, false))
+        if(new_project->addSourceFile(fname.GetFullPath(), STORE_LOCATION_RELATIVE))
         {
             m_files_listBox->AppendAndEnsureVisible(fname.GetFullPath());
             m_mainSource_listBox->AppendAndEnsureVisible(fname.GetFullPath());

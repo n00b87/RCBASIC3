@@ -6,9 +6,6 @@ rc_searchWrap_dialog( parent )
 {
     wxString txt = m_searchWrapPrompt_staticText->GetLabelText();
     txt.Replace(_("[text]"), search_term);
-    txt.Replace(_("\n"), _(" "));
-    if(txt.Length() > 30)
-        txt = txt.substr(0, 50) + _("...");
     m_searchWrapPrompt_staticText->SetLabelText(txt);
 }
 
