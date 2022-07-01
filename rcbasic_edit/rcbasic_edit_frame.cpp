@@ -3687,6 +3687,7 @@ void rcbasic_edit_frame::addRecentFile(wxFileName file)
 
 void rcbasic_edit_frame::onTextCtrlUpdated( wxStyledTextEvent& event )
 {
+    //event here
     notebook_mutex.Lock();
     int selected_tab = sourceFile_auinotebook->GetSelection();
     wxString selection_string = sourceFile_auinotebook->GetPageText(selected_tab);
