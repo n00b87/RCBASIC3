@@ -1021,3 +1021,9 @@
 #define QUERYAUDIOSPEC_FORMAT num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define QUERYAUDIOSPEC_CHANNELS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
 #define FN_MusicIsPlaying 368
+#define FN_DrawGeometry 369
+#define DRAWGEOMETRY_SLOT num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define DRAWGEOMETRY_NUM_VERTICES num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define DRAWGEOMETRY_VERTICES num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define DRAWGEOMETRY_NUM_INDICES num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define DRAWGEOMETRY_INDICES num_var[4].nid_value[0].value[ num_var[4].byref_offset ]

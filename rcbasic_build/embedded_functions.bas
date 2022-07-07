@@ -399,3 +399,7 @@ function QueryAudioSpec(ByRef freq, ByRef format, ByRef channels) 'new
 
 'v3.15
 function MusicIsPlaying()
+
+'v3.19
+function DrawGeometry(slot, num_vertices, ByRef vertices, num_indices, ByRef Indices)
+
