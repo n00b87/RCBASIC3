@@ -276,6 +276,8 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onBuildProcessTerminate( wxProcessEvent& event );
 		void onRunProcessTerminate( wxProcessEvent& event );
 
+		void onDropFiles( wxDropFilesEvent& event );
+
 	public:
 	    rcbasic_edit_scheme getScheme() { return editor_scheme; }
 	    void openFileProperties(rcbasic_project* f_project, rcbasic_project_node* f_node);
