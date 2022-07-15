@@ -1,5 +1,9 @@
 #include <wx/string.h>
 
+#include <wx/arrstr.h>
+#include <wx/dir.h>
+#include <wx/busyinfo.h>
+
 #include "rcbasic_edit_frame.h"
 #include "rcbasic_edit_newProject_dialog.h"
 #include "rc_closeProjectSavePrompt_dialog.h"
@@ -11,6 +15,7 @@
 #include "rcbasic_edit_projectSettings_dialog.h"
 #include "rcbasic_edit_projectEnvironment_dialog.h"
 #include "rcbasic_edit_fileProperties_dialog.h"
+#include "drag_files.h"
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
 {
@@ -3119,6 +3124,8 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
     {
         wxStyledTextCtrl* rc_txtCtrl = txtCtrl_obj->getTextCtrl();
         //wxPuts(_("Set event"));
+        rc_txtCtrl->SetDropTarget(new rc_dragFileTarget(rc_txtCtrl));
+        rc_txtCtrl->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(rcbasic_edit_frame::onDropFiles), NULL, this);
         rc_txtCtrl->Connect( wxEVT_STC_CHANGE, wxStyledTextEventHandler( rcbasic_edit_frame::onTextCtrlUpdated ), NULL, this );
         rc_txtCtrl->Connect( wxEVT_STC_CHARADDED, wxStyledTextEventHandler( rcbasic_edit_frame::onTextCtrlModified ), NULL, this );
 
@@ -3916,6 +3923,46 @@ void rcbasic_edit_frame::onNotebookPageChanged( wxAuiNotebookEvent& event )
     fn_nodes.clear();
     notebook_mutex.Unlock();
 }
+
+
+void rcbasic_edit_frame::onDropFiles( wxDropFilesEvent& event )
+{
+    if (event.GetNumberOfFiles() > 0)
+    {
+
+        wxString* dropped = event.GetFiles();
+        wxASSERT(dropped);
+
+        wxBusyCursor busyCursor;
+        wxWindowDisabler disabler;
+        wxBusyInfo busyInfo(_("Adding files, wait please..."));
+
+        wxString name;
+        wxArrayString files;
+
+        for (int i = 0; i < event.GetNumberOfFiles(); i++)
+        {
+            name = dropped[i];
+            if (wxFileExists(name))
+                files.push_back(name);
+            else if (wxDirExists(name))
+                wxDir::GetAllFiles(name, &files);
+        }
+
+
+        notebook_mutex.Lock();
+        for (size_t i = 0; i < files.size(); i++)
+        {
+            //wxMessageBox( files[i] + _("\n"));
+            wxFileName fname(files[i]);
+            if(fname.GetExt().MakeLower().compare(_("bas"))==0 || fname.GetExt().MakeLower().compare(_("txt"))==0)
+                openSourceFile(wxFileName(files[i]));
+
+        }
+        notebook_mutex.Unlock();
+    }
+}
+
 
 void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
 {

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
+// C++ code generated with wxFormBuilder (version 3.10.1-df7791b)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -193,6 +193,7 @@ class rc_ideFrame : public wxFrame
 		virtual void onSymbolSelectionChanging( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void onSourceFileTabClose( wxAuiNotebookEvent& event ) { event.Skip(); }
+		virtual void onDropFiles( wxDropFilesEvent& event ) { event.Skip(); }
 		virtual void onSearchResultSelection( wxCommandEvent& event ) { event.Skip(); }
 
 
@@ -534,7 +535,7 @@ class rc_projectSettings_dialog : public wxDialog
 
 	public:
 
-		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 614,617 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 765,690 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectSettings_dialog();
 
