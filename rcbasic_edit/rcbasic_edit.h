@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-df7791b)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -180,6 +180,9 @@ class rc_ideFrame : public wxFrame
 		virtual void onRunMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onBuildRunMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onStopExecuteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onBuildFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onRunFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onBuildRunFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onGenKeystoreMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onDistributeMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onDocMenuSelect( wxCommandEvent& event ) { event.Skip(); }
@@ -193,7 +196,6 @@ class rc_ideFrame : public wxFrame
 		virtual void onSymbolSelectionChanging( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onNotebookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void onSourceFileTabClose( wxAuiNotebookEvent& event ) { event.Skip(); }
-		virtual void onDropFiles( wxDropFilesEvent& event ) { event.Skip(); }
 		virtual void onSearchResultSelection( wxCommandEvent& event ) { event.Skip(); }
 
 
@@ -234,6 +236,7 @@ class rc_newProject_dialog : public wxDialog
 		wxStaticText* projectDescription_label;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void cancelNewProject( wxCloseEvent& event ) { event.Skip(); }
 		virtual void createMainSourceRadioSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void copyExistingSourceRadioSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void cancelNewProject( wxCommandEvent& event ) { event.Skip(); }
@@ -273,6 +276,7 @@ class rc_closeProjectSavePrompt_dialog : public wxDialog
 		wxButton* closeProjectSave_saveButton;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCloseProjectSaveCancel( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onCloseProjectSaveCancel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCloseProjectSaveDontSave( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCloseProjectSaveOk( wxCommandEvent& event ) { event.Skip(); }
@@ -301,13 +305,14 @@ class rc_newFile_dialog : public wxDialog
 		wxButton* createNewSource_okButton;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCreateNewSourceCancel( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onCreateNewSourceCancel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCreateNewSourceOk( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
 
-		rc_newFile_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Source File"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 497,207 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_newFile_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Source File"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 497,200 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_newFile_dialog();
 
@@ -332,6 +337,7 @@ class rc_find_dialog : public wxDialog
 		wxButton* m_next_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCloseButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onMarkButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onInProjectButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onInFileButtonClick( wxCommandEvent& event ) { event.Skip(); }
@@ -343,7 +349,7 @@ class rc_find_dialog : public wxDialog
 	public:
 		wxTextCtrl* m_search_textCtrl;
 
-		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 532,276 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 438,163 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_find_dialog();
 
@@ -368,7 +374,7 @@ class rc_searchWrap_dialog : public wxDialog
 	public:
 		wxStaticText* m_searchWrapPrompt_staticText;
 
-		rc_searchWrap_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Search"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
+		rc_searchWrap_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Search"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxCAPTION|wxSTAY_ON_TOP );
 
 		~rc_searchWrap_dialog();
 
@@ -397,6 +403,7 @@ class rc_replace_dialog : public wxDialog
 		wxButton* m_button13;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onReplaceCloseClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onReplaceInProjectClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onReplaceInFileClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onReplaceInSelectionClick( wxCommandEvent& event ) { event.Skip(); }
@@ -407,7 +414,7 @@ class rc_replace_dialog : public wxDialog
 
 	public:
 
-		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 598,340 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 467,238 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_replace_dialog();
 
@@ -427,8 +434,9 @@ class rc_gotoLine_dialog : public wxDialog
 		wxButton* m_button29;
 
 		// Virtual event handlers, override them in your derived class
-		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCancelButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
@@ -460,7 +468,7 @@ class rc_closeFileSavePrompt_dialog : public wxDialog
 
 	public:
 
-		rc_closeFileSavePrompt_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Close File"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
+		rc_closeFileSavePrompt_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Close File"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxCAPTION|wxSTAY_ON_TOP );
 
 		~rc_closeFileSavePrompt_dialog();
 
@@ -478,6 +486,7 @@ class rc_setColorScheme_dialog : public wxDialog
 		wxButton* m_schemeClose_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onSchemeCloseButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onSchemeSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onSchemeCloseButtonClick( wxCommandEvent& event ) { event.Skip(); }
 
@@ -502,8 +511,6 @@ class rc_projectSettings_dialog : public wxDialog
 		wxPanel* m_panel9;
 		wxStaticText* m_staticText16;
 		wxTextCtrl* m_projectName_textCtrl;
-		wxStaticText* m_staticText50;
-		wxTextCtrl* m_projectLocation_textCtrl;
 		wxStaticText* m_staticText17;
 		wxTextCtrl* m_mainSource_textCtrl;
 		wxListBox* m_mainSource_listBox;
@@ -523,6 +530,7 @@ class rc_projectSettings_dialog : public wxDialog
 		wxButton* m_ok_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCancelButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onMainSourceListBoxSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFileSelection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFileDoubleClick( wxCommandEvent& event ) { event.Skip(); }
@@ -535,7 +543,7 @@ class rc_projectSettings_dialog : public wxDialog
 
 	public:
 
-		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 765,690 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 517,550 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectSettings_dialog();
 
@@ -559,6 +567,7 @@ class rc_fileProperties_dialog : public wxDialog
 		wxButton* m_ok_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCancelButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
 
@@ -590,6 +599,7 @@ class rc_projectEnvironment_dialog : public wxDialog
 		wxButton* m_ok_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCancelButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onClearAllButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onRemoveSelectedButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAddVariableButtonClick( wxCommandEvent& event ) { event.Skip(); }
@@ -600,7 +610,7 @@ class rc_projectEnvironment_dialog : public wxDialog
 
 	public:
 
-		rc_projectEnvironment_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Environment Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 631,379 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectEnvironment_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Environment Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 487,298 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectEnvironment_dialog();
 
@@ -622,13 +632,14 @@ class rc_projectVariableEdit_dialog : public wxDialog
 		wxButton* m_ok_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCancelButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
 
-		rc_projectVariableEdit_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 489,176 ), long style = wxCAPTION );
+		rc_projectVariableEdit_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 489,176 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectVariableEdit_dialog();
 
@@ -664,6 +675,7 @@ class rc_genKey_dialog : public wxDialog
 		wxButton* m_cancel_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCancelButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
 
@@ -721,6 +733,7 @@ class rc_distribute_dialog : public wxDialog
 		wxButton* m_close_button;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void onCloseButtonClick( wxCloseEvent& event ) { event.Skip(); }
 		virtual void onInitJavaPathButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onSaveSettingsButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onMakeAppButtonClick( wxCommandEvent& event ) { event.Skip(); }
@@ -729,7 +742,7 @@ class rc_distribute_dialog : public wxDialog
 
 	public:
 
-		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 761,430 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 576,359 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_distribute_dialog();
 
@@ -757,7 +770,7 @@ class rc_distProcess_dialog : public wxDialog
 
 	public:
 
-		rc_distProcess_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Building Application"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 655,345 ), long style = wxCAPTION );
+		rc_distProcess_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Building Application"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 655,330 ), long style = wxCAPTION );
 
 		~rc_distProcess_dialog();
 

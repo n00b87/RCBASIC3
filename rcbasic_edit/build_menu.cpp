@@ -26,6 +26,8 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
 
     wxFileName main_fname = build_run_project->getMainSource();
 
+    bool isCurrentFileBuild = (build_run_project == current_file_project);
+
     build_run_project = NULL;
 
     bool build_success = true;
@@ -57,7 +59,10 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
     if(isBuildingAndRunning && build_success)
     {
         isBuildingAndRunning = false;
-        runProject();
+        if(isCurrentFileBuild)
+            runCurrentFile();
+        else
+            runProject();
     }
 
     //wxPuts(_("PROCESS is dead"));
@@ -475,4 +480,184 @@ void rcbasic_edit_frame::onStopExecuteMenuSelect( wxCommandEvent& event )
     isRunning = false;
     isBuildingAndRunning = false;
     isBuilding = false;
+}
+
+
+void rcbasic_edit_frame::onBuildFileMenuSelect( wxCommandEvent& event )
+{
+    buildCurrentFile();
+}
+
+void rcbasic_edit_frame::buildCurrentFile()
+{
+
+    if(isBuilding || isRunning)
+        return;
+
+
+    if(build_process || run_process)
+        return;
+
+    build_run_project = NULL;
+
+    m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
+
+
+    notebook_mutex.Lock();
+
+    //-----------
+    wxFileName project_fname = getCurrentFile()->getSourcePath();
+    saveFile(getOpenFileFromSelection(), 0);
+
+    //------------------
+
+    notebook_mutex.Unlock();
+
+    build_files.clear();
+
+    wxFile build_script;
+
+    wxFileName build_script_fname(rcbasic_build_path);
+
+    #ifdef _WIN32
+    build_script_fname.SetFullName(_("build_project.bat"));
+    if(!build_script.Create(build_script_fname.GetFullPath(), true))
+        return;
+
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + project_fname.GetFullPath() + _("\" \r\n"));
+
+    build_script.Close();
+
+    #else
+    build_script_fname.SetFullName(_("build_project.sh"));
+    if(!build_script.Create(build_script_fname.GetFullPath(), true))
+        return;
+
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + project_fname.GetFullPath() + _("\" \n"));
+
+    build_script.Close();
+
+    wxSystem(_("chmod +x ") + build_script_fname.GetFullPath());
+
+    #endif // _WIN32
+
+    //wxPuts(_("BUILD START"));
+
+    current_file_project->setMainSource(project_fname.GetFullPath());
+    current_file_project->setLocation(project_fname.GetPath());
+
+    build_run_project = current_file_project;
+
+    build_process = new wxProcess(this);
+
+    if(!build_process)
+        return;
+
+    build_process->Connect( wxEVT_END_PROCESS, wxProcessEventHandler( rcbasic_edit_frame::onBuildProcessTerminate ), NULL, this );
+
+    m_messageWindow_richText->Clear();
+
+    build_process->Redirect();
+
+    build_pid = wxExecute(_("\"") + build_script_fname.GetFullPath() + _("\""), wxEXEC_ASYNC, build_process, NULL);
+
+    if(build_pid >= 0)
+    {
+        isBuilding = true;
+    }
+
+}
+
+void rcbasic_edit_frame::onRunFileMenuSelect( wxCommandEvent& event )
+{
+    runCurrentFile();
+}
+
+void rcbasic_edit_frame::runCurrentFile()
+{
+    if(isBuilding || isRunning)
+        return;
+
+    if(build_process || run_process)
+        return;
+
+    build_run_project = NULL;
+
+    wxFileName project_fname = getCurrentFile()->getSourcePath();
+
+    run_process = new wxProcess(this);
+
+    if(!run_process)
+        return;
+
+    run_process->Connect( wxEVT_END_PROCESS, wxProcessEventHandler( rcbasic_edit_frame::onRunProcessTerminate ), NULL, this );
+
+    wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+
+    current_file_project->setMainSource(project_fname.GetFullPath());
+    current_file_project->setLocation(project_fname.GetPath());
+
+    build_run_project = current_file_project;
+
+    wxFile run_file;
+    wxFileName run_file_fname(rcbasic_path);
+    run_file_fname.SetFullName(_("run_rc.bat"));
+
+    #ifdef _WIN32
+    if(run_file_fname.Exists())
+    {
+        wxRemove(run_file_fname.GetFullPath());
+    }
+
+    if(!run_file.Create(run_file_fname.GetFullPath(), true))
+    {
+        isRunning = false;
+
+        wxKill(run_pid);
+        if(run_process)
+            delete run_process;
+        run_process = NULL;
+        build_run_project = NULL;
+
+        return;
+    }
+
+    run_file.Write(_("@echo OFF \r\n"));
+    run_file.Write(_("cd ") + build_run_project->getLocation() + _("\r\n"));
+    #endif
+
+
+    wxFileName main_source = build_run_project->getMainSource();
+    main_source.SetExt(_("cbc"));
+
+    #ifdef _WIN32
+    run_file.Write(_("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\" \r\n"));
+    run_file.Write(_("PAUSE\r\n"));
+    run_file.Close();
+
+    run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
+    #else
+
+    wxString run_cmd = _("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\"");
+
+    run_pid = wxExecute( run_cmd , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
+    #endif
+
+    if(run_pid >= 0)
+    {
+        isRunning = true;
+    }
+    //run_pid = wxExecute(_("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
+
+}
+
+void rcbasic_edit_frame::onBuildRunFileMenuSelect( wxCommandEvent& event )
+{
+    if(isBuilding || isRunning || isBuildingAndRunning)
+        return;
+
+    m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
+
+    isBuildingAndRunning = true;
+    buildCurrentFile();
 }

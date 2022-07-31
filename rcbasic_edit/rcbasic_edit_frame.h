@@ -201,6 +201,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxFileName rcbasic_run_path;
 
         rcbasic_project* build_run_project;
+        rcbasic_project* current_file_project;
 
         int remove_file_node_flag;
 
@@ -262,6 +263,9 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onRunMenuSelect( wxCommandEvent& event );
 		void onBuildRunMenuSelect( wxCommandEvent& event );
 		void onStopExecuteMenuSelect( wxCommandEvent& event );
+		void onBuildFileMenuSelect( wxCommandEvent& event );
+		void onRunFileMenuSelect( wxCommandEvent& event );
+		void onBuildRunFileMenuSelect( wxCommandEvent& event );
 		void onGenKeystoreMenuSelect( wxCommandEvent& event );
 		void onDistributeMenuSelect( wxCommandEvent& event );
 		void onDocMenuSelect( wxCommandEvent& event );
@@ -285,6 +289,8 @@ class rcbasic_edit_frame : public rc_ideFrame
 	    wxFileName getRCRunnerPath() { return rcbasic_run_path; }
 	    void buildProject();
 	    void runProject();
+	    void buildCurrentFile();
+	    void runCurrentFile();
 	    void OnParserThread(wxCommandEvent& event);
 	    void activateProject();
 		/** Constructor */
