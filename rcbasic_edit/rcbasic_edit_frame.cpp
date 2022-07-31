@@ -209,6 +209,12 @@ rc_ideFrame( parent )
     RCBasic_Studio_Version = _("v1.0");
 
     build_run_project = NULL;
+    current_file_project = new rcbasic_project();
+
+    #ifdef _WIN32
+    sourceFile_auinotebook->Connect( wxEVT_DROP_FILES, wxDropFilesEventHandler( rcbasic_edit_frame::onDropFiles ), NULL, this );
+    sourceFile_auinotebook->DragAcceptFiles(true);
+    #endif // _WIN32
 
     thread_returned = false;
     sym_sem = NULL;
