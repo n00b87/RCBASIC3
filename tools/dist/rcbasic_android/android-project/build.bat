@@ -7,7 +7,7 @@ set ANDROID_SDK_ROOT=%ANDROID_HOME%
 
 set PATH=%RBASIC_HOME%;%ANDROID_HOME%\cmdline-tools\bin;%ANDROID_NDK_HOME%;%JAVA_HOME%\bin;%PATH%
 
-rem gradlew clean
+gradlew clean
 gradlew assembleRelease
 
 popd
