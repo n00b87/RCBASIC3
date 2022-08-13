@@ -3375,6 +3375,12 @@ void rc_media_drawImage_Transform(int slot, int x, int y, int w, int h, int src_
     SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window], &src, &dst, angle, &center, rf);
 }
 
+#ifdef RC_WEB
+int rc_media_drawGeometry(int slot, int num_vertices, double* vertices, int num_indices, double* indices)
+{
+    return 0;
+}
+#else
 int rc_media_drawGeometry(int slot, int num_vertices, double* vertices, int num_indices, double* indices)
 {
     SDL_Vertex geo_vert[( num_vertices >= 1 ? num_vertices : 1)];
@@ -3405,6 +3411,7 @@ int rc_media_drawGeometry(int slot, int num_vertices, double* vertices, int num_
                               geo_vert, num_vertices,
                               (num_indices <= 0 ? NULL : geo_index), num_indices);
 }
+#endif //RC_WEB
 
 void rc_media_getCursor(double * x, double * y)
 {

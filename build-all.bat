@@ -75,6 +75,11 @@ xcopy rcbasic_runtime\*.c tools\dist\rcbasic_android\android-project\app\jni\src
 xcopy rcbasic_runtime\*.cpp tools\dist\rcbasic_android\android-project\app\jni\src\ /Y
 xcopy rcbasic_runtime\*.h tools\dist\rcbasic_android\android-project\app\jni\src\ /Y /EXCLUDE:rc_os_defines.h
 
+REM Copy Runtime Source Files to Emscripten build folder
+xcopy rcbasic_runtime\*.c tools\dist\rc_em\rcbasic_runtime\ /Y
+xcopy rcbasic_runtime\*.cpp tools\dist\rc_em\rcbasic_runtime\ /Y
+xcopy rcbasic_runtime\*.h tools\dist\rc_em\rcbasic_runtime\ /Y /EXCLUDE:rc_os_defines.h
+
 
 echo Build RCBASIC Compiler
 call .\rcbasic_build\build
