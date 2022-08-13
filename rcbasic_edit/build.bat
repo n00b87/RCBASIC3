@@ -107,7 +107,7 @@ call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c rcbasic_editrc_genKey_dialog.cpp ^
                                     -o obj\Release\rcbasic_editrc_genKey_dialog.o
 
-windres.exe -I%WX_HOME%\include -J rc -O coff -i resource.rc -o obj\Release\resource.res
+call windres.exe -I%WX_HOME%\include -J rc -O coff -i resource.rc -o obj\Release\resource.res
 
 
 call mingw32-g++.exe %LIB_PATH% -o bin\Release\rcbasic_edit.exe ^

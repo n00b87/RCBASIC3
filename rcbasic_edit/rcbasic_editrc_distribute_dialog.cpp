@@ -462,7 +462,7 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
 	app_pkg_args.Replace(_("[ANDROID_DEBUG]"), getPropertyValue(_("ANDROID_DEBUG")));
 	app_pkg_args.Replace(_("[JAVA_DIR]"), getPropertyValue(_("ANDROID_JAVA_DIR")));
 
-	//wxPuts(_("\n\nCMD: ") + app_pkg_args);
+	//wxMessageBox(_("\n\nCMD: ") + app_pkg_args + _("\n\n"));
 
 	wxString pkg_home;
 	wxGetEnv(_("RC_PKG_HOME"), &pkg_home);
@@ -491,10 +491,20 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
 
 
 	//wxString dist_cmd = _("\"") + rcbasic_run_fname.GetFullPath() + _("\" \"") + pkg_path.GetFullPath() + _("\" ") +app_pkg_args;
-	wxString dist_cmd = _("rcbasic_studio_run  studio_app_build \"") + getPropertyValue(_("PROJECT_DIR")) + _("\" \"") + getPropertyValue(_("SOURCE")) + _("\" ") + m_password_textCtrl->GetValue();
+	//wxString dist_cmd = _("rcbasic_studio_run  studio_app_build \"") + getPropertyValue(_("PROJECT_DIR")) + _("\" \"") + getPropertyValue(_("SOURCE")) + _("\" ") + m_password_textCtrl->GetValue();
+	wxString dist_cmd = _("rcbasic_studio_run  pkg ") + app_pkg_args;
+
+	wxFile cmd_log;
+	wxFileName cmd_log_path(pkg_home);
+	cmd_log_path.SetFullName(_("cmd_log.txt"));
+	if(cmd_log.Create(cmd_log_path.GetFullPath(), true))
+    {
+        cmd_log.Write(dist_cmd);
+        cmd_log.Close();
+    }
 	//wxPrintf(_("\nTGTS: %d\n"), getTargetPlatformCount());
 	//return;
-	//wxPuts(_("\n\nCMD: ") + dist_cmd + _("\n\n")); return;
+	//wxMessageBox(_("\n\nDIST-CMD: ") + dist_cmd + _("\n\n")); return;
 	rcbasic_editrc_distProcess_dialog dp_dialog(this, dist_cmd, getTargetPlatformCount());
 	dp_dialog.ShowModal();
 	//wxSystem(_("taskkill /F /IM rcbasic_studio_run.exe"));

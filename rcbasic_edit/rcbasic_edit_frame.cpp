@@ -1096,18 +1096,6 @@ void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
 {
     notebook_mutex.Unlock();
 
-    if(enable_parser && token_parser)
-    {
-        if(token_parser->IsAlive())
-        {
-            sym_sem = new wxSemaphore();
-            token_parser->Delete();
-            sym_sem->Wait();
-            delete sym_sem;
-            //wxPuts(_("thread successfully ended"));
-        }
-    }
-
     for(int i = 0; i < open_files.size(); i++)
     {
         rcbasic_edit_txtCtrl* o_file = open_files[i];
@@ -1121,8 +1109,26 @@ void rcbasic_edit_frame::onEditorClose( wxCloseEvent& event )
             {
                 saveFile(i, 0);
             }
+            else if(saveFile_dialog.getFileCloseFlag()==fileCloseFlag_CANCEL)
+            {
+                return;
+            }
         }
     }
+
+    if(enable_parser && token_parser)
+    {
+        if(token_parser->IsAlive())
+        {
+            sym_sem = new wxSemaphore();
+            token_parser->Delete();
+            sym_sem->Wait();
+            delete sym_sem;
+            //wxPuts(_("thread successfully ended"));
+        }
+    }
+
+
 
     wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
     wxFileName data_path(editor_path);

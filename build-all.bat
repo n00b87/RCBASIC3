@@ -91,7 +91,7 @@ echo Build RCBASIC Android Runtime Engine
 call .\tools\dist\rcbasic_android\android-project\build
 
 echo Build RCBASIC Studio
-call .\rcbasic_edit\build
+rem call .\rcbasic_edit\build
 
 cd %~dp0
 rmdir /Q /S rcbasic_release >NUL
