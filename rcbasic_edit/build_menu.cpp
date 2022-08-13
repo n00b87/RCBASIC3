@@ -524,8 +524,9 @@ void rcbasic_edit_frame::buildCurrentFile()
     if(!build_script.Create(build_script_fname.GetFullPath(), true))
         return;
 
+    build_script.Write(_("pushd ") + project_fname.GetPath() + _(" \r\n"));
     build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + project_fname.GetFullPath() + _("\" \r\n"));
-
+    build_script.Write(_("popd \r\n"));
     build_script.Close();
 
     #else
@@ -533,8 +534,9 @@ void rcbasic_edit_frame::buildCurrentFile()
     if(!build_script.Create(build_script_fname.GetFullPath(), true))
         return;
 
+    build_script.Write(_("export tmp_cwd=$PWD && cd ") + project_fname.GetPath() + _("\n"));
     build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + project_fname.GetFullPath() + _("\" \n"));
-
+    build_script.Write(_("cd $tmp_cwd\n"));
     build_script.Close();
 
     wxSystem(_("chmod +x ") + build_script_fname.GetFullPath());
