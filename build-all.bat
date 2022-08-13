@@ -126,6 +126,23 @@ xcopy "%GCC_PATH%\libstdc++*.dll" "rcbasic_release\rcbasic\rcbasic_32\" /Y
 xcopy "%GCC_PATH%\libgcc*.dll" "rcbasic_release\rcbasic\rcbasic_32\" /Y
 xcopy "%GCC_PATH%\libwinpthread*.dll" "rcbasic_release\rcbasic\rcbasic_32\" /Y
 
+
+echo F | xcopy "rcbasic_runtime\bin\Release\rcbasic_runtime.exe" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\rcbasic_32.exe" /Y
+echo F | xcopy "rcbasic_runtime\bin\Release\rcbasic_runtime_win.exe" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\rcbasic_win_32.exe" /Y
+xcopy "%SDL_HOME%\i686-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%SDL_IMAGE_HOME%\i686-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%SDL_MIXER_HOME%\i686-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%SDL_NET_HOME%\i686-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%SDL_TTF_HOME%\i686-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%OGG_HOME%\x86\dll\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%VORBIS_HOME%\x86\dll\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%THEORA_HOME%\x86\dll\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%GCC_PATH%\libstdc++*.dll" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%GCC_PATH%\libgcc*.dll" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+xcopy "%GCC_PATH%\libwinpthread*.dll" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_32\" /Y
+
+
+
 mkdir "rcbasic_release\rcbasic\rcbasic_64"
 xcopy "rcbasic_build\bin\Release\rcbasic_build.exe" "rcbasic_release\rcbasic\rcbasic_64\" /Y
 echo F | xcopy "rcbasic_runtime\bin\Release64\rcbasic_runtime.exe" "rcbasic_release\rcbasic\rcbasic_64\rcbasic.exe" /Y
@@ -142,6 +159,23 @@ xcopy "%THEORA_HOME%\x64\dll\*" "rcbasic_release\rcbasic\rcbasic_64\" /Y
 xcopy "%GCC_PATH_64%\libstdc++*.dll" "rcbasic_release\rcbasic\rcbasic_64\" /Y
 xcopy "%GCC_PATH_64%\libgcc*.dll" "rcbasic_release\rcbasic\rcbasic_64\" /Y
 xcopy "%GCC_PATH_64%\libwinpthread*.dll" "rcbasic_release\rcbasic\rcbasic_64\" /Y
+
+
+echo F | xcopy "rcbasic_runtime\bin\Release64\rcbasic_runtime.exe" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\rcbasic_64.exe" /Y
+echo F | xcopy "rcbasic_runtime\bin\Release64\rcbasic_runtime_win.exe" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\rcbasic_win_64.exe" /Y
+xcopy "%SDL_HOME%\x86_64-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%SDL_IMAGE_HOME%\x86_64-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%SDL_MIXER_HOME%\x86_64-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%SDL_NET_HOME%\x86_64-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%SDL_TTF_HOME%\x86_64-w64-mingw32\bin\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%OGG_HOME%\x64\dll\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%VORBIS_HOME%\x64\dll\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%THEORA_HOME%\x64\dll\*" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%GCC_PATH_64%\libstdc++*.dll" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%GCC_PATH_64%\libgcc*.dll" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+xcopy "%GCC_PATH_64%\libwinpthread*.dll" "rcbasic_release\rcbasic\tools\dist\rcbasic_win_dist\dist_64\" /Y
+
+
 
 mkdir "rcbasic_release\rcbasic\tools"
 xcopy "tools" "rcbasic_release\rcbasic\tools" /E /Y

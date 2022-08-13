@@ -483,9 +483,13 @@ Function Build_App_Win_32(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, A
 	
 	MakeDir(WIN_PKG_PATH)
 	CopyDir(dir + path_join$ + "rcbasic_win_dist" + path_join$ + "dist_32" + path_join$, WIN_PKG_PATH)
+	Select Case LCase$(TERMINAL_FLAG$)
+	Case "false": CopyFile(dir + path_join$ + "rcbasic_win_dist" + path_join$ + "rcbasic_win_32.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
+	Case "true" : CopyFile(dir + path_join$ + "rcbasic_win_dist" + path_join$ + "rcbasic_32.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
+	End Select
 	'CopyDir(project_dir$, WIN_PKG_PATH)
 	CopyProject(project_dir$, WIN_PKG_PATH)
-	RenameFile(WIN_PKG_PATH + path_join$ + "rcbasic.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
+	'RenameFile(WIN_PKG_PATH + path_join$ + "rcbasic.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
 	
 	
 	If FileExists(WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe") Then
@@ -525,9 +529,13 @@ Function Build_App_Win_64(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, A
 	
 	MakeDir(WIN_PKG_PATH)
 	CopyDir(dir + path_join$ + "rcbasic_win_dist" + path_join$ + "dist_64" + path_join$, WIN_PKG_PATH)
+	Select Case LCase$(TERMINAL_FLAG$)
+	Case "false": CopyFile(dir + path_join$ + "rcbasic_win_dist" + path_join$ + "rcbasic_win_64.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
+	Case "true" : CopyFile(dir + path_join$ + "rcbasic_win_dist" + path_join$ + "rcbasic_64.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
+	End Select
 	'CopyDir(project_dir$, WIN_PKG_PATH)
 	CopyProject(project_dir$, WIN_PKG_PATH)
-	RenameFile(WIN_PKG_PATH + path_join$ + "rcbasic.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
+	'RenameFile(WIN_PKG_PATH + path_join$ + "rcbasic.exe", WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe")
 	
 	
 	If FileExists(WIN_PKG_PATH + path_join$ + APP_NAME$ + ".exe") Then
