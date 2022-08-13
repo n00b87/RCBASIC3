@@ -1,30 +1,30 @@
 pushd %~dp0
 
-mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
+call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c build_menu.cpp ^
                                     -o obj\Release\build_menu.o
 
-mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
+call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c rcbasic_edit_projectSettings_dialog.cpp ^
                                     -o obj\Release\rcbasic_edit_projectSettings_dialog.o
 
-mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
+call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c rcbasic_edit_replace_dialog.cpp ^
                                     -o obj\Release\rcbasic_edit_replace_dialog.o
 
-mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
+call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c rcbasic_edit_setColorScheme_dialog.cpp ^
                                     -o obj\Release\rcbasic_edit_setColorScheme_dialog.o
 
-mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
+call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c rcbasic_editrc_distribute_dialog.cpp ^
                                     -o obj\Release\rcbasic_editrc_distribute_dialog.o
 
-mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
+call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c tools_menu.cpp ^
                                     -o obj\Release\tools_menu.o
 
-mingw32-g++.exe %LIB_PATH% -o bin\Release\rcbasic_edit_FB.exe ^
+call mingw32-g++.exe %LIB_PATH% -o bin\Release\rcbasic_edit_FB.exe ^
                                 obj\Release\build_menu.o ^
                                 obj\Release\exec_process.o ^
                                 obj\Release\help_menu.o ^

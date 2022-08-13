@@ -33,16 +33,16 @@ android {
         release {
             // You need to specify either an absolute path or include the
             // keystore file in the same directory as the build.gradle file.
-            storeFile file("C:\\Users\\omega\\Desktop\\rcbasic_313\\rcpkg_linux\\rcpkg_linux\\assets\\..\\..\\keystore\\test2.keystore")
-            storePassword "moogle87"
-            keyAlias "test2a"
-            keyPassword "moogle87"
+            storeFile file("..\\..\\default_key\rcbasic.keystore")
+            storePassword "rcbasic"
+            keyAlias "rcbasic"
+            keyPassword "rcbasic"
         }
     }
 
     buildTypes {
         release {
-			signingConfig signingConfigs.release
+			//signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

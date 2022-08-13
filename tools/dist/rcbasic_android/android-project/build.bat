@@ -1,14 +1,14 @@
 pushd %~dp0
 
-set ANDROID_HOME=C:\android_sdk
+rem set ANDROID_HOME=C:\android_sdk
 rem set JAVA_HOME=%~dp0..\openjdk-11
 set ANDROID_NDK_HOME=%ANDROID_HOME%\ndk\21.4.7075529
 set ANDROID_SDK_ROOT=%ANDROID_HOME%
 
 set PATH=%RBASIC_HOME%;%ANDROID_HOME%\cmdline-tools\bin;%ANDROID_NDK_HOME%;%JAVA_HOME%\bin;%PATH%
 
-gradlew clean
-gradlew assembleRelease
+call gradlew clean
+call gradlew assembleRelease
 
 popd
 

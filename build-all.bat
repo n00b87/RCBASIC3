@@ -167,3 +167,18 @@ popd
 set PATH=%TMP_PATH%
 
 mkdir "rcbasic_release\rcbasic\geany_files"
+echo D | xcopy "filetypes.rcbasic" "rcbasic_release\rcbasic\geany_files\" /Y
+echo D | xcopy "doc" "rcbasic_release\doc" /Y /E
+
+pushd "rcbasic_release"
+git clone "git@github.com:n00b87/RCBASIC-Examples.git" "examples"
+rmdir /S /Q "examples\.git"
+del "examples\README.md"
+popd
+
+mkdir "rcbasic_release\data"
+
+mkdir "rcbasic_release\config" /Y
+xcopy "rcbasic_edit\rcbasic_edit.config" "rcbasic_release\config\" /Y
+echo D | xcopy "rcbasic_edit\schemes" "rcbasic_release\config\schemes" /Y /E
+echo D | xcopy "rcbasic_edit\gfx" "rcbasic_release\gfx" /Y /E
