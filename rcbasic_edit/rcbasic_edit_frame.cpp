@@ -1286,7 +1286,8 @@ void rcbasic_edit_frame::openProjectMenuSelect( wxCommandEvent& event )
     notebook_mutex.Lock();
     wxFileName project_fname = openFileDialog(_("Open Project"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     //wxPuts(_("project_fname: ") + project_fname.GetLongPath());
-    openProject(project_fname);
+    if(project_fname.GetFullPath().compare(_(""))!=0)
+        openProject(project_fname);
     notebook_mutex.Unlock();
 }
 
