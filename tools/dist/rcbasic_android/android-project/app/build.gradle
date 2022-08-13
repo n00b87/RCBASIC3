@@ -33,7 +33,7 @@ android {
         release {
             // You need to specify either an absolute path or include the
             // keystore file in the same directory as the build.gradle file.
-            storeFile file("..\\..\\default_key\rcbasic.keystore")
+            storeFile file("..\\..\\default_key\\rcbasic.keystore")
             storePassword "rcbasic"
             keyAlias "rcbasic"
             keyPassword "rcbasic"

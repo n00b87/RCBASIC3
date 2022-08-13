@@ -288,11 +288,8 @@ rc_ideFrame( parent )
     wxFileName keystore_dir(editor_path);
     keystore_dir.AppendDir(_("keystore"));
 
-#ifdef _WIN32
-    wxFileName android_dir = tools_dir;
-#else
     wxFileName android_dir = pkg_home_dir;
-#endif
+
     android_dir.AppendDir(_("rcbasic_android"));
 
     wxSetEnv(_("RCBASIC_HOME"), rcbasic_dir.GetFullPath());
@@ -303,7 +300,6 @@ rc_ideFrame( parent )
     wxSetEnv(_("RC_KEYSTORE_DIR"), keystore_dir.GetFullPath());
     wxSetEnv(_("RCBASIC_WIN"), rcbasic_dir.GetFullPath());
     wxSetEnv(_("RCBASIC_ANDROID_DIR"), android_dir.GetFullPath());
-
 
     wxFileName gfx_path(editor_path);
     gfx_path.AppendDir(_("gfx"));

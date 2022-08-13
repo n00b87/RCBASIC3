@@ -1,7 +1,7 @@
 @echo off
 
-set PROJECT_DIR="%CD%"
-set BUILD_DIR="%~dp0"
+set PROJECT_DIR=%CD%
+set BUILD_DIR=%~dp0
 
 echo PROJECT_DIR=%PROJECT_DIR%
 echo BUILD_DIR=%BUILD_DIR%
@@ -52,13 +52,14 @@ cd "%BUILD_DIR%android-project"
 echo RC_ANDROID BUILD: DEBUG=%RC_ANDROID_DEBUG%
 echo RC_ANDROID BUILD: RELEASE=%RC_ANDROID_RELEASE%
 
-set assemble_tgt=
+set assemble_tgt=assembleRelease
 
-if "%RC_ANDROID_DEBUG%"=="1" ( set assemble_tgt=assembleDebug )
-if "%RC_ANDROID_RELEASE%"=="1" ( set assemble_tgt=%assemble_tgt% assembleRelease )
+rem NOTE: I am just setting assemble_tgt to assembleRelease and bundling pre-built release binaries since android ndk is inconsistent across machines
+rem if "%RC_ANDROID_DEBUG%"=="1" ( set assemble_tgt=assembleDebug )
+rem if "%RC_ANDROID_RELEASE%"=="1" ( set assemble_tgt=%assemble_tgt% assembleRelease )
 rem if "%RC_ANDROID_DEBUG_INSTALL%"=="1" ( .\gradlew uninstallDebug && .\gradlew installDebug )
 
-.\gradlew %assemble_tgt%
+call gradlew %assemble_tgt%
 
 rem sdkmanager --sdk_root=%ANDROID_HOME% "platform-tools" "platforms;android-28" "build-tools;28.0.3" "system-images;android-28;google_apis;x86_64" "ndk;21.4.7075529"
 
