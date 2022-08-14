@@ -2,19 +2,34 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="rcbasic_editrc_distribute_dialog.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="eval.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="18666" topLine="487" />
+			<Cursor1 position="1678" topLine="63" />
 		</Cursor>
 	</File>
 	<File name="rcbasic_editrc_distProcess_dialog.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2576" topLine="92" />
+			<Cursor1 position="1716" topLine="92" />
 		</Cursor>
 	</File>
-	<File name="rcbasic_edit_frame.cpp" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rcbasic_editrc_distribute_dialog.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="35261" topLine="1211" />
+			<Cursor1 position="15905" topLine="427" />
+		</Cursor>
+	</File>
+	<File name="parserThread.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4704" topLine="177" />
+		</Cursor>
+	</File>
+	<File name="rcbasic_editrc_distribute_dialog.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="22" />
+		</Cursor>
+	</File>
+	<File name="rc_ideApp.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="build_menu.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -22,9 +37,9 @@
 			<Cursor1 position="14392" topLine="509" />
 		</Cursor>
 	</File>
-	<File name="eval.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="rcbasic_edit_frame.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1678" topLine="63" />
+			<Cursor1 position="8793" topLine="436" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -423,6 +423,8 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
 
     out_dir.Close();
 
+    //bool web_build_flag = getPropertyValue(_("TGT_PLATFORM")).Replace(_("WEB"), _("")).compare(getPropertyValue(_("TGT_PLATFORM")))==0 ? false : true;
+
     wxString app_pkg_args;
     app_pkg_args.Append(_("TGT_PLATFORM=[TGT_ARGS] PROJECT_NAME=\"[PRJ_NAME]\" "));
 	app_pkg_args.Append(_("PROJECT_CATEGORY=[PRJ_CAT] APP_TYPE=[APT] "));
@@ -438,6 +440,7 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
 	app_pkg_args.Append(_("ANDROID_RELEASE=[ANDROID_RELEASE] "));
 	app_pkg_args.Append(_("ANDROID_DEBUG=[ANDROID_DEBUG] "));
 	app_pkg_args.Append(_("ANDROID_JAVA_DIR=\"[JAVA_DIR]\" "));
+	app_pkg_args.Append(_("RCBASIC_STUDIO=1 "));
 
         //MAIN APP SETTINGS
     app_pkg_args.Replace(_("[TGT_ARGS]"), getPropertyValue(_("TGT_PLATFORM")));

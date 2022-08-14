@@ -8,6 +8,8 @@ Include "strings.bas"
 Dim purge_files$[999]
 num_purge_files = 0
 
+RCBASIC_STUDIO_FLAG=0
+
 If FileExists("current_build_pfiles.txt") Then
 	If FileOpen(0, "current_build_pfiles.txt", TEXT_INPUT) Then
 		num_purge_files = 0
@@ -173,7 +175,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	Print "ACTIVATE"
 	
 	If OS$ = "WINDOWS" Then
-		pre_cmd$ = "pushd " + Dir$ + " && ." + path_join$ + "emsdk activate latest" 
+		pre_cmd$ = "pushd " + Dir$ + " && call ." + path_join$ + "emsdk activate latest" 
 	Else
 		pre_cmd$ = "export rc_current_dir=$PWD && cd " + Dir$ + " && ." + path_join$ + "emsdk activate latest"
 	End If
@@ -185,13 +187,13 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	' Activate PATH and other environment variables in the current terminal
 	Select Case OS$
 	Case "WINDOWS"
-		pre_cmd$ = pre_cmd$ + " && .\\emsdk_env.bat"
+		pre_cmd$ = pre_cmd$ + " && call .\\emsdk_env.bat"
 	Default
 		pre_cmd$ = pre_cmd$ + " && chmod u+x emsdk_env.sh && . $PWD/emsdk_env.sh"
 	End Select
 
 	If OS$ = "WINDOWS" Then
-		pre_cmd$ = pre_cmd$ + " && popd && "
+		pre_cmd$ = pre_cmd$ + " && popd && echo PRE_CMD COMPLETE "
 	Else
 		pre_cmd$ = pre_cmd$ + " && cd $rc_current_dir && "
 	End If
@@ -200,8 +202,13 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 
 	ChangeDir(".." + path_join$ + "rcbasic_runtime")
 
-	Dim web_compile_cmd$
-	web_compile_cmd$ = "em++ main.cpp theoraplay.c "
+	Dim web_compile_cmd$: web_compile_cmd$ = ""
+	
+	If RCBASIC_STUDIO_FLAG And OS$="WINDOWS" Then
+		web_compile_cmd$ = "pushd " + Dir$ + " && "
+	End If
+	
+	web_compile_cmd$ = web_compile_cmd$ + "call em++ main.cpp theoraplay.c "
 	web_compile_cmd$ = web_compile_cmd$ + "\q-L$THEORA_LIB\q \q-I$THEORA_INCLUDE\q "
 	web_compile_cmd$ = web_compile_cmd$ + "-s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_GFX=2 -s USE_SDL_TTF=2 -s USE_SDL_MIXER=2 -s USE_SDL_NET=2 "
 	web_compile_cmd$ = web_compile_cmd$ + "-s USE_OGG=1 -s USE_VORBIS=1 -ltheora -ltheoradec "
@@ -217,8 +224,32 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	Print "Pre command: ";pre_cmd$
 	Print "running command: ";web_compile_cmd$
 	Print "--------------------------"
+	
+	If FileExists("build.bat") Then
+		RemoveFile("build.bat")
+	End If
+	
+	f = FreeFile
+	FileOpen(f, "build.bat", TEXT_OUTPUT)
+	rm_junc$ = ""
+	If Trim$(web_junction$) <> "" Then
+		If DirExists$(web_junction$) Then
+			rm_junc$ = " && rmdir " + web_junction$
+		End If
+	End If
+	Write(f, pre_cmd$ + " && " + web_compile_cmd$ + rm_junc$ + " && popd ")
+	FileClose(f)
 
+	Select Case OS$
+	Case "WINDOWS"
+	If RCBASIC_STUDIO_FLAG Then
+		CopyFile("build.bat", DST_LOCATION$ + path_join$ + "build_web_app.bat")
+	Else
+		System(".\build.bat")
+	End If
+	Default
 	System(pre_cmd$ + web_compile_cmd$)	
+	End Select
 	
 	If DirExists(web_junction$) Then
 		Select Case OS$
@@ -230,6 +261,11 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	End If
 	
 	ChangeDir(base_dir$)
+	
+	If RCBASIC_STUDIO_FLAG Then
+		Print "RCBASIC PACKAGE SUCCESS: RCBasic Studio generated a build script"
+		Return True
+	End If
 	
 	If Not FileExists(DST_LOCATION+path_join$+PRG_NAME+".js") Then
 		Print "....PROG_NAME: ";PROG_NAME$
@@ -1062,6 +1098,7 @@ ANDROID_BUILD_DEBUG = Val(GetArg$("ANDROID_DEBUG"))
 ANDROID_BUILD_RELEASE = Val(GetArg$("ANDROID_RELEASE"))
 ANDROID_JAVA_DIR$ = GetArg$("ANDROID_JAVA_DIR")
 
+RCBASIC_STUDIO_FLAG = Val(SetValue$("0", LCase$(GetArg$("RCBASIC_STUDIO"))))
 
 GetPlatforms(GetArg$("TGT_PLATFORM"))
 
