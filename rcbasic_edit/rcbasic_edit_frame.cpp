@@ -15,6 +15,7 @@
 #include "rcbasic_edit_projectSettings_dialog.h"
 #include "rcbasic_edit_projectEnvironment_dialog.h"
 #include "rcbasic_edit_fileProperties_dialog.h"
+#include "rcbasic_edit_preference_dialog.h"
 #include "drag_files.h"
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
@@ -611,6 +612,10 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         {
             enable_parser = value.compare(_("TRUE")) == 0 ? true : false;
         }
+        else if(property.compare(_("ENABLE_CODE_COMPLETE"))==0)
+        {
+            enable_codeCompletion = value.compare(_("TRUE")) == 0 ? true : false;
+        }
         else if(property.compare(_("CONVERT_REL"))==0)
         {
             conv_rel = value.compare(_("TRUE")) == 0 ? true : false;
@@ -623,24 +628,28 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         {
             wxFileName rcbasic_home_fname(value);
             rcbasic_home_fname.MakeAbsolute();
+            wxSetEnv(_("RCBASIC_HOME_CONFIG"), rcbasic_home_fname.GetFullPath());
             wxSetEnv(_("RCBASIC_HOME"), rcbasic_home_fname.GetFullPath());
         }
         else if(property.compare(_("RCBASIC_TOOLS"))==0)
         {
             wxFileName rcbasic_tools_fname(value);
             rcbasic_tools_fname.MakeAbsolute();
+            wxSetEnv(_("RCBASIC_TOOLS_CONFIG"), rcbasic_tools_fname.GetFullPath());
             wxSetEnv(_("RCBASIC_TOOLS"), rcbasic_tools_fname.GetFullPath());
         }
         else if(property.compare(_("RC_PKG_HOME"))==0)
         {
             wxFileName rcbasic_pkg_fname(value);
             rcbasic_pkg_fname.MakeAbsolute();
+            wxSetEnv(_("RC_PKG_HOME_CONFIG"), rcbasic_pkg_fname.GetFullPath());
             wxSetEnv(_("RC_PKG_HOME"), rcbasic_pkg_fname.GetFullPath());
         }
         else if(property.compare(_("RCBASIC_ANDROID_DIR"))==0)
         {
             wxFileName rcbasic_android_fname(value);
             rcbasic_android_fname.MakeAbsolute();
+            wxSetEnv(_("RCBASIC_ANDROID_DIR_CONFIG"), rcbasic_android_fname.GetFullPath());
             wxSetEnv(_("RCBASIC_ANDROID_DIR"), rcbasic_android_fname.GetFullPath());
         }
         else if(property.compare(_("RCBASIC_LIB_PATH"))==0)
@@ -649,12 +658,14 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
             rcbasic_lib_fname.MakeAbsolute();
             wxString current_lib_path;
             wxGetEnv(_("LD_LIBRARY_PATH"), &current_lib_path);
+            wxSetEnv(_("LD_LIBRARY_PATH_CONFIG"), rcbasic_lib_fname.GetFullPath());
             wxSetEnv(_("LD_LIBRARY_PATH"), current_lib_path + _(":") + rcbasic_lib_fname.GetFullPath());
         }
         else if(property.compare(_("ANDROID_HOME"))==0)
         {
             wxFileName rcbasic_droidHome_fname(value);
             rcbasic_droidHome_fname.MakeAbsolute();
+            wxSetEnv(_("ANDROID_HOME_CONFIG"), rcbasic_droidHome_fname.GetFullPath());
             wxSetEnv(_("ANDROID_HOME"), rcbasic_droidHome_fname.GetFullPath());
             wxSetEnv(_("ANDROID_SDK_ROOT"), rcbasic_droidHome_fname.GetFullPath());
         }
@@ -666,6 +677,139 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         //wxPuts(_("VALUE: ") + value);
         //wxPuts(_(""));
     }
+
+    wxString kw = _("");
+    wxString curr_char = _("");
+
+    wxString kw_list = rcbasic_edit_keywords + _(" ");
+
+    id_list.Clear();
+
+    for(int i = 0; i < kw_list.length(); i++)
+    {
+        curr_char = kw_list.substr(i, 1);
+        if(curr_char.compare(_(" "))==0)
+        {
+            if(kw.Trim().compare(_(""))!=0)
+                id_list.Add(kw.MakeLower());
+
+            kw = _("");
+        }
+        else
+        {
+            kw.Append(curr_char);
+        }
+    }
+
+    kw = _("");
+    curr_char = _("");
+    kw_list = rcbasic_edit_keywords2 + _(" ");
+
+    for(int i = 0; i < kw_list.length(); i++)
+    {
+        curr_char = kw_list.substr(i, 1);
+        if(curr_char.compare(_(" "))==0)
+        {
+            if(kw.Trim().compare(_(""))!=0)
+                id_list.Add(kw);
+
+            kw = _("");
+        }
+        else
+        {
+            kw.Append(curr_char);
+        }
+    }
+
+    id_list.Sort();
+    kw_count = id_list.GetCount();
+
+    return true;
+}
+
+bool rcbasic_edit_frame::saveEditorProperties(wxFileName fname)
+{
+    wxFile properties_file;
+
+    if(fname.Exists())
+    {
+        if(!properties_file.Open(fname.GetFullPath(), wxFile::write))
+            return false;
+    }
+    else if(!properties_file.Create(fname.GetFullPath()))
+    {
+        return false;
+    }
+
+    wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+    wxFileName base_dir(editor_path);
+
+    wxFileName rel_build_path = rcbasic_build_path;
+    wxFileName rel_run_path = rcbasic_run_path;
+    wxFileName rel_base_path = rcbasic_path;
+    rel_build_path.MakeRelativeTo(base_dir.GetPath());
+    rel_run_path.MakeRelativeTo(base_dir.GetPath());
+    rel_base_path.MakeRelativeTo(base_dir.GetPath());
+
+    properties_file.Write(_("CONVERT_REL=") + (conv_rel ? _("TRUE") : _("FALSE")) + _("\n"));
+    properties_file.Write(_("DEFAULT_SCHEME=") + default_scheme + _("\n"));
+    properties_file.Write(_("RCBASIC_WIN_BIT=") + wxString::Format(wxT("%i"),win_os_bit) + _("\n"));
+    properties_file.Write(_("RCBASIC_BUILD=") + rel_build_path.GetFullPath() + _("\n"));
+    properties_file.Write(_("RCBASIC_RUN=") + rel_run_path.GetFullPath() + _("\n"));
+    properties_file.Write(_("RCBASIC_PATH=") + rel_base_path.GetFullPath() + _("\n"));
+    properties_file.Write(_("ENABLE_PARSER=") + (enable_parser ? _("TRUE") : _("FALSE")) + _("\n"));
+    properties_file.Write(_("ENABLE_CODE_COMPLETE=") + (enable_parser ? _("TRUE") : _("FALSE")) + _("\n"));
+    properties_file.Write(_("RCBASIC_DOC_PATH=doc") + _("\n")); //This is just a place holder for compatability
+    properties_file.Write(_("STUDIO_DOC_URL=") + Studio_Documentation_Link + _("\n"));
+    properties_file.Write(_("DOC_URL=") + RCBasic_Documentation_Link + _("\n"));
+    properties_file.Write(_("keywords=") + rcbasic_edit_keywords + _("\n"));
+    properties_file.Write(_("keywords2=") + rcbasic_edit_keywords2 + _("\n"));
+
+    wxString tmp_str;
+
+    wxGetEnv(_("RCBASIC_HOME_CONFIG"), &tmp_str);
+    if(tmp_str.Trim().compare(_(""))!=0)
+    {
+        properties_file.Write(_("RCBASIC_HOME=") + tmp_str + _("\n"));
+        tmp_str = _("");
+    }
+
+    wxGetEnv(_("RCBASIC_TOOLS_CONFIG"), &tmp_str);
+    if(tmp_str.Trim().compare(_(""))!=0)
+    {
+        properties_file.Write(_("RCBASIC_TOOLS=") + tmp_str + _("\n"));
+        tmp_str = _("");
+    }
+
+    wxGetEnv(_("RC_PKG_HOME_CONFIG"), &tmp_str);
+    if(tmp_str.Trim().compare(_(""))!=0)
+    {
+        properties_file.Write(_("RC_PKG_HOME=") + tmp_str + _("\n"));
+        tmp_str = _("");
+    }
+
+    wxGetEnv(_("RCBASIC_ANDROID_DIR_CONFIG"), &tmp_str);
+    if(tmp_str.Trim().compare(_(""))!=0)
+    {
+        properties_file.Write(_("RCBASIC_ANDROID_DIR=") + tmp_str + _("\n"));
+        tmp_str = _("");
+    }
+
+    wxGetEnv(_("LD_LIBRARY_PATH_CONFIG"), &tmp_str);
+    if(tmp_str.Trim().compare(_(""))!=0)
+    {
+        properties_file.Write(_("LD_LIBRARY_PATH=") + tmp_str + _("\n"));
+        tmp_str = _("");
+    }
+
+    wxGetEnv(_("ANDROID_HOME_CONFIG"), &tmp_str);
+    if(tmp_str.Trim().compare(_(""))!=0)
+    {
+        properties_file.Write(_("ANDROID_HOME=") + tmp_str + _("\n"));
+        tmp_str = _("");
+    }
+
+    properties_file.Close();
 
     return true;
 }
@@ -2145,6 +2289,24 @@ void rcbasic_edit_frame::onDeleteMenuSelect( wxCommandEvent& event )
     notebook_mutex.Unlock();
 }
 
+void rcbasic_edit_frame::onSelectAllMenuSelect( wxCommandEvent& event )
+{
+    notebook_mutex.Lock();
+    int selected_page = sourceFile_auinotebook->GetSelection();
+
+    if(selected_page < 0)
+    {
+        notebook_mutex.Unlock();
+        return;
+    }
+
+    wxStyledTextCtrl* t = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_page);
+    //wxPrintf(_("Line: %d to %d"), t->LineFromPosition(t->GetSelectionStart()), t->LineFromPosition(t->GetSelectionEnd()));
+    t->SelectAll();
+
+    notebook_mutex.Unlock();
+}
+
 void rcbasic_edit_frame::onCommentMenuSelect( wxCommandEvent& event )
 {
     notebook_mutex.Lock();
@@ -2265,6 +2427,68 @@ void rcbasic_edit_frame::onUnCommentMenuSelect( wxCommandEvent& event )
     }
 
     t->EndUndoAction();
+
+    notebook_mutex.Unlock();
+}
+
+wxString rcbasic_edit_frame::getRCBasicBasePath()
+{
+    return rcbasic_path;
+}
+
+wxFileName rcbasic_edit_frame::getRCBasicBuildPath()
+{
+    return rcbasic_build_path;
+}
+
+wxFileName rcbasic_edit_frame::getRCBasicRunPath()
+{
+    return rcbasic_run_path;
+}
+
+bool rcbasic_edit_frame::getParserFlag()
+{
+    return enable_parser;
+}
+
+bool rcbasic_edit_frame::getAutoCompleteFlag()
+{
+    return enable_codeCompletion;
+}
+
+wxString rcbasic_edit_frame::getRCBasicDocLink()
+{
+    return RCBasic_Documentation_Link;
+}
+
+wxString rcbasic_edit_frame::getStudioDocLink()
+{
+    return Studio_Documentation_Link;
+}
+
+void rcbasic_edit_frame::onPreferenceMenuSelect( wxCommandEvent& event )
+{
+    notebook_mutex.Lock();
+
+    rcbasic_edit_preference_dialog* pref_dialog = new rcbasic_edit_preference_dialog(this);
+    pref_dialog->ShowModal();
+
+    if(pref_dialog->getPreferenceDialogValue() == preference_value_OK)
+    {
+        rcbasic_path = pref_dialog->getRCBasicBasePath();
+        rcbasic_build_path = pref_dialog->getRCBasicBuildPath();
+        rcbasic_run_path = pref_dialog->getRCBasicRunPath();
+        RCBasic_Documentation_Link = pref_dialog->getRCBasicDocLink();
+        Studio_Documentation_Link = pref_dialog->getStudioDocLink();
+        enable_parser = pref_dialog->getParserFlag();
+        enable_codeCompletion = pref_dialog->getAutoCompleteFlag();
+
+        wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
+        wxFileName edit_config(editor_path);
+        edit_config.AppendDir(_("config"));
+        edit_config.SetFullName(_("rcbasic_edit.config"));
+        saveEditorProperties(edit_config);
+    }
 
     notebook_mutex.Unlock();
 }
@@ -3146,6 +3370,7 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
 
         rc_txtCtrl->SetKeyWords(0, rcbasic_edit_keywords);
         rc_txtCtrl->SetKeyWords(1, rcbasic_edit_keywords2);
+        rc_txtCtrl->AutoCompSetIgnoreCase(true);
         //rc_txtCtrl->StyleSetFont(wxSTC_STYLE_DEFAULT, editor_font);
         //rc_txtCtrl->SetTabWidth(4);
 
@@ -3709,6 +3934,8 @@ void rcbasic_edit_frame::onTextCtrlUpdated( wxStyledTextEvent& event )
     wxString selection_string = sourceFile_auinotebook->GetPageText(selected_tab);
     wxStyledTextCtrl* rc_txtCtrl = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(selected_tab);
 
+
+
     for(int i = 0; i < open_files.size(); i++)
     {
         if(!open_files[i])
@@ -3766,6 +3993,38 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
         t->SetLineIndentation(currentLine, indent);
         t->GotoPos(t->GetLineIndentPosition(currentLine));
     }
+    else if(enable_codeCompletion)
+    {
+        wxStyledTextCtrl* rc_txtCtrl = t;
+        // Find the word start
+        int currentPos = rc_txtCtrl->GetCurrentPos();
+        int wordStartPos = rc_txtCtrl->WordStartPosition( currentPos, true );
+
+        // Display the autocompletion list
+        int lenEntered = currentPos - wordStartPos;
+        if (lenEntered >= 3)
+        {
+            wxString cc_list = _("");
+            wxString current_word = rc_txtCtrl->GetTextRange(wordStartPos, currentPos).MakeLower();
+            int cc_index = 0;
+
+            bool item_added = false;
+
+            for(int i = cc_index; i < id_list.GetCount(); i++)
+            {
+                wxPuts(_("compare [") + id_list[i].substr(0, lenEntered) + _("] to [") + current_word + _("]"));
+                if(id_list[i].substr(0, lenEntered).compare(current_word)==0)
+                {
+                    cc_list += id_list[i] + _(" ");
+                    item_added = true;
+                }
+                else if(item_added)
+                    break;
+            }
+            rc_txtCtrl->AutoCompShow(lenEntered, cc_list);
+        }
+    }
+
     notebook_mutex.Unlock();
 }
 

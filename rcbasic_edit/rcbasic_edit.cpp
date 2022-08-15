@@ -112,12 +112,24 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_edit_menu->AppendSeparator();
 
+	wxMenuItem* m_selectAll_menuItem;
+	m_selectAll_menuItem = new wxMenuItem( m_edit_menu, wxID_ANY, wxString( wxT("Select All") ) + wxT('\t') + wxT("Ctrl+A"), wxEmptyString, wxITEM_NORMAL );
+	m_edit_menu->Append( m_selectAll_menuItem );
+
+	m_edit_menu->AppendSeparator();
+
 	m_comment_menuItem = new wxMenuItem( m_edit_menu, wxID_ANY, wxString( wxT("Comment Selected") ) , wxEmptyString, wxITEM_NORMAL );
 	m_edit_menu->Append( m_comment_menuItem );
 
 	wxMenuItem* m_uncomment_menuItem;
 	m_uncomment_menuItem = new wxMenuItem( m_edit_menu, wxID_ANY, wxString( wxT("UnComment Selected") ) , wxEmptyString, wxITEM_NORMAL );
 	m_edit_menu->Append( m_uncomment_menuItem );
+
+	m_edit_menu->AppendSeparator();
+
+	wxMenuItem* m_preference_menuItem;
+	m_preference_menuItem = new wxMenuItem( m_edit_menu, wxID_ANY, wxString( wxT("Preferences") ) , wxEmptyString, wxITEM_NORMAL );
+	m_edit_menu->Append( m_preference_menuItem );
 
 	m_menubar1->Append( m_edit_menu, wxT("Edit") );
 
@@ -399,8 +411,10 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onCopyMenuSelect ), this, m_copy_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onPasteMenuSelect ), this, m_paste_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDeleteMenuSelect ), this, m_delete_menuItem->GetId());
+	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onSelectAllMenuSelect ), this, m_selectAll_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onCommentMenuSelect ), this, m_comment_menuItem->GetId());
 	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onUnCommentMenuSelect ), this, m_uncomment_menuItem->GetId());
+	m_edit_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onPreferenceMenuSelect ), this, m_preference_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindMenuSelect ), this, m_find_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindNextMenuSelect ), this, m_findNext_menuItem->GetId());
 	m_search_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onFindPreviousMenuSelect ), this, m_findPrevious_menuItem->GetId());
@@ -2617,5 +2631,193 @@ rc_cancelDistProcess_dialog::~rc_cancelDistProcess_dialog()
 	// Disconnect Events
 	m_yes_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_cancelDistProcess_dialog::onYesButtonClick ), NULL, this );
 	m_no_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_cancelDistProcess_dialog::onNoButtonClick ), NULL, this );
+
+}
+
+rc_preference_dialog::rc_preference_dialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer117;
+	bSizer117 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel17 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer118;
+	bSizer118 = new wxBoxSizer( wxVERTICAL );
+
+	m_prefPaths_staticText = new wxStaticText( m_panel17, wxID_ANY, wxT("PATHS"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_prefPaths_staticText->Wrap( -1 );
+	m_prefPaths_staticText->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, true, wxEmptyString ) );
+
+	bSizer118->Add( m_prefPaths_staticText, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer1192;
+	bSizer1192 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer1192->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText532 = new wxStaticText( m_panel17, wxID_ANY, wxT("RCBASIC_PATH"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText532->Wrap( -1 );
+	bSizer1192->Add( m_staticText532, 3, wxALL, 5 );
+
+	m_pref_rcPath_dirPicker = new wxDirPickerCtrl( m_panel17, wxID_ANY, wxEmptyString, wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	bSizer1192->Add( m_pref_rcPath_dirPicker, 15, wxALL, 5 );
+
+
+	bSizer1192->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer118->Add( bSizer1192, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer119;
+	bSizer119 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer119->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText53 = new wxStaticText( m_panel17, wxID_ANY, wxT("COMPILER"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText53->Wrap( -1 );
+	bSizer119->Add( m_staticText53, 3, wxALL, 5 );
+
+	m_pref_compilerPath_filePicker = new wxFilePickerCtrl( m_panel17, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	bSizer119->Add( m_pref_compilerPath_filePicker, 15, wxALL, 5 );
+
+
+	bSizer119->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer118->Add( bSizer119, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer1191;
+	bSizer1191 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer1191->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText531 = new wxStaticText( m_panel17, wxID_ANY, wxT("RUNTIME"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText531->Wrap( -1 );
+	bSizer1191->Add( m_staticText531, 3, wxALL, 5 );
+
+	m_pref_runtimePath_filePicker = new wxFilePickerCtrl( m_panel17, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	bSizer1191->Add( m_pref_runtimePath_filePicker, 15, wxALL, 5 );
+
+
+	bSizer1191->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer118->Add( bSizer1191, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer11921;
+	bSizer11921 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer11921->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText5321 = new wxStaticText( m_panel17, wxID_ANY, wxT("RCBASIC MANUAL"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5321->Wrap( -1 );
+	bSizer11921->Add( m_staticText5321, 3, wxALL, 5 );
+
+	m_rcbasicManual_textCtrl = new wxTextCtrl( m_panel17, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer11921->Add( m_rcbasicManual_textCtrl, 15, wxALL, 5 );
+
+
+	bSizer11921->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer118->Add( bSizer11921, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer119211;
+	bSizer119211 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer119211->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText53211 = new wxStaticText( m_panel17, wxID_ANY, wxT("EDITOR MANUAL"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText53211->Wrap( -1 );
+	bSizer119211->Add( m_staticText53211, 3, wxALL, 5 );
+
+	m_editorManual_textCtrl = new wxTextCtrl( m_panel17, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer119211->Add( m_editorManual_textCtrl, 15, wxALL, 5 );
+
+
+	bSizer119211->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer118->Add( bSizer119211, 1, wxEXPAND, 5 );
+
+	m_staticText61 = new wxStaticText( m_panel17, wxID_ANY, wxT("EDITOR OPTIONS"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText61->Wrap( -1 );
+	m_staticText61->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, true, wxEmptyString ) );
+
+	bSizer118->Add( m_staticText61, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer1193;
+	bSizer1193 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer1193->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_enableParser_checkBox = new wxCheckBox( m_panel17, wxID_ANY, wxT("Enable Parser (This will be applied the next time you start the editor)"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer1193->Add( m_enableParser_checkBox, 1, wxALL, 5 );
+
+
+	bSizer1193->Add( 0, 0, 10, wxEXPAND, 5 );
+
+
+	bSizer118->Add( bSizer1193, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer11931;
+	bSizer11931 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer11931->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_enableCodeCompletion_checkBox = new wxCheckBox( m_panel17, wxID_ANY, wxT("Enable Code Completion"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer11931->Add( m_enableCodeCompletion_checkBox, 1, wxALL, 5 );
+
+
+	bSizer11931->Add( 0, 0, 19, wxEXPAND, 5 );
+
+
+	bSizer118->Add( bSizer11931, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer136;
+	bSizer136 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer136->Add( 0, 0, 2, wxEXPAND, 5 );
+
+	m_cancel_button = new wxButton( m_panel17, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer136->Add( m_cancel_button, 1, wxALIGN_BOTTOM|wxALL, 5 );
+
+	m_ok_button = new wxButton( m_panel17, wxID_ANY, wxT("Ok"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer136->Add( m_ok_button, 1, wxALIGN_BOTTOM|wxALL, 5 );
+
+
+	bSizer118->Add( bSizer136, 1, wxEXPAND, 5 );
+
+
+	m_panel17->SetSizer( bSizer118 );
+	m_panel17->Layout();
+	bSizer118->Fit( m_panel17 );
+	bSizer117->Add( m_panel17, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer117 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	m_cancel_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_preference_dialog::onCancelButtonClick ), NULL, this );
+	m_ok_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_preference_dialog::onOKButtonClick ), NULL, this );
+}
+
+rc_preference_dialog::~rc_preference_dialog()
+{
+	// Disconnect Events
+	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_preference_dialog::onCancelButtonClick ), NULL, this );
+	m_ok_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_preference_dialog::onOKButtonClick ), NULL, this );
 
 }

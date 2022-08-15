@@ -3227,10 +3227,10 @@
 
 1587564568 c:\dev_libs\wx\lib\gcc510tdm_dll\mswu\wx\setup.h
 
-1659289185 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
+1660521621 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.cpp
 	"rcbasic_edit.h"
 
-1659289185 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
+1660521621 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3381,7 +3381,7 @@
 1587564568 c:\dev_libs\wx\include\wx\overlay.h
 	"wx/defs.h"
 
-1659289185 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
+1660537388 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.h
 	"rcbasic_edit.h"
 	"rc_closeProjectSavePrompt_dialog.h"
 	"rc_newFile_dialog.h"
@@ -3399,7 +3399,7 @@
 	<wx/txtstrm.h>
 	<vector>
 
-1660428927 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
+1660541409 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_frame.cpp
 	<wx/string.h>
 	<wx/arrstr.h>
 	<wx/dir.h>
@@ -3415,6 +3415,7 @@
 	"rcbasic_edit_projectSettings_dialog.h"
 	"rcbasic_edit_projectEnvironment_dialog.h"
 	"rcbasic_edit_fileProperties_dialog.h"
+	"rcbasic_edit_preference_dialog.h"
 	"drag_files.h"
 
 1587564568 c:\dev_libs\wx\include\wx\filepicker.h
@@ -5944,4 +5945,11 @@
 1659240935 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\drag_files.h
 	<wx/wx.h>
 	<wx/dnd.h>
+
+1660532457 source:c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_preference_dialog.cpp
+	"rcbasic_edit_preference_dialog.h"
+	"rcbasic_edit_frame.h"
+
+1660532314 c:\users\omega\desktop\projects\rcbasic3\rcbasic_edit\rcbasic_edit_preference_dialog.h
+	"rcbasic_edit.h"
 

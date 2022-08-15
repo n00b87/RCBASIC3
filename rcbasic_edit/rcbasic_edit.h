@@ -159,8 +159,10 @@ class rc_ideFrame : public wxFrame
 		virtual void onCopyMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onPasteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onDeleteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSelectAllMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onUnCommentMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onPreferenceMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindNextMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFindPreviousMenuSelect( wxCommandEvent& event ) { event.Skip(); }
@@ -798,6 +800,45 @@ class rc_cancelDistProcess_dialog : public wxDialog
 		rc_cancelDistProcess_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Cancel Building App"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 389,150 ), long style = wxCAPTION|wxSTAY_ON_TOP );
 
 		~rc_cancelDistProcess_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_preference_dialog
+///////////////////////////////////////////////////////////////////////////////
+class rc_preference_dialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxPanel* m_panel17;
+		wxStaticText* m_prefPaths_staticText;
+		wxStaticText* m_staticText532;
+		wxDirPickerCtrl* m_pref_rcPath_dirPicker;
+		wxStaticText* m_staticText53;
+		wxFilePickerCtrl* m_pref_compilerPath_filePicker;
+		wxStaticText* m_staticText531;
+		wxFilePickerCtrl* m_pref_runtimePath_filePicker;
+		wxStaticText* m_staticText5321;
+		wxTextCtrl* m_rcbasicManual_textCtrl;
+		wxStaticText* m_staticText53211;
+		wxTextCtrl* m_editorManual_textCtrl;
+		wxStaticText* m_staticText61;
+		wxCheckBox* m_enableParser_checkBox;
+		wxCheckBox* m_enableCodeCompletion_checkBox;
+		wxButton* m_cancel_button;
+		wxButton* m_ok_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onOKButtonClick( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		rc_preference_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 634,510 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~rc_preference_dialog();
 
 };
 

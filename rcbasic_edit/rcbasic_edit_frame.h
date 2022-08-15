@@ -176,6 +176,8 @@ class rcbasic_edit_frame : public rc_ideFrame
         parserThread * token_parser;
         bool enable_parser;
 
+        bool enable_codeCompletion;
+
         rcbasic_edit_scheme editor_scheme;
         wxString rcbasic_edit_keywords;
         wxString rcbasic_edit_keywords2;
@@ -228,9 +230,11 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onCopyMenuSelect( wxCommandEvent& event );
 		void onPasteMenuSelect( wxCommandEvent& event );
 		void onDeleteMenuSelect( wxCommandEvent& event );
+		void onSelectAllMenuSelect( wxCommandEvent& event );
 		void onCommentMenuSelect( wxCommandEvent& event );
 		void onUnCommentMenuSelect( wxCommandEvent& event );
 		void onBlockCommentMenuSelect( wxCommandEvent& event );
+		void onPreferenceMenuSelect( wxCommandEvent& event );
 		void onFindMenuSelect( wxCommandEvent& event );
 		void onFindNextMenuSelect( wxCommandEvent& event );
 		void onFindPreviousMenuSelect( wxCommandEvent& event );
@@ -352,7 +356,16 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void applyScheme(wxStyledTextCtrl* rc_txtCtrl);
 
 		bool loadEditorProperties(wxFileName fname);
+		bool saveEditorProperties(wxFileName fname);
 		bool loadDefaultViewProperties(wxFileName fname);
+
+		wxString getRCBasicBasePath();
+        wxFileName getRCBasicBuildPath();
+        wxFileName getRCBasicRunPath();
+        bool getParserFlag();
+        bool getAutoCompleteFlag();
+        wxString getRCBasicDocLink();
+        wxString getStudioDocLink();
 
 		wxSemaphore* getSymSem() { return sym_sem; }
 
@@ -363,6 +376,9 @@ class rcbasic_edit_frame : public rc_ideFrame
         bool symbolUpdateInProgress;
         int symbol_ui_state;
         long win_os_bit;
+
+        wxArrayString id_list;
+        int kw_count;
 
 		DECLARE_EVENT_TABLE();
 		//void replaceInSelection(int findDialog_flag, wxString txt);
