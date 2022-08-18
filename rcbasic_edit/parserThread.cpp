@@ -149,7 +149,7 @@ void* parserThread::Entry()
             wxPostEvent(m_pParent, evt);
         }
 
-        wxMilliSleep(500);
+        wxMilliSleep(400);
     }
 
     return NULL;

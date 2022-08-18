@@ -691,7 +691,7 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         if(curr_char.compare(_(" "))==0)
         {
             if(kw.Trim().compare(_(""))!=0)
-                id_list.Add(kw.MakeLower());
+                id_list.Add(kw);
 
             kw = _("");
         }
@@ -711,7 +711,7 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         if(curr_char.compare(_(" "))==0)
         {
             if(kw.Trim().compare(_(""))!=0)
-                id_list.Add(kw);
+                id_list.Add(kw.MakeUpper());
 
             kw = _("");
         }
@@ -3368,9 +3368,10 @@ rcbasic_edit_txtCtrl* rcbasic_edit_frame::openFileTab(rcbasic_project* project, 
         rc_txtCtrl->EmptyUndoBuffer();
         rc_txtCtrl->SetLexer(wxSTC_LEX_FREEBASIC);
 
-        rc_txtCtrl->SetKeyWords(0, rcbasic_edit_keywords);
+        rc_txtCtrl->SetKeyWords(0, rcbasic_edit_keywords.MakeLower());
         rc_txtCtrl->SetKeyWords(1, rcbasic_edit_keywords2);
         rc_txtCtrl->AutoCompSetIgnoreCase(true);
+        //rc_txtCtrl->AutoCompSetMaxWidth(60);
         //rc_txtCtrl->StyleSetFont(wxSTC_STYLE_DEFAULT, editor_font);
         //rc_txtCtrl->SetTabWidth(4);
 
@@ -4012,8 +4013,8 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
 
             for(int i = cc_index; i < id_list.GetCount(); i++)
             {
-                wxPuts(_("compare [") + id_list[i].substr(0, lenEntered) + _("] to [") + current_word + _("]"));
-                if(id_list[i].substr(0, lenEntered).compare(current_word)==0)
+                //wxPuts(_("compare [") + id_list[i].substr(0, lenEntered) + _("] to [") + current_word + _("]"));
+                if(id_list[i].substr(0, lenEntered).MakeLower().compare(current_word)==0)
                 {
                     cc_list += id_list[i] + _(" ");
                     item_added = true;
@@ -4021,6 +4022,9 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
                 else if(item_added)
                     break;
             }
+
+            cc_list += "_____________________________________ ";
+
             rc_txtCtrl->AutoCompShow(lenEntered, cc_list);
         }
     }
