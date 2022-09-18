@@ -207,7 +207,7 @@ rcbasic_edit_frame::rcbasic_edit_frame( wxWindow* parent )
 :
 rc_ideFrame( parent )
 {
-    RCBasic_Studio_Version = _("v1.0");
+    RCBasic_Studio_Version = _("v1.1");
 
     build_run_project = NULL;
     current_file_project = new rcbasic_project();

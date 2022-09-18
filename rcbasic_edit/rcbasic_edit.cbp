@@ -74,6 +74,8 @@
 		<Unit filename="rcbasic_edit_gotoLine_dialog.h" />
 		<Unit filename="rcbasic_edit_newProject_dialog.cpp" />
 		<Unit filename="rcbasic_edit_newProject_dialog.h" />
+		<Unit filename="rcbasic_edit_preference_dialog.cpp" />
+		<Unit filename="rcbasic_edit_preference_dialog.h" />
 		<Unit filename="rcbasic_edit_projectEnvironment_dialog.cpp" />
 		<Unit filename="rcbasic_edit_projectEnvironment_dialog.h" />
 		<Unit filename="rcbasic_edit_projectSettings_dialog.cpp" />
