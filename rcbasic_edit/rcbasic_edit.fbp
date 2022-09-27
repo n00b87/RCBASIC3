@@ -409,7 +409,7 @@
                         <event name="OnMenuSelection">onDeleteMenuSelect</event>
                     </object>
                     <object class="separator" expanded="0">
-                        <property name="name">m_separator141</property>
+                        <property name="name">m_separator10</property>
                         <property name="permission">none</property>
                     </object>
                     <object class="wxMenuItem" expanded="0">
@@ -427,7 +427,7 @@
                         <event name="OnMenuSelection">onSelectAllMenuSelect</event>
                     </object>
                     <object class="separator" expanded="0">
-                        <property name="name">m_separator10</property>
+                        <property name="name">m_separator141</property>
                         <property name="permission">none</property>
                     </object>
                     <object class="wxMenuItem" expanded="0">
@@ -556,7 +556,7 @@
                         <event name="OnMenuSelection">onGotoMenuSelect</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">View</property>
                     <property name="name">m_view_menu</property>
                     <property name="permission">protected</property>
@@ -714,7 +714,7 @@
                         <event name="OnMenuSelection">onProjectEnvironmentMenuSelect</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">Build</property>
                     <property name="name">m_build_menu</property>
                     <property name="permission">protected</property>
@@ -760,7 +760,7 @@
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">onBuildRunMenuSelect</event>
                     </object>
-                    <object class="separator" expanded="0">
+                    <object class="separator" expanded="1">
                         <property name="name">m_separator131</property>
                         <property name="permission">none</property>
                     </object>
@@ -778,11 +778,11 @@
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">onStopExecuteMenuSelect</event>
                     </object>
-                    <object class="separator" expanded="0">
+                    <object class="separator" expanded="1">
                         <property name="name">m_separator121</property>
                         <property name="permission">none</property>
                     </object>
-                    <object class="wxMenuItem" expanded="0">
+                    <object class="wxMenuItem" expanded="1">
                         <property name="bitmap"></property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
@@ -796,7 +796,7 @@
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">onBuildFileMenuSelect</event>
                     </object>
-                    <object class="wxMenuItem" expanded="0">
+                    <object class="wxMenuItem" expanded="1">
                         <property name="bitmap"></property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
@@ -810,7 +810,7 @@
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">onRunFileMenuSelect</event>
                     </object>
-                    <object class="wxMenuItem" expanded="0">
+                    <object class="wxMenuItem" expanded="1">
                         <property name="bitmap"></property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
@@ -858,7 +858,7 @@
                         <event name="OnMenuSelection">onDistributeMenuSelect</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">Help</property>
                     <property name="name">m_help_menu</property>
                     <property name="permission">protected</property>
@@ -5787,7 +5787,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_replace_dialog</property>
             <property name="pos"></property>
-            <property name="size">467,238</property>
+            <property name="size">518,341</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Replace</property>
@@ -7896,7 +7896,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_projectSettings_dialog</property>
             <property name="pos"></property>
-            <property name="size">517,550</property>
+            <property name="size">586,613</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Project Properties</property>
@@ -9383,7 +9383,7 @@
                             </object>
                             <object class="sizeritem" expanded="0">
                                 <property name="border">5</property>
-                                <property name="flag">wxALIGN_CENTER|wxALL</property>
+                                <property name="flag">wxALIGN_CENTER|wxALL|wxEXPAND</property>
                                 <property name="proportion">1</property>
                                 <object class="wxButton" expanded="0">
                                     <property name="BottomDockable">1</property>
@@ -9457,7 +9457,7 @@
                             </object>
                             <object class="sizeritem" expanded="0">
                                 <property name="border">5</property>
-                                <property name="flag">wxALIGN_CENTER|wxALL</property>
+                                <property name="flag">wxALIGN_CENTER|wxALL|wxEXPAND</property>
                                 <property name="proportion">1</property>
                                 <object class="wxButton" expanded="0">
                                     <property name="BottomDockable">1</property>
@@ -10237,7 +10237,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_projectEnvironment_dialog</property>
             <property name="pos"></property>
-            <property name="size">487,298</property>
+            <property name="size">505,320</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Project Environment Settings</property>
@@ -11462,7 +11462,7 @@
                 </object>
             </object>
         </object>
-        <object class="Dialog" expanded="1">
+        <object class="Dialog" expanded="0">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -11490,16 +11490,16 @@
             <property name="window_name"></property>
             <property name="window_style"></property>
             <event name="OnClose">onCancelButtonClick</event>
-            <object class="wxBoxSizer" expanded="1">
+            <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer80</property>
                 <property name="orient">wxVERTICAL</property>
                 <property name="permission">none</property>
-                <object class="sizeritem" expanded="1">
+                <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">1</property>
-                    <object class="wxBoxSizer" expanded="1">
+                    <object class="wxBoxSizer" expanded="0">
                         <property name="minimum_size"></property>
                         <property name="name">bSizer82</property>
                         <property name="orient">wxHORIZONTAL</property>
@@ -13090,7 +13090,7 @@
                 </object>
             </object>
         </object>
-        <object class="Dialog" expanded="0">
+        <object class="Dialog" expanded="1">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -13108,7 +13108,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_distribute_dialog</property>
             <property name="pos"></property>
-            <property name="size">576,359</property>
+            <property name="size">660,427</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Distribute</property>
@@ -13118,7 +13118,7 @@
             <property name="window_name"></property>
             <property name="window_style"></property>
             <event name="OnClose">onCloseButtonClick</event>
-            <object class="wxBoxSizer" expanded="0">
+            <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer92</property>
                 <property name="orient">wxVERTICAL</property>
@@ -15543,7 +15543,7 @@
                         </object>
                     </object>
                 </object>
-                <object class="sizeritem" expanded="0">
+                <object class="sizeritem" expanded="1">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">1</property>
@@ -16586,7 +16586,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_preference_dialog</property>
             <property name="pos"></property>
-            <property name="size">634,510</property>
+            <property name="size">600,493</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Preferences</property>
@@ -16639,7 +16639,7 @@
                         <property name="minimize_button">0</property>
                         <property name="minimum_size"></property>
                         <property name="moveable">1</property>
-                        <property name="name">m_panel17</property>
+                        <property name="name">m_panel15</property>
                         <property name="pane_border">1</property>
                         <property name="pane_position"></property>
                         <property name="pane_size"></property>
@@ -16727,7 +16727,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer1192</property>
+                                    <property name="name">bSizer119</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
@@ -16781,7 +16781,7 @@
                                             <property name="minimize_button">0</property>
                                             <property name="minimum_size"></property>
                                             <property name="moveable">1</property>
-                                            <property name="name">m_staticText532</property>
+                                            <property name="name">m_staticText51</property>
                                             <property name="pane_border">1</property>
                                             <property name="pane_position"></property>
                                             <property name="pane_size"></property>
@@ -16883,7 +16883,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer119</property>
+                                    <property name="name">bSizer120</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
@@ -16937,7 +16937,7 @@
                                             <property name="minimize_button">0</property>
                                             <property name="minimum_size"></property>
                                             <property name="moveable">1</property>
-                                            <property name="name">m_staticText53</property>
+                                            <property name="name">m_staticText52</property>
                                             <property name="pane_border">1</property>
                                             <property name="pane_position"></property>
                                             <property name="pane_size"></property>
@@ -17040,7 +17040,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer1191</property>
+                                    <property name="name">bSizer121</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
@@ -17094,7 +17094,7 @@
                                             <property name="minimize_button">0</property>
                                             <property name="minimum_size"></property>
                                             <property name="moveable">1</property>
-                                            <property name="name">m_staticText531</property>
+                                            <property name="name">m_staticText53</property>
                                             <property name="pane_border">1</property>
                                             <property name="pane_position"></property>
                                             <property name="pane_size"></property>
@@ -17197,7 +17197,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer11921</property>
+                                    <property name="name">bSizer122</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
@@ -17251,7 +17251,7 @@
                                             <property name="minimize_button">0</property>
                                             <property name="minimum_size"></property>
                                             <property name="moveable">1</property>
-                                            <property name="name">m_staticText5321</property>
+                                            <property name="name">m_staticText54</property>
                                             <property name="pane_border">1</property>
                                             <property name="pane_position"></property>
                                             <property name="pane_size"></property>
@@ -17353,7 +17353,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer119211</property>
+                                    <property name="name">bSizer123</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
@@ -17407,7 +17407,7 @@
                                             <property name="minimize_button">0</property>
                                             <property name="minimum_size"></property>
                                             <property name="moveable">1</property>
-                                            <property name="name">m_staticText53211</property>
+                                            <property name="name">m_staticText55</property>
                                             <property name="pane_border">1</property>
                                             <property name="pane_position"></property>
                                             <property name="pane_size"></property>
@@ -17544,7 +17544,7 @@
                                     <property name="minimize_button">0</property>
                                     <property name="minimum_size"></property>
                                     <property name="moveable">1</property>
-                                    <property name="name">m_staticText61</property>
+                                    <property name="name">m_staticText56</property>
                                     <property name="pane_border">1</property>
                                     <property name="pane_position"></property>
                                     <property name="pane_size"></property>
@@ -17570,7 +17570,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer1193</property>
+                                    <property name="name">bSizer124</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
@@ -17586,7 +17586,7 @@
                                     <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxALL</property>
-                                        <property name="proportion">1</property>
+                                        <property name="proportion">0</property>
                                         <object class="wxCheckBox" expanded="1">
                                             <property name="BottomDockable">1</property>
                                             <property name="LeftDockable">1</property>
@@ -17665,7 +17665,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer11931</property>
+                                    <property name="name">bSizer125</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
@@ -17745,7 +17745,7 @@
                                     <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
-                                        <property name="proportion">19</property>
+                                        <property name="proportion">30</property>
                                         <object class="spacer" expanded="1">
                                             <property name="height">0</property>
                                             <property name="permission">protected</property>
@@ -17760,7 +17760,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer136</property>
+                                    <property name="name">bSizer126</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
@@ -17775,8 +17775,8 @@
                                     </object>
                                     <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
-                                        <property name="flag">wxALIGN_BOTTOM|wxALL</property>
-                                        <property name="proportion">1</property>
+                                        <property name="flag">wxALL</property>
+                                        <property name="proportion">0</property>
                                         <object class="wxButton" expanded="1">
                                             <property name="BottomDockable">1</property>
                                             <property name="LeftDockable">1</property>
@@ -17849,8 +17849,8 @@
                                     </object>
                                     <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
-                                        <property name="flag">wxALIGN_BOTTOM|wxALL</property>
-                                        <property name="proportion">1</property>
+                                        <property name="flag">wxALL</property>
+                                        <property name="proportion">0</property>
                                         <object class="wxButton" expanded="1">
                                             <property name="BottomDockable">1</property>
                                             <property name="LeftDockable">1</property>
@@ -17895,7 +17895,7 @@
                                             <property name="minimize_button">0</property>
                                             <property name="minimum_size"></property>
                                             <property name="moveable">1</property>
-                                            <property name="name">m_ok_button</property>
+                                            <property name="name">m_button54</property>
                                             <property name="pane_border">1</property>
                                             <property name="pane_position"></property>
                                             <property name="pane_size"></property>

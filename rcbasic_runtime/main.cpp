@@ -482,8 +482,13 @@ void cmp_56(int n1, int n2)
 
 void cmpS_57(int s1, int s2)
 {
-    CMP_FLAG_EQUAL = (vm_s[s1].value.compare(vm_s[s2].value)==0);
-    CMP_FLAG_NOT_EQUAL = (vm_s[s1].value.compare(vm_s[s2].value)!=0);
+    int str_cmp = vm_s[s1].value.compare(vm_s[s2].value);
+    CMP_FLAG_EQUAL = (str_cmp==0);
+    CMP_FLAG_NOT_EQUAL = (str_cmp!=0);
+    CMP_FLAG_GREATER = (str_cmp>0);
+    CMP_FLAG_GREATER_EQUAL = (CMP_FLAG_EQUAL || CMP_FLAG_GREATER);
+    CMP_FLAG_LESS = (str_cmp<0);
+    CMP_FLAG_LESS_EQUAL = (CMP_FLAG_EQUAL || CMP_FLAG_LESS);
 }
 
 void cmp_u_58(int n1, int n2)

@@ -416,7 +416,7 @@ class rc_replace_dialog : public wxDialog
 
 	public:
 
-		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 467,238 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 518,341 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_replace_dialog();
 
@@ -545,7 +545,7 @@ class rc_projectSettings_dialog : public wxDialog
 
 	public:
 
-		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 517,550 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 586,613 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectSettings_dialog();
 
@@ -612,7 +612,7 @@ class rc_projectEnvironment_dialog : public wxDialog
 
 	public:
 
-		rc_projectEnvironment_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Environment Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 487,298 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectEnvironment_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Environment Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 505,320 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectEnvironment_dialog();
 
@@ -744,7 +744,7 @@ class rc_distribute_dialog : public wxDialog
 
 	public:
 
-		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 576,359 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 660,427 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_distribute_dialog();
 
@@ -811,23 +811,23 @@ class rc_preference_dialog : public wxDialog
 	private:
 
 	protected:
-		wxPanel* m_panel17;
+		wxPanel* m_panel15;
 		wxStaticText* m_prefPaths_staticText;
-		wxStaticText* m_staticText532;
+		wxStaticText* m_staticText51;
 		wxDirPickerCtrl* m_pref_rcPath_dirPicker;
-		wxStaticText* m_staticText53;
+		wxStaticText* m_staticText52;
 		wxFilePickerCtrl* m_pref_compilerPath_filePicker;
-		wxStaticText* m_staticText531;
+		wxStaticText* m_staticText53;
 		wxFilePickerCtrl* m_pref_runtimePath_filePicker;
-		wxStaticText* m_staticText5321;
+		wxStaticText* m_staticText54;
 		wxTextCtrl* m_rcbasicManual_textCtrl;
-		wxStaticText* m_staticText53211;
+		wxStaticText* m_staticText55;
 		wxTextCtrl* m_editorManual_textCtrl;
-		wxStaticText* m_staticText61;
+		wxStaticText* m_staticText56;
 		wxCheckBox* m_enableParser_checkBox;
 		wxCheckBox* m_enableCodeCompletion_checkBox;
 		wxButton* m_cancel_button;
-		wxButton* m_ok_button;
+		wxButton* m_button54;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onCancelButtonClick( wxCommandEvent& event ) { event.Skip(); }
@@ -836,7 +836,7 @@ class rc_preference_dialog : public wxDialog
 
 	public:
 
-		rc_preference_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 634,510 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_preference_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,493 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_preference_dialog();
 

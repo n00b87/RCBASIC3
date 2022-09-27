@@ -212,10 +212,10 @@ rc_ideFrame( parent )
     build_run_project = NULL;
     current_file_project = new rcbasic_project();
 
-    #ifdef _WIN32
+    //#ifdef _WIN32
     sourceFile_auinotebook->Connect( wxEVT_DROP_FILES, wxDropFilesEventHandler( rcbasic_edit_frame::onDropFiles ), NULL, this );
     sourceFile_auinotebook->DragAcceptFiles(true);
-    #endif // _WIN32
+    //#endif // _WIN32
 
     thread_returned = false;
     sym_sem = NULL;
@@ -753,7 +753,9 @@ bool rcbasic_edit_frame::saveEditorProperties(wxFileName fname)
 
     properties_file.Write(_("CONVERT_REL=") + (conv_rel ? _("TRUE") : _("FALSE")) + _("\n"));
     properties_file.Write(_("DEFAULT_SCHEME=") + default_scheme + _("\n"));
+    #ifdef _WIN32
     properties_file.Write(_("RCBASIC_WIN_BIT=") + wxString::Format(wxT("%i"),win_os_bit) + _("\n"));
+    #endif // _WIN32
     properties_file.Write(_("RCBASIC_BUILD=") + rel_build_path.GetFullPath() + _("\n"));
     properties_file.Write(_("RCBASIC_RUN=") + rel_run_path.GetFullPath() + _("\n"));
     properties_file.Write(_("RCBASIC_PATH=") + rel_base_path.GetFullPath() + _("\n"));

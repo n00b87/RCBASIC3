@@ -128,7 +128,7 @@ inline double rc_intern_instr(string in_string, string in_substring)
 {
     //cout << "Cant find " << rc_sid[INSTR_SUBSTR][0] << " in " << rc_sid[INSTR_STR][0] << endl;
     unsigned long n = in_string.find(in_substring);
-    return (n == string::npos ? (double)(-1) : n);
+    return (n == string::npos ? (double)-1 : n);
 }
 
 inline string rc_intern_lcase(string u_string)
