@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC DRAWGEOMETRY</title>
+  </head>
+  <body><b>DrawGeometry (slot, num_vertices, ByRef vertices, num_indices, ByRef Indices)</b><br>
+    <br>
+    Draw a textured geometric shape. <br><br>
+    NOTE: Geometry is rendered as triangles. You may want to break a quad down into more triangles to get a better texture map.
+    <br><br>
+    Example:<br>
+    <p><span class="code"><br> 
+<span class="keyword">WindowOpen</span>(<span class="number">0</span>, <span class="string">"tst"</span>, WINDOWPOS_CENTERED, WINDOWPOS_CENTERED, <span class="number">640</span>, <span class="number">480</span>, WINDOW_VISIBLE, <span class="number">1</span>)<br>
+<span class="keyword">CanvasOpen</span>(<span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">640</span>, <span class="number">480</span>, <span class="number">1</span>)<br>
+<br>
+<span class="keyword">ClearCanvas</span><br>
+<br>
+<span class="keyword">LoadImage</span>(<span class="number">0</span>, <span class="string">"tst.bmp"</span>)<br>
+<br>
+<span class="keyword">Dim</span> vertices[<span class="number">3</span>, <span class="number">8</span>]<br>
+<span class="keyword">Dim</span> indices[<span class="number">3</span>]<br>
+<br>
+indices[<span class="number">0</span>] = <span class="number">0</span><br>
+indices[<span class="number">1</span>] = <span class="number">1</span><br>
+indices[<span class="number">2</span>] = <span class="number">2</span><br>
+<br>
+'Top Center of Triangle<br>
+vertices[<span class="number">0</span>, <span class="number">0</span>] = <span class="number">320</span>	'screen x position <br>
+vertices[<span class="number">0</span>, <span class="number">1</span>] = <span class="number">10</span>	'screen y postion <br>
+vertices[<span class="number">0</span>, <span class="number">2</span>] = <span class="number">255</span>	'red <br>
+vertices[<span class="number">0</span>, <span class="number">3</span>] = <span class="number">255</span>	'green <br>
+vertices[<span class="number">0</span>, <span class="number">4</span>] = <span class="number">255</span>	'blue <br>
+vertices[<span class="number">0</span>, <span class="number">5</span>] = <span class="number">255</span>	'alpha <br>
+vertices[<span class="number">0</span>, <span class="number">6</span>] = <span class="number">0.5</span>	'texture x <br>
+vertices[<span class="number">0</span>, <span class="number">7</span>] = <span class="number">0.5</span>	'texture y <br>
+ <br>
+'Bottom Right of Triangle <br>
+vertices[<span class="number">1</span>, <span class="number">0</span>] = <span class="number">640</span>	'screen x position <br>
+vertices[<span class="number">1</span>, <span class="number">1</span>] = <span class="number">450</span>	'screen y postion <br>
+vertices[<span class="number">1</span>, <span class="number">2</span>] = <span class="number">255</span>	'red <br>
+vertices[<span class="number">1</span>, <span class="number">3</span>] = <span class="number">255</span>	'green <br>
+vertices[<span class="number">1</span>, <span class="number">4</span>] = <span class="number">255</span>	'blue <br>
+vertices[<span class="number">1</span>, <span class="number">5</span>] = <span class="number">255</span>	'alpha <br>
+vertices[<span class="number">1</span>, <span class="number">6</span>] = <span class="number">1</span>	'texture x <br>
+vertices[<span class="number">1</span>, <span class="number">7</span>] = <span class="number">1</span>	'texture y <br>
+ <br>
+'Bottom Left of Triangle <br>
+vertices[<span class="number">2</span>, <span class="number">0</span>] = <span class="number">30</span>	'screen x position <br>
+vertices[<span class="number">2</span>, <span class="number">1</span>] = <span class="number">450</span>	'screen y postion <br>
+vertices[<span class="number">2</span>, <span class="number">2</span>] = <span class="number">255</span>	'red <br>
+vertices[<span class="number">2</span>, <span class="number">3</span>] = <span class="number">255</span>	'green <br>
+vertices[<span class="number">2</span>, <span class="number">4</span>] = <span class="number">255</span>	'blue <br>
+vertices[<span class="number">2</span>, <span class="number">5</span>] = <span class="number">255</span>	'alpha <br>
+vertices[<span class="number">2</span>, <span class="number">6</span>] = <span class="number">0</span>	'texture x <br>
+vertices[<span class="number">2</span>, <span class="number">7</span>] = <span class="number">1</span>	'texture y <br>
+ <br>
+<span class="keyword">DrawGeometry</span>( <span class="number">0</span>, <span class="number">3</span>, vertices, <span class="number">3</span>, indices )<br>
+<br>
+<span class="keyword">Update()</span> <br>
+<span class="keyword">WaitKey()</span><br>
+</span><br>This draws a textured triangle to the screen.</p>
+  </body>
+</html>
