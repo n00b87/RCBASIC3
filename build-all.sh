@@ -1,22 +1,65 @@
 #! /bin/bash
 
 pushd rcbasic_build
+
+if [ ! -d "bin" ]; then
+  mkdir bin
+fi
+
+if [ ! -d "bin/Release" ]; then
+mkdir bin/Release
+fi
+
+if [ ! -d "obj" ]; then
+mkdir obj
+fi
+
 chmod u+x build.sh
 ./build.sh
 popd
 
 
 pushd rcbasic_runtime
+
+if [ ! -d "bin" ]; then
+  mkdir bin
+fi
+
+if [ ! -d "bin/Release" ]; then
+mkdir bin/Release
+fi
+
+if [ ! -d "obj" ]; then
+mkdir obj
+fi
+
 chmod u+x build.sh
 ./build.sh
 popd
 
 pushd rcbasic_edit
+
+if [ ! -d "bin" ]; then
+  mkdir bin
+fi
+
+if [ ! -d "bin/Release" ]; then
+mkdir bin/Release
+fi
+
+if [ ! -d "obj" ]; then
+mkdir obj
+fi
+
 chmod u+x build.sh
 ./build.sh
 popd
 
+
+if [ ! -d "rcbasic_linux" ]; then
 mkdir rcbasic_linux
+fi
+
 
 pushd rcbasic_linux
 
