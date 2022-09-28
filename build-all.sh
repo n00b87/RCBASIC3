@@ -14,6 +14,10 @@ if [ ! -d "obj" ]; then
 mkdir obj
 fi
 
+if [ ! -d "obj/Release" ]; then
+mkdir obj/Release
+fi
+
 chmod u+x build.sh
 ./build.sh
 popd
@@ -33,6 +37,10 @@ if [ ! -d "obj" ]; then
 mkdir obj
 fi
 
+if [ ! -d "obj/Release" ]; then
+mkdir obj/Release
+fi
+
 chmod u+x build.sh
 ./build.sh
 popd
@@ -49,6 +57,10 @@ fi
 
 if [ ! -d "obj" ]; then
 mkdir obj
+fi
+
+if [ ! -d "obj/Release" ]; then
+mkdir obj/Release
 fi
 
 chmod u+x build.sh
