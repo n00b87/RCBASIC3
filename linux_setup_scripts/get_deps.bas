@@ -1,0 +1,40 @@
+CopyFile("/lib/x86_64-linux-gnu/libSDL2-2.0.so.0", "libSDL2-2.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libSDL2_image-2.0.so.0", "libSDL2_image-2.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0", "libSDL2_ttf-2.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libSDL2_gfx-1.0.so.0", "libSDL2_gfx-1.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libSDL2_mixer-2.0.so.0", "libSDL2_mixer-2.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libSDL2_net-2.0.so.0", "libSDL2_net-2.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libogg.so.0", "libogg.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libvorbis.so.0", "libvorbis.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libtheoradec.so.1", "libtheoradec.so.1")	
+CopyFile("/lib/x86_64-linux-gnu/libpng16.so.16", "libpng16.so.16")
+CopyFile("/lib/x86_64-linux-gnu/libjpeg.so.8", "libjpeg.so.8")
+CopyFile("/lib/x86_64-linux-gnu/libtiff.so.5", "libtiff.so.5")
+CopyFile("/lib/x86_64-linux-gnu/libwebp.so.6", "libwebp.so.6")
+CopyFile("/lib/x86_64-linux-gnu/libfreetype.so.6", "libfreetype.so.6")
+CopyFile("/lib/x86_64-linux-gnu/libmodplug.so.1", "libmodplug.so.1")
+CopyFile("/lib/x86_64-linux-gnu/libfluidsynth.so.2", "libfluidsynth.so.2")
+CopyFile("/lib/x86_64-linux-gnu/libvorbisfile.so.3", "libvorbisfile.so.3")
+CopyFile("/lib/x86_64-linux-gnu/libFLAC.so.8", "libFLAC.so.8")
+CopyFile("/lib/x86_64-linux-gnu/libmpg123.so.0", "libmpg123.so.0")	
+CopyFile("/lib/libopusfile.so.0", "libopusfile.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libinstpatch-1.0.so.2", "libinstpatch-1.0.so.2")
+CopyFile("/lib/x86_64-linux-gnu/libvorbisenc.so.2", "libvorbisenc.so.2")
+CopyFile("/lib/x86_64-linux-gnu/libtinfo.so.6", "libtinfo.so.6")
+CopyFile("/lib/x86_64-linux-gnu/libjbig.so.0", "libjbig.so.0")
+
+CopyFile("/lib/x86_64-linux-gnu/libreadline.so.8", "libreadline.so.8")
+
+
+
+CopyFile("/lib/x86_64-linux-gnu/libwx_gtk3u_stc-3.0.so.0", "libwx_gtk3u_stc-3.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libwx_gtk3u_aui-3.0.so.0", "libwx_gtk3u_aui-3.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libwx_gtk3u_richtext-3.0.so.0", "libwx_gtk3u_richtext-3.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libwx_gtk3u_core-3.0.so.0", "libwx_gtk3u_core-3.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libwx_baseu-3.0.so.0", "libwx_baseu-3.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libwx_gtk3u_adv-3.0.so.0", "libwx_gtk3u_adv-3.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libwx_gtk3u_html-3.0.so.0", "libwx_gtk3u_html-3.0.so.0")
+CopyFile("/lib/x86_64-linux-gnu/libwx_baseu_xml-3.0.so.0", "libwx_baseu_xml-3.0.so.0")
+
+
+

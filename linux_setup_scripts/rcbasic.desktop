@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=RCBasic Studio
+Version=1.0
+Exec=bash -c "cd $HOME/Programs/rcbasic && export LD_LIBRARY_PATH=$HOME/Programs/rcbasic/lib; rcbasic_edit"
+Comment=Write Programs in RCBasic
+Icon=/usr/share/applications/rcbasic.ico
+Type=Application
+Terminal=false
+StartupNotify=true
+Encoding=UTF-8
+Categories=Development;

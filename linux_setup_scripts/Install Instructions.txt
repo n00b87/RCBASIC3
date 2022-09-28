@@ -1,0 +1,34 @@
+If you are on a system that uses APT package manage (ie. Debian, Ubuntu, Mint, etc.) just run install.sh
+
+If you are own a system that uses pacman (ie. Arch, Manjaro, etc. ) run the pacman_installer.sh
+
+
+
+There is a geany file included for getting syntax support in the geany editor.
+
+If you want to use geany as your editor (recommended), follow these steps.
+	1. Install geany
+
+	2. Open geany and then close it. (Geany doesn't make its config directory until you open it atleast once.)
+
+	3. Run rcbasic_geany_config.sh to configure geany to use RCBasic (this will override the freebasic config file so if you are using freebasic with geany you might not want to do this).
+
+
+If you want to port to android you will need to install jdk 11 or greater and download the android sdk from google. 
+Once you have downloaded it you will need to set your ANDROID_HOME and ANDROID_SDK_ROOT environment variables and then run init_android_sdk.sh.
+
+The following is an example of how ANDROID_HOME and ANDROID_SDK_ROOT should look:
+
+	export ANDROID_HOME=/home/user/commandlinetools-linux-7302050_latest
+	export ANDROID_SDK_ROOT=$ANDROID_HOME
+
+Note: To edit environment variables permanently you can set them in your .bashrc file located in your
+home folder
+
+
+
+It is also recommended that you install these packages if you want to use the distribute tool:
+
+	cmake
+	python3
+	nodejs
