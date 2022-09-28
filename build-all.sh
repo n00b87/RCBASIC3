@@ -56,10 +56,11 @@ chmod u+x build.sh
 popd
 
 
-if [ ! -d "rcbasic_linux" ]; then
-mkdir rcbasic_linux
+if [ -d "rcbasic_linux" ]; then
+rm -rf rcbasic_linux
 fi
 
+mkdir rcbasic_linux
 
 pushd rcbasic_linux
 
