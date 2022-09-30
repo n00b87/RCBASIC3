@@ -1,3 +1,17 @@
+if [ ! -d /opt/rcbasic_android ]
+then
+sudo mkdir /opt/rcbasic_android
+sudo chown $(whoami): /opt/rcbasic_android
+fi
+
+if [ -z "$ANDROID_HOME" ]
+then
+echo "FAILED: ANDROID_HOME must be define"
+exit
+fi
+
+ls -s $ANDROID_HOME /opt/rcbasic_android/android_sdk
+
 ANDROID_NDK_HOME=$ANDROID_HOME/ndk/21.4.7075529
 
 PATH=$ANDROID_HOME/cmdline-tools/bin:$ANDROID_NDK_HOME:$JAVA_HOME/bin:$PATH
@@ -74,6 +88,8 @@ fi
 
 echo "sdk.dir=$ANDROID_HOME" > $HOME/Programs/rcbasic/tools/dist/rcbasic_android/android-project/local.properties
 echo "ndk.dir=$ANDROID_HOME/ndk/21.4.7075529" >> $HOME/Programs/rcbasic/tools/dist/rcbasic_android/android-project/local.properties
+
+
 
 if [ $? -eq 0 ]
 then

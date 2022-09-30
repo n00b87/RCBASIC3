@@ -2293,7 +2293,11 @@ void func_130(uint64_t fn)
             rc_push_num( rc_media_musicIsPlaying() );
             break;
         case FN_DrawGeometry: //Number Function
-            rc_push_num( rc_media_drawGeometry(DRAWGEOMETRY_SLOT, DRAWGEOMETRY_NUM_VERTICES, &DRAWGEOMETRY_VERTICES, DRAWGEOMETRY_NUM_INDICES, &DRAWGEOMETRY_INDICES) );
+            #ifdef RC_WEB
+                rc_push_num(0);
+            #else
+                rc_push_num( rc_media_drawGeometry(DRAWGEOMETRY_SLOT, DRAWGEOMETRY_NUM_VERTICES, &DRAWGEOMETRY_VERTICES, DRAWGEOMETRY_NUM_INDICES, &DRAWGEOMETRY_INDICES) );
+            #endif // RC_WEB
             break;
     }
 }

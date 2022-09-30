@@ -38,6 +38,7 @@ else
 
 cp -a "$(readlink -f rcbasic32)/." /$HOME/Programs/rcbasic
 sudo cp "$(readlink -f rcbasic32)/icon/rcbasic.ico" /usr/share/applications
+sudo chmod u+x ~/Programs/rcbasic/tools/dist/rcbasic_android/ImageMagick/magick
 
 fi
 

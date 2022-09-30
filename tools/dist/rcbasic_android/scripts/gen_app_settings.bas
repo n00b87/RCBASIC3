@@ -104,10 +104,19 @@ Function gen_app_settings(app_name$, icon_path$, orientation$)
 	If FileExists(icon_path$) Then
 		image_magic_path$ = Dir$ + path_join$ + ".." + path_join$ + "ImageMagick"
 		Print "SET to PATH:";image_magic_path$
-		resize_cmd$ = Replace("convert \q[icon_path]\q -resize [size] ../android-project/app/src/main/res/[res_dir]/ic_launcher.png", "/", path_join$)
+		Dim resize_cmd$
+		If UCase$(OS$) = "LINUX" Then
+			resize_cmd$ = Replace("magick convert \q[icon_path]\q -resize [size] ../android-project/app/src/main/res/[res_dir]/ic_launcher.png", "/", path_join$)
+		Else
+			resize_cmd$ = Replace("convert \q[icon_path]\q -resize [size] ../android-project/app/src/main/res/[res_dir]/ic_launcher.png", "/", path_join$)
+		End If
 		resize_cmd$ = Replace(resize_cmd$, "[icon_path]", icon_path$)
 		CURRENT_PATH$ = Env("PATH")
-		SetEnv("PATH", image_magic_path$, 1)
+		SetEnv("PATH", image_magic_path$ + ":" + Env("PATH"), 1)
+		print "\n\nRES_CMD::";Replace(Replace(resize_cmd$,"[size]","48x48"),"[res_dir]","mipmap-mdpi");"\n\n"
+		print "MGK VERSION:"
+		System("echo \q$PATH\q && magick --version")
+		print "\n\n"
 		Print "error code = ";System(Replace(Replace(resize_cmd$,"[size]","48x48"),"[res_dir]","mipmap-mdpi"))
 		Print "error code = ";System(Replace(Replace(resize_cmd$,"[size]","72x72"),"[res_dir]","mipmap-hdpi"))
 		Print "error code = ";System(Replace(Replace(resize_cmd$,"[size]","96x96"),"[res_dir]","mipmap-xhdpi"))

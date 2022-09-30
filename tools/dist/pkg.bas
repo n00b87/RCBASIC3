@@ -131,6 +131,8 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	PROG_NAME$=PRG_NAME$
 	PROG_LOCATION$=PRG_LOCATION$ + "@" + path_join$
 	OUT_HTML$=DST_LOCATION$+path_join$+PRG_NAME+".html"
+	
+	Print "OUT_HTML$ = "; OUT_HTML$
 
 	If Not DirExists(DST_LOCATION$) Then
 		MakeDir(DST_LOCATION$)
@@ -208,7 +210,11 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 		web_compile_cmd$ = "pushd " + Dir$ + " && "
 	End If
 	
-	web_compile_cmd$ = web_compile_cmd$ + "call em++ main.cpp theoraplay.c "
+	If OS$="WINDOWS" Then
+		web_compile_cmd$ = web_compile_cmd$ + "call "
+	End If
+	
+	web_compile_cmd$ = web_compile_cmd$ + "em++ main.cpp theoraplay.c "
 	web_compile_cmd$ = web_compile_cmd$ + "\q-L$THEORA_LIB\q \q-I$THEORA_INCLUDE\q "
 	web_compile_cmd$ = web_compile_cmd$ + "-s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_GFX=2 -s USE_SDL_TTF=2 -s USE_SDL_MIXER=2 -s USE_SDL_NET=2 "
 	web_compile_cmd$ = web_compile_cmd$ + "-s USE_OGG=1 -s USE_VORBIS=1 -ltheora -ltheoradec "
@@ -242,13 +248,13 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 
 	Select Case OS$
 	Case "WINDOWS"
-	If RCBASIC_STUDIO_FLAG Then
-		CopyFile("build.bat", DST_LOCATION$ + path_join$ + "build_web_app.bat")
-	Else
-		System(".\build.bat")
-	End If
+		If RCBASIC_STUDIO_FLAG Then
+			CopyFile("build.bat", DST_LOCATION$ + path_join$ + "build_web_app.bat")
+		Else
+			System(".\build.bat")
+		End If
 	Default
-	System(pre_cmd$ + web_compile_cmd$)	
+		System(pre_cmd$ + web_compile_cmd$)	
 	End Select
 	
 	If DirExists(web_junction$) Then
@@ -262,7 +268,7 @@ Function Build_App_Web(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, APP_
 	
 	ChangeDir(base_dir$)
 	
-	If RCBASIC_STUDIO_FLAG Then
+	If RCBASIC_STUDIO_FLAG And OS$="WINDOWS" Then
 		Print "RCBASIC PACKAGE SUCCESS: RCBasic Studio generated a build script"
 		Return True
 	End If
@@ -901,7 +907,15 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 		build_cmd$ = build_cmd$ + "cd " + project_dir$ + " && chmod u+x $RCBASIC_ANDROID_DIR/rcbasic_android_build.sh && $RCBASIC_ANDROID_DIR/rcbasic_android_build.sh "
 	End Select
 	
-	Print "\n\n!!!!RCBASIC_ANDROID_DIR=";env("RCBASIC_ANDROID_DIR");"!!!!\n\n"
+	
+	If Right$(Env("RCBASIC_ANDROID_DIR"),1) = "/" Then
+		rcb_android_dir$ = Env("RCBASIC_ANDROID_DIR")
+		SetEnv("RCBASIC_ANDROID_DIR", Left$(rcb_android_dir, Len(rcb_android_dir)-1), 1)
+	End If
+	
+	Print "\n\n!!!!RCBASIC_ANDROID_DIR=";env("RCBASIC_ANDROID_DIR");"!!!!\n\n\n"
+	Print "PWD = ";Dir();"\n\n"
+	Print "CMD: ";build_cmd$;"\n\n\n"
 	
 	System(build_cmd$)
 	
@@ -1088,6 +1102,10 @@ icon_path$ = SetValue$(Env$("RC_PKG_HOME") + path_join$ + "icon" + path_join$ + 
 enable_threads$ = SetValue$("false", LCase$(GetArg$("ENABLE_WEB_THREADS")))
 src_file$ = GetArg$("SOURCE")
 
+If Right$(output_dir$,1) = path_join$ Then
+	output_dir$ = Left$(output_dir$, Len(output_dir$)-1)
+End If
+
 ANDROID_APP_ID$ = GetArg$("ANDROID_APP_ID")
 ANDROID_ORIENTATION$ = GetArg$("ANDROID_ORIENTATION")
 ANDROID_KEYSTORE$ = GetArg$("ANDROID_KEYSTORE")
@@ -1118,11 +1136,13 @@ If Not FileExists(cbc_file$) Then
 	End
 End If
 
-If FileExists("main.cbc") Then
+If FileExists("main.cbc") And cbc_file$ <> "main.cbc" Then
 	RemoveFile("main.cbc")
 End If
 
-RenameFile(cbc_file$, "main.cbc")
+If cbc_file$ <> "main.cbc" Then
+	RenameFile(cbc_file$, "main.cbc")
+End If
 
 ChangeDir(base_dir$)
 
@@ -1161,7 +1181,10 @@ ElseIf Not DirExists(output_dir$) Then
 	error = 1
 Else
 	print "DEBUB: CLEAR ";output_dir$
-	RmDir(output_dir$)
+	output_dir$ = output_dir$ + path_join$ + APP_NAME$
+	If DirExists(output_dir$) Then
+		RmDir(output_dir$)
+	End If
 	MakeDir(output_dir$)
 End If
 
