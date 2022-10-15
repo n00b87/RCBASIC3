@@ -246,10 +246,16 @@ void rcbasic_editrc_distribute_dialog::saveAppProperties()
 
     wxString project_dir = parent_frame->getActiveProject()->getLocation();
     //project_dir = project_dir.substr(0, project_dir.Length()-1);
+    if(project_dir.length()>1)
+        if(project_dir.substr(project_dir.length()-1, 1).compare(_("\\"))==0)
+            project_dir = project_dir.substr(0, project_dir.length()-1);
     setProperty(_("PROJECT_DIR"), project_dir);
 
     wxString out_dir = m_outputDir_dirPicker->GetDirName().GetFullPath();
     //out_dir = out_dir.substr(0, out_dir.Length()-1);
+    if(out_dir.length()>1)
+        if(out_dir.substr(out_dir.length()-1, 1).compare(_("\\"))==0)
+            out_dir = out_dir.substr(0, out_dir.length()-1);
     setProperty(_("OUTPUT_DIR"), out_dir);
 
 	setProperty(_("ENABLE_WEB_THREADS"), m_enableWebThreads_checkBox->GetValue() ? _("true") : _("false"));
@@ -267,7 +273,10 @@ void rcbasic_editrc_distribute_dialog::saveAppProperties()
 
 	wxString android_java_dir = m_javaPath_dirPicker->GetDirName().GetFullPath();
 	//android_java_dir = android_java_dir.substr(0, android_java_dir.Length()-1);
-	setProperty(_("ANDROID_JAVA_DIR"), android_java_dir);
+	if(android_java_dir.length()>1)
+        if(android_java_dir.substr(android_java_dir.length()-1, 1).compare(_("\\"))==0)
+            android_java_dir = android_java_dir.substr(0, android_java_dir.length()-1);
+    setProperty(_("ANDROID_JAVA_DIR"), android_java_dir);
 
 	wxString p_dir = project_dir;
 	//wxGetEnv(_("RC_PKG_HOME"), &pkg_dir);

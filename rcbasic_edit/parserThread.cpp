@@ -192,6 +192,7 @@ bool parserThread::runParser(wxCommandEvent evt)
             sym.line = i;
             sym.dimensions = id_tokens[t_count].dimensions;
             sym.token_type = id_tokens[t_count].token_type;
+            sym.in_list = id_tokens[t_count].is_in_list;
 
             if(!inSymbolList(sym))
                 contents_changed = 1;

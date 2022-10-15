@@ -1,7 +1,11 @@
 pushd %~dp0
 
-mkdir obj >NUL
-mkdir obj\Release>NUL
+if not exist obj mkdir obj
+if not exist obj\Release mkdir obj\Release
+if not exist obj\Release64 mkdir obj\Release64
+if not exist bin mkdir bin
+if not exist bin\Release mkdir bin\Release
+if not exist bin\Release64 mkdir bin\Release64
 
 call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c build_menu.cpp ^
@@ -106,6 +110,10 @@ call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
 call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c rcbasic_editrc_genKey_dialog.cpp ^
                                     -o obj\Release\rcbasic_editrc_genKey_dialog.o
+                                    
+call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
+                                    -c rcbasic_edit_preference_dialog.cpp ^
+                                    -o obj\Release\rcbasic_edit_preference_dialog.o
 
 call windres.exe -I%WX_HOME%\include -J rc -O coff -i resource.rc -o obj\Release\resource.res
 
@@ -135,6 +143,7 @@ call mingw32-g++.exe %LIB_PATH% -o bin\Release\rcbasic_edit.exe ^
                                 obj\Release\rcbasic_editrc_distProcess_dialog.o ^
                                 obj\Release\rcbasic_editrc_distribute_dialog.o ^
                                 obj\Release\rcbasic_editrc_genKey_dialog.o ^
+                                obj\Release\rcbasic_edit_preference_dialog.o ^
                                 obj\Release\tools_menu.o  ^
                                 obj\Release\resource.res ^
                                 -Wl,--allow-multiple-definition -s -mwindows  ^

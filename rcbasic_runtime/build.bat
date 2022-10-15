@@ -14,6 +14,10 @@ mkdir "%~dp0obj\Release\SDL2" 2>NUL
 mkdir "%~dp0obj\Release64" 2>NUL
 mkdir "%~dp0obj\Release64\SDL2" 2>NUL
 
+mkdir "%~dp0bin" 2>NUL
+mkdir "%~dp0bin\Release" 2>NUL
+mkdir "%~dp0bin\Release64" 2>NUL
+
 REM 32 bit stuff
 
 call gcc.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^

@@ -179,17 +179,25 @@ void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
             }
         }*/
         symbols.clear();
+        user_id_list.Clear();
+
+        user_id_list = id_list;
 
         if(pre_parsed_page)
         {
             for(int i = 0; i < sym_list->size(); i++)
             {
                 rcbasic_symbol s = sym_list[0][i];
-                symbols.push_back(s);
+                if(s.in_list)
+                    symbols.push_back(s);
+
+                user_id_list.Add(s.id);
 
                 //wxPuts(_("VAR --- ") + s->id);
             }
         }
+
+        user_id_list.Sort();
 
         //if(sym_list)
           //  delete sym_list;
@@ -4013,12 +4021,12 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
 
             bool item_added = false;
 
-            for(int i = cc_index; i < id_list.GetCount(); i++)
+            for(int i = cc_index; i < user_id_list.GetCount(); i++)
             {
                 //wxPuts(_("compare [") + id_list[i].substr(0, lenEntered) + _("] to [") + current_word + _("]"));
-                if(id_list[i].substr(0, lenEntered).MakeLower().compare(current_word)==0)
+                if(user_id_list[i].substr(0, lenEntered).MakeLower().compare(current_word)==0)
                 {
-                    cc_list += id_list[i] + _(" ");
+                    cc_list += user_id_list[i] + _(" ");
                     item_added = true;
                 }
                 else if(item_added)

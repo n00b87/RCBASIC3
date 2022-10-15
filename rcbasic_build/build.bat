@@ -5,6 +5,13 @@ set TMP_PATH=%PATH%
 
 set PATH=%GCC_PATH%;%TMP_PATH%
 
+if not exist obj mkdir obj
+if not exist obj\Release mkdir obj\Release
+if not exist obj\Release64 mkdir obj\Release64
+if not exist bin mkdir bin
+if not exist bin\Release mkdir bin\Release
+if not exist bin\Release64 mkdir bin\Release64
+
 call g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c main.cpp ^
                                     -o obj\Release\main.o

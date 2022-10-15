@@ -71,6 +71,7 @@ set LIB_64_PATH=-L%OGG_HOME%\x64\lib ^
                 -L%SDL_TTF_HOME%\x86_64-w64-mingw32\lib
 
 REM Copy Runtime Source Files to Android JNI Folder
+REM This is not working for some stupid reason
 xcopy rcbasic_runtime\*.c tools\dist\rcbasic_android\android-project\app\jni\src\ /Y
 xcopy rcbasic_runtime\*.cpp tools\dist\rcbasic_android\android-project\app\jni\src\ /Y
 xcopy rcbasic_runtime\*.h tools\dist\rcbasic_android\android-project\app\jni\src\ /Y /EXCLUDE:rc_os_defines.h

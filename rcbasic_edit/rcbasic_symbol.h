@@ -10,6 +10,7 @@ struct rcbasic_symbol
     int line;
     int dimensions;
     int token_type;
+    bool in_list;
 };
 
 class rc_symbol_treeItem_data : public wxTreeItemData

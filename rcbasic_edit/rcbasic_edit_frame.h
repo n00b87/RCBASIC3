@@ -378,6 +378,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         long win_os_bit;
 
         wxArrayString id_list;
+        wxArrayString user_id_list;
         int kw_count;
 
 		DECLARE_EVENT_TABLE();
