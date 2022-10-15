@@ -23,20 +23,20 @@ sudo rm -rf /$HOME/Programs/rcbasic
 # sudo apt-get install nodejs
 # sudo apt-get install cmake
 
-mkdir /$HOME/Programs
-mkdir /$HOME/Programs/rcbasic
+mkdir $HOME/Programs
+mkdir $HOME/Programs/rcbasic
 
 TGT_BIT=$(getconf LONG_BIT)
 
 if [ $TGT_BIT == 64 ]
 then
 
-cp -a "$(readlink -f rcbasic64)/." /$HOME/Programs/rcbasic
+cp -a "$(readlink -f rcbasic64)/." $HOME/Programs/rcbasic
 sudo cp "$(readlink -f rcbasic64)/icon/rcbasic.ico" /usr/share/applications
 
 else
 
-cp -a "$(readlink -f rcbasic32)/." /$HOME/Programs/rcbasic
+cp -a "$(readlink -f rcbasic32)/." $HOME/Programs/rcbasic
 sudo cp "$(readlink -f rcbasic32)/icon/rcbasic.ico" /usr/share/applications
 sudo chmod u+x ~/Programs/rcbasic/tools/dist/rcbasic_android/ImageMagick/magick
 
@@ -53,9 +53,14 @@ sudo ln -sf $HOME/Programs/rcbasic/rcbasic_build /usr/bin/rcbasic_build
 sudo ln -sf $HOME/Programs/rcbasic/rcbasic_edit /usr/bin/rcbasic_edit
 sudo ln -sf $HOME/Programs/rcbasic/rcbasic_edit /usr/bin/rcbasic_studio_run
 
-cp -a "$(readlink -f doc)/." /$HOME/Programs/rcbasic/doc
-cp -a "$(readlink -f examples)/." /$HOME/Programs/rcbasic/examples
-cp -a "$(readlink -f tools)/." /$HOME/Programs/rcbasic/tools
+cp -a "$(readlink -f doc)/." $HOME/Programs/rcbasic/doc
+cp -a "$(readlink -f examples)/." $HOME/Programs/rcbasic/examples
+cp -a "$(readlink -f tools)/." $HOME/Programs/rcbasic/tools
+
+cp -a "$(readlink -f rcbasic64)/lib/." $HOME/Programs/rcbasic/tools/dist/rcbasic.AppDir/usr/lib
+cp -a "$(readlink -f rcbasic64)/rcbasic" $HOME/Programs/rcbasic/tools/dist/rcbasic.AppDir/usr/bin/rcbasic
+cp -a "$(readlink -f rcbasic32)/lib/." $HOME/Programs/rcbasic/tools/dist/linux_dist_32/lib
+cp -a "$(readlink -f rcbasic32)/rcbasic" $HOME/Programs/rcbasic/tools/dist/linux_dist_32/bin/rcbasic
 
 chmod u+x -R $HOME/Programs/rcbasic/tools/dist
 chmod u+x -R $HOME/Programs/rcbasic/lib
