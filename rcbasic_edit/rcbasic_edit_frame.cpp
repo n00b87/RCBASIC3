@@ -220,6 +220,8 @@ rc_ideFrame( parent )
     build_run_project = NULL;
     current_file_project = new rcbasic_project();
 
+    lenCompletionCheck = 3;
+
     //#ifdef _WIN32
     sourceFile_auinotebook->Connect( wxEVT_DROP_FILES, wxDropFilesEventHandler( rcbasic_edit_frame::onDropFiles ), NULL, this );
     sourceFile_auinotebook->DragAcceptFiles(true);
@@ -579,6 +581,12 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         else if(property.compare(_("keywords2"))==0)
         {
             rcbasic_edit_keywords2 = value;
+        }
+        else if(property.compare(_("CODE_COMP_LENGTH"))==0)
+        {
+            long cc_len = 0;
+            value.ToLong(&cc_len);
+            lenCompletionCheck = cc_len;
         }
         else if(property.compare(_("RCBASIC_PATH"))==0)
         {
@@ -4013,7 +4021,7 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
 
         // Display the autocompletion list
         int lenEntered = currentPos - wordStartPos;
-        if (lenEntered >= 3)
+        if (lenEntered >= lenCompletionCheck)
         {
             wxString cc_list = _("");
             wxString current_word = rc_txtCtrl->GetTextRange(wordStartPos, currentPos).MakeLower();

@@ -380,6 +380,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxArrayString id_list;
         wxArrayString user_id_list;
         int kw_count;
+        int lenCompletionCheck;
 
 		DECLARE_EVENT_TABLE();
 		//void replaceInSelection(int findDialog_flag, wxString txt);
