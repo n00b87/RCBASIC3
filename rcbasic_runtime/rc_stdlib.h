@@ -30,6 +30,9 @@
 #include <unistd.h>   //file system stuff
 #include <dirent.h>
 #include <stdlib.h>
+#include <algorithm>
+#include <codecvt>
+
 #ifdef RC_ANDROID
 	#include "SDL.h"
 	#include <jni.h>
@@ -40,10 +43,11 @@
 
 
 #ifdef RC_WINDOWS
-
+#define WIN32_LEAN_AND_MEAN
 #include <tchar.h>
 #include <windows.h>
 #include <winbase.h>
+#include <locale>
 #endif // RC_WINDOWS
 
 using namespace std;
@@ -93,6 +97,47 @@ int rc_user_active_s_stack = 0;
 stack<double> rc_user_n_stack[MAX_USER_STACKS];
 stack<string> rc_user_s_stack[MAX_USER_STACKS];
 
+#ifdef RC_WINDOWS
+#define MAX_INPUT_LENGTH 32767
+
+wchar_t wstr[MAX_INPUT_LENGTH];
+char mb_str[MAX_INPUT_LENGTH * 3 + 1];
+
+#endif // RC_WINDOWS
+
+
+std::string utf8_substr(const std::string& str, unsigned int start, unsigned int leng)
+{
+    if (leng==0) { return ""; }
+    unsigned int c, i, ix, q, min=std::string::npos, max=std::string::npos;
+    for (q=0, i=0, ix=str.length(); i < ix; i++, q++)
+    {
+        if (q==start){ min=i; }
+        if (q<=start+leng || leng==std::string::npos){ max=i; }
+
+        c = (unsigned char) str[i];
+        if      (
+                 //c>=0   &&
+                 c<=127) i+=0;
+        else if ((c & 0xE0) == 0xC0) i+=1;
+        else if ((c & 0xF0) == 0xE0) i+=2;
+        else if ((c & 0xF8) == 0xF0) i+=3;
+        //else if (($c & 0xFC) == 0xF8) i+=4; // 111110bb //byte 5, unnecessary in 4 byte UTF-8
+        //else if (($c & 0xFE) == 0xFC) i+=5; // 1111110b //byte 6, unnecessary in 4 byte UTF-8
+        else return "";//invalid utf8
+    }
+    if (q<=start+leng || leng==std::string::npos){ max=i; }
+    if (min==std::string::npos || max==std::string::npos) { return ""; }
+    return str.substr(min,max-min);
+}
+
+std::size_t utf8_length(std::string const &s)
+{
+  return std::count_if(s.begin(), s.end(),
+    [](char c) { return (static_cast<unsigned char>(c) & 0xC0) != 0x80; } );
+}
+
+
 void rc_fprint(string txt)
 {
     cout << txt;
@@ -100,89 +145,187 @@ void rc_fprint(string txt)
 
 string rc_input(string prompt)
 {
+    #ifdef RC_WINDOWS
+
+    string line = "";
+    cout << prompt;
+
+    unsigned long read;
+    void *con = GetStdHandle(STD_INPUT_HANDLE);
+
+    ReadConsoleW(con, wstr, MAX_INPUT_LENGTH, &read, NULL);
+
+    int s_size = WideCharToMultiByte(CP_UTF8, 0, wstr, read, mb_str, sizeof(mb_str), NULL, NULL);
+    mb_str[s_size] = 0;
+
+    if(s_size >= 2)
+    {
+        if(mb_str[s_size-2]==10 || mb_str[s_size-2]==13)
+            mb_str[s_size-2] = 0;
+
+        if(mb_str[s_size-1]==10 || mb_str[s_size-1]==13)
+            mb_str[s_size-1] = 0;
+    }
+
+    return (string) mb_str;
+
+    #else
+
     string line = "";
     cout << prompt;
     getline(cin, line);
     return line;
+
+    #endif // RC_WINDOWS
 }
 
+std::u32string to_utf32(const std::string &s)
+{
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
+    return conv.from_bytes(s);
+}
 
 inline int rc_intern_asc(string c)
 {
-    return (int)c[0];
+    return (uint32_t)to_utf32(utf8_substr(c, 0, 1))[0];
 }
 
-inline string rc_intern_chr(int n)
+inline size_t rc_intern_bufferFromString(string s, double* buffer)
 {
-    string s = "";
-    s += (char) n;
+    for(int i = 0; i < s.length(); i++)
+    {
+        buffer[i] = (double)((uint32_t)s[0]);
+    }
+    return s.length();
+}
+
+std::string cpToUTF8(uint32_t cp)
+{
+    char utf8[4];
+    int len = 0;
+
+    if (cp <= 0x007F)
+    {
+        utf8[0] = static_cast<char>(cp);
+        len = 1;
+    }
+    else
+    {
+        if (cp <= 0x07FF)
+        {
+            utf8[0] = 0xC0;
+            len = 2;
+        }
+        else if (cp <= 0xFFFF)
+        {
+            utf8[0] = 0xE0;
+            len = 3;
+        }
+        else if (cp <= 0x10FFFF)
+        {
+            utf8[0] = 0xF0;
+            len = 4;
+        }
+        else
+            throw std::invalid_argument("invalid codepoint");
+
+        for(int i = 1; i < len; ++i)
+        {
+            utf8[len-i] = static_cast<char>(0x80 | (cp & 0x3F));
+            cp >>= 6;
+        }
+
+        utf8[0] |= static_cast<char>(cp);
+    }
+
+    return std::string(utf8, len);
+}
+
+inline string rc_intern_chr(uint32_t n)
+{
+    string s = cpToUTF8(n);
+    //s += (char) n;
     return s;
 }
 
-inline string rc_intern_insert(string src, string tgt, unsigned long pos)
+inline string rc_intern_insert(string src, string tgt, size_t pos)
 {
-    return src.substr(0, pos) + tgt + src.substr(pos);
+    return utf8_substr(src, 0, pos) + tgt + utf8_substr(src, pos, utf8_length(src)-pos);
 }
 
 inline double rc_intern_instr(string in_string, string in_substring)
 {
     //cout << "Cant find " << rc_sid[INSTR_SUBSTR][0] << " in " << rc_sid[INSTR_STR][0] << endl;
-    unsigned long n = in_string.find(in_substring);
-    return (n == string::npos ? (double)-1 : n);
+    bool found = false;
+    size_t n = 0;//(int)in_string.find(in_substring);
+    size_t search_len = utf8_length(in_string) - utf8_length(in_substring);
+    size_t sub_len = utf8_length(in_substring);
+    for(size_t i = 0; i < search_len; i++)
+    {
+        if(utf8_substr(in_string, i, sub_len).compare(in_substring)==0)
+        {
+            n = i;
+            found = true;
+            break;
+        }
+    }
+    return found ? (double)n : -1;
 }
 
 inline string rc_intern_lcase(string u_string)
 {
     string u_string_out = "";
-    for(unsigned long i=0;i<u_string.length();i++)
+    for(size_t i=0;i<u_string.length();i++)
     {
         u_string_out += tolower(u_string[i]);
     }
    return u_string_out;
 }
 
-inline string rc_intern_left(string l_string, unsigned long n)
+inline string rc_intern_left(string l_string, size_t n)
 {
-    return l_string.substr(0,n);
+    return utf8_substr(l_string,0,n);
 }
 
-inline unsigned long rc_intern_length(string l_string)
+inline size_t rc_intern_length(string l_string)
 {
     //cout << "DBG_LEN" << endl;
-    return l_string.length();
+    return utf8_length(l_string);
 }
 
 inline string rc_intern_ltrim(string l_string)
 {
-    if(l_string.find_first_not_of(" ") != string::npos)
-        return l_string.substr(l_string.find_first_not_of(" "));
+    size_t first_index = l_string.find_first_not_of(" ");
+    if(first_index != string::npos)
+        return l_string.substr(first_index);
     return "";
 }
 
-inline string rc_intern_mid(string m_string, unsigned long m_start, unsigned long n)
+inline string rc_intern_mid(string m_string, size_t m_start, size_t n)
 {
     //cout << "DBG_MID" << endl;
-    if(m_string.length() <= m_start)
+    size_t m_string_length =  utf8_length(m_string);
+    if(m_string_length <= m_start)
         return "";
-    if( (m_start+n) >= m_string.length())
-        return m_string.substr(m_start);
-    return m_string.substr(m_start, n);
+    if( (m_start+n) >= m_string_length)
+        return utf8_substr(m_string, m_start, m_string_length-m_start);
+    return utf8_substr(m_string, m_start, n);
 }
 
-inline string rc_intern_replaceSubstr(string src, string rpc, unsigned long pos)
+inline string rc_intern_replaceSubstr(string src, string rpc, size_t pos)
 {
-    unsigned long rpc_i = 0;
-    string n_str = src.substr(0,pos);
-    for(unsigned long i = pos; i < src.length(); i++)
+    size_t rpc_i = 0;
+    string n_str = utf8_substr(src, 0, pos);
+    for(size_t i = pos; i < utf8_length(src); i++)
     {
-        if(rpc_i < rpc.length())
-            n_str += rpc.substr(rpc_i,1);
+        if(rpc_i < utf8_length(rpc))
+            n_str += utf8_substr(rpc,rpc_i,1);
         else
             break;
         rpc_i++;
     }
-    if((pos+rpc_i) < src.length())
-        n_str += src.substr(pos+rpc_i);
+    if((pos+rpc_i) < utf8_length(src) )
+        n_str += utf8_substr(src, pos+rpc_i, utf8_length(src)-(pos+rpc_i));
     return n_str;
 }
 
@@ -190,7 +333,7 @@ inline string rc_intern_replace(string src, string tgt, string rpc)
 {
     if(tgt.length()==0)
         return src;
-    unsigned long found_inc = rpc.length() > 0 ? rpc.length() : 1;
+    size_t found_inc = rpc.length() > 0 ? rpc.length() : 1;
     size_t found = 0;
     found = src.find(tgt);
     while( found != string::npos && found < src.length())
@@ -206,20 +349,22 @@ inline string rc_intern_reverse(string rpc_string)
     string n_str = "";
     if(rpc_string.length()==0)
         return "";
-    for(unsigned long i = rpc_string.length()-1;; i--)
+
+    for(size_t i = utf8_length(rpc_string)-1;; i--)
     {
-        n_str += rpc_string[i];
+        n_str += utf8_substr(rpc_string, i, 1);
         if(i==0)
             break;
     }
     return n_str;
 }
 
-inline string rc_intern_right(string src, unsigned long n)
+inline string rc_intern_right(string src, size_t n)
 {
-    if(n > src.length())
+    size_t src_length = utf8_length(src);
+    if(n > src_length)
         return src;
-    return src.substr(src.length()-n);
+    return utf8_substr(src,src_length-n, src_length -(src_length-n));
 }
 
 inline string rc_intern_rtrim(string src)
@@ -227,19 +372,37 @@ inline string rc_intern_rtrim(string src)
     if(src.length()==0)
         return "";
 
-    unsigned long i = 0;
-    for(i = src.length()-1; ; i--)
+    size_t i = 0;
+    for(i = utf8_length(src)-1; ; i--)
     {
-        if(src.substr(i,1).compare(" ") != 0 || i == 0)
+        if(utf8_substr(src,i,1).compare(" ") != 0 || i == 0)
             break;
     }
-    return src.substr(0,i+1);
+    return utf8_substr(src,0,i+1);
 }
 
-inline string rc_intern_stringfill(string f_string, unsigned long n)
+inline size_t rc_intern_size(string src)
+{
+    return src.length();
+}
+
+inline string rc_intern_stringFromBuffer(double* buffer, size_t buffer_size)
+{
+    char c_buf[buffer_size+1];
+
+    for(int i = 0; i < buffer_size; i++)
+    {
+        c_buf[i] = (uint8_t)buffer[i];
+    }
+
+    c_buf[buffer_size] = '\0';
+    return (string)c_buf;
+}
+
+inline string rc_intern_stringfill(string f_string, size_t n)
 {
     string f = "";
-    for(unsigned long i = 0; i < n; i++)
+    for(size_t i = 0; i < n; i++)
         f += f_string;
     return f;
 }
@@ -288,7 +451,7 @@ inline string rc_intern_trim(string t_string)
 inline string rc_intern_ucase(string u_string)
 {
     string u_string_out = "";
-    for(unsigned int i=0;i<u_string.length();i++)
+    for(size_t i=0;i<u_string.length();i++)
     {
         u_string_out += toupper(u_string[i]);
     }
@@ -722,12 +885,12 @@ inline unsigned long rc_intern_fileLength(string filename)
     return fl_size;
 }
 
-inline long rc_intern_fileTell(int f_stream)
+inline Sint64 rc_intern_fileTell(int f_stream)
 {
     return SDL_RWtell(rc_fstream[f_stream]);
 }
 
-inline unsigned long rc_intern_fileSeek(int f_stream, uint64_t pos)
+inline Sint64 rc_intern_fileSeek(int f_stream, uint64_t pos)
 {
     return SDL_RWseek(rc_fstream[f_stream],pos,RW_SEEK_SET);
 }
@@ -899,26 +1062,58 @@ inline string rc_intern_OS()
 
 #else
 
+std::string ConvertWideToANSI(const std::wstring& wstr)
+{
+    int count = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
+    std::string str(count, 0);
+    WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, &str[0], count, NULL, NULL);
+    return str;
+}
+
+std::wstring ConvertAnsiToWide(const std::string& str)
+{
+    int count = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.length(), NULL, 0);
+    std::wstring wstr(count, 0);
+    MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.length(), &wstr[0], count);
+    return wstr;
+}
+
+std::string ConvertWideToUtf8(const std::wstring& wstr)
+{
+    int count = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
+    std::string str(count, 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], count, NULL, NULL);
+    return str;
+}
+
+std::wstring ConvertUtf8ToWide(const std::string& str)
+{
+    int count = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), NULL, 0);
+    std::wstring wstr(count, 0);
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &wstr[0], count);
+    return wstr;
+}
+
 inline int rc_intern_dirChange(string dpath)
 {
-    if(SetCurrentDirectory(dpath.c_str())==0)
+    if(SetCurrentDirectoryW(ConvertUtf8ToWide(dpath).c_str())==0)
     {
-        cout << "Error: Could not change directory\n";
+        cout << "[DBG]Error: Could not change directory\n";
         return 2;
     }
 
     DWORD nBufferLength = MAX_PATH;
-    char szCurrentDirectory[MAX_PATH + 1];
-    GetCurrentDirectory(nBufferLength, szCurrentDirectory);
+    wchar_t szCurrentDirectory[MAX_PATH + 1];
+    GetCurrentDirectoryW(nBufferLength, szCurrentDirectory);
     szCurrentDirectory[MAX_PATH] = '\0';
 
-    rc_dir_path = (string)szCurrentDirectory;
+    rc_dir_path = ConvertWideToUtf8(szCurrentDirectory);
     return 0;
 }
 
 bool dirExists(const std::string& dirName_in)
 {
-  DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
+  DWORD ftyp = GetFileAttributesW(ConvertUtf8ToWide(dirName_in).c_str());
   if (ftyp == INVALID_FILE_ATTRIBUTES)
     return false;  //something is wrong with your path!
 
@@ -934,59 +1129,70 @@ inline int rc_intern_dirExist(string dpath)
 }
 
 HANDLE hFind;
-WIN32_FIND_DATA ffd;
+WIN32_FIND_DATAW ffd;
 
 string rc_intern_dirFirst()
 {
-    char* path = new char[rc_dir_path.length()+1];
+
+    //char* path = new char[rc_dir_path.length()+1];
     //*path = rc_dir_path.c_str();
 
-    for(int i = 0; i < rc_dir_path.length(); i++)
-        path[i] = rc_dir_path[i];
-    path[rc_dir_path.length()] = '\0';
+    //for(int i = 0; i < rc_dir_path.length(); i++)
+    //    path[i] = rc_dir_path[i];
+    //path[rc_dir_path.length()] = '\0';
 
     //cout << "path = " << path << endl;
-    if (path[_tcslen(path) - 1] != '\\')
-        _tcscat(path, _T("\\"));
-    _tcscat(path, _T("*.*"));
+    //if (path[_tcslen(path) - 1] != '\\')
+    //    _tcscat(path, _T("\\"));
+    //_tcscat(path, _T("*.*"));
+
+
+    string path = rc_dir_path;
+
+    if(path.substr(path.length()-1, 1).compare("\\")!=0)
+        path += "\\";
+
+    path += "*.*";
 
     //cout << "path2 = " << path << endl;
 
-    hFind = FindFirstFile(path, &ffd);
-    delete path;
-    path = NULL;
+    hFind = FindFirstFileW(ConvertUtf8ToWide(path).c_str(), &ffd);
+    //delete path;
+    //path = NULL;
     if (hFind == INVALID_HANDLE_VALUE)
     {
         cerr << _T("Invalid handle value.") << GetLastError() << endl;
         return "";
     }
-    return ffd.cFileName;
+    string fname_utf8 = ConvertWideToUtf8(ffd.cFileName);
+    return fname_utf8;
 }
 
 inline string rc_intern_dir()
 {
-    TCHAR buf[MAX_PATH];
-    GetCurrentDirectory(MAX_PATH, buf);
-    string d = buf;
+    wchar_t buf[MAX_PATH+1];
+    GetCurrentDirectoryW(MAX_PATH, buf);
+    buf[MAX_PATH] = '/0';
+    std::wstring d = buf;
 
-    if(d.compare("")==0)
+    if(d.length()==0)
     {
         cout << "Could not get current directory" << endl;
         return "";
     }
-    return d;
+    return ConvertWideToUtf8(d.c_str());
 }
 
 string rc_intern_dirNext()
 {
-    if(!FindNextFile(hFind,&ffd))
+    if(!FindNextFileW(hFind,&ffd))
         return "";
-    return ffd.cFileName;
+    return ConvertWideToUtf8(ffd.cFileName);
 }
 
 inline int rc_intern_dirCreate(string dpath)
 {
-    if(CreateDirectory(dpath.c_str(),NULL)==0)
+    if(CreateDirectoryW(ConvertUtf8ToWide(dpath).c_str(),NULL)==0)
     {
         cout << "ERROR: Could not make directory" << endl;
         return 0;
@@ -996,7 +1202,7 @@ inline int rc_intern_dirCreate(string dpath)
 
 inline int rc_intern_dirDelete(string dpath)
 {
-    if(RemoveDirectory(dpath.c_str())==0)
+    if(RemoveDirectoryW(ConvertUtf8ToWide(dpath).c_str())==0)
     {
         cout << "ERROR: Could not delete directory" << endl;
         return 0;

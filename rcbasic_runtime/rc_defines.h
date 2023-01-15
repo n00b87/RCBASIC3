@@ -1027,3 +1027,11 @@
 #define DRAWGEOMETRY_VERTICES num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
 #define DRAWGEOMETRY_NUM_INDICES num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
 #define DRAWGEOMETRY_INDICES num_var[4].nid_value[0].value[ num_var[4].byref_offset ]
+#define FN_Size 370
+#define SIZE_S$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define FN_BufferFromString 371
+#define BUFFERFROMSTRING_S$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define BUFFERFROMSTRING_BUFFER num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_StringFromBuffer$ 372
+#define STRINGFROMBUFFER$_BUFFER num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define STRINGFROMBUFFER$_BUFFER_SIZE num_var[1].nid_value[0].value[ num_var[1].byref_offset ]

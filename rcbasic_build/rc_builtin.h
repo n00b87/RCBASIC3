@@ -1033,6 +1033,14 @@ void init_embedded()
     add_embedded_arg("vertices", ID_TYPE_BYREF_NUM);
     add_embedded_arg("num_indices", ID_TYPE_NUM);
     add_embedded_arg("Indices", ID_TYPE_BYREF_NUM);
+    embed_function("Size", ID_TYPE_FN_NUM);
+    add_embedded_arg("s$", ID_TYPE_STR);
+    embed_function("BufferFromString", ID_TYPE_FN_NUM);
+    add_embedded_arg("s$", ID_TYPE_STR);
+    add_embedded_arg("buffer", ID_TYPE_BYREF_NUM);
+    embed_function("StringFromBuffer$", ID_TYPE_FN_STR);
+    add_embedded_arg("buffer", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("buffer_size", ID_TYPE_NUM);
 
 }
 

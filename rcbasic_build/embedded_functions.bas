@@ -403,3 +403,8 @@ function MusicIsPlaying()
 'v3.19
 function DrawGeometry(slot, num_vertices, ByRef vertices, num_indices, ByRef Indices)
 
+'v3.20
+function Size(s$)
+function BufferFromString(s$, ByRef buffer)
+function StringFromBuffer$(ByRef buffer, buffer_size)
+

@@ -4136,7 +4136,7 @@ void rc_media_drawText_hw(string text, int x, int y)
         cout << "DrawTextError: Could not load font at " << rc_active_font << endl;
         return;
     }
-    SDL_Surface * rendered_text = TTF_RenderText_Solid(rc_draw_font[rc_active_font], text.c_str(), rc_ink_color);
+    SDL_Surface * rendered_text = TTF_RenderUTF8_Solid(rc_draw_font[rc_active_font], text.c_str(), rc_ink_color);
     //cout << "debug 1\n";
     SDL_Rect pos;
     pos.x = x;
@@ -4166,7 +4166,7 @@ void rc_media_drawText_shaded_hw(string text, int x, int y, Uint32 fg_color, Uin
     bg.r = bg_color >> 16;
     bg.g = bg_color >> 8;
     bg.b = bg_color;
-    SDL_Surface * rendered_text = TTF_RenderText_Shaded(rc_draw_font[rc_active_font], text.c_str(), fg, bg);
+    SDL_Surface * rendered_text = TTF_RenderUTF8_Shaded(rc_draw_font[rc_active_font], text.c_str(), fg, bg);
     //cout << "debug 1\n";
     SDL_Rect pos;
     pos.x = x;
@@ -4187,7 +4187,7 @@ void rc_media_drawText_blended_hw(string text, int x, int y)
         cout << "DrawTextError: Could not load font at " << rc_active_font << endl;
         return;
     }
-    SDL_Surface * rendered_text = TTF_RenderText_Blended(rc_draw_font[rc_active_font], text.c_str(), rc_ink_color);
+    SDL_Surface * rendered_text = TTF_RenderUTF8_Blended(rc_draw_font[rc_active_font], text.c_str(), rc_ink_color);
     //cout << "debug 1\n";
     SDL_Rect pos;
     pos.x = x;
@@ -4209,7 +4209,7 @@ void rc_media_getTextSize(int f_slot, string txt, double * w, double * h)
         return;
     }
     int txt_w = 0, txt_h = 0;
-    TTF_SizeText(rc_draw_font[f_slot], txt.c_str(), &txt_w, &txt_h);
+    TTF_SizeUTF8(rc_draw_font[f_slot], txt.c_str(), &txt_w, &txt_h);
     *w = txt_w;
     *h = txt_h;
 }
@@ -4226,7 +4226,7 @@ void rc_media_GetRenderedText_hw(int slot, string text)
         cout << "GetRenderedText Error: Could not load font at " << rc_active_font << endl;
         return;
     }
-    SDL_Surface * rendered_text = TTF_RenderText_Solid(rc_draw_font[rc_active_font], text.c_str(), rc_ink_color);
+    SDL_Surface * rendered_text = TTF_RenderUTF8_Solid(rc_draw_font[rc_active_font], text.c_str(), rc_ink_color);
 
     for(int i = 0; i < MAX_WINDOWS; i++)
     {
@@ -4249,6 +4249,37 @@ void rc_media_GetRenderedText_hw(int slot, string text)
     }
 
     SDL_FreeSurface(rendered_text);
+}
+
+std::string rc_utf8_substr(const std::string& str, unsigned int start, unsigned int leng)
+{
+    if (leng==0) { return ""; }
+    unsigned int c, i, ix, q, min=std::string::npos, max=std::string::npos;
+    for (q=0, i=0, ix=str.length(); i < ix; i++, q++)
+    {
+        if (q==start){ min=i; }
+        if (q<=start+leng || leng==std::string::npos){ max=i; }
+
+        c = (unsigned char) str[i];
+        if      (
+                 //c>=0   &&
+                 c<=127) i+=0;
+        else if ((c & 0xE0) == 0xC0) i+=1;
+        else if ((c & 0xF0) == 0xE0) i+=2;
+        else if ((c & 0xF8) == 0xF0) i+=3;
+        //else if (($c & 0xFC) == 0xF8) i+=4; // 111110bb //byte 5, unnecessary in 4 byte UTF-8
+        //else if (($c & 0xFE) == 0xFC) i+=5; // 1111110b //byte 6, unnecessary in 4 byte UTF-8
+        else return "";//invalid utf8
+    }
+    if (q<=start+leng || leng==std::string::npos){ max=i; }
+    if (min==std::string::npos || max==std::string::npos) { return ""; }
+    return str.substr(min,max-min);
+}
+
+std::size_t rc_utf8_length(std::string const &s)
+{
+  return std::count_if(s.begin(), s.end(),
+    [](char c) { return (static_cast<unsigned char>(c) & 0xC0) != 0x80; } );
 }
 
 int rc_getEvents()
@@ -4358,7 +4389,7 @@ int rc_getEvents()
             if(rc_textinput_isActive && event.key.keysym.sym == SDLK_BACKSPACE && rc_textinput_string.length() > 0
                && rc_toggleBackspace)
             {
-                rc_textinput_string = rc_textinput_string.substr(0, rc_textinput_string.length()-1);
+                rc_textinput_string = rc_utf8_substr(rc_textinput_string, 0, rc_utf8_length(rc_textinput_string)-1);
             }
 
             rc_inkey = event.key.keysym.sym;
@@ -5390,6 +5421,7 @@ int rc_net_tcp_getData_str(int socket, string * dst, int numBytes)
     char c[numBytes+1];
     int rtn = rc_net_tcp_getData(socket, c, numBytes);
     c[numBytes] = '\0';
+    //cout << "Read bytes: " << (string)c << endl;
     dst[0] = c;
     return rtn;
 }

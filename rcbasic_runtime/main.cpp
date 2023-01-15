@@ -18,6 +18,11 @@
 #define RC_GETCWD
 #endif
 
+#ifdef RC_WINDOWS
+#include<windows.h>
+#define _UNICODE
+#endif // RC_WINDOWS
+
 
 #ifdef RC_ANDROID
     #include <jni.h>
@@ -2299,6 +2304,15 @@ void func_130(uint64_t fn)
                 rc_push_num( rc_media_drawGeometry(DRAWGEOMETRY_SLOT, DRAWGEOMETRY_NUM_VERTICES, &DRAWGEOMETRY_VERTICES, DRAWGEOMETRY_NUM_INDICES, &DRAWGEOMETRY_INDICES) );
             #endif // RC_WEB
             break;
+        case FN_Size: //Number Function
+            rc_push_num(rc_intern_size(SIZE_S$));
+            break;
+        case FN_BufferFromString: //Number Function
+            rc_push_num(rc_intern_bufferFromString(BUFFERFROMSTRING_S$, &BUFFERFROMSTRING_BUFFER));
+            break;
+        case FN_StringFromBuffer$: //String Function
+            rc_push_str( rc_intern_stringFromBuffer(&STRINGFROMBUFFER$_BUFFER, STRINGFROMBUFFER$_BUFFER_SIZE) );
+            break;
     }
 }
 
@@ -3149,6 +3163,8 @@ int main(int argc, char * argv[])
         TCHAR buf[MAX_PATH];
         GetCurrentDirectory(MAX_PATH, buf);
         rc_dir_path = buf;
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
     #else
 		#ifdef RC_GETCWD
 			char buf[2048];
@@ -3178,7 +3194,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("--version")==0)
     {
-        cout << "RCBASIC Runtime v3.19" << endl;
+        cout << "RCBASIC Runtime v3.20a" << endl;
         return 0;
     }
 
