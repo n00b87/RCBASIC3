@@ -1063,6 +1063,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 resolveID_id_reg.push_back(n);
                 resolveID_id_type.push_back(id[expr_id].type);
                 resolveID_id_ut_index.push_back(id[expr_id].type_index);
+                resolveID_id_vec_pos.push_back(expr_id);
                 token[i] = n;
                 inc_n(1);
             }
@@ -1072,6 +1073,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 resolveID_id_reg.push_back(s);
                 resolveID_id_type.push_back(id[expr_id].type);
                 resolveID_id_ut_index.push_back(id[expr_id].type_index);
+                resolveID_id_vec_pos.push_back(expr_id);
                 token[i] = s;
                 inc_s(1);
             }
@@ -1148,6 +1150,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     resolveID_id_reg.push_back(n);
                     resolveID_id_type.push_back(id[expr_id].type);
                     resolveID_id_ut_index.push_back(id[expr_id].type_index);
+                    resolveID_id_vec_pos.push_back(expr_id);
                     token[i] = n;
                     inc_n(1);
                     continue;
@@ -1158,6 +1161,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     resolveID_id_reg.push_back(s);
                     resolveID_id_type.push_back(id[expr_id].type);
                     resolveID_id_ut_index.push_back(id[expr_id].type_index);
+                    resolveID_id_vec_pos.push_back(expr_id);
                     token[i] = s;
                     inc_s(1);
                     continue;
@@ -1195,6 +1199,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 resolveID_id_reg.push_back(token_replace);
                 resolveID_id_type.push_back(id[expr_id].type);
                 resolveID_id_ut_index.push_back(id[expr_id].type_index);
+                resolveID_id_vec_pos.push_back(expr_id);
 
                 for(int p = arr_token_start; p <= arr_token_end; p++)
                     token[p] = "";
@@ -1291,6 +1296,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     resolveID_id_reg.push_back(token_replace);
                     resolveID_id_type.push_back(id[expr_id].type);
                     resolveID_id_ut_index.push_back(id[expr_id].type_index);
+                    resolveID_id_vec_pos.push_back(expr_id);
 
                     for(int p = arr_token_start; p <= arr_token_end; p++)
                         token[p] = "";
@@ -1385,6 +1391,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 resolveID_id_reg.push_back(token_replace);
                 resolveID_id_type.push_back(id[expr_id].type);
                 resolveID_id_ut_index.push_back(id[expr_id].type_index);
+                resolveID_id_vec_pos.push_back(expr_id);
 
                 for(int p = arr_token_start; p <= arr_token_end; p++)
                     token[p] = "";
@@ -1497,6 +1504,9 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 }
 
                 int resolve_index = -1;
+                int resolve_index2 = -1;
+                int resolve_id = -1;
+                int resolve_id2 = -1;
                 int arg_index = -1;
 
                 if(StringToLower(id[expr_id].name).compare("arraydim")==0)
@@ -1505,7 +1515,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     resolve_index = getResolveReg(args[0]);
                     if(resolve_index < 0)
                     {
-                        rc_setError("Expected Identifier in ArrayDim argument --> " + args[0]);
+                        rc_setError("Expected Identifier in ArrayDim argument: " + args[0]);
                         return false;
                     }
                     switch(resolveID_id_type[resolve_index])
@@ -1555,6 +1565,99 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                         return false;
                     }
                 }
+                else if(StringToLower(id[expr_id].name).compare("arraycopy")==0)
+                {
+                    //cout << "HERES JOHNNY" << endl;
+                    if(num_args != 2)
+                    {
+                        rc_setError("ArrayCopy expects 2 arguments");
+                        return false;
+                    }
+
+                    resolve_index = getResolveReg(args[0]);
+                    resolve_index2 = getResolveReg(args[1]);
+
+                    if(resolve_index < 0 || resolve_index2 < 0)
+                    {
+                        rc_setError("Expected Identifier in ArrayCopy argument: " +args[0]);
+                        return false;
+                    }
+
+                    resolve_id = resolveID_id_vec_pos[resolve_index];
+                    resolve_id2 = resolveID_id_vec_pos[resolve_index2];
+
+                    switch(resolveID_id_type[resolve_index])
+                    {
+                        case ID_TYPE_ARR_NUM:
+                        case ID_TYPE_BYREF_NUM:
+                        case ID_TYPE_NUM:
+                            expr_id = getIDInScope_ByIndex("NumberArrayCopy");
+                            if(resolveID_id_type[resolve_index2] != ID_TYPE_ARR_NUM &&
+                               resolveID_id_type[resolve_index2] != ID_TYPE_BYREF_NUM &&
+                               resolveID_id_type[resolve_index2] != ID_TYPE_NUM)
+                            {
+                                rc_setError("ArrayCopy argument types don't match");
+                                return false;
+                            }
+
+                            if(id[resolve_id].num_args != id[resolve_id2].num_args)
+                            {
+                                rc_setError("ArrayCopy dimensions don't match");
+                                return false;
+                            }
+                            break;
+                        case ID_TYPE_ARR_STR:
+                        case ID_TYPE_BYREF_STR:
+                        case ID_TYPE_STR:
+                            expr_id = getIDInScope_ByIndex("StringArrayCopy");
+                            if(resolveID_id_type[resolve_index2] != ID_TYPE_ARR_STR &&
+                               resolveID_id_type[resolve_index2] != ID_TYPE_BYREF_STR &&
+                               resolveID_id_type[resolve_index2] != ID_TYPE_STR)
+                            {
+                                rc_setError("ArrayCopy argument types don't match");
+                                return false;
+                            }
+                            if(id[resolve_id].num_args != id[resolve_id2].num_args)
+                            {
+                                rc_setError("ArrayCopy dimensions don't match");
+                                return false;
+                            }
+                            break;
+                    }
+                    if(expr_id < 0)
+                    {
+                        rc_setError("ArrayCopy Syntax Error");
+                        return false;
+                    }
+                }
+                else if(StringToLower(id[expr_id].name).compare("arrayfill")==0)
+                {
+                    //cout << "HERES JOHNNY" << endl;
+                    resolve_index = getResolveReg(args[0]);
+                    if(resolve_index < 0)
+                    {
+                        rc_setError("Expected Identifier in ArrayFill argument: " + args[0]);
+                        return false;
+                    }
+                    switch(resolveID_id_type[resolve_index])
+                    {
+                        case ID_TYPE_ARR_NUM:
+                        case ID_TYPE_BYREF_NUM:
+                        case ID_TYPE_NUM:
+                            expr_id = getIDInScope_ByIndex("NumberArrayFill");
+                            break;
+                        case ID_TYPE_ARR_STR:
+                        case ID_TYPE_BYREF_STR:
+                        case ID_TYPE_STR:
+                            expr_id = getIDInScope_ByIndex("StringArrayFill");
+                            break;
+                    }
+                    if(expr_id < 0)
+                    {
+                        rc_setError("ArrayFill Syntax Error");
+                        return false;
+                    }
+                }
 
                 bool local_state_is_pushed = false; //this variable checks will be set to true if the following function call is recursive
                 if(block_state.size() > 0)
@@ -1587,7 +1690,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 {
                     if(args[n].substr(0,1).compare("n")!=0 && args[n].substr(0,1).compare("s")!=0 && args[n].substr(0,4).compare("<id>")!=0)
                     {
-                        rc_setError("bInvalid number of args in function: " + args[n]);
+                        rc_setError("Invalid number of args in function: " + args[n]);
                         return false;
                     }
 
@@ -1613,6 +1716,8 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 
                                 resolveID_id_reg.push_back(t_replace);
                                 resolveID_id_type.push_back(id[arg_id].type);
+                                resolveID_id_ut_index.push_back(id[arg_id].type_index);
+                                resolveID_id_vec_pos.push_back(arg_id);
                                 resolve_index = resolveID_id_reg.size()-1;
                             }
                             else if(id[arg_id].type == ID_TYPE_ARR_STR)
@@ -1624,6 +1729,8 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 
                                 resolveID_id_reg.push_back(t_replace);
                                 resolveID_id_type.push_back(id[arg_id].type);
+                                resolveID_id_ut_index.push_back(id[arg_id].type_index);
+                                resolveID_id_vec_pos.push_back(arg_id);
                                 resolve_index = resolveID_id_reg.size()-1;
                             }
                             else
@@ -2131,6 +2238,7 @@ void clearRegs()
     resolveID_id_reg.clear();
     resolveID_id_type.clear();
     resolveID_id_ut_index.clear();
+    resolveID_id_vec_pos.clear();
 }
 
 bool check_rule()
@@ -2434,11 +2542,13 @@ bool check_rule()
                         return false;
                     }
 
+
                     if(id[id_index].num_args <= 0)
                     {
                         rc_setError("REDIM expected array identifier");
                         return false;
                     }
+
 
                     id_type = id[id_index].type;
 

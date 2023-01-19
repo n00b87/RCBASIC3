@@ -160,7 +160,8 @@ bool Array_Macros(int tmp_start_token)
     //returning true is just saying there were no syntax errors found
     if(tmp_token[tmp_start_token].length() < 5)
         return true;
-    if(StringToLower(tmp_token[tmp_start_token].substr(4)).compare("arraydim")!=0 && StringToLower(tmp_token[tmp_start_token].substr(4)).compare("arraysize")!=0)
+    if(StringToLower(tmp_token[tmp_start_token].substr(4)).compare("arraydim")!=0 && StringToLower(tmp_token[tmp_start_token].substr(4)).compare("arraysize")!=0 &&
+       StringToLower(tmp_token[tmp_start_token].substr(4)).compare("arraycopy")!=0 && StringToLower(tmp_token[tmp_start_token].substr(4)).compare("arrayfill")!=0)
         return true;
 
     int64_t arr_id = 0;
@@ -300,7 +301,7 @@ bool Array_Macros(int tmp_start_token)
 
                 if(!eval_expression(0, token.size()-1, true))//i, end_token))
                 {
-                    rc_setError("--Could not evaluate ArraySize expression");
+                    rc_setError("Could not evaluate ArraySize expression");
                     //for(int n = 0; n < token.size(); n++)
                     //    cout << "token["<< n << "] = " << token[n] << endl;
                     return false;
@@ -314,6 +315,189 @@ bool Array_Macros(int tmp_start_token)
                     token.push_back(tmp_current_token[n]);
 
                 return true;
+            }
+            else if(StringToLower(tmp_token[i].substr(4)).compare("arraycopy")==0)
+            {
+                if(tmp_token.size() < 5)
+                {
+                    rc_setError("Ivalid use of ArrayCopy");
+                    return false;
+                }
+
+                if(tmp_token[i+1].compare("<par>")!=0)
+                {
+                    rc_setError("Invalid use of ArrayCopy");
+                    return false;
+                }
+
+                if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
+                {
+                    arr_id = getIDInScope_ByIndex(tmp_token[i+2].substr(4));
+                    if(arr_id < 0)
+                    {
+                        rc_setError("Identifier must be declared before call to ArrayCopy");
+                        return false;
+                    }
+
+                    id[arr_id].isArrayArg = true;
+
+                }
+                else
+                {
+                    rc_setError("Expected Identifier in ArrayCopy");
+                    return false;
+                }
+
+                if(!tmp_token[i+3].substr(0,7).compare("<comma>")==0)
+                {
+                    rc_setError("Expected comma in ArrayCopy");
+                    return false;
+                }
+
+                if(tmp_token[i+4].substr(0,4).compare("<id>")==0)
+                {
+                    arr_id = getIDInScope_ByIndex(tmp_token[i+4].substr(4));
+                    if(arr_id < 0)
+                    {
+                        rc_setError("Identifier must be declared before call to ArrayCopy");
+                        return false;
+                    }
+
+                    id[arr_id].isArrayArg = true;
+
+                }
+                else
+                {
+                    rc_setError("Expected Identifier in ArrayCopy");
+                    return false;
+                }
+
+                int end_token = i+4;
+                int expr_scope = 1;
+                for(end_token; end_token < tmp_token.size(); end_token++)
+                {
+                    if(tmp_token[end_token].compare("<par>")==0 || tmp_token[end_token].compare("<square>")==0)
+                        expr_scope++;
+                    else if(tmp_token[end_token].compare("</par>")==0 || tmp_token[end_token].compare("</square>")==0)
+                        expr_scope--;
+
+                    if(expr_scope==0 && tmp_token[end_token].compare("</par>")==0)
+                        break;
+                }
+
+                tmp_macro_token.clear();
+                for(int n = i; n <= end_token; n++)
+                        tmp_macro_token.push_back(tmp_token[n]);
+
+                //cout << "<---- DEBUG ---->" << i << endl;
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"token[" << n << "] = " << token[n] << endl;
+
+                tmp_current_token.clear();
+                for(int n = 0; n < token.size(); n++)
+                    tmp_current_token.push_back(token[n]);
+
+                token.clear();
+                for(int n = 0; n < tmp_macro_token.size(); n++)
+                    token.push_back(tmp_macro_token[n]);
+
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"new token[" << n << "] = " << token[n] << endl;
+
+
+                if(!eval_expression())
+                {
+                    rc_setError("Could not evaluate ArrayCopy");
+                    return false;
+                }
+
+                for(int n = i; n <= end_token; n++)
+                        tmp_token[n] = token[n-i];
+
+                token.clear();
+                for(int n = 0; n < tmp_current_token.size(); n++)
+                    token.push_back(tmp_current_token[n]);
+
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"final token[" << n << "] = " << token[n] << endl;
+                return true;
+
+            }
+            else if(StringToLower(tmp_token[i].substr(4)).compare("arrayfill")==0)
+            {
+                if(tmp_token[i+1].compare("<par>")!=0)
+                {
+                    rc_setError("Invalid use of ArrayFill");
+                    return false;
+                }
+                if(tmp_token[i+2].substr(0,4).compare("<id>")==0)
+                {
+                    arr_id = getIDInScope_ByIndex(tmp_token[i+2].substr(4));
+                    if(arr_id < 0)
+                    {
+                        rc_setError("Identifier must be declared before call to ArrayFill");
+                        return false;
+                    }
+
+                    id[arr_id].isArrayArg = true;
+
+                }
+                else
+                {
+                    rc_setError("Expected Identifier in ArrayFill");
+                    return false;
+                }
+
+                int end_token = i+2;
+                int expr_scope = 1;
+                for(end_token; end_token < tmp_token.size(); end_token++)
+                {
+                    if(tmp_token[end_token].compare("<par>")==0 || tmp_token[end_token].compare("<square>")==0)
+                        expr_scope++;
+                    else if(tmp_token[end_token].compare("</par>")==0 || tmp_token[end_token].compare("</square>")==0)
+                        expr_scope--;
+
+                    if(expr_scope==0 && tmp_token[end_token].compare("</par>")==0)
+                        break;
+                }
+
+                tmp_macro_token.clear();
+                for(int n = i; n <= end_token; n++)
+                        tmp_macro_token.push_back(tmp_token[n]);
+
+                //cout << "<---- DEBUG ---->" << i << endl;
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"token[" << n << "] = " << token[n] << endl;
+
+                tmp_current_token.clear();
+                for(int n = 0; n < token.size(); n++)
+                    tmp_current_token.push_back(token[n]);
+
+                token.clear();
+                for(int n = 0; n < tmp_macro_token.size(); n++)
+                    token.push_back(tmp_macro_token[n]);
+
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"new token[" << n << "] = " << token[n] << endl;
+
+
+                if(!eval_expression())
+                {
+                    rc_setError("Could not evaluate ArrayFill");
+                    return false;
+                }
+
+                for(int n = i; n <= end_token; n++)
+                        tmp_token[n] = token[n-i];
+
+                token.clear();
+                for(int n = 0; n < tmp_current_token.size(); n++)
+                    token.push_back(tmp_current_token[n]);
+
+                //for(int n = 0; n < token.size(); n++)
+                //    cout <<"final token[" << n << "] = " << token[n] << endl;
+                return true;
+
             }
         }
     }
