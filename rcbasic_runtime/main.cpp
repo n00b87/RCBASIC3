@@ -67,6 +67,8 @@ bool CMP_FLAG_GREATER = false;
 bool CMP_FLAG_GREATER_EQUAL = false;
 bool CMP_FLAG_NOT_EQUAL = false;
 
+string rcbasic_runtime_path = "";
+
 struct n_value
 {
     vector<double> value;
@@ -190,7 +192,7 @@ stack<uint64_t> gosub_return_addr;
 rc_int readint_val;
 rc_double readdouble_val;
 
-uint64_t arr_ref_id = 0;
+vector<uint64_t> arr_ref_id(2);
 
 int rcbasic_exit_code = 0;
 
@@ -1159,6 +1161,152 @@ uint64_t rc_number_array_size(rc_numId n_var, int d_num)
     return 0;
 }
 
+void rc_number_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
+{
+    uint64_t src_dim, src_dim_size[3];
+    src_dim = rc_number_array_dim( num_var[src_ref_id] );
+    src_dim_size[0] = rc_number_array_size( num_var[src_ref_id], 1);
+    src_dim_size[1] = rc_number_array_size( num_var[src_ref_id], 2);
+    src_dim_size[2] = rc_number_array_size( num_var[src_ref_id], 3);
+
+    uint64_t total_size = 0;
+
+    switch(src_dim)
+    {
+        case 1:
+            total_size = src_dim_size[0];
+            num_var[dst_ref_id].nid_value[0].value.resize(total_size);
+            num_var[dst_ref_id].dimensions = 1;
+            num_var[dst_ref_id].dim[0] = src_dim_size[0];
+            num_var[dst_ref_id].dim[1] = 0;
+            num_var[dst_ref_id].dim[2] = 0;
+            break;
+        case 2:
+            total_size = src_dim_size[0] * src_dim_size[1];
+            num_var[dst_ref_id].nid_value[0].value.resize(total_size);
+            num_var[dst_ref_id].dimensions = 2;
+            num_var[dst_ref_id].dim[0] = src_dim_size[0];
+            num_var[dst_ref_id].dim[1] = src_dim_size[1];
+            num_var[dst_ref_id].dim[2] = 0;
+            break;
+        case 3:
+            total_size = src_dim_size[0] * src_dim_size[1] * src_dim_size[2];
+            num_var[dst_ref_id].nid_value[0].value.resize(total_size);
+            num_var[dst_ref_id].dimensions = 3;
+            num_var[dst_ref_id].dim[0] = src_dim_size[0];
+            num_var[dst_ref_id].dim[1] = src_dim_size[1];
+            num_var[dst_ref_id].dim[2] = src_dim_size[2];
+            break;
+    }
+
+    for(int i = 0; i < total_size; i++)
+    {
+        num_var[dst_ref_id].nid_value[0].value[i] = num_var[src_ref_id].nid_value[0].value[i];
+    }
+}
+
+void rc_string_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
+{
+    uint64_t src_dim, src_dim_size[3];
+    src_dim = rc_string_array_dim( str_var[src_ref_id] );
+    src_dim_size[0] = rc_string_array_size( str_var[src_ref_id], 1);
+    src_dim_size[1] = rc_string_array_size( str_var[src_ref_id], 2);
+    src_dim_size[2] = rc_string_array_size( str_var[src_ref_id], 3);
+
+    uint64_t total_size = 0;
+
+    switch(src_dim)
+    {
+        case 1:
+            total_size = src_dim_size[0];
+            str_var[dst_ref_id].sid_value[0].value.resize(total_size);
+            str_var[dst_ref_id].dimensions = 1;
+            str_var[dst_ref_id].dim[0] = src_dim_size[0];
+            str_var[dst_ref_id].dim[1] = 0;
+            str_var[dst_ref_id].dim[2] = 0;
+            break;
+        case 2:
+            total_size = src_dim_size[0] * src_dim_size[1];
+            str_var[dst_ref_id].sid_value[0].value.resize(total_size);
+            str_var[dst_ref_id].dimensions = 2;
+            str_var[dst_ref_id].dim[0] = src_dim_size[0];
+            str_var[dst_ref_id].dim[1] = src_dim_size[1];
+            str_var[dst_ref_id].dim[2] = 0;
+            break;
+        case 3:
+            total_size = src_dim_size[0] * src_dim_size[1] * src_dim_size[2];
+            str_var[dst_ref_id].sid_value[0].value.resize(total_size);
+            str_var[dst_ref_id].dimensions = 3;
+            str_var[dst_ref_id].dim[0] = src_dim_size[0];
+            str_var[dst_ref_id].dim[1] = src_dim_size[1];
+            str_var[dst_ref_id].dim[2] = src_dim_size[2];
+            break;
+    }
+
+    for(int i = 0; i < total_size; i++)
+    {
+        str_var[dst_ref_id].sid_value[0].value[i] = str_var[src_ref_id].sid_value[0].value[i];
+    }
+}
+
+void rc_number_array_fill(uint64_t src_ref_id, double n)
+{
+    uint64_t src_dim, src_dim_size[3];
+    src_dim = rc_number_array_dim( num_var[src_ref_id] );
+    src_dim_size[0] = rc_number_array_size( num_var[src_ref_id], 1);
+    src_dim_size[1] = rc_number_array_size( num_var[src_ref_id], 2);
+    src_dim_size[2] = rc_number_array_size( num_var[src_ref_id], 3);
+
+    uint64_t total_size = 0;
+
+    switch(src_dim)
+    {
+        case 1:
+            total_size = src_dim_size[0];
+            break;
+        case 2:
+            total_size = src_dim_size[0] * src_dim_size[1];
+            break;
+        case 3:
+            total_size = src_dim_size[0] * src_dim_size[1] * src_dim_size[2];
+            break;
+    }
+
+    for(int i = 0; i < total_size; i++)
+    {
+        num_var[src_ref_id].nid_value[0].value[i] = n;
+    }
+}
+
+void rc_string_array_fill(uint64_t src_ref_id, string s)
+{
+    uint64_t src_dim, src_dim_size[3];
+    src_dim = rc_string_array_dim( str_var[src_ref_id] );
+    src_dim_size[0] = rc_string_array_size( str_var[src_ref_id], 1);
+    src_dim_size[1] = rc_string_array_size( str_var[src_ref_id], 2);
+    src_dim_size[2] = rc_string_array_size( str_var[src_ref_id], 3);
+
+    uint64_t total_size = 0;
+
+    switch(src_dim)
+    {
+        case 1:
+            total_size = src_dim_size[0];
+            break;
+        case 2:
+            total_size = src_dim_size[0] * src_dim_size[1];
+            break;
+        case 3:
+            total_size = src_dim_size[0] * src_dim_size[1] * src_dim_size[2];
+            break;
+    }
+
+    for(int i = 0; i < total_size; i++)
+    {
+        str_var[src_ref_id].sid_value[0].value[i] = s;
+    }
+}
+
 void func_130(uint64_t fn)
 {
     //need to setup a switch statement for all buitlin fucntions here
@@ -1174,16 +1322,20 @@ void func_130(uint64_t fn)
             rc_push_str( rc_input(INPUT$_PROMPT$) );
             break;
         case FN_StringArrayDim:
-            rc_push_num( rc_string_array_dim( str_var[arr_ref_id] ) );
+            rc_push_num( rc_string_array_dim( str_var[arr_ref_id[0]] ) );
+            arr_ref_id.clear();
             break;
         case FN_NumberArrayDim:
-            rc_push_num( rc_number_array_dim( num_var[arr_ref_id] ) );
+            rc_push_num( rc_number_array_dim( num_var[arr_ref_id[0]] ) );
+            arr_ref_id.clear();
             break;
         case FN_StringArraySize:
-            rc_push_num( rc_string_array_size( str_var[arr_ref_id], STRINGARRAYSIZE_ARRAY_DIM));
+            rc_push_num( rc_string_array_size( str_var[arr_ref_id[0]], STRINGARRAYSIZE_ARRAY_DIM));
+            arr_ref_id.clear();
             break;
         case FN_NumberArraySize:
-            rc_push_num( rc_number_array_size( num_var[arr_ref_id], NUMBERARRAYSIZE_ARRAY_DIM));
+            rc_push_num( rc_number_array_size( num_var[arr_ref_id[0]], NUMBERARRAYSIZE_ARRAY_DIM));
+            arr_ref_id.clear();
             break;
         case FN_Abs:
             rc_push_num( rc_intern_abs( ABS_N ) );
@@ -2313,6 +2465,65 @@ void func_130(uint64_t fn)
         case FN_StringFromBuffer$: //String Function
             rc_push_str( rc_intern_stringFromBuffer(&STRINGFROMBUFFER$_BUFFER, STRINGFROMBUFFER$_BUFFER_SIZE) );
             break;
+        case FN_GrabInput: //Sub Procedure
+            rc_media_grabInput(GRABINPUT_FLAG);
+            break;
+        case FN_GrabbedWindow: //Number Function
+            rc_push_num( rc_media_grabbedWindow() );
+            break;
+        case FN_WarpMouse: //Sub Procedure
+            rc_media_warpMouse(WARPMOUSE_X, WARPMOUSEGLOBAL_Y);
+            break;
+        case FN_WarpMouseGlobal: //Sub Procedure
+            rc_media_warpMouseGlobal(WARPMOUSEGLOBAL_X, WARPMOUSEGLOBAL_Y);
+            break;
+        case FN_SetMouseZone: //Sub Procedure
+            rc_media_setMouseZone(SETMOUSEZONE_X, SETMOUSEZONE_Y, SETMOUSEZONE_W, SETMOUSEZONE_H);
+            break;
+        case FN_ClearMouseZone: //Sub Procedure
+            rc_media_clearMouseZone();
+            break;
+        case FN_SetWindowAlwaysOnTop: //Sub Procedure
+            rc_media_setWindowAlwaysOnTop(SETWINDOWALWAYSONTOP_WIN, SETWINDOWALWAYSONTOP_FLAG);
+            break;
+        case FN_SetMouseRelative: //Sub Procedure
+            rc_media_setMouseRelative(SETMOUSERELATIVE_FLAG);
+            break;
+        case FN_SetWindowVSync: //Sub Procedure
+            rc_media_setWindowVSync(SETWINDOWVSYNC_WIN, SETWINDOWVSYNC_FLAG);
+            break;
+        case FN_OpenURL: //Number Function
+            rc_push_num( rc_media_openURL(OPENURL_URL$));
+            break;
+        case FN_APIVersion$: //String Function
+            rc_push_str( rc_media_APIVersion() );
+            break;
+        case FN_FlashWindow: //Number Function
+            rc_push_num( rc_media_flashWindow(FLASHWINDOW_WIN));
+            break;
+        case FN_MessageBox: //Number Function
+            rc_push_num( rc_media_messageBox(MESSAGEBOX_TITLE$, MESSAGEBOX_MSG$));
+            break;
+        case FN_NumberArrayCopy: //Sub Procedure
+            rc_number_array_copy(arr_ref_id[0], arr_ref_id[1]);
+            arr_ref_id.clear();
+            break;
+        case FN_StringArrayCopy: //Sub Procedure
+            rc_string_array_copy(arr_ref_id[0], arr_ref_id[1]);
+            arr_ref_id.clear();
+            break;
+        case FN_NumberArrayFill: //Sub Procedure
+            rc_number_array_fill(arr_ref_id[0], NUMBERARRAYFILL_FDATA);
+            arr_ref_id.clear();
+            break;
+        case FN_StringArrayFill: //Sub Procedure
+            rc_string_array_fill(arr_ref_id[0], STRINGARRAYFILL_FDATA$);
+            arr_ref_id.clear();
+            break;
+        case FN_Runtime$: //String Function
+            rc_push_str( rcbasic_runtime_path );
+            break;
+
     }
 }
 
@@ -2367,13 +2578,13 @@ void cmp_134(int n1, double num)
 
 void mov_arr_135(int n1, uint64_t nid)
 {
-    arr_ref_id = nid;
+    arr_ref_id.push_back( nid );
     vm_n[n1].r = num_var[nid].nid_value;
 }
 
 void mov_arrS_136(int s1, uint64_t sid)
 {
-    arr_ref_id = sid;
+    arr_ref_id.push_back( sid );
     vm_s[s1].r = str_var[sid].sid_value;
 }
 
@@ -3122,6 +3333,7 @@ void rcbasic_init()
     for(int i = 0; i < RC_MAX_FILES; i++)
         rc_fstream[i] = NULL;
     rc_media_init();
+    arr_ref_id.clear();
 }
 
 void rcbasic_clean()
@@ -3157,6 +3369,9 @@ int main(int argc, char * argv[])
 {
     //rcbasic_test();
     //return 0;
+
+    if(argc > 0)
+        rcbasic_runtime_path = argv[0];
 
     //cout << "RCBASIC RUNTIME START" << endl;
     #ifdef RC_WINDOWS

@@ -1035,3 +1035,53 @@
 #define FN_StringFromBuffer$ 372
 #define STRINGFROMBUFFER$_BUFFER num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define STRINGFROMBUFFER$_BUFFER_SIZE num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_GrabInput 373
+#define GRABINPUT_FLAG num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_GrabbedWindow 374
+#define FN_WarpMouse 375
+#define WARPMOUSE_X num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define WARPMOUSE_Y num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_WarpMouseGlobal 376
+#define WARPMOUSEGLOBAL_X num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define WARPMOUSEGLOBAL_Y num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_SetMouseZone 377
+#define SETMOUSEZONE_X num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SETMOUSEZONE_Y num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SETMOUSEZONE_W num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define SETMOUSEZONE_H num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_ClearMouseZone 378
+#define FN_SetWindowAlwaysOnTop 379
+#define SETWINDOWALWAYSONTOP_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SETWINDOWALWAYSONTOP_FLAG num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_SetMouseRelative 380
+#define SETMOUSERELATIVE_FLAG num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_SetWindowVSync 381
+#define SETWINDOWVSYNC_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SETWINDOWVSYNC_FLAG num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_OpenURL 382
+#define OPENURL_URL$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define FN_APIVersion$ 383
+#define FN_FlashWindow 384
+#define FLASHWINDOW_WIN num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_MessageBox 385
+#define MESSAGEBOX_TITLE$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define MESSAGEBOX_MSG$ str_var[1].sid_value[0].value[ str_var[1].byref_offset ]
+#define FN_NumberArrayCopy 386
+#define NUMBERARRAYCOPY_SRC num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define NUMBERARRAYCOPY_DST num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_StringArrayCopy 387
+#define STRINGARRAYCOPY_SRC$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define STRINGARRAYCOPY_DST$ str_var[1].sid_value[0].value[ str_var[1].byref_offset ]
+#define FN_ArrayCopy 388
+#define ARRAYCOPY_SRC num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define ARRAYCOPY_DST num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_NumberArrayFill 389
+#define NUMBERARRAYFILL_SRC num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define NUMBERARRAYFILL_FDATA num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_StringArrayFill 390
+#define STRINGARRAYFILL_SRC$ str_var[0].sid_value[0].value[ str_var[0].byref_offset ]
+#define STRINGARRAYFILL_FDATA$ str_var[1].sid_value[0].value[ str_var[1].byref_offset ]
+#define FN_ArrayFill 391
+#define ARRAYFILL_SRC num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define ARRAYFILL_FDATA num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_Runtime$ 392

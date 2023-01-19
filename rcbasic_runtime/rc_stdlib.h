@@ -250,6 +250,9 @@ inline string rc_intern_chr(uint32_t n)
 
 inline string rc_intern_insert(string src, string tgt, size_t pos)
 {
+    if(pos < 0 || pos > utf8_length(src))
+        return src;
+
     return utf8_substr(src, 0, pos) + tgt + utf8_substr(src, pos, utf8_length(src)-pos);
 }
 
@@ -260,7 +263,7 @@ inline double rc_intern_instr(string in_string, string in_substring)
     size_t n = 0;//(int)in_string.find(in_substring);
     size_t search_len = utf8_length(in_string) - utf8_length(in_substring);
     size_t sub_len = utf8_length(in_substring);
-    for(size_t i = 0; i < search_len; i++)
+    for(size_t i = 0; i <= search_len; i++)
     {
         if(utf8_substr(in_string, i, sub_len).compare(in_substring)==0)
         {
@@ -284,6 +287,9 @@ inline string rc_intern_lcase(string u_string)
 
 inline string rc_intern_left(string l_string, size_t n)
 {
+    if(n >= utf8_length(l_string))
+        return l_string;
+    //cout << "DEBUG -> n = " << n << " :  NPOS = " << string::npos << endl;
     return utf8_substr(l_string,0,n);
 }
 
@@ -298,12 +304,14 @@ inline string rc_intern_ltrim(string l_string)
     size_t first_index = l_string.find_first_not_of(" ");
     if(first_index != string::npos)
         return l_string.substr(first_index);
-    return "";
+    return l_string;
 }
 
 inline string rc_intern_mid(string m_string, size_t m_start, size_t n)
 {
     //cout << "DBG_MID" << endl;
+    if(m_start < 0 || n < 0)
+        return "";
     size_t m_string_length =  utf8_length(m_string);
     if(m_string_length <= m_start)
         return "";
@@ -316,6 +324,10 @@ inline string rc_intern_replaceSubstr(string src, string rpc, size_t pos)
 {
     size_t rpc_i = 0;
     string n_str = utf8_substr(src, 0, pos);
+
+    if(pos < 0)
+        return src;
+
     for(size_t i = pos; i < utf8_length(src); i++)
     {
         if(rpc_i < utf8_length(rpc))
@@ -362,7 +374,9 @@ inline string rc_intern_reverse(string rpc_string)
 inline string rc_intern_right(string src, size_t n)
 {
     size_t src_length = utf8_length(src);
-    if(n > src_length)
+    if(n < 0)
+        return "";
+    if(n >= src_length)
         return src;
     return utf8_substr(src,src_length-n, src_length -(src_length-n));
 }
@@ -378,6 +392,9 @@ inline string rc_intern_rtrim(string src)
         if(utf8_substr(src,i,1).compare(" ") != 0 || i == 0)
             break;
     }
+    if(i <= 0)
+        return "";
+
     return utf8_substr(src,0,i+1);
 }
 
@@ -388,6 +405,9 @@ inline size_t rc_intern_size(string src)
 
 inline string rc_intern_stringFromBuffer(double* buffer, size_t buffer_size)
 {
+    if(buffer_size <= 0)
+        return "";
+
     char c_buf[buffer_size+1];
 
     for(int i = 0; i < buffer_size; i++)
@@ -802,6 +822,7 @@ inline string rc_intern_fileReadLine(int f_stream)
     }
     if(buf[0]=='\r')
         SDL_RWread(rc_fstream[f_stream], buf, 1, 1);
+
     return rline;
 }
 

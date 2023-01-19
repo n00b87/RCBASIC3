@@ -163,6 +163,7 @@ vector<unsigned char> data_segment;
 vector<string> resolveID_id_reg;
 vector<int> resolveID_id_type;
 vector<int> resolveID_id_ut_index;
+vector<uint32_t> resolveID_id_vec_pos;
 
 int getResolveReg(string arg)
 {

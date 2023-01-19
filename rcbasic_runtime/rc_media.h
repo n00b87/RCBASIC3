@@ -4868,6 +4868,90 @@ void rc_media_getMouseWheel(double * x_axis, double * y_axis)
     return;
 }
 
+void rc_media_grabInput(bool flag)
+{
+    SDL_SetWindowGrab(rc_win[rc_active_window], flag ? SDL_TRUE : SDL_FALSE);
+}
+
+int rc_media_grabbedWindow()
+{
+    for(int i = 0; i < MAX_WINDOWS; i++)
+    {
+        if(SDL_GetWindowGrab(rc_win[i]))
+            return i;
+    }
+    return -1;
+}
+
+void rc_media_warpMouse(int x, int y)
+{
+    SDL_WarpMouseInWindow(rc_win[rc_active_window], x, y);
+}
+
+void rc_media_warpMouseGlobal(int x, int y)
+{
+    SDL_WarpMouseGlobal(x, y);
+}
+
+void rc_media_setMouseZone(int x, int y, int w, int h)
+{
+    SDL_Rect r;
+    r.x = x;
+    r.y = y;
+    r.w = w;
+    r.h = h;
+    SDL_SetWindowMouseRect(rc_win[rc_active_window], &r);
+}
+
+void rc_media_clearMouseZone()
+{
+    SDL_SetWindowMouseRect(rc_win[rc_active_window], NULL);
+}
+
+void rc_media_setWindowAlwaysOnTop(int win, bool flag)
+{
+    if(win < 0 || win >= MAX_WINDOWS)
+        return;
+    SDL_SetWindowAlwaysOnTop(rc_win[win], flag ? SDL_TRUE : SDL_FALSE);
+}
+
+void rc_media_setMouseRelative(bool flag)
+{
+    SDL_SetRelativeMouseMode(flag ? SDL_TRUE : SDL_FALSE);
+}
+
+void rc_media_setWindowVSync(int win, bool flag)
+{
+    SDL_RenderSetVSync(rc_win_renderer[win], flag ? SDL_TRUE : SDL_FALSE);
+}
+
+int rc_media_openURL(string url)
+{
+    return SDL_OpenURL(url.c_str());
+}
+
+string rc_media_APIVersion()
+{
+    SDL_version version;
+    SDL_GetVersion(&version);
+
+    stringstream ss;
+    ss << (uint32_t)version.major << "." << (uint32_t)version.minor << "." << (uint32_t)version.patch;
+    return ss.str();
+
+}
+
+int rc_media_flashWindow(int win)
+{
+    //SDL_FlashOperation op;
+    return SDL_FlashWindow(rc_win[win], SDL_FLASH_UNTIL_FOCUSED);
+}
+
+int rc_media_messageBox(string title, string msg)
+{
+    return SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, title.c_str(), msg.c_str(), NULL);
+}
+
 void rc_media_updateWindow_hw()
 {
     if(!rc_win[rc_active_window])
