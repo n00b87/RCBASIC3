@@ -15,6 +15,15 @@ string rc_intToString(int a)
     return str;
 }
 
+string rc_uint64ToString(uint64_t a)
+{
+    stringstream ss;
+    ss << a;
+    string str = ss.str();
+    ss.clear();
+    return str;
+}
+
 int rc_stringToInt(string a)
 {
     stringstream ss;

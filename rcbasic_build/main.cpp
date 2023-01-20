@@ -2,7 +2,6 @@
 #include <stack>
 #include <vector>
 #include <fstream>
-#include <iostream>
 #include <stdio.h>
 #include <string>
 #include "tokenizer.h"
@@ -26,6 +25,9 @@ stack<rc_src> rcbasic_program;
 fstream rcbasic_file;
 
 vector<string> inc_once;
+
+bool rcbasic_build_debug = false;
+uint64_t rcbasic_user_var_start = 0;
 
 void rcbasic_init()
 {
@@ -747,6 +749,10 @@ bool rcbasic_compile()
 
     while( rc_getline(line) )
     {
+        if(rcbasic_build_debug)
+        {
+            vm_asm.push_back("dbg 0 " + rc_uint64ToString(rcbasic_program.top().line_number));
+        }
         //cout << "line " << rcbasic_program.top().line_number << ": " << rcbasic_file.tellg() << " -> " << line << endl;
         if(!rcbasic_program.top().eof_reached)
             rcbasic_program.top().line_position = rcbasic_file.tellg();
@@ -917,6 +923,30 @@ void rcbasic_dev(string dev_input_file)
     }
 }
 
+void rcbasic_output_debug_info()
+{
+    fstream f("rcbasic.dbg.sym", fstream::out | fstream::trunc);
+
+    for(int i = rcbasic_user_var_start; i < id.size(); i++)
+    {
+        switch(id[i].type)
+        {
+            case ID_TYPE_NUM:
+            case ID_TYPE_ARR_NUM:
+            case ID_TYPE_BYREF_NUM:
+                f << "N " << id[i].name << " " << id[i].vec_pos << endl;
+                break;
+            case ID_TYPE_STR:
+            case ID_TYPE_ARR_STR:
+            case ID_TYPE_BYREF_STR:
+                f << "S " << id[i].name << " " << id[i].vec_pos << endl;
+                break;
+        }
+    }
+
+    f.close();
+}
+
 int main(int argc, char * argv[])
 {
     string line = "";
@@ -931,6 +961,18 @@ int main(int argc, char * argv[])
 
     if(argc > 1)
         rc_filename = argv[1];
+
+    string cmd_arg = "";
+    for(int i = 1; i < argc; i++)
+    {
+        cmd_arg = (string)argv[i];
+
+        if(cmd_arg.compare("--debug")==0)
+        {
+            cout << "DEBUG MODE" << endl;
+            rcbasic_build_debug = true;
+        }
+    }
 
     if(rc_filename.compare("--version")==0)
     {
@@ -950,6 +992,8 @@ int main(int argc, char * argv[])
         return 0;
 
     rcbasic_init();
+
+    rcbasic_user_var_start = id.size();
 
     if(rc_filename.find_first_of(".") == string::npos)
     {
@@ -1019,6 +1063,9 @@ int main(int argc, char * argv[])
         //strID_count
         //label_count
         //labels
+
+        if(rcbasic_build_debug)
+            rcbasic_output_debug_info();
 
         fstream f("main.rc_data", fstream::trunc | fstream::out);
         f << max_n_reg << endl;

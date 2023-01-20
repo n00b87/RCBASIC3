@@ -66,7 +66,7 @@ public:
             s.substr(0,s.find_first_of(" ")).compare("while")==0 || s.substr(0,s.find_first_of(" ")).compare("mov_arr")==0 ||
             s.substr(0,s.find_first_of(" ")).compare("ptr")==0 || s.substr(0,s.find_first_of(" ")).compare("ptr$")==0 ||
             s.substr(0,s.find_first_of(" ")).compare("redim1")==0 || s.substr(0,s.find_first_of(" ")).compare("redim1$")==0 ||
-            s.substr(0,s.find_first_of(" ")).compare("for_offset_arr2")==0 )
+            s.substr(0,s.find_first_of(" ")).compare("for_offset_arr2")==0 || s.substr(0,s.find_first_of(" ")).compare("dbg")==0 )
         {
             current_address[current_segment] += 17; //1 byte for instruction and 8 bytes for each argument
         }
