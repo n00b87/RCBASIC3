@@ -118,7 +118,7 @@ public:
                 s.substr(0,s.find_first_of(" ")).compare("obj_usr2")==0 || s.substr(0,s.find_first_of(" ")).compare("dim_type1")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("dim_num2")==0 || s.substr(0,s.find_first_of(" ")).compare("dim_str2")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("redim2")==0 || s.substr(0,s.find_first_of(" ")).compare("redim2$")==0 ||
-                s.substr(0,s.find_first_of(" ")).compare("for_offset_arr3")==0)
+                s.substr(0,s.find_first_of(" ")).compare("for_offset_arr3")==0 || s.substr(0,s.find_first_of(" ")).compare("dbg")==0)
         {
             current_address[current_segment] += 25; //1 byte for instruction and 8 bytes for 3 arguments
         }

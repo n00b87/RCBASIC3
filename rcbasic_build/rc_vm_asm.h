@@ -294,6 +294,10 @@ namespace rc_cbc_assembler
             {
                 writeSegment(0);
             }
+            else if(line_arg[0].compare("dbg")==0)
+            {
+                writeSegment(1);
+            }
             else if(line_arg[0].compare("mov")==0)
             {
                 string arg1_type = line_arg[1].substr(0,1);

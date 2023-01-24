@@ -50,6 +50,8 @@
 
 using namespace std;
 
+#define RCBASIC_DEBUG 1
+
 #define LESS_FLAG 0
 #define LESS_EQUAL_FLAG 1
 #define GREATER_FLAG 2
@@ -84,6 +86,10 @@ struct rc_vm_n
     double value;
     n_value * r; //reference
     uint64_t r_index;
+
+    #ifdef RCBASIC_DEBUG
+    uint64_t dbg_var_index;
+    #endif // RCBASIC_DEBUG
 };
 
 struct rc_vm_s
@@ -91,6 +97,10 @@ struct rc_vm_s
     string value;
     s_value * r;
     uint64_t r_index;
+
+    #ifdef RCBASIC_DEBUG
+    uint64_t dbg_var_index;
+    #endif // RCBASIC_DEBUG
 };
 
 struct rc_numId
@@ -99,6 +109,11 @@ struct rc_numId
     int dimensions;
     uint64_t dim[3];
     uint64_t byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    bool is_debug_var;
+    uint64_t dbg_var_index;
+    #endif // RCBASIC_DEBUG
 };
 
 struct rc_strId
@@ -107,6 +122,11 @@ struct rc_strId
     int dimensions;
     uint64_t dim[3];
     uint64_t byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    bool is_debug_var;
+    uint64_t dbg_var_index;
+    #endif // RCBASIC_DEBUG
 };
 
 struct rc_loop
@@ -157,12 +177,20 @@ struct n_obj_struct
 {
     n_value * obj_val;
     uint64_t index;
+
+    #ifdef RCBASIC_DEBUG
+    uint64_t nid;
+    #endif // RCBASIC_DEBUG
 };
 
 struct s_obj_struct
 {
     s_value * obj_val;
     uint64_t index;
+
+    #ifdef RCBASIC_DEBUG
+    uint64_t sid;
+    #endif // RCBASIC_DEBUG
 };
 
 n_obj_struct num_object;
@@ -195,6 +223,191 @@ rc_double readdouble_val;
 vector<uint64_t> arr_ref_id(2);
 
 int rcbasic_exit_code = 0;
+
+#ifdef RCBASIC_DEBUG
+#define RCBASIC_DEBUG_VAR_NUM 0
+#define RCBASIC_DEBUG_VAR_ARR_NUM 1
+#define RCBASIC_DEBUG_VAR_BYREF_NUM 2
+#define RCBASIC_DEBUG_VAR_STR 3
+#define RCBASIC_DEBUG_VAR_ARR_STR 4
+#define RCBASIC_DEBUG_VAR_BYREF_STR 5
+
+#define RCBASIC_DEBUG_ACCESS_GET 0
+#define RCBASIC_DEBUG_ACCESS_SET 1
+
+struct rcbasic_debug_access_status
+{
+    int type;
+    int dimensions;
+    int dim[3];
+    double num_val;
+    string str_val;
+    int reg;
+    bool is_error = false;
+};
+
+struct rcbasic_debug_vars
+{
+    int type;
+    string scope;
+    string name;
+    int index;
+    vector<rcbasic_debug_access_status> usage_data;
+};
+
+vector<rcbasic_debug_vars> dbg_vars;
+vector<string> dbg_files;
+
+uint64_t current_src_line = 1;
+uint64_t current_src_file = 0;
+
+#define DBG_DIV_BY_ZERO "Divide By Zero"
+#define DBG_NEGATIVE_INDEX "Negative Array Index"
+#define DBG_INDEX_EXCEEDS_SIZE "Array Index is Greater than Array Size"
+#define DBG_DIM_LEQ_ZERO "Array Size must be greater than Zero"
+#define DBG_REDIM_LEQ_ZERO "Array Size must be greater than Zero"
+
+bool dbg_error_found = false;
+string dbg_error_message = "";
+
+
+void loadDebugData(string sym_file, string inc_file)
+{
+    fstream f(sym_file, fstream::in);
+
+    string f_line;
+
+    string type_str = "";
+    rcbasic_debug_vars tmp;
+
+    while(!f.eof())
+    {
+        getline(f, f_line);
+
+        type_str = f_line.substr(0, f_line.find_first_of(" "));
+
+        if(type_str.compare("N")==0)
+        {
+            tmp.type = RCBASIC_DEBUG_VAR_NUM;
+        }
+        else if(type_str.compare("AN")==0)
+        {
+            tmp.type = RCBASIC_DEBUG_VAR_ARR_NUM;
+        }
+        else if(type_str.compare("BN")==0)
+        {
+            tmp.type = RCBASIC_DEBUG_VAR_BYREF_NUM;
+        }
+        else if(type_str.compare("S")==0)
+        {
+            tmp.type = RCBASIC_DEBUG_VAR_STR;
+        }
+        else if(type_str.compare("AS")==0)
+        {
+            tmp.type = RCBASIC_DEBUG_VAR_ARR_STR;
+        }
+        else if(type_str.compare("BS")==0)
+        {
+            tmp.type = RCBASIC_DEBUG_VAR_BYREF_STR;
+        }
+
+        f_line = f_line.substr(f_line.find_first_of(" ")+1);
+        tmp.scope = f_line.substr(0, f_line.find_first_of(" "));
+
+        f_line = f_line.substr(f_line.find_first_of(" ")+1);
+        tmp.name = f_line.substr(0, f_line.find_first_of(" "));
+
+        f_line = f_line.substr(f_line.find_first_of(" ")+1);
+        tmp.index = atoi(f_line.c_str());
+
+        switch(tmp.type)
+        {
+            case RCBASIC_DEBUG_VAR_NUM:
+            case RCBASIC_DEBUG_VAR_ARR_NUM:
+            case RCBASIC_DEBUG_VAR_BYREF_NUM:
+                num_var[tmp.index].dbg_var_index = dbg_vars.size();
+                num_var[tmp.index].is_debug_var = true;
+                break;
+            case RCBASIC_DEBUG_VAR_STR:
+            case RCBASIC_DEBUG_VAR_ARR_STR:
+            case RCBASIC_DEBUG_VAR_BYREF_STR:
+                str_var[tmp.index].dbg_var_index = dbg_vars.size();
+                str_var[tmp.index].is_debug_var = true;
+                break;
+        }
+
+        dbg_vars.push_back(tmp);
+    }
+
+    f.close();
+
+    f.open(inc_file, fstream::in);
+
+    while(!f.eof())
+    {
+        getline(f, f_line);
+        if(f_line.find_first_not_of(" ")!=string::npos)
+            dbg_files.push_back(f_line);
+    }
+
+    f.close();
+}
+
+string dbg_format_string(string dbg_str_val)
+{
+    string rtn = dbg_str_val;
+    rtn = rc_intern_replace(rtn, "\n", "\\n");
+    rtn = rc_intern_replace(rtn, "\r", "\\r");
+    rtn = rc_intern_replace(rtn, "\t", "\\t");
+    return rtn;
+}
+
+void output_debug_message()
+{
+    //cout << "output debug messages" << endl;
+    while(!rc_intern_fileExist("rcbasic_dbg.rt")){} //wait for client to generate this file so we know its done reading the previous output
+
+    while(rc_intern_fileExist("rcbasic_dbg.rt"))
+    {
+        rc_intern_fileDelete("rcbasic_dbg.rt"); //keep trying to delete file
+    }
+
+    fstream f("rcbasic.dbgm", fstream::out | fstream::trunc);
+
+    f << "SRC " << dbg_files[current_src_file] << endl;
+    f << "LN " << current_src_line << endl;
+
+    for(int i = 0; i < dbg_vars.size(); i++)
+    {
+        for(int usage = 0; usage < dbg_vars[i].usage_data.size(); usage++)
+        {
+            f << ((dbg_vars[i].type < RCBASIC_DEBUG_VAR_STR) ? "N" : "S") << " "
+              << i << " " << dbg_vars[i].usage_data[usage].type << " "
+              << (dbg_vars[i].usage_data[usage].is_error ? "E" : "G") << " "
+              << dbg_vars[i].usage_data[usage].dimensions << " "
+              << dbg_vars[i].usage_data[usage].dim[0] << " "
+              << dbg_vars[i].usage_data[usage].dim[1] << " "
+              << dbg_vars[i].usage_data[usage].dim[2] << " "
+              << ((dbg_vars[i].type < RCBASIC_DEBUG_VAR_STR) ? "VAL=" + rc_intern_str(dbg_vars[i].usage_data[usage].num_val) : "VAL=" + dbg_format_string(dbg_vars[i].usage_data[usage].str_val))
+              << endl;
+        }
+        dbg_vars[i].usage_data.clear();
+        //f << ((dbg_vars[i].type==0) ? " N " : " S ") << dbg_vars[i].name << " " << ((dbg_vars[i].type==0) ? num_var[dbg_vars[i].index].
+    }
+
+    if(dbg_error_found)
+    {
+        f << "E " << dbg_error_message << endl;
+    }
+
+    f.close();
+
+    f.open("rcbasic_dbg.cl", fstream::out); //generate this file to let the client know it has ownership
+    f.close();
+
+}
+
+#endif // RCBASIC_DEBUG
 
 //needed by internal functions so i am declaring it here
 void lval_151(int n1);
@@ -257,6 +470,10 @@ bool rcbasic_load(string filename)
         num_var[i].nid_value[0].value.resize(1);
         num_var[i].dimensions = 0;
         num_var[i].byref_offset = 0;
+
+        #ifdef RCBASIC_DEBUG
+        num_var[i].is_debug_var = false;
+        #endif // RCBASIC_DEBUG
     }
 
     str_var = new rc_strId[strID_count];
@@ -266,6 +483,10 @@ bool rcbasic_load(string filename)
         str_var[i].sid_value[0].value.resize(1);
         str_var[i].dimensions = 0;
         str_var[i].byref_offset = 0;
+
+        #ifdef RCBASIC_DEBUG
+        str_var[i].is_debug_var = false;
+        #endif // RCBASIC_DEBUG
     }
 
     segment = new unsigned char*[2];
@@ -338,6 +559,19 @@ double readDouble()
     return readdouble_val.f;
 }
 
+void dbg_1(uint32_t dbg_fn, uint64_t arg1, uint64_t arg2)
+{
+    output_debug_message();
+
+    switch(dbg_fn)
+    {
+        case 0:
+            current_src_file = arg1;
+            current_src_line = arg2;
+            break;
+    }
+}
+
 void mov_32(int n1, int n2)
 {
     vm_n[n1].value = vm_n[n2].value;
@@ -355,6 +589,18 @@ void mov_34(int n1, uint64_t nid)
     vm_n[n1].value = num_var[nid].nid_value[0].value[byref_offset];
     vm_n[n1].r = num_var[nid].nid_value;
     vm_n[n1].r_index = byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!num_var[nid].is_debug_var)
+        return;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = num_var[nid].dimensions;
+    tmp_stat.dim[0] = byref_offset;
+    tmp_stat.num_val = vm_n[n1].value;
+    dbg_vars[num_var[nid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
+
     //cout << "n" << n1 << " = " << vm_n[n1].value << endl;
 }
 
@@ -362,6 +608,18 @@ void mov_35(uint64_t nid, int n1)
 {
     int byref_offset = num_var[nid].byref_offset;
     num_var[nid].nid_value[0].value[byref_offset] = vm_n[n1].value;
+
+    #ifdef RCBASIC_DEBUG
+    if(!num_var[nid].is_debug_var)
+        return;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_SET;
+    tmp_stat.dimensions = num_var[nid].dimensions;
+    tmp_stat.dim[0] = byref_offset;
+    tmp_stat.num_val = vm_n[n1].value;
+    dbg_vars[num_var[nid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
+
     //cout << "n" << n1 << " = " << vm_n[n1].value << endl;
     //cout << "nvar[" << nid << "] = " << num_var[nid].nid_value[0].value[0] << endl;
 }
@@ -390,22 +648,68 @@ void movS_38(int s1, uint64_t sid)
     vm_s[s1].value = str_var[sid].sid_value[0].value[byref_offset];
     vm_s[s1].r = &str_var[sid].sid_value[0];
     vm_s[s1].r_index = byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!str_var[sid].is_debug_var)
+        return;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = str_var[sid].dimensions;
+    tmp_stat.dim[0] = byref_offset;
+    tmp_stat.str_val = vm_s[s1].value;
+    dbg_vars[str_var[sid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void movS_39(uint64_t sid, int s1)
 {
     int byref_offset = str_var[sid].byref_offset;
     str_var[sid].sid_value[0].value[byref_offset] = vm_s[s1].value;
+
+    #ifdef RCBASIC_DEBUG
+    if(!str_var[sid].is_debug_var)
+        return;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_SET;
+    tmp_stat.dimensions = str_var[sid].dimensions;
+    tmp_stat.dim[0] = byref_offset;
+    tmp_stat.str_val = vm_s[s1].value;
+    dbg_vars[str_var[sid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void mov_r_40(int n1, int n2)
 {
     vm_n[n1].r[0].value[ vm_n[n1].r_index ] = vm_n[n2].value;
+
+    #ifdef RCBASIC_DEBUG
+    for(int i = 0; i < dbg_vars[vm_n[n1].dbg_var_index].usage_data.size(); i++)
+    {
+        if(dbg_vars[vm_n[n1].dbg_var_index].usage_data[i].reg==n1)
+        {
+            dbg_vars[vm_n[n1].dbg_var_index].usage_data[i].type = RCBASIC_DEBUG_ACCESS_SET;
+            dbg_vars[vm_n[n1].dbg_var_index].usage_data[i].str_val = vm_n[n2].value;
+            break;
+        }
+    }
+    #endif // RCBASIC_DEBUG
 }
 
 void mov_rS_41(int s1, int s2)
 {
     vm_s[s1].r[0].value[ vm_s[s1].r_index ] = vm_s[s2].value;
+
+    #ifdef RCBASIC_DEBUG
+    for(int i = 0; i < dbg_vars[vm_s[s1].dbg_var_index].usage_data.size(); i++)
+    {
+        if(dbg_vars[vm_s[s1].dbg_var_index].usage_data[i].reg==s1)
+        {
+            dbg_vars[vm_s[s1].dbg_var_index].usage_data[i].type = RCBASIC_DEBUG_ACCESS_SET;
+            dbg_vars[vm_s[s1].dbg_var_index].usage_data[i].str_val = vm_s[s2].value;
+            break;
+        }
+    }
+    #endif // RCBASIC_DEBUG
 }
 
 void mov_type_42()
@@ -434,6 +738,14 @@ void mul_46(int n1, int n2)
 
 void div_47(int n1, int n2)
 {
+    #ifdef RCBASIC_DEBUG
+    if(vm_n[n2].value == 0)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_DIV_BY_ZERO;
+        return;
+    }
+    #endif // RCBASIC_DEBUG
     vm_n[n1].value /= vm_n[n2].value;
 }
 
@@ -589,6 +901,37 @@ void obj_num_73(uint64_t nid)
     num_object.obj_val = &num_var[nid].nid_value[0];
     int byref_offset = num_var[nid].byref_offset;
     num_object.index = byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!num_var[nid].is_debug_var)
+        return;
+
+    uint64_t num_var_size = 1;
+    switch(num_var[nid].dimensions)
+    {
+        case 3:
+            num_var_size *= num_var[nid].dim[2];
+        case 2:
+            num_var_size *= num_var[nid].dim[1];
+        case 1:
+            num_var_size *= num_var[nid].dim[0];
+    }
+
+    num_object.nid = nid;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = num_var[nid].dimensions;
+
+    if(num_object.index >= num_var_size)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+        tmp_stat.is_error = true;
+    }
+    else
+        tmp_stat.num_val = num_var[nid].nid_value[0].value[num_object.index];
+    dbg_vars[num_var[nid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_num1_74(uint64_t nid, int n1)
@@ -597,6 +940,38 @@ void obj_num1_74(uint64_t nid, int n1)
     int byref_offset = num_var[nid].byref_offset;
     num_object.index = (uint64_t)vm_n[n1].value + byref_offset;
     //cout << "obj_num index = " << num_object.index << endl;
+
+    #ifdef RCBASIC_DEBUG
+    if(!num_var[nid].is_debug_var)
+        return;
+
+    uint64_t num_var_size = 1;
+    switch(num_var[nid].dimensions)
+    {
+        case 3:
+            num_var_size *= num_var[nid].dim[2];
+        case 2:
+            num_var_size *= num_var[nid].dim[1];
+        case 1:
+            num_var_size *= num_var[nid].dim[0];
+    }
+
+    num_object.nid = nid;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = num_var[nid].dimensions;
+    tmp_stat.dim[0] = vm_n[n1].value;
+
+    if(num_object.index >= num_var_size)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+        tmp_stat.is_error = true;
+    }
+    else
+        tmp_stat.num_val = num_var[nid].nid_value[0].value[num_object.index];
+    dbg_vars[num_var[nid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_num2_75(uint64_t nid, int n1, int n2)
@@ -605,6 +980,39 @@ void obj_num2_75(uint64_t nid, int n1, int n2)
     num_object.obj_val = &num_var[nid].nid_value[0];
     int byref_offset = num_var[nid].byref_offset;
     num_object.index = arr_pos + byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!num_var[nid].is_debug_var)
+        return;
+
+    uint64_t num_var_size = 1;
+    switch(num_var[nid].dimensions)
+    {
+        case 3:
+            num_var_size *= num_var[nid].dim[2];
+        case 2:
+            num_var_size *= num_var[nid].dim[1];
+        case 1:
+            num_var_size *= num_var[nid].dim[0];
+    }
+
+    num_object.nid = nid;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = num_var[nid].dimensions;
+    tmp_stat.dim[0] = vm_n[n1].value;
+    tmp_stat.dim[1] = vm_n[n2].value;
+
+    if(num_object.index >= num_var_size)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+        tmp_stat.is_error = true;
+    }
+    else
+        tmp_stat.num_val = num_var[nid].nid_value[0].value[num_object.index];
+    dbg_vars[num_var[nid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_num3_76(uint64_t nid, int n1, int n2, int n3)
@@ -613,6 +1021,40 @@ void obj_num3_76(uint64_t nid, int n1, int n2, int n3)
     num_object.obj_val = &num_var[nid].nid_value[0];
     int byref_offset = num_var[nid].byref_offset;
     num_object.index = arr_pos + byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!num_var[nid].is_debug_var)
+        return;
+
+    uint64_t num_var_size = 1;
+    switch(num_var[nid].dimensions)
+    {
+        case 3:
+            num_var_size *= num_var[nid].dim[2];
+        case 2:
+            num_var_size *= num_var[nid].dim[1];
+        case 1:
+            num_var_size *= num_var[nid].dim[0];
+    }
+
+    num_object.nid = nid;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = num_var[nid].dimensions;
+    tmp_stat.dim[0] = vm_n[n1].value;
+    tmp_stat.dim[1] = vm_n[n2].value;
+    tmp_stat.dim[2] = vm_n[n3].value;
+
+    if(num_object.index >= num_var_size)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+        tmp_stat.is_error = true;
+    }
+    else
+        tmp_stat.num_val = num_var[nid].nid_value[0].value[num_object.index];
+    dbg_vars[num_var[nid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_str_77(uint64_t sid)
@@ -620,6 +1062,37 @@ void obj_str_77(uint64_t sid)
     str_object.obj_val = &str_var[sid].sid_value[0];
     int byref_offset = str_var[sid].byref_offset;
     str_object.index = byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!str_var[sid].is_debug_var)
+        return;
+
+     uint64_t str_var_size = 1;
+    switch(str_var[sid].dimensions)
+    {
+        case 3:
+            str_var_size *= str_var[sid].dim[2];
+        case 2:
+            str_var_size *= str_var[sid].dim[1];
+        case 1:
+            str_var_size *= str_var[sid].dim[0];
+    }
+
+    str_object.sid = sid;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = str_var[sid].dimensions;
+    tmp_stat.dim[0] = byref_offset;
+    if(str_object.index >= str_var_size)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+        tmp_stat.is_error = true;
+    }
+    else
+        tmp_stat.str_val = str_var[sid].sid_value[0].value[str_object.index];
+    dbg_vars[str_var[sid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_str1_78(uint64_t sid, int n1)
@@ -627,6 +1100,36 @@ void obj_str1_78(uint64_t sid, int n1)
     str_object.obj_val = &str_var[sid].sid_value[0];
     int byref_offset = str_var[sid].byref_offset;
     str_object.index = (uint64_t)vm_n[n1].value + byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!str_var[sid].is_debug_var)
+        return;
+
+    uint64_t str_var_size = 1;
+    switch(str_var[sid].dimensions)
+    {
+        case 3:
+            str_var_size *= str_var[sid].dim[2];
+        case 2:
+            str_var_size *= str_var[sid].dim[1];
+        case 1:
+            str_var_size *= str_var[sid].dim[0];
+    }
+    str_object.sid = sid;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = str_var[sid].dimensions;
+    tmp_stat.dim[0] = vm_n[n1].value;
+    if(str_object.index >= str_var_size)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+        tmp_stat.is_error = true;
+    }
+    else
+        tmp_stat.str_val = str_var[sid].sid_value[0].value[str_object.index];
+    dbg_vars[str_var[sid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_str2_79(uint64_t sid, int n1, int n2)
@@ -635,6 +1138,39 @@ void obj_str2_79(uint64_t sid, int n1, int n2)
     str_object.obj_val = &str_var[sid].sid_value[0];
     int byref_offset = str_var[sid].byref_offset;
     str_object.index = arr_pos + byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!str_var[sid].is_debug_var)
+        return;
+
+    uint64_t str_var_size = 1;
+    switch(str_var[sid].dimensions)
+    {
+        case 3:
+            str_var_size *= str_var[sid].dim[2];
+        case 2:
+            str_var_size *= str_var[sid].dim[1];
+        case 1:
+            str_var_size *= str_var[sid].dim[0];
+    }
+
+    str_object.sid = sid;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = str_var[sid].dimensions;
+    tmp_stat.dim[0] = vm_n[n1].value;
+    tmp_stat.dim[1] = vm_n[n2].value;
+
+    if(str_object.index >= str_var_size)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+        tmp_stat.is_error = true;
+    }
+    else
+        tmp_stat.str_val = str_var[sid].sid_value[0].value[str_object.index];
+    dbg_vars[str_var[sid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_str3_80(uint64_t sid, int n1, int n2, int n3)
@@ -643,6 +1179,40 @@ void obj_str3_80(uint64_t sid, int n1, int n2, int n3)
     str_object.obj_val = &str_var[sid].sid_value[0];
     int byref_offset = str_var[sid].byref_offset;
     str_object.index = arr_pos + byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    if(!str_var[sid].is_debug_var)
+        return;
+
+    uint64_t str_var_size = 1;
+    switch(str_var[sid].dimensions)
+    {
+        case 3:
+            str_var_size *= str_var[sid].dim[2];
+        case 2:
+            str_var_size *= str_var[sid].dim[1];
+        case 1:
+            str_var_size *= str_var[sid].dim[0];
+    }
+
+    str_object.sid = sid;
+    rcbasic_debug_access_status tmp_stat;
+    tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
+    tmp_stat.dimensions = str_var[sid].dimensions;
+    tmp_stat.dim[0] = vm_n[n1].value;
+    tmp_stat.dim[1] = vm_n[n2].value;
+    tmp_stat.dim[2] = vm_n[n3].value;
+
+    if(str_object.index >= str_var_size)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+        tmp_stat.is_error = true;
+    }
+    else
+        tmp_stat.str_val = str_var[sid].sid_value[0].value[str_object.index];
+    dbg_vars[str_var[sid].dbg_var_index].usage_data.push_back(tmp_stat);
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_usr_81()
@@ -671,6 +1241,15 @@ void obj_get_85(int n1)
     //cout << "t2" << endl;
     vm_n[n1].r_index = num_object.index;
     //cout << "t3" << endl;
+
+    #ifdef RCBASIC_DEBUG
+    if(!num_var[num_object.nid].is_debug_var)
+        return;
+
+    int usage_size = dbg_vars[num_var[num_object.nid].dbg_var_index].usage_data.size();
+    dbg_vars[num_var[num_object.nid].dbg_var_index].usage_data[usage_size-1].reg = n1;
+    vm_n[n1].dbg_var_index = num_var[num_object.nid].dbg_var_index;
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_getS_86(int s1)
@@ -678,6 +1257,15 @@ void obj_getS_86(int s1)
     vm_s[s1].value = str_object.obj_val[0].value[str_object.index];
     vm_s[s1].r = str_object.obj_val;
     vm_s[s1].r_index = str_object.index;
+
+    #ifdef RCBASIC_DEBUG
+    if(!str_var[str_object.sid].is_debug_var)
+        return;
+
+    int usage_size = dbg_vars[str_var[str_object.sid].dbg_var_index].usage_data.size();
+    dbg_vars[str_var[str_object.sid].dbg_var_index].usage_data[usage_size-1].reg = s1;
+    vm_s[s1].dbg_var_index = str_var[str_object.sid].dbg_var_index;
+    #endif // RCBASIC_DEBUG
 }
 
 void obj_set_87(int n1)
@@ -710,6 +1298,14 @@ void dim_type3_93()
 
 void dim_num1_94(uint64_t nid, int n1)
 {
+    #ifdef RCBASIC_DEBUG
+        if(vm_n[n1].value <= 0)
+        {
+            dbg_error_found = true;
+            dbg_error_message = DBG_DIM_LEQ_ZERO;
+            return;
+        }
+    #endif // RCBASIC_DEBUG
     num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value);
     num_var[nid].dimensions = 1;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -719,6 +1315,14 @@ void dim_num1_94(uint64_t nid, int n1)
 
 void dim_num2_95(uint64_t nid, int n1, int n2)
 {
+    #ifdef RCBASIC_DEBUG
+        if(vm_n[n1].value <= 0 || vm_n[n2].value <= 0)
+        {
+            dbg_error_found = true;
+            dbg_error_message = DBG_DIM_LEQ_ZERO;
+            return;
+        }
+    #endif // RCBASIC_DEBUG
     num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value);
     num_var[nid].dimensions = 2;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -728,6 +1332,14 @@ void dim_num2_95(uint64_t nid, int n1, int n2)
 
 void dim_num3_96(uint64_t nid, int n1, int n2, int n3)
 {
+    #ifdef RCBASIC_DEBUG
+        if(vm_n[n1].value <= 0 || vm_n[n2].value <= 0 || vm_n[n3].value <= 0)
+        {
+            dbg_error_found = true;
+            dbg_error_message = DBG_DIM_LEQ_ZERO;
+            return;
+        }
+    #endif // RCBASIC_DEBUG
     num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
     num_var[nid].dimensions = 3;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -737,6 +1349,14 @@ void dim_num3_96(uint64_t nid, int n1, int n2, int n3)
 
 void dim_str1_97(uint64_t sid, int n1)
 {
+    #ifdef RCBASIC_DEBUG
+        if(vm_n[n1].value <= 0)
+        {
+            dbg_error_found = true;
+            dbg_error_message = DBG_DIM_LEQ_ZERO;
+            return;
+        }
+    #endif // RCBASIC_DEBUG
     str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value);
     str_var[sid].dimensions = 1;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -746,6 +1366,14 @@ void dim_str1_97(uint64_t sid, int n1)
 
 void dim_str2_98(uint64_t sid, int n1, int n2)
 {
+    #ifdef RCBASIC_DEBUG
+        if(vm_n[n1].value <= 0 || vm_n[n2].value <= 0)
+        {
+            dbg_error_found = true;
+            dbg_error_message = DBG_DIM_LEQ_ZERO;
+            return;
+        }
+    #endif // RCBASIC_DEBUG
     str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value);
     str_var[sid].dimensions = 2;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -755,6 +1383,14 @@ void dim_str2_98(uint64_t sid, int n1, int n2)
 
 void dim_str3_99(uint64_t sid, int n1, int n2, int n3)
 {
+    #ifdef RCBASIC_DEBUG
+        if(vm_n[n1].value <= 0 || vm_n[n2].value <= 0 || vm_n[n3].value <= 0)
+        {
+            dbg_error_found = true;
+            dbg_error_message = DBG_DIM_LEQ_ZERO;
+            return;
+        }
+    #endif // RCBASIC_DEBUG
     str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
     str_var[sid].dimensions = 3;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -922,6 +1558,49 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
     }
 
     int byref_offset = num_var[nid].byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+        uint64_t nv_size = 1;
+        uint64_t dbg_index = num_var[nid].dbg_var_index;
+        rcbasic_debug_access_status tmp_stat;
+
+        switch(num_var[nid].dimensions)
+        {
+            case 3: nv_size *= num_var[nid].dim[2];
+            case 2: nv_size *= num_var[nid].dim[1];
+            case 1: nv_size *= num_var[nid].dim[0];
+            break;
+        }
+
+        if(num_var[nid].is_debug_var)
+        {
+            tmp_stat.dimensions = num_var[nid].dimensions;
+            tmp_stat.dim[0] = num_var[nid].dim[0];
+            tmp_stat.dim[1] = num_var[nid].dim[1];
+            tmp_stat.dim[2] = num_var[nid].dim[2];
+            tmp_stat.num_val = vm_n[n1].value;
+            tmp_stat.reg = -1;
+            tmp_stat.type = RCBASIC_DEBUG_ACCESS_SET;
+        }
+
+        if((byref_offset + for_loop.counter_offset) >= nv_size)
+        {
+            dbg_error_found = true;
+            dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+
+            if(num_var[nid].is_debug_var)
+                tmp_stat.is_error = true;
+
+            dbg_vars[dbg_index].usage_data.push_back(tmp_stat);
+
+            return;
+        }
+        else
+        {
+            dbg_vars[dbg_index].usage_data.push_back(tmp_stat);
+        }
+    #endif // RCBASIC_DEBUG
+
     num_var[nid].nid_value[0].value[byref_offset + for_loop.counter_offset] = vm_n[n1].value;
 
 
@@ -973,12 +1652,39 @@ void next_118(uint64_t f_addr)
     {
         loop_stack.top().counter[0].nid_value[0].value[byref_offset] += loop_stack.top().f_step;
         current_address = f_addr;
+
+        #ifdef RCBASIC_DEBUG
+        if(loop_stack.top().counter[0].is_debug_var)
+        {
+            rcbasic_debug_access_status tmp_stat;
+            tmp_stat.dimensions = loop_stack.top().counter[0].dimensions;
+            tmp_stat.dim[0] = loop_stack.top().counter[0].dim[0];
+            tmp_stat.dim[1] = loop_stack.top().counter[0].dim[1];
+            tmp_stat.dim[2] = loop_stack.top().counter[0].dim[2];
+            tmp_stat.type = RCBASIC_DEBUG_ACCESS_SET;
+            tmp_stat.num_val = loop_stack.top().counter[0].nid_value[0].value[byref_offset];
+            dbg_vars[loop_stack.top().counter[0].dbg_var_index].usage_data.push_back(tmp_stat);
+        }
+        #endif // RCBASIC_DEBUG
     }
     else if( (!loop_stack.top().isNegative) && next_step >= loop_stack.top().counter[0].nid_value[0].value[byref_offset] && next_step <= loop_stack.top().f_end)
     {
         loop_stack.top().counter[0].nid_value[0].value[byref_offset] += loop_stack.top().f_step;
-        //cout << "current counter = " << loop_stack.top().counter[0].value[0] << "       step = " << loop_stack.top().f_step << endl;
         current_address = f_addr;
+
+        #ifdef RCBASIC_DEBUG
+        if(loop_stack.top().counter[0].is_debug_var)
+        {
+            rcbasic_debug_access_status tmp_stat;
+            tmp_stat.dimensions = loop_stack.top().counter[0].dimensions;
+            tmp_stat.dim[0] = loop_stack.top().counter[0].dim[0];
+            tmp_stat.dim[1] = loop_stack.top().counter[0].dim[1];
+            tmp_stat.dim[2] = loop_stack.top().counter[0].dim[2];
+            tmp_stat.type = RCBASIC_DEBUG_ACCESS_SET;
+            tmp_stat.num_val = loop_stack.top().counter[0].nid_value[0].value[byref_offset];
+            dbg_vars[loop_stack.top().counter[0].dbg_var_index].usage_data.push_back(tmp_stat);
+        }
+        #endif // RCBASIC_DEBUG
     }
     else
     {
@@ -2647,6 +3353,14 @@ void presetS_139(uint64_t sid)
 
 void redim_140(uint64_t nid, int n1)
 {
+    #ifdef RCBASIC_DEBUG
+    if(vm_n[n1].value <= 0)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_REDIM_LEQ_ZERO;
+        return;
+    }
+    #endif // RCBASIC_DEBUG
     num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value);
     num_var[nid].dimensions = 1;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -2656,6 +3370,14 @@ void redim_140(uint64_t nid, int n1)
 
 void redim_141(uint64_t nid, int n1, int n2)
 {
+    #ifdef RCBASIC_DEBUG
+    if(vm_n[n1].value <= 0 || vm_n[n2].value <= 0)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_REDIM_LEQ_ZERO;
+        return;
+    }
+    #endif // RCBASIC_DEBUG
     num_var[nid].nid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value );
     num_var[nid].dimensions = 2;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -2665,6 +3387,14 @@ void redim_141(uint64_t nid, int n1, int n2)
 
 void redim_142(uint64_t nid, int n1, int n2, int n3)
 {
+    #ifdef RCBASIC_DEBUG
+    if(vm_n[n1].value <= 0 || vm_n[n2].value <= 0 || vm_n[n3].value <= 0)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_REDIM_LEQ_ZERO;
+        return;
+    }
+    #endif // RCBASIC_DEBUG
     num_var[nid].nid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
     num_var[nid].dimensions = 3;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -2674,6 +3404,14 @@ void redim_142(uint64_t nid, int n1, int n2, int n3)
 
 void redimS_143(uint64_t sid, int n1)
 {
+    #ifdef RCBASIC_DEBUG
+    if(vm_n[n1].value <= 0)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_REDIM_LEQ_ZERO;
+        return;
+    }
+    #endif // RCBASIC_DEBUG
     str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value);
     str_var[sid].dimensions = 1;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -2683,6 +3421,14 @@ void redimS_143(uint64_t sid, int n1)
 
 void redimS_144(uint64_t sid, int n1, int n2)
 {
+    #ifdef RCBASIC_DEBUG
+    if(vm_n[n1].value <= 0 || vm_n[n2].value <= 0)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_REDIM_LEQ_ZERO;
+        return;
+    }
+    #endif // RCBASIC_DEBUG
     str_var[sid].sid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value );
     str_var[sid].dimensions = 2;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -2692,6 +3438,14 @@ void redimS_144(uint64_t sid, int n1, int n2)
 
 void redimS_145(uint64_t sid, int n1, int n2, int n3)
 {
+    #ifdef RCBASIC_DEBUG
+    if(vm_n[n1].value <= 0 || vm_n[n2].value <= 0 || vm_n[n3].value <= 0)
+    {
+        dbg_error_found = true;
+        dbg_error_message = DBG_REDIM_LEQ_ZERO;
+        return;
+    }
+    #endif // RCBASIC_DEBUG
     str_var[sid].sid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
     str_var[sid].dimensions = 3;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
@@ -2763,6 +3517,14 @@ bool rcbasic_run()
     bool end_of_program = false;
     while(!end_of_program)
     {
+        #ifdef RCBASIC_DEBUG
+        if(dbg_error_found)
+        {
+            output_debug_message();
+            break;
+        }
+        #endif // RCBASIC_DEBUG
+
         rcbasic_cmd = segment[current_segment][current_address];
         current_address++;
 
@@ -2775,6 +3537,12 @@ bool rcbasic_run()
             case 0:
                 end_of_program = true;
                 rcbasic_exit_code = 0;
+                break;
+            case 1:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                dbg_1(i[0], i[1], i[2]);
                 break;
             case 32:
                 i[0] = readInt();
@@ -3413,6 +4181,10 @@ int main(int argc, char * argv[])
         return 0;
     }
 
+    #ifdef RCBASIC_DEBUG
+    rc_filename = "debug.cbc";
+    #endif // RCBASIC_DEBUG
+
     //DEBUG START
     //rc_filename = "/home/n00b/Projects/RCBASIC3/rcbasic_build/tst.cbc";
     //DEBUG END
@@ -3458,6 +4230,10 @@ int main(int argc, char * argv[])
 
     if(rcbasic_load(rc_filename))
     {
+        #ifdef RCBASIC_DEBUG
+        loadDebugData("rcbasic.dbgs", "rcbasic.dbgi");
+        #endif // RCBASIC_DEBUG
+
         //cout << "n_count = " << n_count << endl;
         //cout << "s_count = " << s_count << endl;
         //cout << "n_stack_size = " << n_stack_size << endl;
