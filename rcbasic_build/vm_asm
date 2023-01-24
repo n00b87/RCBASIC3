@@ -13,6 +13,7 @@ r# = starting character r followed by # (# is a number denoting the reference re
 ---------------------------------------
 
 0  - end
+1  - dbg uint uint uint  // arguments are (debug_function, file_index, line_number)
 
 ---------------------------------------
 |MOVING DATA

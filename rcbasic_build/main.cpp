@@ -13,12 +13,14 @@
 
 using namespace std;
 
+
 struct rc_src
 {
     string filename = "";
     uint64_t line_number = 1;
     uint64_t line_position = 0;
     bool eof_reached = false;
+    uint64_t dbg_inc_index = 0;
 };
 
 stack<rc_src> rcbasic_program;
@@ -28,6 +30,8 @@ vector<string> inc_once;
 
 bool rcbasic_build_debug = false;
 uint64_t rcbasic_user_var_start = 0;
+
+vector<string> inc_files;
 
 void rcbasic_init()
 {
@@ -83,10 +87,12 @@ bool rcbasic_loadProgram(string src_file)
     rc_program.filename = src_file;
     rc_program.line_number = 1;
     rc_program.line_position;
+    rc_program.dbg_inc_index = inc_files.size();
     rcbasic_file.open(src_file.c_str(), fstream::in);
     if(rcbasic_file.is_open())
     {
         rcbasic_program.push(rc_program);
+        inc_files.push_back(src_file);
         return true;
     }
     return false;
@@ -138,6 +144,7 @@ bool rc_preprocessor()
             //cout << "\nDEBUG INCLUDE ABS_PATH:" << inc_file.filename << endl << endl;
             inc_file.line_number = 0;
             inc_file.line_position = 0;
+            inc_file.dbg_inc_index = inc_files.size();
             rcbasic_file.close();
             rcbasic_file.open(inc_file.filename.c_str(), fstream::in);
             if(!rcbasic_file.is_open())
@@ -150,6 +157,7 @@ bool rc_preprocessor()
             rcbasic_program.top().line_number++;
 
             rcbasic_program.push(inc_file);
+            inc_files.push_back(inc_file.filename);
             tmp_token.clear();
             return true;
         }
@@ -751,7 +759,7 @@ bool rcbasic_compile()
     {
         if(rcbasic_build_debug)
         {
-            vm_asm.push_back("dbg 0 " + rc_uint64ToString(rcbasic_program.top().line_number));
+            vm_asm.push_back("dbg uint=0 uint=" + rc_uint64ToString(rcbasic_program.top().dbg_inc_index) + " uint=" + rc_uint64ToString(rcbasic_program.top().line_number));
         }
         //cout << "line " << rcbasic_program.top().line_number << ": " << rcbasic_file.tellg() << " -> " << line << endl;
         if(!rcbasic_program.top().eof_reached)
@@ -782,6 +790,10 @@ bool rcbasic_compile()
 //        }
     }
 
+    if(rcbasic_build_debug)
+    {
+        vm_asm.push_back("dbg uint=0 uint=0 uint=0"); //I just need to call this at the end so it will output the last line messages
+    }
     vm_asm.push_back("end");
 
     f.open(rc_asm_file.c_str(), fstream::app);
@@ -925,23 +937,40 @@ void rcbasic_dev(string dev_input_file)
 
 void rcbasic_output_debug_info()
 {
-    fstream f("rcbasic.dbg.sym", fstream::out | fstream::trunc);
+    fstream f("rcbasic.dbgs", fstream::out | fstream::trunc);
 
     for(int i = rcbasic_user_var_start; i < id.size(); i++)
     {
         switch(id[i].type)
         {
             case ID_TYPE_NUM:
+                f << "N " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
             case ID_TYPE_ARR_NUM:
+                f << "AN " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
             case ID_TYPE_BYREF_NUM:
-                f << "N " << id[i].name << " " << id[i].vec_pos << endl;
+                f << "BN " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
                 break;
             case ID_TYPE_STR:
+                f << "S " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
             case ID_TYPE_ARR_STR:
+                f << "AS " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
             case ID_TYPE_BYREF_STR:
-                f << "S " << id[i].name << " " << id[i].vec_pos << endl;
+                f << "BS " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
                 break;
         }
+    }
+
+    f.close();
+
+    f.open("rcbasic.dbgi", fstream::out | fstream::trunc);
+
+    for(int i = 0; i < inc_files.size(); i++)
+    {
+        f << inc_files[i] << "\n";
     }
 
     f.close();
@@ -967,6 +996,9 @@ int main(int argc, char * argv[])
     {
         cmd_arg = (string)argv[i];
 
+        if(cmd_arg.substr(0,1).compare("-") != 0)
+            rc_filename = cmd_arg;
+
         if(cmd_arg.compare("--debug")==0)
         {
             cout << "DEBUG MODE" << endl;
@@ -984,9 +1016,15 @@ int main(int argc, char * argv[])
 
     cout << "Source: " << rc_filename << endl;
 
-    string cbc_file = rc_filename.substr(0, rc_filename.find_last_of(".")) + ".cbc";
+    string cbc_file = rcbasic_build_debug ? "debug.cbc" : rc_filename.substr(0, rc_filename.find_last_of(".")) + ".cbc";
     if(is_file_exist(cbc_file.c_str()))
         remove(cbc_file.c_str());
+
+    if(is_file_exist("rcbasic.dbgs"))
+        remove("rcbasic.dbgs");
+
+    if(is_file_exist("rcbasic.dbgi"))
+        remove("rcbasic.dbgi");
 
     if(rc_filename.compare("")==0)
         return 0;
@@ -1080,7 +1118,7 @@ int main(int argc, char * argv[])
             f << vm_asm.label[i].label_name << " " << vm_asm.label[i].label_address << " " << vm_asm.label[i].label_segment << endl;
         f.close();
 
-        rc_cbc_assembler::rc_assemble(cbc_file);
+        rc_cbc_assembler::rc_assemble(cbc_file, false);
     }
     else
     {
