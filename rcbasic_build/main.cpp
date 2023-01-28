@@ -1118,7 +1118,7 @@ int main(int argc, char * argv[])
             f << vm_asm.label[i].label_name << " " << vm_asm.label[i].label_address << " " << vm_asm.label[i].label_segment << endl;
         f.close();
 
-        rc_cbc_assembler::rc_assemble(cbc_file, false);
+        rc_cbc_assembler::rc_assemble(cbc_file, true);
     }
     else
     {

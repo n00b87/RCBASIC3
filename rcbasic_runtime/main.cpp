@@ -1,3 +1,5 @@
+#define RCBASIC_DEBUG 1
+
 #include "rc_os_defines.h"
 
 #ifdef RC_WEB
@@ -49,8 +51,6 @@
 #include "rc_media.h"
 
 using namespace std;
-
-#define RCBASIC_DEBUG 1
 
 #define LESS_FLAG 0
 #define LESS_EQUAL_FLAG 1
@@ -136,6 +136,9 @@ struct rc_loop
     double f_step;
     bool isNegative;
     uint64_t counter_offset;
+    #ifdef RCBASIC_DEBUG
+    uint64_t counter_dim[3];
+    #endif // RCBASIC_DEBUG
 };
 
 uint64_t for_offset_index[3];
@@ -365,12 +368,26 @@ string dbg_format_string(string dbg_str_val)
 void output_debug_message()
 {
     //cout << "output debug messages" << endl;
-    while(!rc_intern_fileExist("rcbasic_dbg.rt")){} //wait for client to generate this file so we know its done reading the previous output
 
-    while(rc_intern_fileExist("rcbasic_dbg.rt"))
+    if(rc_intern_fileExist("rcbasic_dbg.sp") && (!dbg_error_found))
     {
-        rc_intern_fileDelete("rcbasic_dbg.rt"); //keep trying to delete file
+        if(rc_intern_fileExist("rcbasic.dbgm"))
+            rc_intern_fileDelete("rcbasic.dbgm");
+
+        if(rc_intern_fileExist("rcbasic_dbg.rt"))
+        {
+            while(rc_intern_fileExist("rcbasic_dbg.rt"))
+            {
+                rc_intern_fileDelete("rcbasic_dbg.rt"); //keep trying to delete file
+            }
+
+            fstream f("rcbasic_dbg.cl", fstream::out); //generate this file to let the client know it has ownership
+            f.close();
+        }
+        dbg_vars.clear();
+        return;
     }
+
 
     fstream f("rcbasic.dbgm", fstream::out | fstream::trunc);
 
@@ -402,8 +419,17 @@ void output_debug_message()
 
     f.close();
 
+
+
     f.open("rcbasic_dbg.cl", fstream::out); //generate this file to let the client know it has ownership
     f.close();
+
+    while(!rc_intern_fileExist("rcbasic_dbg.rt")){} //wait for client to generate this file so we know its done reading the previous output
+
+    while(rc_intern_fileExist("rcbasic_dbg.rt"))
+    {
+        rc_intern_fileDelete("rcbasic_dbg.rt"); //keep trying to delete file
+    }
 
 }
 
@@ -922,7 +948,7 @@ void obj_num_73(uint64_t nid)
     tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
     tmp_stat.dimensions = num_var[nid].dimensions;
 
-    if(num_object.index >= num_var_size)
+    if(num_object.index >= num_var_size && dbg_vars[num_var[nid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_NUM)
     {
         dbg_error_found = true;
         dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
@@ -962,7 +988,7 @@ void obj_num1_74(uint64_t nid, int n1)
     tmp_stat.dimensions = num_var[nid].dimensions;
     tmp_stat.dim[0] = vm_n[n1].value;
 
-    if(num_object.index >= num_var_size)
+    if(num_object.index >= num_var_size && dbg_vars[num_var[nid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_NUM)
     {
         dbg_error_found = true;
         dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
@@ -1003,7 +1029,7 @@ void obj_num2_75(uint64_t nid, int n1, int n2)
     tmp_stat.dim[0] = vm_n[n1].value;
     tmp_stat.dim[1] = vm_n[n2].value;
 
-    if(num_object.index >= num_var_size)
+    if(num_object.index >= num_var_size && dbg_vars[num_var[nid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_NUM)
     {
         dbg_error_found = true;
         dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
@@ -1045,7 +1071,7 @@ void obj_num3_76(uint64_t nid, int n1, int n2, int n3)
     tmp_stat.dim[1] = vm_n[n2].value;
     tmp_stat.dim[2] = vm_n[n3].value;
 
-    if(num_object.index >= num_var_size)
+    if(num_object.index >= num_var_size && dbg_vars[num_var[nid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_NUM)
     {
         dbg_error_found = true;
         dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
@@ -1083,7 +1109,7 @@ void obj_str_77(uint64_t sid)
     tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
     tmp_stat.dimensions = str_var[sid].dimensions;
     tmp_stat.dim[0] = byref_offset;
-    if(str_object.index >= str_var_size)
+    if(str_object.index >= str_var_size && dbg_vars[str_var[sid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_STR)
     {
         dbg_error_found = true;
         dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
@@ -1120,7 +1146,7 @@ void obj_str1_78(uint64_t sid, int n1)
     tmp_stat.type = RCBASIC_DEBUG_ACCESS_GET;
     tmp_stat.dimensions = str_var[sid].dimensions;
     tmp_stat.dim[0] = vm_n[n1].value;
-    if(str_object.index >= str_var_size)
+    if(str_object.index >= str_var_size && dbg_vars[str_var[sid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_STR)
     {
         dbg_error_found = true;
         dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
@@ -1161,7 +1187,7 @@ void obj_str2_79(uint64_t sid, int n1, int n2)
     tmp_stat.dim[0] = vm_n[n1].value;
     tmp_stat.dim[1] = vm_n[n2].value;
 
-    if(str_object.index >= str_var_size)
+    if(str_object.index >= str_var_size && dbg_vars[str_var[sid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_STR)
     {
         dbg_error_found = true;
         dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
@@ -1203,7 +1229,7 @@ void obj_str3_80(uint64_t sid, int n1, int n2, int n3)
     tmp_stat.dim[1] = vm_n[n2].value;
     tmp_stat.dim[2] = vm_n[n3].value;
 
-    if(str_object.index >= str_var_size)
+    if(str_object.index >= str_var_size && dbg_vars[str_var[sid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_STR)
     {
         dbg_error_found = true;
         dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
@@ -1563,6 +1589,9 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
         uint64_t nv_size = 1;
         uint64_t dbg_index = num_var[nid].dbg_var_index;
         rcbasic_debug_access_status tmp_stat;
+        for_loop.counter_dim[0] = for_offset_index[0];
+        for_loop.counter_dim[1] = for_offset_index[1];
+        for_loop.counter_dim[2] = for_offset_index[2];
 
         switch(num_var[nid].dimensions)
         {
@@ -1575,25 +1604,28 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
         if(num_var[nid].is_debug_var)
         {
             tmp_stat.dimensions = num_var[nid].dimensions;
-            tmp_stat.dim[0] = num_var[nid].dim[0];
-            tmp_stat.dim[1] = num_var[nid].dim[1];
-            tmp_stat.dim[2] = num_var[nid].dim[2];
+            tmp_stat.dim[0] = for_offset_index[0];
+            tmp_stat.dim[1] = for_offset_index[1];
+            tmp_stat.dim[2] = for_offset_index[2];
             tmp_stat.num_val = vm_n[n1].value;
             tmp_stat.reg = -1;
             tmp_stat.type = RCBASIC_DEBUG_ACCESS_SET;
         }
 
-        if((byref_offset + for_loop.counter_offset) >= nv_size)
+        if((byref_offset + for_loop.counter_offset) >= nv_size && num_var[nid].is_debug_var)
         {
-            dbg_error_found = true;
-            dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
+            if(dbg_vars[num_var[nid].dbg_var_index].type != RCBASIC_DEBUG_VAR_BYREF_NUM)
+            {
+                dbg_error_found = true;
+                dbg_error_message = DBG_INDEX_EXCEEDS_SIZE;
 
-            if(num_var[nid].is_debug_var)
-                tmp_stat.is_error = true;
+                if(num_var[nid].is_debug_var)
+                    tmp_stat.is_error = true;
 
-            dbg_vars[dbg_index].usage_data.push_back(tmp_stat);
+                dbg_vars[dbg_index].usage_data.push_back(tmp_stat);
 
-            return;
+                return;
+            }
         }
         else
         {
@@ -1658,9 +1690,9 @@ void next_118(uint64_t f_addr)
         {
             rcbasic_debug_access_status tmp_stat;
             tmp_stat.dimensions = loop_stack.top().counter[0].dimensions;
-            tmp_stat.dim[0] = loop_stack.top().counter[0].dim[0];
-            tmp_stat.dim[1] = loop_stack.top().counter[0].dim[1];
-            tmp_stat.dim[2] = loop_stack.top().counter[0].dim[2];
+            tmp_stat.dim[0] = loop_stack.top().counter_dim[0];
+            tmp_stat.dim[1] = loop_stack.top().counter_dim[1];
+            tmp_stat.dim[2] = loop_stack.top().counter_dim[2];
             tmp_stat.type = RCBASIC_DEBUG_ACCESS_SET;
             tmp_stat.num_val = loop_stack.top().counter[0].nid_value[0].value[byref_offset];
             dbg_vars[loop_stack.top().counter[0].dbg_var_index].usage_data.push_back(tmp_stat);
@@ -1677,9 +1709,9 @@ void next_118(uint64_t f_addr)
         {
             rcbasic_debug_access_status tmp_stat;
             tmp_stat.dimensions = loop_stack.top().counter[0].dimensions;
-            tmp_stat.dim[0] = loop_stack.top().counter[0].dim[0];
-            tmp_stat.dim[1] = loop_stack.top().counter[0].dim[1];
-            tmp_stat.dim[2] = loop_stack.top().counter[0].dim[2];
+            tmp_stat.dim[0] = loop_stack.top().counter_dim[0];
+            tmp_stat.dim[1] = loop_stack.top().counter_dim[1];
+            tmp_stat.dim[2] = loop_stack.top().counter_dim[2];
             tmp_stat.type = RCBASIC_DEBUG_ACCESS_SET;
             tmp_stat.num_val = loop_stack.top().counter[0].nid_value[0].value[byref_offset];
             dbg_vars[loop_stack.top().counter[0].dbg_var_index].usage_data.push_back(tmp_stat);

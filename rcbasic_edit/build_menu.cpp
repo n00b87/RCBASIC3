@@ -4,6 +4,7 @@
 #include <wx/txtstrm.h>
 #include <wx/utils.h>
 
+#include "rc_debugger_dialog.h"
 
 void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
 {
@@ -25,6 +26,7 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
     build_process = NULL;
 
     wxFileName main_fname = build_run_project->getMainSource();
+    wxFileName dbg_fname = build_run_project->getMainSource();
 
     bool isCurrentFileBuild = (build_run_project == current_file_project);
 
@@ -34,11 +36,16 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
 
     main_fname.SetExt(_("cbc"));
     main_fname.MakeAbsolute();
-    if(!main_fname.Exists())
+
+    dbg_fname.SetFullName(_("debug.cbc"));
+    dbg_fname.MakeAbsolute();
+
+    if( (!main_fname.Exists()) && (!dbg_fname.Exists() && isDebugging) )
     {
         wxMessageBox(_("Main Source Target failed to build.\nCheck the build log for more details."));
         isBuildingAndRunning = false;
         build_success = false;
+        isDebugging = false;
     }
 
 
@@ -63,6 +70,15 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
             runCurrentFile();
         else
             runProject();
+    }
+
+    if(isDebugging && build_success)
+    {
+        debugProject();
+    }
+    else if(isDebugging)
+    {
+        isDebugging = false;
     }
 
     //wxPuts(_("PROCESS is dead"));
@@ -90,7 +106,7 @@ void rcbasic_edit_frame::onBuildMenuSelect( wxCommandEvent& event )
     buildProject();
 }
 
-void rcbasic_edit_frame::buildProject()
+void rcbasic_edit_frame::buildProject(wxString build_flags)
 {
     /*wxSetWorkingDirectory(rc_fnames[AuiNotebook1->GetPageIndex(t)].substr(0, rc_fnames[AuiNotebook1->GetPageIndex(t)].find_last_of("/")));
     wxString fs = rc_path + _("rcbasic_build ") + _("\"") + rc_fnames[AuiNotebook1->GetPageIndex(t)] + _("\"");
@@ -98,7 +114,7 @@ void rcbasic_edit_frame::buildProject()
     int rt = -1;
     rt = wxExecute(fs, wxEXEC_SYNC);*/
 
-    if(isBuilding || isRunning)
+    if(isBuilding || isRunning || isDebugging)
         return;
 
 
@@ -115,6 +131,7 @@ void rcbasic_edit_frame::buildProject()
         else
         {
             build_run_project = active_project;
+            debug_project = build_run_project;
         }
     }
     else
@@ -124,6 +141,7 @@ void rcbasic_edit_frame::buildProject()
 
 
     notebook_mutex.Lock();
+
 
     //-----------
     wxFileName project_fname = wxFileName(build_run_project->getProjectFileLocation());
@@ -185,11 +203,11 @@ void rcbasic_edit_frame::buildProject()
     if(!build_script.Create(build_script_fname.GetFullPath(), true))
         return;
 
-    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\" \r\n"));
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" ") + build_flags + (" \"") + build_run_project->getMainSource().GetFullPath() + _("\" \r\n"));
 
     for(int i = 0; i < build_files.size(); i ++)
     {
-        build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_files[i] + _("\" \r\n"));
+        build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() +_("\" \"") + build_files[i] + _("\" \r\n"));
     }
 
     build_script.Close();
@@ -199,7 +217,7 @@ void rcbasic_edit_frame::buildProject()
     if(!build_script.Create(build_script_fname.GetFullPath(), true))
         return;
 
-    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_run_project->getMainSource().GetFullPath() + _("\" \n"));
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" ") + build_flags + (" \"") + build_run_project->getMainSource().GetFullPath() + _("\" \n"));
 
     for(int i = 0; i < build_files.size(); i ++)
     {
@@ -295,7 +313,7 @@ void rcbasic_edit_frame::onRunMenuSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::runProject()
 {
-    if(isBuilding || isRunning)
+    if(isBuilding || isRunning || isDebugging)
         return;
 
     if(build_process || run_process)
@@ -407,7 +425,7 @@ void rcbasic_edit_frame::runProject()
 
 void rcbasic_edit_frame::onBuildRunMenuSelect( wxCommandEvent& event )
 {
-    if(isBuilding || isRunning || isBuildingAndRunning)
+    if(isBuilding || isRunning || isBuildingAndRunning || isDebugging)
         return;
 
     if(!active_project)
@@ -480,6 +498,7 @@ void rcbasic_edit_frame::onStopExecuteMenuSelect( wxCommandEvent& event )
     isRunning = false;
     isBuildingAndRunning = false;
     isBuilding = false;
+    isDebugging = false;
 }
 
 
@@ -491,7 +510,7 @@ void rcbasic_edit_frame::onBuildFileMenuSelect( wxCommandEvent& event )
 void rcbasic_edit_frame::buildCurrentFile()
 {
 
-    if(isBuilding || isRunning)
+    if(isBuilding || isRunning || isDebugging)
         return;
 
 
@@ -577,7 +596,7 @@ void rcbasic_edit_frame::onRunFileMenuSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::runCurrentFile()
 {
-    if(isBuilding || isRunning)
+    if(isBuilding || isRunning || isDebugging)
         return;
 
     if(build_process || run_process)
@@ -655,11 +674,66 @@ void rcbasic_edit_frame::runCurrentFile()
 
 void rcbasic_edit_frame::onBuildRunFileMenuSelect( wxCommandEvent& event )
 {
-    if(isBuilding || isRunning || isBuildingAndRunning)
+    if(isBuilding || isRunning || isBuildingAndRunning || isDebugging)
         return;
 
     m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
 
     isBuildingAndRunning = true;
     buildCurrentFile();
+}
+
+void rcbasic_edit_frame::debugProject()
+{
+    //wxMessageBox(_("Step 2"));
+    if(!debug_project)
+    {
+        isDebugging = false;
+        debug_project = NULL;
+        return;
+    }
+
+    wxFileName cbc_fname = debug_project->getProjectFileLocation();
+    cbc_fname.SetFullName(_("debug.cbc"));
+
+    //wxMessageBox(_("cbc = ") + cbc_fname.GetFullPath());
+
+    wxFileName dbg_rt_fname = rcbasic_run_path;
+    dbg_rt_fname.SetFullName(_("rcbasic_debug.exe"));
+    //wxFileName cbc_fname(_("C:\\Users\\omega\\Desktop\\Projects\\RCBASIC3\\rcbasic_build\\bin\\Release64\\debug.cbc"));
+    //wxFileName dbg_rt_fname(_("C:\\Users\\omega\\Desktop\\Projects\\RCBASIC3\\rcbasic_runtime\\bin\\Release64\\rcbasic_runtime.exe"));
+
+
+    rc_debugger_dialog dbg_dialog(this, cbc_fname, dbg_rt_fname);
+
+    dbg_dialog.ShowWindowModal();
+
+    isDebugging = false;
+    debug_project = NULL;
+
+    if(wxFileExists(_("rcbasic.dbgm")))
+        wxRemoveFile(_("rcbasic.dbgm"));
+
+    if(wxFileExists(_("rcbasic_dbg.cl")))
+        wxRemoveFile(_("rcbasic_dbg.cl"));
+
+    if(wxFileExists(_("rcbasic_dbg.sp")))
+        wxRemoveFile(_("rcbasic_dbg.sp"));
+
+    if(wxFileExists(_("rcbasic_dbg.rt")))
+        wxRemoveFile(_("rcbasic_dbg.rt"));
+
+    if(wxFileExists(_("rcbasic.dbgi")))
+        wxRemoveFile(_("rcbasic.dbgi"));
+
+    if(wxFileExists(_("rcbasic.dbgs")))
+        wxRemoveFile(_("rcbasic.dbgs"));
+}
+
+void rcbasic_edit_frame::onDebugMenuSelect( wxCommandEvent& event )
+{
+    buildProject(_("--debug"));
+
+    if(build_run_project)
+        isDebugging = true;
 }
