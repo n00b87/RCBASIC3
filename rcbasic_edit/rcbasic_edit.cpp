@@ -207,6 +207,12 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_build_menu->AppendSeparator();
 
+	wxMenuItem* m_debug_menuItem;
+	m_debug_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Debug") ) + wxT('\t') + wxT("F4"), wxEmptyString, wxITEM_NORMAL );
+	m_build_menu->Append( m_debug_menuItem );
+
+	m_build_menu->AppendSeparator();
+
 	m_abort_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Stop Execution") ) , wxEmptyString, wxITEM_NORMAL );
 	m_build_menu->Append( m_abort_menuItem );
 
@@ -433,6 +439,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildMenuSelect ), this, m_build_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onRunMenuSelect ), this, m_run_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildRunMenuSelect ), this, m_buildRun_menuItem->GetId());
+	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDebugMenuSelect ), this, m_debug_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onStopExecuteMenuSelect ), this, m_abort_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildFileMenuSelect ), this, m_buildFile_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onRunFileMenuSelect ), this, m_runFile_menuItem->GetId());
@@ -1193,7 +1200,7 @@ rc_replace_dialog::rc_replace_dialog( wxWindow* parent, wxWindowID id, const wxS
 	bSizer27->Add( bSizer30, 1, wxEXPAND, 5 );
 
 
-	bSizer27->Add( 0, 0, 3, wxEXPAND, 5 );
+	bSizer27->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( bSizer27 );
@@ -2443,7 +2450,7 @@ rc_distribute_dialog::rc_distribute_dialog( wxWindow* parent, wxWindowID id, con
 	bSizer116->Fit( m_panel13 );
 	m_notebook4->AddPage( m_panel13, wxT("Android Settings"), false );
 
-	bSizer92->Add( m_notebook4, 1, wxALL|wxEXPAND, 5 );
+	bSizer92->Add( m_notebook4, 8, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer109;
 	bSizer109 = new wxBoxSizer( wxHORIZONTAL );
@@ -2819,5 +2826,145 @@ rc_preference_dialog::~rc_preference_dialog()
 	// Disconnect Events
 	m_cancel_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_preference_dialog::onCancelButtonClick ), NULL, this );
 	m_button54->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_preference_dialog::onOKButtonClick ), NULL, this );
+
+}
+
+rc_debugger::rc_debugger( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer127;
+	bSizer127 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer128;
+	bSizer128 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer128->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText57 = new wxStaticText( this, wxID_ANY, wxT("Source File    "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText57->Wrap( -1 );
+	bSizer128->Add( m_staticText57, 1, wxALL, 5 );
+
+	m_file_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	bSizer128->Add( m_file_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer128->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer127->Add( bSizer128, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer1281;
+	bSizer1281 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer1281->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText571 = new wxStaticText( this, wxID_ANY, wxT("Source Line    "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText571->Wrap( -1 );
+	bSizer1281->Add( m_staticText571, 1, wxALL, 5 );
+
+	m_line_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	bSizer1281->Add( m_line_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer1281->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer127->Add( bSizer1281, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer135;
+	bSizer135 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer135->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText60 = new wxStaticText( this, wxID_ANY, wxT("Error Message"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText60->Wrap( -1 );
+	bSizer135->Add( m_staticText60, 1, wxALL, 5 );
+
+	m_msg_textCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	m_msg_textCtrl->SetBackgroundColour( wxColour( 0, 255, 0 ) );
+
+	bSizer135->Add( m_msg_textCtrl, 5, wxALL, 5 );
+
+
+	bSizer135->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer127->Add( bSizer135, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer132;
+	bSizer132 = new wxBoxSizer( wxVERTICAL );
+
+	m_var_listCtrl = new wxListCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_HRULES|wxLC_REPORT|wxLC_VRULES );
+	bSizer132->Add( m_var_listCtrl, 1, wxALL|wxEXPAND, 5 );
+
+
+	bSizer127->Add( bSizer132, 6, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer133;
+	bSizer133 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_pause_button = new wxButton( this, wxID_ANY, wxT("Pause"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer133->Add( m_pause_button, 0, wxALL, 5 );
+
+	m_step_button = new wxButton( this, wxID_ANY, wxT("Step"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer133->Add( m_step_button, 0, wxALL, 5 );
+
+	m_run_button = new wxButton( this, wxID_ANY, wxT("Run"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer133->Add( m_run_button, 0, wxALL, 5 );
+
+	m_super_button = new wxButton( this, wxID_ANY, wxT("Quick Run"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer133->Add( m_super_button, 0, wxALL, 5 );
+
+	m_end_button = new wxButton( this, wxID_ANY, wxT("Abort"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer133->Add( m_end_button, 0, wxALL, 5 );
+
+
+	bSizer127->Add( bSizer133, 2, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer134;
+	bSizer134 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer134->Add( 0, 0, 14, wxEXPAND, 5 );
+
+	m_close_button = new wxButton( this, wxID_ANY, wxT("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer134->Add( m_close_button, 2, wxALIGN_CENTER|wxALL, 5 );
+
+
+	bSizer134->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer127->Add( bSizer134, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizer127 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( rc_debugger::onDebugUpdate ) );
+	m_pause_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onPause ), NULL, this );
+	m_step_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onStep ), NULL, this );
+	m_run_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onRun ), NULL, this );
+	m_super_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onSuper ), NULL, this );
+	m_end_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onEnd ), NULL, this );
+	m_close_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onClose ), NULL, this );
+}
+
+rc_debugger::~rc_debugger()
+{
+	// Disconnect Events
+	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( rc_debugger::onDebugUpdate ) );
+	m_pause_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onPause ), NULL, this );
+	m_step_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onStep ), NULL, this );
+	m_run_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onRun ), NULL, this );
+	m_super_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onSuper ), NULL, this );
+	m_end_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onEnd ), NULL, this );
+	m_close_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( rc_debugger::onClose ), NULL, this );
 
 }

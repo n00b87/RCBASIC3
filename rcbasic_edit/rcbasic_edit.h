@@ -181,6 +181,7 @@ class rc_ideFrame : public wxFrame
 		virtual void onBuildMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onRunMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onBuildRunMenuSelect( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onDebugMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onStopExecuteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onBuildFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onRunFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
@@ -416,7 +417,7 @@ class rc_replace_dialog : public wxDialog
 
 	public:
 
-		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 518,341 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 518,301 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_replace_dialog();
 
@@ -545,7 +546,7 @@ class rc_projectSettings_dialog : public wxDialog
 
 	public:
 
-		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 586,613 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 522,543 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectSettings_dialog();
 
@@ -839,6 +840,46 @@ class rc_preference_dialog : public wxDialog
 		rc_preference_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,493 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_preference_dialog();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class rc_debugger
+///////////////////////////////////////////////////////////////////////////////
+class rc_debugger : public wxDialog
+{
+	private:
+
+	protected:
+		wxStaticText* m_staticText57;
+		wxTextCtrl* m_file_textCtrl;
+		wxStaticText* m_staticText571;
+		wxTextCtrl* m_line_textCtrl;
+		wxStaticText* m_staticText60;
+		wxTextCtrl* m_msg_textCtrl;
+		wxListCtrl* m_var_listCtrl;
+		wxButton* m_pause_button;
+		wxButton* m_step_button;
+		wxButton* m_run_button;
+		wxButton* m_super_button;
+		wxButton* m_end_button;
+		wxButton* m_close_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void onDebugUpdate( wxUpdateUIEvent& event ) { event.Skip(); }
+		virtual void onPause( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onStep( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onRun( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onSuper( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onEnd( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onClose( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		rc_debugger( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Debug"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 516,393 ), long style = wxDEFAULT_DIALOG_STYLE );
+
+		~rc_debugger();
 
 };
 

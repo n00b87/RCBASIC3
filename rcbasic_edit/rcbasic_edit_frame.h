@@ -194,6 +194,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         bool isBuilding;
         bool isRunning;
         bool isBuildingAndRunning;
+        bool isDebugging;
 
         int build_pid;
         int run_pid;
@@ -203,6 +204,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxFileName rcbasic_run_path;
 
         rcbasic_project* build_run_project;
+        rcbasic_project* debug_project;
         rcbasic_project* current_file_project;
 
         int remove_file_node_flag;
@@ -270,6 +272,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void onBuildFileMenuSelect( wxCommandEvent& event );
 		void onRunFileMenuSelect( wxCommandEvent& event );
 		void onBuildRunFileMenuSelect( wxCommandEvent& event );
+		void onDebugMenuSelect( wxCommandEvent& event );
 		void onGenKeystoreMenuSelect( wxCommandEvent& event );
 		void onDistributeMenuSelect( wxCommandEvent& event );
 		void onDocMenuSelect( wxCommandEvent& event );
@@ -291,8 +294,9 @@ class rcbasic_edit_frame : public rc_ideFrame
 	    void openFileProperties(rcbasic_project* f_project, rcbasic_project_node* f_node);
 	    wxString search_term;
 	    wxFileName getRCRunnerPath() { return rcbasic_run_path; }
-	    void buildProject();
+	    void buildProject(wxString build_flags=_(""));
 	    void runProject();
+	    void debugProject();
 	    void buildCurrentFile();
 	    void runCurrentFile();
 	    void OnParserThread(wxCommandEvent& event);

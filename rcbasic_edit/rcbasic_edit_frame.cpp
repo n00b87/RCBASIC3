@@ -236,12 +236,14 @@ rc_ideFrame( parent )
     token_parser = NULL;
 
     build_run_project = NULL;
+    debug_project = NULL;
     build_process = NULL;
     run_process = NULL;
 
     isBuilding = false;
     isRunning = false;
     isBuildingAndRunning = false;
+    isDebugging = false;
     build_pid = -1;
     run_pid = -1;
 

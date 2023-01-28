@@ -492,6 +492,29 @@ void rcbasic_editrc_distribute_dialog::onMakeAppButtonClick( wxCommandEvent& eve
         rcbasic_project* current_project = parent_frame->getActiveProject();
         std::vector<rcbasic_project_node*> source_files = current_project->getSourceFiles();
 
+
+        wxFileName dbg_fname(current_project->getLocation());
+        dbg_fname.MakeAbsolute();
+
+        dbg_fname.SetFullName(_("rcbasic.dbgm"));
+        pf_file.Write(dbg_fname.GetFullPath() + _("\n"));
+
+        dbg_fname.SetFullName(_("rcbasic.dbgi"));
+        pf_file.Write(dbg_fname.GetFullPath() + _("\n"));
+
+        dbg_fname.SetFullName(_("rcbasic.dbgs"));
+        pf_file.Write(dbg_fname.GetFullPath() + _("\n"));
+
+        dbg_fname.SetFullName(_("rcbasic_dbg.cl"));
+        pf_file.Write(dbg_fname.GetFullPath() + _("\n"));
+
+        dbg_fname.SetFullName(_("rcbasic_dbg.sp"));
+        pf_file.Write(dbg_fname.GetFullPath() + _("\n"));
+
+        dbg_fname.SetFullName(_("rcbasic_dbg.rt"));
+        pf_file.Write(dbg_fname.GetFullPath() + _("\n"));
+
+
         for(int i = 0; i < source_files.size(); i++)
         {
             wxFileName fname = source_files[i]->getPath();
