@@ -93,17 +93,25 @@ bool parserThread::inSymbolList(rcbasic_symbol sym)
 
 void parserThread::addSymbol(rcbasic_symbol sym)
 {
+    int insert_pos = 0;
     for(int i = 0; i < sym_list->size(); i++)
     {
         rcbasic_symbol list_item = sym_list[0][i];
-        if(list_item.id.compare(sym.id)==0 && list_item.token_type == sym.token_type)
+        int id_sym_cmp = list_item.id.Upper().compare(sym.id.Upper());
+        if(id_sym_cmp==0 && list_item.token_type == sym.token_type)
         {
             //delete sym;
             return;
         }
 
+        if(id_sym_cmp < 0)
+            insert_pos++;
+        else
+            break;
+
     }
-    sym_list->push_back(sym);
+    //sym_list->push_back(sym);
+    sym_list->insert(sym_list->begin()+insert_pos, sym);
 }
 
 void* parserThread::Entry()
