@@ -178,6 +178,8 @@ class rcbasic_edit_frame : public rc_ideFrame
 
         bool enable_codeCompletion;
 
+        bool enable_presets;
+
         rcbasic_edit_scheme editor_scheme;
         wxString rcbasic_edit_keywords;
         wxString rcbasic_edit_keywords2;
@@ -368,6 +370,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxFileName getRCBasicRunPath();
         bool getParserFlag();
         bool getAutoCompleteFlag();
+        bool getPresetFlag();
         wxString getRCBasicDocLink();
         wxString getStudioDocLink();
 

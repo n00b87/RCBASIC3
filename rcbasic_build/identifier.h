@@ -56,6 +56,8 @@ stack<string> while_end;
 
 bool isFunctionArg_flag = false;
 
+bool enable_presets = true;
+
 struct if_data
 {
     uint64_t index = 0;
@@ -812,7 +814,7 @@ bool create_array(string name, int type, string utype_name, int dim_count, strin
         }
     }
 
-    if(isInFunctionScope && !isFunctionArg_flag)
+    if((isInFunctionScope && !isFunctionArg_flag) && enable_presets)
     {
         if(var.type == ID_TYPE_NUM || var.type == ID_TYPE_ARR_NUM)
             vm_asm.push_back("preset !" + rc_intToString(var.vec_pos) );

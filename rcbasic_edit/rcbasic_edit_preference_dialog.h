@@ -31,6 +31,7 @@ class rcbasic_edit_preference_dialog : public rc_preference_dialog
         wxFileName getRCBasicRunPath();
         bool getParserFlag();
         bool getAutoCompleteFlag();
+        bool getPresetFlag();
         wxString getRCBasicDocLink();
         wxString getStudioDocLink();
 	//// end generated class members

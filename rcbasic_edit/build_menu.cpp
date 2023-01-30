@@ -198,16 +198,23 @@ void rcbasic_edit_frame::buildProject(wxString build_flags)
 
     wxFileName build_script_fname(rcbasic_build_path);
 
+    wxString additional_flags = _("");
+
+    if(!enable_presets)
+    {
+        additional_flags += _(" --no-presets ");
+    }
+
     #ifdef _WIN32
     build_script_fname.SetFullName(_("build_project.bat"));
     if(!build_script.Create(build_script_fname.GetFullPath(), true))
         return;
 
-    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" ") + build_flags + (" \"") + build_run_project->getMainSource().GetFullPath() + _("\" \r\n"));
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" ") + build_flags + additional_flags + (" \"") + build_run_project->getMainSource().GetFullPath() + _("\" \r\n"));
 
     for(int i = 0; i < build_files.size(); i ++)
     {
-        build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() +_("\" \"") + build_files[i] + _("\" \r\n"));
+        build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" ") + additional_flags + (" \"") + build_files[i] + _("\" \r\n"));
     }
 
     build_script.Close();
@@ -221,7 +228,7 @@ void rcbasic_edit_frame::buildProject(wxString build_flags)
 
     for(int i = 0; i < build_files.size(); i ++)
     {
-        build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + build_files[i] + _("\" \n"));
+        build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" ") + additional_flags + (" \"") + build_files[i] + _("\" \n"));
     }
 
     build_script.Close();
@@ -538,13 +545,18 @@ void rcbasic_edit_frame::buildCurrentFile()
 
     wxFileName build_script_fname(rcbasic_build_path);
 
+    wxString additional_flags = _("");
+
+    if(!enable_presets)
+        additional_flags += _(" --no-presets ");
+
     #ifdef _WIN32
     build_script_fname.SetFullName(_("build_project.bat"));
     if(!build_script.Create(build_script_fname.GetFullPath(), true))
         return;
 
     build_script.Write(_("pushd ") + project_fname.GetPath() + _(" \r\n"));
-    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + project_fname.GetFullPath() + _("\" \r\n"));
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" ") + additional_flags + (" \"") + project_fname.GetFullPath() + _("\" \r\n"));
     build_script.Write(_("popd \r\n"));
     build_script.Close();
 
@@ -554,7 +566,7 @@ void rcbasic_edit_frame::buildCurrentFile()
         return;
 
     build_script.Write(_("export tmp_cwd=$PWD && cd ") + project_fname.GetPath() + _("\n"));
-    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" \"") + project_fname.GetFullPath() + _("\" \n"));
+    build_script.Write(_("\"") + rcbasic_build_path.GetFullPath() + _("\" ") + additional_flags + (" \"") + project_fname.GetFullPath() + _("\" \n"));
     build_script.Write(_("cd $tmp_cwd\n"));
     build_script.Close();
 
