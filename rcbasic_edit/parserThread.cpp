@@ -94,10 +94,11 @@ bool parserThread::inSymbolList(rcbasic_symbol sym)
 void parserThread::addSymbol(rcbasic_symbol sym)
 {
     int insert_pos = 0;
+    wxString sym_id = sym.id.Upper();
     for(int i = 0; i < sym_list->size(); i++)
     {
         rcbasic_symbol list_item = sym_list[0][i];
-        int id_sym_cmp = list_item.id.Upper().compare(sym.id.Upper());
+        int id_sym_cmp = list_item.upper_id.compare(sym_id);
         if(id_sym_cmp==0 && list_item.token_type == sym.token_type)
         {
             //delete sym;
@@ -197,6 +198,7 @@ bool parserThread::runParser(wxCommandEvent evt)
             //wxPrintf( wxString(id_tokens[t_count].name.c_str(), wxConvUTF8) + _("[%d]:%d\n"), id_tokens[t_count].dimensions, i+1 );
             rcbasic_symbol sym;// = new rcbasic_symbol();
             sym.id = id_tokens[t_count].name;
+            sym.upper_id = sym.id.Upper();
             sym.line = i;
             sym.dimensions = id_tokens[t_count].dimensions;
             sym.token_type = id_tokens[t_count].token_type;

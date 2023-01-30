@@ -11,6 +11,7 @@ struct rcbasic_symbol
     int dimensions;
     int token_type;
     bool in_list;
+    wxString upper_id; //storing id uppercase to speed up sort
 };
 
 class rc_symbol_treeItem_data : public wxTreeItemData
