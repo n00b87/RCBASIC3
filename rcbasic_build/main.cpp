@@ -10,6 +10,7 @@
 #include "rc_vm_asm.h"
 #include "file_directory.h"
 #include "env_resolve.h"
+#include "identifier.h"
 
 using namespace std;
 
@@ -1003,6 +1004,11 @@ int main(int argc, char * argv[])
         {
             cout << "DEBUG MODE" << endl;
             rcbasic_build_debug = true;
+        }
+        else if(cmd_arg.compare("--no-presets")==0)
+        {
+            cout << "DISABLE PRESETS" << endl;
+            enable_presets = false;
         }
     }
 

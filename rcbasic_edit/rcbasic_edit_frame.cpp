@@ -634,6 +634,10 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
         {
             enable_codeCompletion = value.compare(_("TRUE")) == 0 ? true : false;
         }
+        else if(property.compare(_("ENABLE_PRESETS"))==0)
+        {
+            enable_presets = value.compare(_("TRUE")) == 0 ? true : false;
+        }
         else if(property.compare(_("CONVERT_REL"))==0)
         {
             conv_rel = value.compare(_("TRUE")) == 0 ? true : false;
@@ -779,6 +783,7 @@ bool rcbasic_edit_frame::saveEditorProperties(wxFileName fname)
     properties_file.Write(_("RCBASIC_PATH=") + rel_base_path.GetFullPath() + _("\n"));
     properties_file.Write(_("ENABLE_PARSER=") + (enable_parser ? _("TRUE") : _("FALSE")) + _("\n"));
     properties_file.Write(_("ENABLE_CODE_COMPLETE=") + (enable_parser ? _("TRUE") : _("FALSE")) + _("\n"));
+    properties_file.Write(_("ENABLE_PRESETS=") + (enable_presets ? _("TRUE") : _("FALSE")) + _("\n"));
     properties_file.Write(_("RCBASIC_DOC_PATH=doc") + _("\n")); //This is just a place holder for compatability
     properties_file.Write(_("STUDIO_DOC_URL=") + Studio_Documentation_Link + _("\n"));
     properties_file.Write(_("DOC_URL=") + RCBasic_Documentation_Link + _("\n"));
@@ -2476,6 +2481,11 @@ bool rcbasic_edit_frame::getAutoCompleteFlag()
     return enable_codeCompletion;
 }
 
+bool rcbasic_edit_frame::getPresetFlag()
+{
+    return enable_presets;
+}
+
 wxString rcbasic_edit_frame::getRCBasicDocLink()
 {
     return RCBasic_Documentation_Link;
@@ -2502,6 +2512,7 @@ void rcbasic_edit_frame::onPreferenceMenuSelect( wxCommandEvent& event )
         Studio_Documentation_Link = pref_dialog->getStudioDocLink();
         enable_parser = pref_dialog->getParserFlag();
         enable_codeCompletion = pref_dialog->getAutoCompleteFlag();
+        enable_presets = pref_dialog->getPresetFlag();
 
         wxString editor_path = wxStandardPaths::Get().GetExecutablePath();
         wxFileName edit_config(editor_path);

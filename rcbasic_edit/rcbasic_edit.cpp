@@ -2789,6 +2789,27 @@ rc_preference_dialog::rc_preference_dialog( wxWindow* parent, wxWindowID id, con
 
 	bSizer118->Add( bSizer125, 1, wxEXPAND, 5 );
 
+	m_staticText60 = new wxStaticText( m_panel15, wxID_ANY, wxT("COMPILE FLAGS"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText60->Wrap( -1 );
+	m_staticText60->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, true, wxEmptyString ) );
+
+	bSizer118->Add( m_staticText60, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer134;
+	bSizer134 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer134->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_enablePresets_checkBox = new wxCheckBox( m_panel15, wxID_ANY, wxT("Enable Presets"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer134->Add( m_enablePresets_checkBox, 1, wxALL, 5 );
+
+
+	bSizer134->Add( 0, 0, 25, wxEXPAND, 5 );
+
+
+	bSizer118->Add( bSizer134, 1, wxEXPAND, 5 );
+
 	wxBoxSizer* bSizer126;
 	bSizer126 = new wxBoxSizer( wxHORIZONTAL );
 
