@@ -88,10 +88,14 @@ void rcbasic_edit_frame::onRunProcessTerminate( wxProcessEvent& event )
 {
     //wxPuts(_("RUN HAS FINISHED"));
 
+    //wxMessageBox(_("terminated"));
+
     isRunning = false;
     isBuildingAndRunning = false;
 
-    wxKill(run_pid);
+    if(wxProcess::Exists(run_pid))
+        wxKill(run_pid);
+
     if(run_process)
         delete run_process;
     run_process = NULL;
@@ -491,14 +495,18 @@ void rcbasic_edit_frame::onStopExecuteMenuSelect( wxCommandEvent& event )
 
         #else
         //wxPuts(_("STOPPING NOW: ") + _("taskkill /f /im ") + rcbasic_run_path.GetFullName());
+
         wxSystem(_("taskkill /f /im ") + rcbasic_run_path.GetFullName());
         isRunning = false;
         isBuildingAndRunning = false;
-        wxKill(run_pid);
-        if(run_process)
-            delete run_process;
-        run_process = NULL;
-        build_run_project = NULL;
+
+        //if(wxProcess::Exists(run_pid))
+        //    wxKill(run_pid, wxSIGTERM, NULL, wxKILL_CHILDREN);
+
+        //if(run_process)
+        //    delete run_process;
+        //run_process = NULL;
+        //build_run_project = NULL;
         #endif
     }
 
