@@ -389,6 +389,11 @@ class rcbasic_edit_frame : public rc_ideFrame
         int kw_count;
         int lenCompletionCheck;
 
+        wxArrayString pfile_contents;
+        void pfile_readContents(wxString file_path);
+        void pfile_addSymbol(rcbasic_project* p, rcbasic_symbol sym);
+        bool pfile_runParser(rcbasic_project* p);
+
 		DECLARE_EVENT_TABLE();
 		//void replaceInSelection(int findDialog_flag, wxString txt);
 	//// end generated class members

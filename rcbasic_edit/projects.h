@@ -12,6 +12,7 @@
 #include <wx/treebase.h>
 #include <vector>
 #include <stdint.h>
+#include "rcbasic_symbol.h"
 
 #define RCBASIC_PROJECT_SOURCE_NEW      0
 #define RCBASIC_PROJECT_SOURCE_EXISTING 1
@@ -151,6 +152,8 @@ class rcbasic_project
 
         void setLastProjectSave();
         rcbasic_project* getLastProjectSave() { return last_saved_project; }
+
+        std::vector<rcbasic_symbol> project_symbols;
 
         void addEnvVar(wxString var_name, wxString var_value);
         void setVars(std::vector<rcbasic_edit_env_var> v);
