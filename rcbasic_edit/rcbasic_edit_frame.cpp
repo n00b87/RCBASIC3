@@ -17,6 +17,110 @@
 #include "rcbasic_edit_fileProperties_dialog.h"
 #include "rcbasic_edit_preference_dialog.h"
 #include "drag_files.h"
+#include "eval.h"
+#include "rcbasic_symbol.h"
+
+
+void rcbasic_edit_frame::pfile_readContents(wxString file_path)
+{
+    pfile_contents.clear();
+
+    //rcbasic_edit_frame* frame = (rcbasic_edit_frame*) parent_frame;
+    notebook_mutex.Lock();
+
+    wxFile f(file_path, wxFile::read);
+
+    wxString file_text;
+    f.ReadAll(&file_text);
+    file_text += _("\n");
+
+    f.Close();
+
+    notebook_mutex.Unlock();
+
+    wxString current_line = _("");
+    wxString current_char;
+
+    for(int i = 0; i < file_text.length(); i++)
+    {
+        current_char = file_text.substr(i,1);
+        if(current_char.compare(_("\n"))==0)
+        {
+            pfile_contents.push_back(current_line);
+            current_line = _("");
+        }
+        else
+        {
+            current_line += current_char;
+        }
+    }
+}
+
+void rcbasic_edit_frame::pfile_addSymbol(rcbasic_project* p, rcbasic_symbol sym)
+{
+    int insert_pos = 0;
+    wxString sym_id = sym.id.Upper();
+    for(int i = 0; i < p->project_symbols.size(); i++)
+    {
+        int id_sym_cmp = p->project_symbols[i].upper_id.compare(sym_id);
+        if(id_sym_cmp==0 && p->project_symbols[i].token_type == sym.token_type)
+        {
+            //delete sym;
+            return;
+        }
+    }
+    p->project_symbols.push_back(sym);
+    //sym_list->insert(sym_list->begin()+insert_pos, sym);
+}
+
+
+
+bool rcbasic_edit_frame::pfile_runParser(rcbasic_project* p, wxString file_path)
+{
+    p->project_symbols.clear();
+
+    //rcbasic_edit_frame* frame = (rcbasic_edit_frame*) parent_frame;
+
+    //s_list = symbols;
+
+
+    pfile_readContents(file_path);
+
+    int contents_changed = 0;
+
+    bool fn_define = false;
+
+
+    for(int i = 0; i < pfile_contents.size(); i++)
+    {
+
+        rc_eval(std::string(pfile_contents[i].mb_str()), &fn_define);
+        //wxPuts(_("EVAL RAN"));
+        for(int t_count = 0; t_count < id_tokens.size(); t_count++)
+        {
+            //wxPrintf( wxString(id_tokens[t_count].name.c_str(), wxConvUTF8) + _("[%d]:%d\n"), id_tokens[t_count].dimensions, i+1 );
+            rcbasic_symbol sym;// = new rcbasic_symbol();
+            sym.id = id_tokens[t_count].name;
+            sym.upper_id = sym.id.Upper();
+            sym.line = i;
+            sym.dimensions = id_tokens[t_count].dimensions;
+            sym.token_type = id_tokens[t_count].token_type;
+            sym.in_list = id_tokens[t_count].is_in_list;
+
+
+            notebook_mutex.Lock();
+            pfile_addSymbol(p, sym);
+            notebook_mutex.Unlock();
+        }
+
+    }
+
+
+    return true;
+}
+
+
+
 
 rcbasic_edit_txtCtrl::rcbasic_edit_txtCtrl(wxFileName src_path, wxAuiNotebook* parent_nb)
 {
@@ -182,6 +286,12 @@ void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
         user_id_list.Clear();
 
         user_id_list = id_list;
+
+        if(active_project)
+        {
+            for(int i = 0; i < active_project->project_symbols.size(); i++)
+                user_id_list.Add(active_project->project_symbols[i].id);
+        }
 
         if(pre_parsed_page)
         {
@@ -1580,6 +1690,7 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
                     fname.SetCwd(project_path.GetPath());
                     fname.MakeAbsolute();
                     property_value = fname.GetFullPath();
+
                     project_source.push_back(property_value);
                     project_source_store_type.push_back(STORE_LOCATION_RELATIVE);
                     project_source_target_flag.push_back(isTarget);
@@ -1619,6 +1730,8 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         {
             //wxPuts(_("Adding Source: ") + project_source[i]);
             project->addSourceFile(project_source[i], project_source_store_type[i], project_source_target_flag[i]);
+            //add to project parser list
+            pfile_runParser(project, project_source[i]);
         }
 
         project->setVars(project_vars);
@@ -4050,8 +4163,8 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
                     cc_list += user_id_list[i] + _(" ");
                     item_added = true;
                 }
-                else if(item_added)
-                    break;
+                //else if(item_added)
+                //    break;
             }
 
             cc_list += "_____________________________________ ";
