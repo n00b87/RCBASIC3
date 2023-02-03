@@ -75,46 +75,46 @@ void rcbasic_edit_frame::pfile_addSymbol(rcbasic_project* p, rcbasic_symbol sym)
 
 
 
-bool rcbasic_edit_frame::pfile_runParser(rcbasic_project* p, wxString file_path)
+bool rcbasic_edit_frame::pfile_runParser(rcbasic_project* p)
 {
     p->project_symbols.clear();
+    std::vector<rcbasic_project_node*> source_files = p->getSourceFiles();
 
-    //rcbasic_edit_frame* frame = (rcbasic_edit_frame*) parent_frame;
-
-    //s_list = symbols;
-
-
-    pfile_readContents(file_path);
-
-    int contents_changed = 0;
-
-    bool fn_define = false;
-
-
-    for(int i = 0; i < pfile_contents.size(); i++)
+    for(int file_index = 0; file_index < source_files.size(); file_index++)
     {
+        wxFileName src_file = source_files[file_index]->getPath();
+        src_file.MakeAbsolute();
+        pfile_readContents(src_file.GetFullPath());
 
-        rc_eval(std::string(pfile_contents[i].mb_str()), &fn_define);
-        //wxPuts(_("EVAL RAN"));
-        for(int t_count = 0; t_count < id_tokens.size(); t_count++)
+        int contents_changed = 0;
+
+        bool fn_define = false;
+
+
+        for(int i = 0; i < pfile_contents.size(); i++)
         {
-            //wxPrintf( wxString(id_tokens[t_count].name.c_str(), wxConvUTF8) + _("[%d]:%d\n"), id_tokens[t_count].dimensions, i+1 );
-            rcbasic_symbol sym;// = new rcbasic_symbol();
-            sym.id = id_tokens[t_count].name;
-            sym.upper_id = sym.id.Upper();
-            sym.line = i;
-            sym.dimensions = id_tokens[t_count].dimensions;
-            sym.token_type = id_tokens[t_count].token_type;
-            sym.in_list = id_tokens[t_count].is_in_list;
+
+            rc_eval(std::string(pfile_contents[i].mb_str()), &fn_define);
+            //wxPuts(_("EVAL RAN"));
+            for(int t_count = 0; t_count < id_tokens.size(); t_count++)
+            {
+                //wxPrintf( wxString(id_tokens[t_count].name.c_str(), wxConvUTF8) + _("[%d]:%d\n"), id_tokens[t_count].dimensions, i+1 );
+                rcbasic_symbol sym;// = new rcbasic_symbol();
+                sym.id = id_tokens[t_count].name;
+                sym.upper_id = sym.id.Upper();
+                sym.line = i;
+                sym.dimensions = id_tokens[t_count].dimensions;
+                sym.token_type = id_tokens[t_count].token_type;
+                sym.in_list = id_tokens[t_count].is_in_list;
 
 
-            notebook_mutex.Lock();
-            pfile_addSymbol(p, sym);
-            notebook_mutex.Unlock();
+                notebook_mutex.Lock();
+                pfile_addSymbol(p, sym);
+                notebook_mutex.Unlock();
+            }
+
         }
-
     }
-
 
     return true;
 }
@@ -1730,9 +1730,10 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
         {
             //wxPuts(_("Adding Source: ") + project_source[i]);
             project->addSourceFile(project_source[i], project_source_store_type[i], project_source_target_flag[i]);
-            //add to project parser list
-            pfile_runParser(project, project_source[i]);
         }
+
+        //add to project parser list
+        pfile_runParser(project);
 
         project->setVars(project_vars);
         project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
@@ -1959,6 +1960,8 @@ void rcbasic_edit_frame::onSaveProjectMenuSelect( wxCommandEvent& event )
     }
 
     active_project->saveProject(project_fname);
+    pfile_runParser(active_project);
+
     notebook_mutex.Unlock();
 }
 

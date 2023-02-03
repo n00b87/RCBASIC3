@@ -392,7 +392,7 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxArrayString pfile_contents;
         void pfile_readContents(wxString file_path);
         void pfile_addSymbol(rcbasic_project* p, rcbasic_symbol sym);
-        bool pfile_runParser(rcbasic_project* p, wxString file_path);
+        bool pfile_runParser(rcbasic_project* p);
 
 		DECLARE_EVENT_TABLE();
 		//void replaceInSelection(int findDialog_flag, wxString txt);
