@@ -7,6 +7,7 @@ echo PROJECT_DIR=%PROJECT_DIR%
 echo BUILD_DIR=%BUILD_DIR%
 
 set ANDROID_NDK_HOME=%ANDROID_HOME%\ndk\21.4.7075529
+set ANDROID_SDK_ROOT=%ANDROID_HOME%
 
 set PATH=%RBASIC_HOME%;%ANDROID_HOME%\cmdline-tools\bin;%ANDROID_NDK_HOME%;%JAVA_HOME%\bin;%PATH%
 
@@ -37,9 +38,9 @@ if not exist %ANDROID_HOME%\build-tools\%BUILD_TOOLS_VERSION%  set RC_ANDROID_AR
 if not exist %ANDROID_HOME%\system-images\android-%API_VERSION%\google_apis  set RC_ANDROID_ARGS=%RC_ANDROID_ARGS% "system-images;android-%API_VERSION%;google_apis;x86_64" && set SDK_REQUIREMENT=1
 if not exist %ANDROID_NDK_HOME%  set RC_ANDROID_ARGS=%RC_ANDROID_ARGS% "ndk;21.4.7075529" && set SDK_REQUIREMENT=1
 
-echo call time
-call :SDK_MANAGER
-echo call over
+rem echo call time
+rem call :SDK_MANAGER
+rem echo call over
 
 call :OUTPUT_BUILD_GRADLE
 
@@ -52,11 +53,11 @@ cd "%BUILD_DIR%android-project"
 echo RC_ANDROID BUILD: DEBUG=%RC_ANDROID_DEBUG%
 echo RC_ANDROID BUILD: RELEASE=%RC_ANDROID_RELEASE%
 
-set assemble_tgt=assembleRelease
+set assemble_tgt= 
 
 rem NOTE: I am just setting assemble_tgt to assembleRelease and bundling pre-built release binaries since android ndk is inconsistent across machines
-rem if "%RC_ANDROID_DEBUG%"=="1" ( set assemble_tgt=assembleDebug )
-rem if "%RC_ANDROID_RELEASE%"=="1" ( set assemble_tgt=%assemble_tgt% assembleRelease )
+if "%RC_ANDROID_DEBUG%"=="1" ( set assemble_tgt=assembleDebug )
+if "%RC_ANDROID_RELEASE%"=="1" ( set assemble_tgt=%assemble_tgt% assembleRelease )
 rem if "%RC_ANDROID_DEBUG_INSTALL%"=="1" ( .\gradlew uninstallDebug && .\gradlew installDebug )
 
 call gradlew %assemble_tgt%

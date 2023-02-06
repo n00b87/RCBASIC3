@@ -31,13 +31,22 @@ rc_distribute_dialog( parent )
     m_category_comboBox->SetSelection(0);
 
     //wxCheckListBox m_targetPlatforms_checkList;
+    wxString pkg_home;
+    wxGetEnv(_("RC_PKG_HOME"), &pkg_home);
+	wxFileName android_project_path(pkg_home);
+	android_project_path.AppendDir(_("rcbasic_android"));
+	android_project_path.AppendDir(_("android-project"));
+	android_project_path.MakeAbsolute();
+
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Windows 32-Bit"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Windows 64-Bit"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Linux 32-Bit"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Linux 64-Bit"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Mac OS (x86)"));
-    m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Android"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Web App (web assembly)"));
+
+    if(wxDirExists(android_project_path.GetFullPath()))
+        m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Android"));
 
     m_orientation_comboBox->Clear();
     m_orientation_comboBox->Append(_("Default"));

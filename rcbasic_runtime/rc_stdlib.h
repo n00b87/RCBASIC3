@@ -392,7 +392,7 @@ inline string rc_intern_rtrim(string src)
         if(utf8_substr(src,i,1).compare(" ") != 0 || i == 0)
             break;
     }
-    if(i <= 0)
+    if(i < 0)
         return "";
 
     return utf8_substr(src,0,i+1);

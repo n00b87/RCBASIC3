@@ -1,4 +1,4 @@
-#define RCBASIC_DEBUG 1
+//#define RCBASIC_DEBUG 1
 
 #include "rc_os_defines.h"
 
@@ -587,6 +587,7 @@ double readDouble()
 
 void dbg_1(uint32_t dbg_fn, uint64_t arg1, uint64_t arg2)
 {
+    #ifdef RCBASIC_DEBUG
     output_debug_message();
 
     switch(dbg_fn)
@@ -596,6 +597,7 @@ void dbg_1(uint32_t dbg_fn, uint64_t arg1, uint64_t arg2)
             current_src_line = arg2;
             break;
     }
+    #endif // RCBASIC_DEBUG
 }
 
 void mov_32(int n1, int n2)
