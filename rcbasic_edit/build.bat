@@ -56,6 +56,10 @@ call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -o obj\Release\rc_closeProjectSavePrompt_dialog.o
 
 call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
+                                    -c rc_debugger_dialog.cpp ^
+                                    -o obj\Release\rc_debugger_dialog.o
+
+call mingw32-g++.exe -Wall -fexceptions -O2 %INCLUDE_PATH% ^
                                     -c rc_find_dialog.cpp ^
                                     -o obj\Release\rc_find_dialog.o
 
@@ -125,6 +129,7 @@ call mingw32-g++.exe %LIB_PATH% -o bin\Release\rcbasic_edit.exe ^
                                 obj\Release\projects.o ^
                                 obj\Release\rc_closeFileSavePrompt_dialog.o ^
                                 obj\Release\rc_closeProjectSavePrompt_dialog.o ^
+                                obj\Release\rc_debugger_dialog.o ^
                                 obj\Release\rc_find_dialog.o ^
                                 obj\Release\rc_ideApp.o ^
                                 obj\Release\rc_newFile_dialog.o ^
