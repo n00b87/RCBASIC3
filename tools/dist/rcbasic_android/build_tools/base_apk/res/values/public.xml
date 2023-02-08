@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="color" name="colorAccent" id="0x7f010000" />
+    <public type="color" name="colorPrimary" id="0x7f010001" />
+    <public type="color" name="colorPrimaryDark" id="0x7f010002" />
+    <public type="mipmap" name="ic_launcher" id="0x7f020000" />
+    <public type="string" name="app_name" id="0x7f030000" />
+    <public type="style" name="AppTheme" id="0x7f040000" />
+</resources>

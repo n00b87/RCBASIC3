@@ -1,5 +1,5 @@
 set ANDROID_HOME=C:\android_sdk
-set JAVA_HOME=%~dp0..\openjdk-11
+REM set JAVA_HOME=%~dp0..\openjdk-11
 set ANDROID_NDK_HOME=%ANDROID_HOME%\ndk\21.4.7075529
 set ANDROID_SDK_ROOT=%ANDROID_HOME%
 

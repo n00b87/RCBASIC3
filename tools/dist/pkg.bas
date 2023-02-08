@@ -766,6 +766,9 @@ End Function
 
 Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, icon_path$, ANDROID_APP_ID$, ANDROID_ORIENTATION$, ANDROID_KEYSTORE$, ANDROID_KEYSTORE_PASS$, ANDROID_ALIAS$, ANDROID_ALIAS_PASS$, ANDROID_BUILD_DEBUG, ANDROID_BUILD_RELEASE, ANDROID_JAVA_DIR$)
 	'Print "MAKE APP:";output_dir$;";"
+	If Not (ANDROID_BUILD_DEBUG Or ANDROID_BUILD_RELEASE) then
+		Return -1
+	End If
 	
 	Select Case OS$
 	Case "WINDOWS"
@@ -807,6 +810,7 @@ Function Build_App_Android(project_dir$, output_dir$, PROJECT_NAME$, APP_NAME$, 
 	SetEnv("RC_ANDROID_DEBUG", Trim(Str(ANDROID_BUILD_DEBUG)), 1)
 	SetEnv("RC_ANDROID_RELEASE", Trim(Str(ANDROID_BUILD_RELEASE)), 1)
 	
+	print "\n\nDEBUG RC_ANDROID_RELEASE=";Env$("RC_ANDROID_RELEASE");", ";Trim(Str(ANDROID_BUILD_RELEASE));"\n\n"
 	
 	build_cmd$ = ""
 	
@@ -1282,22 +1286,25 @@ ElseIf TGT_PLATFORM[PLATFORM_WEB] Then
 End If
 
 If android_flag Then
-	If ANDROID_BUILD_DEBUG Then
-		If AndBit(android_flag, 1) Then
-			Print "Successfully Created Android Debug App"
-		Else
-			Print "Failed to Create Android Debug App"
+	If android_flag = -1 Then
+		Print "You must select Debug or Release for Android"
+	Else
+		If ANDROID_BUILD_DEBUG Then
+			If AndBit(android_flag, 1) Then
+				Print "Successfully Created Android Debug App"
+			Else
+				Print "Failed to Create Android Debug App"
+			End If
+		End If
+		
+		If ANDROID_BUILD_RELEASE Then
+			If AndBit(android_flag SHR 1, 1) Then
+				Print "Successfully Created Android Release App"
+			Else
+				Print "Failed to Create Android Release App"
+			End If
 		End If
 	End If
-	
-	If ANDROID_BUILD_RELEASE Then
-		If AndBit(android_flag SHR 1, 1) Then
-			Print "Successfully Created Android Release App"
-		Else
-			Print "Failed to Create Android Release App"
-		End If
-	End If
-	
 ElseIf TGT_PLATFORM[PLATFORM_ANDROID] Then
 	Print "Failed to Create Android (Debug or Release) App"
 End If
