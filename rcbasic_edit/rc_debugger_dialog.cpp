@@ -337,7 +337,10 @@ void rc_debugger_dialog::onDebugUpdate( wxUpdateUIEvent& event )
         if(wxFileExists(_("rcbasic_dbg.cl")))
         {
             if(wxFileExists(_("rcbasic.dbgm")))
+            {
                 updateDebugData();
+                updateDebugUI();
+            }
 
             wxRemoveFile(_("rcbasic_dbg.cl"));
 
@@ -346,11 +349,11 @@ void rc_debugger_dialog::onDebugUpdate( wxUpdateUIEvent& event )
                 f.Open(_("rcbasic_dbg.rt"), wxFile::write);
             f.Close();
 
-            if(wxFileExists(_("rcbasic.dbgm")))
+            /*if(wxFileExists(_("rcbasic.dbgm")))
             {
                 wxRemoveFile(_("rcbasic.dbgm"));
                 updateDebugUI();
-            }
+            }*/
         }
     }
     else if(step)

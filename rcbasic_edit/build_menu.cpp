@@ -40,7 +40,7 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
     dbg_fname.SetFullName(_("debug.cbc"));
     dbg_fname.MakeAbsolute();
 
-    if( (!main_fname.Exists()) && (!dbg_fname.Exists() && isDebugging) )
+    if( (!main_fname.Exists()) || ( (!wxFileExists(dbg_fname.GetFullPath())) && isDebugging ) )
     {
         wxMessageBox(_("Main Source Target failed to build.\nCheck the build log for more details."));
         isBuildingAndRunning = false;
@@ -715,6 +715,12 @@ void rcbasic_edit_frame::debugProject()
 
     wxFileName cbc_fname = debug_project->getProjectFileLocation();
     cbc_fname.SetFullName(_("debug.cbc"));
+
+    /*if(!cbc_fname.Exists())
+    {
+        wxMessageBox(_("Failed to compile"));
+        return;
+    }*/
 
     //wxMessageBox(_("cbc = ") + cbc_fname.GetFullPath());
 
