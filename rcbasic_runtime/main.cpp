@@ -1,4 +1,4 @@
-//#define RCBASIC_DEBUG 1
+#define RCBASIC_DEBUG 1
 
 #include "rc_os_defines.h"
 
@@ -371,10 +371,10 @@ void output_debug_message()
 
     if(rc_intern_fileExist("rcbasic_dbg.sp") && (!dbg_error_found))
     {
-        if(rc_intern_fileExist("rcbasic.dbgm"))
-            rc_intern_fileDelete("rcbasic.dbgm");
+        //if(rc_intern_fileExist("rcbasic.dbgm"))
+        //    rc_intern_fileDelete("rcbasic.dbgm");
 
-        if(rc_intern_fileExist("rcbasic_dbg.rt"))
+        /*if(rc_intern_fileExist("rcbasic_dbg.rt"))
         {
             while(rc_intern_fileExist("rcbasic_dbg.rt"))
             {
@@ -383,8 +383,11 @@ void output_debug_message()
 
             fstream f("rcbasic_dbg.cl", fstream::out); //generate this file to let the client know it has ownership
             f.close();
+        }*/
+        for(int i = 0; i < dbg_vars.size(); i++)
+        {
+            dbg_vars[i].usage_data.clear();
         }
-        dbg_vars.clear();
         return;
     }
 
