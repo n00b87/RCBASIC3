@@ -985,6 +985,8 @@ int main(int argc, char * argv[])
 
     string rc_filename = "";// = "tst.bas";
 
+    bool clean_after_build = true;
+
     //DEBUG START
     //rc_filename = "tst.bas";
     //DEBUG END
@@ -1010,11 +1012,15 @@ int main(int argc, char * argv[])
             cout << "DISABLE PRESETS" << endl;
             enable_presets = false;
         }
+        else if(cmd_arg.compare("--no-clean")==0)
+        {
+            clean_after_build = false;
+        }
     }
 
     if(rc_filename.compare("--version")==0)
     {
-        cout << "RCBASIC Compiler v3.20 alpha" << endl;
+        cout << "RCBASIC Compiler v3.20" << endl;
         return 0;
     }
 
@@ -1124,7 +1130,7 @@ int main(int argc, char * argv[])
             f << vm_asm.label[i].label_name << " " << vm_asm.label[i].label_address << " " << vm_asm.label[i].label_segment << endl;
         f.close();
 
-        rc_cbc_assembler::rc_assemble(cbc_file, true);
+        rc_cbc_assembler::rc_assemble(cbc_file, clean_after_build);
     }
     else
     {
