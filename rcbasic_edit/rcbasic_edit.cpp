@@ -208,7 +208,7 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_build_menu->AppendSeparator();
 
 	wxMenuItem* m_debug_menuItem;
-	m_debug_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Debug") ) + wxT('\t') + wxT("F4"), wxEmptyString, wxITEM_NORMAL );
+	m_debug_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Debug (Experimental)") ) + wxT('\t') + wxT("F4"), wxEmptyString, wxITEM_NORMAL );
 	m_build_menu->Append( m_debug_menuItem );
 
 	m_build_menu->AppendSeparator();
