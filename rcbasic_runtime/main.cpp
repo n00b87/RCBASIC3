@@ -49,6 +49,7 @@
 #include "rc_defines.h"
 #include "rc_stdlib.h"
 #include "rc_media.h"
+#include "rc_matrix.h"
 
 using namespace std;
 
@@ -3266,6 +3267,152 @@ void func_130(uint64_t fn)
         case FN_Runtime$: //String Function
             rc_push_str( rcbasic_runtime_path );
             break;
+
+        case FN_DimMatrix: //Sub Procedure
+            DimMatrix(DIMMATRIX_M, DIMMATRIX_M_ROWS, DIMMATRIX_M_COLS, DIMMATRIX_PRESERVE_FLAG);
+        break;
+        case FN_AddMatrix: //Number Function
+            rc_push_num(AddMatrix(ADDMATRIX_MA, ADDMATRIX_MB, ADDMATRIX_MC));
+        break;
+        case FN_AugmentMatrix: //Number Function
+            rc_push_num(AugmentMatrix(AUGMENTMATRIX_MA, AUGMENTMATRIX_MB, AUGMENTMATRIX_MC));
+        break;
+        case FN_CopyMatrix: //Sub Procedure
+            CopyMatrix(COPYMATRIX_MA, COPYMATRIX_MB);
+        break;
+        case FN_InsertMatrixColumns: //Number Function
+            rc_push_num(InsertMatrixColumn(INSERTMATRIXCOLUMNS_MA, INSERTMATRIXCOLUMNS_C, INSERTMATRIXCOLUMNS_NUM_COLS));
+        break;
+        case FN_InsertMatrixRows: //Number Function
+            rc_push_num(InsertMatrixRow(INSERTMATRIXROWS_MA, INSERTMATRIXROWS_R, INSERTMATRIXROWS_NUM_ROWS));
+        break;
+        case FN_MultiplyMatrix: //Number Function
+            rc_push_num(MultiplyMatrix(MULTIPLYMATRIX_MA, MULTIPLYMATRIX_MB, MULTIPLYMATRIX_MC));
+        break;
+        case FN_CubeMatrix: //Number Function
+            rc_push_num(CubeMatrix(CUBEMATRIX_MA, CUBEMATRIX_MB));
+        break;
+        case FN_DeleteMatrixColumns: //Number Function
+            rc_push_num(DeleteMatrixColumns(DELETEMATRIXCOLUMNS_MA, DELETEMATRIXCOLUMNS_C, DELETEMATRIXCOLUMNS_NUM_COLS));
+        break;
+        case FN_DeleteMatrixRows: //Number Function
+            rc_push_num(DeleteMatrixRows(DELETEMATRIXROWS_MA, DELETEMATRIXROWS_R, DELETEMATRIXROWS_NUM_ROWS));
+        break;
+        case FN_ClearMatrix: //Sub Procedure
+            ClearMatrix(CLEARMATRIX_MA);
+        break;
+        case FN_ClearMatrixColumns: //Number Function
+            rc_push_num(ClearMatrixColumns(CLEARMATRIXCOLUMNS_MA, CLEARMATRIXCOLUMNS_C, CLEARMATRIXCOLUMNS_NUM_COLS));
+        break;
+        case FN_ClearMatrixRows: //Number Function
+            rc_push_num(ClearMatrixRows(CLEARMATRIXROWS_MA, CLEARMATRIXROWS_R, CLEARMATRIXROWS_NUM_ROWS));
+        break;
+        case FN_FillMatrix: //Sub Procedure
+            FillMatrix(FILLMATRIX_MA, FILLMATRIX_V);
+        break;
+        case FN_FillMatrixColumns: //Number Function
+            rc_push_num(FillMatrixColumns(FILLMATRIXCOLUMNS_MA, FILLMATRIXCOLUMNS_C, FILLMATRIXCOLUMNS_NUM_COLS, FILLMATRIXCOLUMNS_V));
+        break;
+        case FN_FillMatrixRows: //Number Function
+            rc_push_num(FillMatrixRows(FILLMATRIXROWS_MA, FILLMATRIXROWS_R, FILLMATRIXROWS_NUM_ROWS, FILLMATRIXROWS_V));
+        break;
+        case FN_GetMatrixColumns: //Number Function
+            rc_push_num(GetMatrixColumns(GETMATRIXCOLUMNS_MA, GETMATRIXCOLUMNS_MB, GETMATRIXCOLUMNS_C, GETMATRIXCOLUMNS_NUM_COLS));
+        break;
+        case FN_GetMatrixRows: //Number Function
+            rc_push_num(GetMatrixRows(GETMATRIXROWS_MA, GETMATRIXROWS_MB, GETMATRIXROWS_R, GETMATRIXROWS_NUM_ROWS));
+        break;
+        case FN_IdentityMatrix: //Sub Procedure
+            IdentityMatrix(IDENTITYMATRIX_MA, IDENTITYMATRIX_N);
+        break;
+        case FN_SolveMatrix: //Number Function
+            rc_push_num(SolveMatrix(SOLVEMATRIX_MA, SOLVEMATRIX_MB, SOLVEMATRIX_MC));
+        break;
+        case FN_IsEqualMatrix: //Number Function
+            rc_push_num(IsEqualMatrix(ISEQUALMATRIX_MA, ISEQUALMATRIX_MB, ISEQUALMATRIX_TOLERANCE));
+        break;
+        case FN_Determinant: //Number Function
+            rc_push_num(Determinant(DETERMINANT_MA));
+        break;
+        case FN_AdjointMatrix: //Number Function
+            rc_push_num(AdjointMatrix(ADJOINTMATRIX_MA, ADJOINTMATRIX_MB));
+        break;
+        case FN_InvertMatrix: //Number Function
+            rc_push_num(InvertMatrix(INVERTMATRIX_MA, INVERTMATRIX_MB));
+        break;
+        case FN_MatrixFromBuffer: //Sub Procedure
+            MatrixFromBuffer(MATRIXFROMBUFFER_MA, MATRIXFROMBUFFER_R, MATRIXFROMBUFFER_C, &MATRIXFROMBUFFER_BUFFER);
+        break;
+        case FN_GetMatrix: //Sub Procedure
+            BufferFromMatrix(&GETMATRIX_BUFFER, GETMATRIX_MA);
+        break;
+        case FN_RandomizeMatrix: //Sub Procedure
+            RandomizeMatrix(RANDOMIZEMATRIX_MA, RANDOMIZEMATRIX_VMIN, RANDOMIZEMATRIX_VMAX);
+        break;
+        case FN_MatrixValue: //Number Function
+            rc_push_num(MatrixValue(MATRIXVALUE_MA, MATRIXVALUE_R, MATRIXVALUE_C));
+        break;
+        case FN_SetMatrixValue: //Sub Procedure
+            SetMatrixValue(SETMATRIXVALUE_MA, SETMATRIXVALUE_R, SETMATRIXVALUE_C, SETMATRIXVALUE_V);
+        break;
+        case FN_ScalarMatrix: //Sub Procedure
+            ScalarMatrix(SCALARMATRIX_MA, SCALARMATRIX_MB, SCALARMATRIX_S_VALUE);
+        break;
+        case FN_ScalarMatrixColumns: //Number Function
+            rc_push_num(ScalarMatrixColumns(SCALARMATRIXCOLUMNS_MA, SCALARMATRIXCOLUMNS_MB, SCALARMATRIXCOLUMNS_C, SCALARMATRIXCOLUMNS_NUM_COLS, SCALARMATRIXCOLUMNS_S_VALUE));
+        break;
+        case FN_ScalarMatrixRows: //Number Function
+            rc_push_num(ScalarMatrixRows(SCALARMATRIXROWS_MA, SCALARMATRIXROWS_MB, SCALARMATRIXROWS_R, SCALARMATRIXROWS_NUM_ROWS, SCALARMATRIXROWS_S_VALUE));
+        break;
+        case FN_SquareMatrix: //Number Function
+            rc_push_num(SquareMatrix(SQUAREMATRIX_MA, SQUAREMATRIX_MB));
+        break;
+        case FN_SubMatrix: //Sub Procedure
+            SubMatrix(SUBMATRIX_MA, SUBMATRIX_R, SUBMATRIX_C);
+        break;
+        case FN_SubtractMatrix: //Number Function
+            rc_push_num(SubtractMatrix(SUBTRACTMATRIX_MA, SUBTRACTMATRIX_MB, SUBTRACTMATRIX_MC));
+        break;
+        case FN_SwapMatrix: //Sub Procedure
+            SwapMatrix(SWAPMATRIX_MA, SWAPMATRIX_MB);
+        break;
+        case FN_SwapMatrixColumn: //Number Function
+            rc_push_num(SwapMatrixColumn(SWAPMATRIXCOLUMN_MA, SWAPMATRIXCOLUMN_C1, SWAPMATRIXCOLUMN_C2));
+        break;
+        case FN_SwapMatrixRow: //Number Function
+            rc_push_num(SwapMatrixRow(SWAPMATRIXROW_MA, SWAPMATRIXROW_R1, SWAPMATRIXROW_R2));
+        break;
+        case FN_TransposeMatrix: //Number Function
+            rc_push_num(TransposeMatrix(TRANSPOSEMATRIX_MA, TRANSPOSEMATRIX_MB));
+        break;
+        case FN_UnAugmentMatrix: //Number Function
+            rc_push_num(UnAugmentMatrix(UNAUGMENTMATRIX_MA, UNAUGMENTMATRIX_MB, UNAUGMENTMATRIX_MC));
+        break;
+        case FN_ZeroMatrix: //Sub Procedure
+            ZeroMatrix(ZEROMATRIX_MA);
+        break;
+
+        case FN_GetMatrixSize: //Sub Procedure
+        break;
+        case FN_SetMatrixMode: //Sub Procedure
+        break;
+        case FN_MatrixProcess_Error: //Number Function
+        break;
+        case FN_MatrixProcess_Wait: //Sub Procedure
+        break;
+        case FN_MatrixProcess_Continue: //Sub Procedure
+        break;
+        case FN_MatrixProcess_Stop: //Sub Procedure
+        break;
+        case FN_MatrixProcess_Clear: //Sub Procedure
+        break;
+        case FN_DeleteMatrixProcess: //Number Function
+        break;
+        case FN_GetMatrixMode: //Number Function
+        break;
+        case FN_NumCPUs: //Number Function
+        break;
+
 
     }
 }
