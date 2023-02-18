@@ -17,6 +17,9 @@ rc_debugger( parent )
         f.Close();
     }*/
 
+    dbg_rt = dbg_runtime;
+    dbg_rt.MakeAbsolute();
+
     wxFileName dbg_symbols = dbg_cbc;
     dbg_symbols.SetFullName(_("rcbasic.dbgs"));
 
@@ -52,7 +55,7 @@ rc_debugger( parent )
         Close();
     }
 
-    rc_debug_process->Connect( wxEVT_END_PROCESS, wxProcessEventHandler( onDebugProcessTerminate ), NULL, this );
+    rc_debug_process->Connect( wxEVT_END_PROCESS, wxProcessEventHandler( rc_debugger_dialog::onDebugProcessTerminate ), NULL, this );
 
     cwd = wxGetCwd();
 
@@ -417,13 +420,61 @@ void rc_debugger_dialog::onSuper( wxCommandEvent& event )
     step = false;
 }
 
+void rc_debugger_dialog::term_process()
+{
+    if(rc_debug_pid < 0)
+        return;
+
+    wxFileName editor_path_dir = dbg_rt;;
+    editor_path_dir.SetFullName(_(""));
+
+    wxFileName pid_filename = editor_path_dir;
+    pid_filename.SetFullName(_("dbg_pid.txt"));
+
+    if(pid_filename.Exists())
+    {
+        wxRemove(pid_filename.GetFullPath());
+    }
+
+    wxString term_cmd = _("cd [editor_path] && echo $( pidof rcbasic_debug ) > dbg_pid.txt");
+    term_cmd.Replace(_("[editor_path]"), editor_path_dir.GetFullPath());
+    //wxPuts(_("-------------DEBUG-----------------"));
+    //wxPuts(_("get pid: ") + term_cmd);
+    wxSystem(term_cmd);
+
+    wxFile pid_file;
+
+    if(pid_file.Open(pid_filename.GetFullPath()))
+    {
+        wxString rpid;
+        pid_file.ReadAll(&rpid);
+        pid_file.Close();
+        rpid = rpid.substr(rpid.find_first_not_of(_(" ")));
+        rpid = rpid.substr(0, rpid.find_first_of(_(" ")));
+        if(rpid.Length() > 0)
+        {
+            //wxPuts(_("Stop Prog: kill ") + rpid);
+            wxSystem(_("kill -9 ") + rpid);
+            rc_debug_pid = -1;
+            is_running = false;
+        }
+    }
+
+}
+
 void rc_debugger_dialog::onEnd( wxCommandEvent& event )
 {
     if(is_running)
     {
+        #ifdef WIN32
         wxKill(rc_debug_pid, wxSIGKILL, NULL, wxKILL_CHILDREN);
         is_running = false;
         rc_debug_pid = -1;
+        #else
+        //return; // Disable abort on linux until we figure this nonsense
+        term_process();
+        wxMessageBox(_("process terminated"));
+        #endif
     }
 }
 
@@ -431,9 +482,16 @@ void rc_debugger_dialog::onClose( wxCommandEvent& event )
 {
     if(is_running)
     {
+        #ifdef WIN32
         wxKill(rc_debug_pid, wxSIGKILL, NULL, wxKILL_CHILDREN);
         is_running = false;
         rc_debug_pid = -1;
+        #else
+        term_process();
+        wxMessageBox(_("process terminated"));
+        //is_running = false;
+        //rc_debug_pid = -1;
+        #endif
     }
 
     wxSetWorkingDirectory(cwd);

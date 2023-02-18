@@ -1073,13 +1073,4 @@ void GetMatrixSize(uint32_t mA, double* r, double* c)
     *c = rc_matrix[mA].c;
 }
 
-
-
-#define RC_MATRIX_MODE_SINGLE 0
-#define RC_MATRIX_MODE_SPLIT 1
-#define RC_MATRIX_MODE_SINGLE_PARALLEL 2
-#define RC_MATRIX_MODE_DUAL_PARALLEL 3
-
-uint32_t rc_matrix_mode = 0;
-
 #endif // RC_MATRIX_H_INCLUDED

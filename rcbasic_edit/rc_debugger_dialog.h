@@ -56,6 +56,8 @@ class rc_debugger_dialog : public rc_debugger
 		void updateDebugData();
 		void updateDebugUI();
 
+		void term_process();
+
 		wxProcess* rc_debug_process;
 		long rc_debug_pid = -1;
 
@@ -74,6 +76,8 @@ class rc_debugger_dialog : public rc_debugger
 		wxColour msg_bkg_color[2];
 
 		wxString cwd;
+
+		wxFileName dbg_rt;
 	//// end generated class members
 
 };

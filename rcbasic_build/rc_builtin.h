@@ -1254,21 +1254,37 @@ void init_embedded()
     add_embedded_arg("mA", ID_TYPE_NUM);
     add_embedded_arg("r", ID_TYPE_BYREF_NUM);
     add_embedded_arg("c", ID_TYPE_BYREF_NUM);
-    embed_function("SetMatrixMode", ID_TYPE_SUB);
-    add_embedded_arg("mode", ID_TYPE_NUM);
-    add_embedded_arg("error_flag", ID_TYPE_NUM);
-    embed_function("MatrixProcess_Error", ID_TYPE_FN_NUM);
-    add_embedded_arg("m_process", ID_TYPE_NUM);
-    embed_function("MatrixProcess_Wait", ID_TYPE_SUB);
-    embed_function("MatrixProcess_Continue", ID_TYPE_SUB);
-    embed_function("MatrixProcess_Stop", ID_TYPE_SUB);
-    embed_function("MatrixProcess_Clear", ID_TYPE_SUB);
-    embed_function("DeleteMatrixProcess", ID_TYPE_FN_NUM);
-    add_embedded_arg("m_process", ID_TYPE_NUM);
-    embed_function("GetMatrixMode", ID_TYPE_FN_NUM);
-    add_embedded_arg("mode", ID_TYPE_BYREF_NUM);
-    add_embedded_arg("error_flag", ID_TYPE_BYREF_NUM);
+    embed_function("SetMatrixProcess", ID_TYPE_FN_NUM);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessOpen", ID_TYPE_FN_NUM);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("SetProcessErrorMode", ID_TYPE_SUB);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    add_embedded_arg("error_mode", ID_TYPE_NUM);
+    embed_function("ProcessError", ID_TYPE_FN_NUM);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessWait", ID_TYPE_SUB);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessWaitAll", ID_TYPE_SUB);
+    embed_function("ProcessContinue", ID_TYPE_SUB);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessStop", ID_TYPE_SUB);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessClear", ID_TYPE_SUB);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessClose", ID_TYPE_FN_NUM);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessErrorMode", ID_TYPE_FN_NUM);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessSleep", ID_TYPE_SUB);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    add_embedded_arg("msec", ID_TYPE_NUM);
+    embed_function("ProcessExists", ID_TYPE_FN_NUM);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
+    embed_function("ProcessStopAll", ID_TYPE_SUB);
+    embed_function("ProcessContinueAll", ID_TYPE_SUB);
     embed_function("NumCPUs", ID_TYPE_FN_NUM);
+
 
 }
 

@@ -1248,18 +1248,33 @@
 #define GETMATRIXSIZE_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define GETMATRIXSIZE_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define GETMATRIXSIZE_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
-#define FN_SetMatrixMode 435
-#define SETMATRIXMODE_MODE num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define SETMATRIXMODE_ERROR_FLAG num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
-#define FN_MatrixProcess_Error 436
-#define MATRIXPROCESS_ERROR_M_PROCESS num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define FN_MatrixProcess_Wait 437
-#define FN_MatrixProcess_Continue 438
-#define FN_MatrixProcess_Stop 439
-#define FN_MatrixProcess_Clear 440
-#define FN_DeleteMatrixProcess 441
-#define DELETEMATRIXPROCESS_M_PROCESS num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define FN_GetMatrixMode 442
-#define GETMATRIXMODE_MODE num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define GETMATRIXMODE_ERROR_FLAG num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
-#define FN_NumCPUs 443
+#define FN_SetMatrixProcess 435
+#define SETMATRIXPROCESS_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessOpen 436
+#define PROCESSOPEN_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_SetProcessErrorMode 437
+#define SETPROCESSERRORMODE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SETPROCESSERRORMODE_ERROR_MODE num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_ProcessError 438
+#define PROCESSERROR_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessWait 439
+#define PROCESSWAIT_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessWaitAll 440
+#define FN_ProcessContinue 441
+#define PROCESSCONTINUE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessStop 442
+#define PROCESSSTOP_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessClear 443
+#define PROCESSCLEAR_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessClose 444
+#define PROCESSCLOSE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessErrorMode 445
+#define PROCESSERRORMODE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessSleep 446
+#define PROCESSSLEEP_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define PROCESSSLEEP_MSEC num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_ProcessExists 447
+#define PROCESSEXISTS_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessStopAll 448
+#define FN_ProcessContinueAll 449
+#define FN_NumCPUs 450

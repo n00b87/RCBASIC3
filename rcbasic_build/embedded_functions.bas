@@ -472,15 +472,23 @@ function UnAugmentMatrix(mA, mB, mC)
 sub ZeroMatrix(mA)
 
 sub GetMatrixSize(mA, ByRef r, ByRef c)
+function SetMatrixProcess(p_num) 'Set to -1 for main thread
 
-'MODES - MATRIX_MODE_SINGLE, MATRIX_MODE_SPLIT, MATRIX_MODE_SINGLE_PARRALEL, MATRIX_MODE_DUAL_PARRALEL
+
 'ERROR_FLAG - MATRIX_ON_ERROR_STOP, MATRIX_ON_ERROR_WAIT, MATRIX_ON_ERROR_CONTINUE
-sub SetMatrixMode(mode, error_flag) 'stops and locks mutex, and clears queue before changing mode
-function MatrixProcess_Error(m_process)
-sub MatrixProcess_Wait() 'waits for all calculations to complete and lock matrix mutex
-sub MatrixProcess_Continue() 'unlock mutex
-sub MatrixProcess_Stop() 'stops after current calculation its working on and lock mutex
-sub MatrixProcess_Clear() 'locks mutex and clears matrix queue
-function DeleteMatrixProcess(m_process)
-function GetMatrixMode(ByRef mode, ByRef error_flag)
+function ProcessOpen(p_num) 'stops and locks mutex, and clears queue before changing mode
+sub SetProcessErrorMode(p_num, error_mode)
+function ProcessError(p_num)
+sub ProcessWait(p_num) 'waits for all calculations to complete and lock matrix mutex
+sub ProcessWaitAll() 'waits for all process to finish
+sub ProcessContinue(p_num) 'unlock mutex
+sub ProcessStop(p_num) 'stops after current calculation its working on and lock mutex
+sub ProcessClear(p_num) 'locks mutex and clears matrix queue
+function ProcessClose(p_num)
+function ProcessErrorMode(p_num)
+sub ProcessSleep(p_num, msec)
+function ProcessExists(p_num)
+sub ProcessStopAll()
+sub ProcessContinueAll()
+
 function NumCPUs()

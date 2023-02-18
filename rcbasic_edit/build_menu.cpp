@@ -43,6 +43,7 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
     if( (!main_fname.Exists()) || ( (!wxFileExists(dbg_fname.GetFullPath())) && isDebugging ) )
     {
         wxMessageBox(_("Main Source Target failed to build.\nCheck the build log for more details."));
+        //wxMessageBox(_("FILEN NOT FOUND: ") + main_fname.GetFullPath());
         isBuildingAndRunning = false;
         build_success = false;
         isDebugging = false;
@@ -69,7 +70,10 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
         if(isCurrentFileBuild)
             runCurrentFile();
         else
+        {
+            //wxMessageBox(_("Run Project: ") + main_fname.GetFullPath());
             runProject();
+        }
     }
 
     if(isDebugging && build_success)
@@ -725,14 +729,25 @@ void rcbasic_edit_frame::debugProject()
     //wxMessageBox(_("cbc = ") + cbc_fname.GetFullPath());
 
     wxFileName dbg_rt_fname = rcbasic_run_path;
-    dbg_rt_fname.SetFullName(_("rcbasic_debug.exe"));
+    #ifdef WIN32
+        dbg_rt_fname.SetFullName(_("rcbasic_debug.exe"));
+    #else
+        dbg_rt_fname.SetFullName(_("rcbasic_debug"));
+    #endif
     //wxFileName cbc_fname(_("C:\\Users\\omega\\Desktop\\Projects\\RCBASIC3\\rcbasic_build\\bin\\Release64\\debug.cbc"));
     //wxFileName dbg_rt_fname(_("C:\\Users\\omega\\Desktop\\Projects\\RCBASIC3\\rcbasic_runtime\\bin\\Release64\\rcbasic_runtime.exe"));
 
 
+    isBuilding = false;
+    isRunning = false;
+    isDebugging = false;
+    isBuildingAndRunning = false;
+
     rc_debugger_dialog dbg_dialog(this, cbc_fname, dbg_rt_fname);
 
     dbg_dialog.ShowWindowModal();
+
+    //wxMessageBox(_("end of debug"));
 
     isDebugging = false;
     debug_project = NULL;
