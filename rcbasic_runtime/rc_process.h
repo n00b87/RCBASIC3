@@ -37,7 +37,7 @@ rc_subprocess_mutex_container rc_subprocess_mutex[3];
 
 struct rc_process_op
 {
-    uint32_t fn;
+    int fn;
     double n[10];
     // I will add a string arg whenever a string op gets implemented
 };
@@ -45,6 +45,7 @@ struct rc_process_op
 struct rc_process_op_list
 {
     queue<rc_process_op> op;
+    bool complete = false;
 };
 
 rc_process_op_list rc_subprocess_queue[3];
@@ -136,7 +137,6 @@ int rc_subprocess_fn( void* data)
         if(rc_subprocess_queue[process_num].op.size() > 0)
         {
             op = rc_subprocess_queue[process_num].op.front();
-            rc_subprocess_queue[process_num].op.pop();
             rc_unlockMutex(process_num, RC_QUEUE_MUTEX);
         }
         else
@@ -266,6 +266,13 @@ int rc_subprocess_fn( void* data)
                 SDL_Delay(op.n[0]);
             break;
 
+        }
+
+        if(op.fn >= 0)
+        {
+            rc_lockMutex(process_num, RC_QUEUE_MUTEX);
+            rc_subprocess_queue[process_num].op.pop();
+            rc_unlockMutex(process_num, RC_QUEUE_MUTEX);
         }
 
         if(rc_subprocess_error != 0)

@@ -9,18 +9,11 @@
 
 using namespace std;
 
-double rand_float(double min_val, double max_val) {
-  // Seed the random number generator with the current time
-  srand(time(NULL));
 
-  // Generate a random double between 0 and 1
-  double rand_num = (double) rand() / RAND_MAX;
-
-  // Scale and shift the random number to fit within the desired range
-  rand_num = rand_num * (max_val - min_val) + min_val;
-
-  return rand_num;
+int64_t rand_int(int64_t vmin, int64_t vmax) {
+    return std::rand() % (vmax - vmin + 1) + vmin;
 }
+
 
 struct rc_matrix_type
 {
@@ -803,7 +796,7 @@ void RandomizeMatrix(uint32_t mA, double vmin, double vmax)
         row_offset = row * rc_matrix[mA].c;
         for(uint32_t col = 0; col < rc_matrix[mA].c; col++)
         {
-            rc_matrix[mA].data[row_offset + col] = rand_float(vmin, vmax);
+            rc_matrix[mA].data[row_offset + col] = rand_int(vmin, vmax);
         }
     }
 }
