@@ -1153,12 +1153,12 @@ void init_embedded()
     add_embedded_arg("r", ID_TYPE_NUM);
     add_embedded_arg("num_rows", ID_TYPE_NUM);
     add_embedded_arg("v", ID_TYPE_NUM);
-    embed_function("GetMatrixColumns", ID_TYPE_FN_NUM);
+    embed_function("CopyMatrixColumns", ID_TYPE_FN_NUM);
     add_embedded_arg("mA", ID_TYPE_NUM);
     add_embedded_arg("mB", ID_TYPE_NUM);
     add_embedded_arg("c", ID_TYPE_NUM);
     add_embedded_arg("num_cols", ID_TYPE_NUM);
-    embed_function("GetMatrixRows", ID_TYPE_FN_NUM);
+    embed_function("CopyMatrixRows", ID_TYPE_FN_NUM);
     add_embedded_arg("mA", ID_TYPE_NUM);
     add_embedded_arg("mB", ID_TYPE_NUM);
     add_embedded_arg("r", ID_TYPE_NUM);
@@ -1283,8 +1283,9 @@ void init_embedded()
     add_embedded_arg("p_num", ID_TYPE_NUM);
     embed_function("ProcessStopAll", ID_TYPE_SUB);
     embed_function("ProcessContinueAll", ID_TYPE_SUB);
+    embed_function("ProcessQueueSize", ID_TYPE_FN_NUM);
+    add_embedded_arg("p_num", ID_TYPE_NUM);
     embed_function("NumCPUs", ID_TYPE_FN_NUM);
-
 
 }
 

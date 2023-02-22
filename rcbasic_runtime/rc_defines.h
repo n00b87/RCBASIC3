@@ -1147,16 +1147,16 @@
 #define FILLMATRIXROWS_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define FILLMATRIXROWS_NUM_ROWS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
 #define FILLMATRIXROWS_V num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
-#define FN_GetMatrixColumns 409
-#define GETMATRIXCOLUMNS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define GETMATRIXCOLUMNS_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
-#define GETMATRIXCOLUMNS_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
-#define GETMATRIXCOLUMNS_NUM_COLS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
-#define FN_GetMatrixRows 410
-#define GETMATRIXROWS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
-#define GETMATRIXROWS_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
-#define GETMATRIXROWS_R num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
-#define GETMATRIXROWS_NUM_ROWS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_CopyMatrixColumns 409
+#define COPYMATRIXCOLUMNS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define COPYMATRIXCOLUMNS_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define COPYMATRIXCOLUMNS_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define COPYMATRIXCOLUMNS_NUM_COLS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_CopyMatrixRows 410
+#define COPYMATRIXROWS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define COPYMATRIXROWS_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define COPYMATRIXROWS_R num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define COPYMATRIXROWS_NUM_ROWS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
 #define FN_IdentityMatrix 411
 #define IDENTITYMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define IDENTITYMATRIX_N num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
@@ -1277,4 +1277,6 @@
 #define PROCESSEXISTS_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define FN_ProcessStopAll 448
 #define FN_ProcessContinueAll 449
-#define FN_NumCPUs 450
+#define FN_ProcessQueueSize 450
+#define PROCESSQUEUESIZE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_NumCPUs 451

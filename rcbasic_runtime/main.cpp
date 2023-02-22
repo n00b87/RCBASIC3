@@ -3402,21 +3402,21 @@ void func_130(uint64_t fn)
                 rc_push_num(1);
             }
         break;
-        case FN_GetMatrixColumns: //Number Function
+        case FN_CopyMatrixColumns: //Number Function
             if(rc_active_matrix_process < 0)
-                rc_push_num(GetMatrixColumns(GETMATRIXCOLUMNS_MA, GETMATRIXCOLUMNS_MB, GETMATRIXCOLUMNS_C, GETMATRIXCOLUMNS_NUM_COLS));
+                rc_push_num(GetMatrixColumns(COPYMATRIXCOLUMNS_MA, COPYMATRIXCOLUMNS_MB, COPYMATRIXCOLUMNS_C, COPYMATRIXCOLUMNS_NUM_COLS));
             else
             {
-                ProcessQueueMatrixOp(FN_GetMatrixColumns, GETMATRIXCOLUMNS_MA, GETMATRIXCOLUMNS_MB, GETMATRIXCOLUMNS_C, GETMATRIXCOLUMNS_NUM_COLS);
+                ProcessQueueMatrixOp(FN_CopyMatrixColumns, COPYMATRIXCOLUMNS_MA, COPYMATRIXCOLUMNS_MB, COPYMATRIXCOLUMNS_C, COPYMATRIXCOLUMNS_NUM_COLS);
                 rc_push_num(1);
             }
         break;
-        case FN_GetMatrixRows: //Number Function
+        case FN_CopyMatrixRows: //Number Function
             if(rc_active_matrix_process < 0)
-                rc_push_num(GetMatrixRows(GETMATRIXROWS_MA, GETMATRIXROWS_MB, GETMATRIXROWS_R, GETMATRIXROWS_NUM_ROWS));
+                rc_push_num(GetMatrixRows(COPYMATRIXROWS_MA, COPYMATRIXROWS_MB, COPYMATRIXROWS_R, COPYMATRIXROWS_NUM_ROWS));
             else
             {
-                ProcessQueueMatrixOp(FN_GetMatrixRows, GETMATRIXROWS_MA, GETMATRIXROWS_MB, GETMATRIXROWS_R, GETMATRIXROWS_NUM_ROWS);
+                ProcessQueueMatrixOp(FN_CopyMatrixRows, COPYMATRIXROWS_MA, COPYMATRIXROWS_MB, COPYMATRIXROWS_R, COPYMATRIXROWS_NUM_ROWS);
                 rc_push_num(1);
             }
         break;
@@ -3639,6 +3639,9 @@ void func_130(uint64_t fn)
         break;
         case FN_ProcessContinueAll: //Sub Procedure
             ProcessContinueAll();
+        break;
+        case FN_ProcessQueueSize: //Number Function
+            rc_push_num(ProcessQueueSize(PROCESSQUEUESIZE_P_NUM));
         break;
         case FN_NumCPUs: //Number Function
             rc_push_num(NumCPUs());

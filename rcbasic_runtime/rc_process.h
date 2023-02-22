@@ -10,8 +10,7 @@
 #define MAX_SUBPROCESS 3
 
 #define RC_THREAD_ONERROR_CONTINUE 0
-#define RC_THREAD_ONERROR_WAIT 1
-#define RC_THREAD_ONERROR_STOP 2
+#define RC_THREAD_ONERROR_STOP 1
 
 SDL_Thread* rc_subprocess_thread[3];
 
@@ -45,14 +44,12 @@ struct rc_process_op
 struct rc_process_op_list
 {
     queue<rc_process_op> op;
-    bool complete = false;
 };
 
 rc_process_op_list rc_subprocess_queue[3];
 
 uint32_t rc_subprocess_error_mode[3];
 int rc_subprocess_error[3];
-uint32_t rc_subprocess_error_status[3];
 
 int rc_active_matrix_process = -1;
 
@@ -74,7 +71,7 @@ void rc_initSubprocessSystem()
 #define RC_ERROR_MODE_MUTEX 2
 #define RC_CURRENT_OP_MUTEX 3
 
-void rc_lockMutex(uint32_t process_num, uint32_t m)
+void rc_lockMutex(int process_num, uint32_t m)
 {
     switch(m)
     {
@@ -98,7 +95,7 @@ void rc_lockMutex(uint32_t process_num, uint32_t m)
     }
 }
 
-void rc_unlockMutex(uint32_t process_num, uint32_t m)
+void rc_unlockMutex(int process_num, uint32_t m)
 {
     switch(m)
     {
@@ -148,7 +145,7 @@ int rc_subprocess_fn( void* data)
         switch(op.fn)
         {
             case 0:
-                p_loop = false;
+                p_loop = false; //std::cout << "THREAD_END_OP " << std::endl;
                 break;
 
             case FN_DimMatrix: //Sub Procedure
@@ -199,10 +196,10 @@ int rc_subprocess_fn( void* data)
             case FN_FillMatrixRows: //Number Function
                 rc_subprocess_error[0] = (FillMatrixRows(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;
             break;
-            case FN_GetMatrixColumns: //Number Function
+            case FN_CopyMatrixColumns: //Number Function
                 rc_subprocess_error[0] = (GetMatrixColumns(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
-            case FN_GetMatrixRows: //Number Function
+            case FN_CopyMatrixRows: //Number Function
                 rc_subprocess_error[0] = (GetMatrixRows(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_IdentityMatrix: //Sub Procedure
@@ -271,16 +268,35 @@ int rc_subprocess_fn( void* data)
         if(op.fn >= 0)
         {
             rc_lockMutex(process_num, RC_QUEUE_MUTEX);
-            rc_subprocess_queue[process_num].op.pop();
+            if(rc_subprocess_queue[process_num].op.size()>0)
+                rc_subprocess_queue[process_num].op.pop();
             rc_unlockMutex(process_num, RC_QUEUE_MUTEX);
         }
 
-        if(rc_subprocess_error != 0)
+        if(rc_subprocess_error[process_num] != 0)
         {
-            rc_subprocess_error_status[process_num] = rc_subprocess_error_mode[process_num];
+            switch(rc_subprocess_error_mode[process_num])
+            {
+                case RC_THREAD_ONERROR_CONTINUE:
+                    rc_unlockMutex(process_num, RC_ERROR_MODE_MUTEX);
+                    break;
+                case RC_THREAD_ONERROR_STOP:
+                    rc_unlockMutex(process_num, RC_ERROR_MODE_MUTEX);
+                    bool error_status = true;
+                    while(error_status)
+                    {
+                        rc_lockMutex(process_num, RC_ERROR_MODE_MUTEX);
+                        error_status = (rc_subprocess_error[process_num] != 0);
+                        rc_unlockMutex(process_num, RC_ERROR_MODE_MUTEX);
+                        //std::cout << "THREAD_ERROR " << error_status << std::endl;
+                        SDL_Delay(5);
+                    }
+                    break;
+            }
         }
+        else
+            rc_unlockMutex(process_num, RC_ERROR_MODE_MUTEX);
 
-        rc_unlockMutex(process_num, RC_ERROR_MODE_MUTEX);
         rc_unlockMutex(process_num, RC_CURRENT_OP_MUTEX);
 
     }
@@ -292,7 +308,7 @@ int rc_subprocess_fn( void* data)
 }
 
 
-bool rc_setMatrixProcess(uint32_t p_num)
+bool rc_setMatrixProcess(int p_num)
 {
     if(p_num >= 0 && p_num < MAX_SUBPROCESS)
         rc_active_matrix_process = p_num;
@@ -305,7 +321,7 @@ bool rc_setMatrixProcess(uint32_t p_num)
     return true; //main process is set
 }
 
-bool rc_processOpen(uint32_t p_num)
+bool rc_processOpen(int p_num)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return false;
@@ -313,34 +329,40 @@ bool rc_processOpen(uint32_t p_num)
     if(rc_subprocess_thread[p_num])
         return false;
 
+    for(int i = 0; i < rc_subprocess_queue[p_num].op.size(); i++)
+        rc_subprocess_queue[p_num].op.pop();
+
     rc_subprocess_thread[p_num] = SDL_CreateThread(rc_subprocess_fn, "rc_subprocess", &rc_subprocess_param[0]);
 
     return (rc_subprocess_thread[p_num] != NULL);
 }
 
-void rc_setProcessErrorMode(uint32_t p_num, uint32_t error_mode)
+void rc_setProcessErrorMode(int p_num, uint32_t error_mode)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return;
+
+    if(error_mode < 0 || error_mode > 1)
+        error_mode = 0;
 
     rc_lockMutex(p_num, RC_ERROR_MODE_MUTEX);
     rc_subprocess_error_mode[p_num] = error_mode;
     rc_unlockMutex(p_num, RC_ERROR_MODE_MUTEX);
 }
 
-int ProcessError(uint32_t p_num)
+int ProcessError(int p_num)
 {
      if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return 0;
 
     rc_lockMutex(p_num, RC_ERROR_MODE_MUTEX);
-    uint32_t error_mode = rc_subprocess_error_mode[p_num];
+    int error = rc_subprocess_error[p_num];
     rc_unlockMutex(p_num, RC_ERROR_MODE_MUTEX);
 
-    return error_mode;
+    return error;
 }
 
-void ProcessWait(uint32_t p_num)
+void ProcessWait(int p_num)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return;
@@ -348,9 +370,12 @@ void ProcessWait(uint32_t p_num)
     if(!rc_subprocess_thread[p_num])
         return;
 
+    //std::cout << "q_LOCK " << std::endl;
     rc_lockMutex(p_num, RC_QUEUE_MUTEX);
     uint32_t q_size = rc_subprocess_queue[p_num].op.size();
     rc_unlockMutex(p_num, RC_QUEUE_MUTEX);
+
+    //std::cout << "q_size = " << q_size << std::endl;
 
     while(q_size > 0)
     {
@@ -367,10 +392,14 @@ void ProcessWaitAll()
         ProcessWait(i);
 }
 
-void ProcessContinue(uint32_t p_num)
+void ProcessContinue(int p_num)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return;
+
+    rc_lockMutex(p_num, RC_ERROR_MODE_MUTEX);
+    rc_subprocess_error[p_num] = 0;
+    rc_unlockMutex(p_num, RC_ERROR_MODE_MUTEX);
 
     rc_unlockMutex(p_num, RC_CURRENT_OP_MUTEX);
 }
@@ -381,7 +410,7 @@ void ProcessContinueAll()
         ProcessContinue(i);
 }
 
-void ProcessStop(uint32_t p_num)
+void ProcessStop(int p_num)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return;
@@ -395,7 +424,7 @@ void ProcessStopAll()
         ProcessStop(i);
 }
 
-void ProcessClear(uint32_t p_num)
+void ProcessClear(int p_num)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return;
@@ -407,9 +436,13 @@ void ProcessClear(uint32_t p_num)
         rc_subprocess_queue[p_num].op.pop();
 
     rc_unlockMutex(p_num, RC_QUEUE_MUTEX);
+
+    rc_lockMutex(p_num, RC_ERROR_MODE_MUTEX);
+    rc_subprocess_error[p_num] = 0;
+    rc_unlockMutex(p_num, RC_ERROR_MODE_MUTEX);
 }
 
-bool ProcessClose(uint32_t p_num)
+bool ProcessClose(int p_num)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return false;
@@ -420,6 +453,8 @@ bool ProcessClose(uint32_t p_num)
     rc_process_op op;
     op.fn = 0;
 
+    ProcessClear(p_num);
+
     rc_lockMutex(p_num, RC_QUEUE_MUTEX);
     rc_subprocess_queue[p_num].op.push(op);
     rc_unlockMutex(p_num, RC_QUEUE_MUTEX);
@@ -428,10 +463,13 @@ bool ProcessClose(uint32_t p_num)
 
     rc_subprocess_thread[p_num] = NULL;
 
+    if(rc_active_matrix_process == p_num)
+        rc_active_matrix_process = -1;
+
     return true;
 }
 
-uint32_t ProcessErrorMode(uint32_t p_num)
+uint32_t ProcessErrorMode(int p_num)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return 0;
@@ -442,7 +480,7 @@ uint32_t ProcessErrorMode(uint32_t p_num)
     return error_mode;
 }
 
-void ProcessSleep(uint32_t p_num, uint32_t msec)
+void ProcessSleep(int p_num, uint32_t msec)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return;
@@ -456,12 +494,21 @@ void ProcessSleep(uint32_t p_num, uint32_t msec)
     rc_unlockMutex(p_num, RC_QUEUE_MUTEX);
 }
 
-bool ProcessExists(uint32_t p_num)
+bool ProcessExists(int p_num)
 {
     if(p_num < 0 || p_num >= MAX_SUBPROCESS)
         return false;
 
     return (rc_subprocess_thread[p_num] != NULL);
+}
+
+uint32_t ProcessQueueSize(int p_num)
+{
+    rc_lockMutex(p_num, RC_QUEUE_MUTEX);
+    int q_size = rc_subprocess_queue[p_num].op.size();
+    rc_unlockMutex(p_num, RC_QUEUE_MUTEX);
+
+    return q_size;
 }
 
 void ProcessQueueMatrixOp(uint32_t fn, double n0 = 0, double n1 = 0, double n2 = 0, double n3 = 0, double n4 = 0, double n5 = 0,

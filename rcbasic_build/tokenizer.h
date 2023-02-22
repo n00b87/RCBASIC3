@@ -984,6 +984,10 @@ string rc_keywordToken(string sline)
         return "<num>" + rc_intToString(SDL_WINDOW_ALLOW_HIGHDPI);
     else if(sline.compare("WINDOW_HIDDEN")==0)
         return "<num>" + rc_intToString(SDL_WINDOW_HIDDEN);
+    else if(sline.compare("ON_ERROR_CONTINUE")==0)
+        return "<num>0";
+    else if(sline.compare("ON_ERROR_STOP")==0)
+        return "<num>1";
     else
     {
         for(int i = 0; i < rc_constants.size(); i++)
