@@ -17,6 +17,9 @@ rc_debugger( parent )
         f.Close();
     }*/
 
+    dbg_rt = dbg_runtime;
+    dbg_rt.MakeAbsolute();
+
     wxFileName dbg_symbols = dbg_cbc;
     dbg_symbols.SetFullName(_("rcbasic.dbgs"));
 
@@ -43,7 +46,7 @@ rc_debugger( parent )
 
 
 
-
+    #ifdef WIN32
     rc_debug_process = new wxProcess(this);
 
     if(!rc_debug_process)
@@ -52,7 +55,8 @@ rc_debugger( parent )
         Close();
     }
 
-    rc_debug_process->Connect( wxEVT_END_PROCESS, wxProcessEventHandler( onDebugProcessTerminate ), NULL, this );
+    rc_debug_process->Connect( wxEVT_END_PROCESS, wxProcessEventHandler( rc_debugger_dialog::onDebugProcessTerminate ), NULL, this );
+    #endif // WIN32
 
     cwd = wxGetCwd();
 
@@ -70,7 +74,11 @@ rc_debugger( parent )
     if(wxFileExists(_("rcbasic_dbg.rt")))
         wxRemoveFile(_("rcbasic_dbg.rt"));
 
+    #ifdef WIN32
     rc_debug_pid = wxExecute(_("\"") + dbg_runtime.GetFullPath().Trim() + _("\""), wxEXEC_ASYNC, rc_debug_process, NULL);
+    #else
+    rc_debug_pid = wxExecute(_("\"") + dbg_runtime.GetFullPath().Trim() + _("\""), wxEXEC_ASYNC);
+    #endif // WIN32
 
     //wxSetWorkingDirectory(cwd);
 
@@ -417,13 +425,30 @@ void rc_debugger_dialog::onSuper( wxCommandEvent& event )
     step = false;
 }
 
+void rc_debugger_dialog::term_process()
+{
+    if(!is_running)
+        return;
+
+    wxSystem(_("kill -9 $(pidof rcbasic_debug)"));
+    rc_debug_pid = -1;
+    is_running = false;
+
+
+}
+
 void rc_debugger_dialog::onEnd( wxCommandEvent& event )
 {
     if(is_running)
     {
+        #ifdef WIN32
         wxKill(rc_debug_pid, wxSIGKILL, NULL, wxKILL_CHILDREN);
         is_running = false;
         rc_debug_pid = -1;
+        #else
+        term_process();
+        wxMessageBox(_("process terminated"));
+        #endif
     }
 }
 
@@ -431,9 +456,14 @@ void rc_debugger_dialog::onClose( wxCommandEvent& event )
 {
     if(is_running)
     {
+        #ifdef WIN32
         wxKill(rc_debug_pid, wxSIGKILL, NULL, wxKILL_CHILDREN);
         is_running = false;
         rc_debug_pid = -1;
+        #else
+        term_process();
+        wxMessageBox(_("process terminated"));
+        #endif
     }
 
     wxSetWorkingDirectory(cwd);

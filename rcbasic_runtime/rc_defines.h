@@ -1085,3 +1085,198 @@
 #define ARRAYFILL_SRC num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
 #define ARRAYFILL_FDATA num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
 #define FN_Runtime$ 392
+#define FN_DimMatrix 393
+#define DIMMATRIX_M num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define DIMMATRIX_M_ROWS num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define DIMMATRIX_M_COLS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define DIMMATRIX_PRESERVE_FLAG num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_AddMatrix 394
+#define ADDMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define ADDMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define ADDMATRIX_MC num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_AugmentMatrix 395
+#define AUGMENTMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define AUGMENTMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define AUGMENTMATRIX_MC num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_CopyMatrix 396
+#define COPYMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define COPYMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_InsertMatrixColumns 397
+#define INSERTMATRIXCOLUMNS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define INSERTMATRIXCOLUMNS_C num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define INSERTMATRIXCOLUMNS_NUM_COLS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_InsertMatrixRows 398
+#define INSERTMATRIXROWS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define INSERTMATRIXROWS_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define INSERTMATRIXROWS_NUM_ROWS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_MultiplyMatrix 399
+#define MULTIPLYMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define MULTIPLYMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define MULTIPLYMATRIX_MC num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_CubeMatrix 400
+#define CUBEMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define CUBEMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_DeleteMatrixColumns 401
+#define DELETEMATRIXCOLUMNS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define DELETEMATRIXCOLUMNS_C num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define DELETEMATRIXCOLUMNS_NUM_COLS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_DeleteMatrixRows 402
+#define DELETEMATRIXROWS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define DELETEMATRIXROWS_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define DELETEMATRIXROWS_NUM_ROWS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_ClearMatrix 403
+#define CLEARMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ClearMatrixColumns 404
+#define CLEARMATRIXCOLUMNS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define CLEARMATRIXCOLUMNS_C num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define CLEARMATRIXCOLUMNS_NUM_COLS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_ClearMatrixRows 405
+#define CLEARMATRIXROWS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define CLEARMATRIXROWS_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define CLEARMATRIXROWS_NUM_ROWS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_FillMatrix 406
+#define FILLMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FILLMATRIX_V num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_FillMatrixColumns 407
+#define FILLMATRIXCOLUMNS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FILLMATRIXCOLUMNS_C num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FILLMATRIXCOLUMNS_NUM_COLS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FILLMATRIXCOLUMNS_V num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_FillMatrixRows 408
+#define FILLMATRIXROWS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FILLMATRIXROWS_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FILLMATRIXROWS_NUM_ROWS num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FILLMATRIXROWS_V num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_CopyMatrixColumns 409
+#define COPYMATRIXCOLUMNS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define COPYMATRIXCOLUMNS_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define COPYMATRIXCOLUMNS_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define COPYMATRIXCOLUMNS_NUM_COLS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_CopyMatrixRows 410
+#define COPYMATRIXROWS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define COPYMATRIXROWS_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define COPYMATRIXROWS_R num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define COPYMATRIXROWS_NUM_ROWS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_IdentityMatrix 411
+#define IDENTITYMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define IDENTITYMATRIX_N num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_SolveMatrix 412
+#define SOLVEMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SOLVEMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SOLVEMATRIX_MC num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_IsEqualMatrix 413
+#define ISEQUALMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define ISEQUALMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define ISEQUALMATRIX_TOLERANCE num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_Determinant 414
+#define DETERMINANT_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_AdjointMatrix 415
+#define ADJOINTMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define ADJOINTMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_InvertMatrix 416
+#define INVERTMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define INVERTMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_MatrixFromBuffer 417
+#define MATRIXFROMBUFFER_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define MATRIXFROMBUFFER_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define MATRIXFROMBUFFER_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define MATRIXFROMBUFFER_BUFFER num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_GetMatrix 418
+#define GETMATRIX_BUFFER num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define GETMATRIX_MA num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_RandomizeMatrix 419
+#define RANDOMIZEMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define RANDOMIZEMATRIX_VMIN num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define RANDOMIZEMATRIX_VMAX num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_MatrixValue 420
+#define MATRIXVALUE_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define MATRIXVALUE_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define MATRIXVALUE_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_SetMatrixValue 421
+#define SETMATRIXVALUE_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SETMATRIXVALUE_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SETMATRIXVALUE_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define SETMATRIXVALUE_V num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define FN_ScalarMatrix 422
+#define SCALARMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SCALARMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SCALARMATRIX_S_VALUE num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_ScalarMatrixColumns 423
+#define SCALARMATRIXCOLUMNS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SCALARMATRIXCOLUMNS_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SCALARMATRIXCOLUMNS_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define SCALARMATRIXCOLUMNS_NUM_COLS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define SCALARMATRIXCOLUMNS_S_VALUE num_var[4].nid_value[0].value[ num_var[4].byref_offset ]
+#define FN_ScalarMatrixRows 424
+#define SCALARMATRIXROWS_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SCALARMATRIXROWS_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SCALARMATRIXROWS_R num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define SCALARMATRIXROWS_NUM_ROWS num_var[3].nid_value[0].value[ num_var[3].byref_offset ]
+#define SCALARMATRIXROWS_S_VALUE num_var[4].nid_value[0].value[ num_var[4].byref_offset ]
+#define FN_SquareMatrix 425
+#define SQUAREMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SQUAREMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_SubMatrix 426
+#define SUBMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SUBMATRIX_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SUBMATRIX_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_SubtractMatrix 427
+#define SUBTRACTMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SUBTRACTMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SUBTRACTMATRIX_MC num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_SwapMatrix 428
+#define SWAPMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SWAPMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_SwapMatrixColumn 429
+#define SWAPMATRIXCOLUMN_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SWAPMATRIXCOLUMN_C1 num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SWAPMATRIXCOLUMN_C2 num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_SwapMatrixRow 430
+#define SWAPMATRIXROW_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SWAPMATRIXROW_R1 num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define SWAPMATRIXROW_R2 num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_TransposeMatrix 431
+#define TRANSPOSEMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define TRANSPOSEMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_UnAugmentMatrix 432
+#define UNAUGMENTMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define UNAUGMENTMATRIX_MB num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define UNAUGMENTMATRIX_MC num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_ZeroMatrix 433
+#define ZEROMATRIX_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_GetMatrixSize 434
+#define GETMATRIXSIZE_MA num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define GETMATRIXSIZE_R num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define GETMATRIXSIZE_C num_var[2].nid_value[0].value[ num_var[2].byref_offset ]
+#define FN_SetMatrixProcess 435
+#define SETMATRIXPROCESS_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessOpen 436
+#define PROCESSOPEN_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_SetProcessErrorMode 437
+#define SETPROCESSERRORMODE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define SETPROCESSERRORMODE_ERROR_MODE num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_ProcessError 438
+#define PROCESSERROR_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessWait 439
+#define PROCESSWAIT_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessWaitAll 440
+#define FN_ProcessContinue 441
+#define PROCESSCONTINUE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessStop 442
+#define PROCESSSTOP_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessClear 443
+#define PROCESSCLEAR_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessClose 444
+#define PROCESSCLOSE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessErrorMode 445
+#define PROCESSERRORMODE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessSleep 446
+#define PROCESSSLEEP_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define PROCESSSLEEP_MSEC num_var[1].nid_value[0].value[ num_var[1].byref_offset ]
+#define FN_ProcessExists 447
+#define PROCESSEXISTS_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_ProcessStopAll 448
+#define FN_ProcessContinueAll 449
+#define FN_ProcessQueueSize 450
+#define PROCESSQUEUESIZE_P_NUM num_var[0].nid_value[0].value[ num_var[0].byref_offset ]
+#define FN_NumCPUs 451

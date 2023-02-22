@@ -1,0 +1,4 @@
+#!/bin/bash
+THIS_PATH=$(readlink -f "$0")
+# cd $(dirname "$THIS_PATH")
+xterm -T "test" -e "$(dirname "$THIS_PATH")/rcbasic_studio_run $1; echo \"\"; echo \"Press Enter to Close\"; read -rn1"

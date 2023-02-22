@@ -352,7 +352,7 @@ class rc_find_dialog : public wxDialog
 	public:
 		wxTextCtrl* m_search_textCtrl;
 
-		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 438,163 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 438,203 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_find_dialog();
 
@@ -377,7 +377,7 @@ class rc_searchWrap_dialog : public wxDialog
 	public:
 		wxStaticText* m_searchWrapPrompt_staticText;
 
-		rc_searchWrap_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Search"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxCAPTION|wxSTAY_ON_TOP );
+		rc_searchWrap_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Search"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 514,203 ), long style = wxCAPTION|wxSTAY_ON_TOP );
 
 		~rc_searchWrap_dialog();
 
@@ -546,7 +546,7 @@ class rc_projectSettings_dialog : public wxDialog
 
 	public:
 
-		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 522,543 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 522,633 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectSettings_dialog();
 
@@ -577,7 +577,7 @@ class rc_fileProperties_dialog : public wxDialog
 
 	public:
 
-		rc_fileProperties_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("File Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 494,185 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_fileProperties_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("File Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 494,192 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_fileProperties_dialog();
 
@@ -879,7 +879,7 @@ class rc_debugger : public wxDialog
 
 	public:
 
-		rc_debugger( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Debug"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 516,393 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_debugger( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Debug"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 547,512 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_debugger();
 

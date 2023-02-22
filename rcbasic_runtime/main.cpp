@@ -49,6 +49,8 @@
 #include "rc_defines.h"
 #include "rc_stdlib.h"
 #include "rc_media.h"
+#include "rc_matrix.h"
+#include "rc_process.h"
 
 using namespace std;
 
@@ -3267,6 +3269,385 @@ void func_130(uint64_t fn)
             rc_push_str( rcbasic_runtime_path );
             break;
 
+
+        case FN_DimMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                DimMatrix(DIMMATRIX_M, DIMMATRIX_M_ROWS, DIMMATRIX_M_COLS, DIMMATRIX_PRESERVE_FLAG);
+            else
+                ProcessQueueMatrixOp(FN_DimMatrix, DIMMATRIX_M, DIMMATRIX_M_ROWS, DIMMATRIX_M_COLS, DIMMATRIX_PRESERVE_FLAG);
+        break;
+        case FN_AddMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(AddMatrix(ADDMATRIX_MA, ADDMATRIX_MB, ADDMATRIX_MC));
+            else
+            {
+                ProcessQueueMatrixOp(FN_AddMatrix, ADDMATRIX_MA, ADDMATRIX_MB, ADDMATRIX_MC);
+                rc_push_num(1);
+            }
+        break;
+        case FN_AugmentMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(AugmentMatrix(AUGMENTMATRIX_MA, AUGMENTMATRIX_MB, AUGMENTMATRIX_MC));
+            else
+            {
+                ProcessQueueMatrixOp(FN_AugmentMatrix, AUGMENTMATRIX_MA, AUGMENTMATRIX_MB, AUGMENTMATRIX_MC);
+                rc_push_num(1);
+            }
+        break;
+        case FN_CopyMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                CopyMatrix(COPYMATRIX_MA, COPYMATRIX_MB);
+            else
+                ProcessQueueMatrixOp(FN_CopyMatrix, COPYMATRIX_MA, COPYMATRIX_MB);
+        break;
+        case FN_InsertMatrixColumns: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(InsertMatrixColumn(INSERTMATRIXCOLUMNS_MA, INSERTMATRIXCOLUMNS_C, INSERTMATRIXCOLUMNS_NUM_COLS));
+            else
+            {
+                ProcessQueueMatrixOp(FN_InsertMatrixColumns, INSERTMATRIXCOLUMNS_MA, INSERTMATRIXCOLUMNS_C, INSERTMATRIXCOLUMNS_NUM_COLS);
+                rc_push_num(1);
+            }
+        break;
+        case FN_InsertMatrixRows: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(InsertMatrixRow(INSERTMATRIXROWS_MA, INSERTMATRIXROWS_R, INSERTMATRIXROWS_NUM_ROWS));
+            else
+            {
+                ProcessQueueMatrixOp(FN_InsertMatrixRows, INSERTMATRIXROWS_MA, INSERTMATRIXROWS_R, INSERTMATRIXROWS_NUM_ROWS);
+                rc_push_num(1);
+            }
+        break;
+        case FN_MultiplyMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(MultiplyMatrix(MULTIPLYMATRIX_MA, MULTIPLYMATRIX_MB, MULTIPLYMATRIX_MC));
+            else
+            {
+                ProcessQueueMatrixOp(FN_MultiplyMatrix, MULTIPLYMATRIX_MA, MULTIPLYMATRIX_MB, MULTIPLYMATRIX_MC);
+                rc_push_num(1);
+            }
+        break;
+        case FN_CubeMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(CubeMatrix(CUBEMATRIX_MA, CUBEMATRIX_MB));
+            else
+            {
+                ProcessQueueMatrixOp(FN_CubeMatrix, CUBEMATRIX_MA, CUBEMATRIX_MB);
+                rc_push_num(1);
+            }
+        break;
+        case FN_DeleteMatrixColumns: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(DeleteMatrixColumns(DELETEMATRIXCOLUMNS_MA, DELETEMATRIXCOLUMNS_C, DELETEMATRIXCOLUMNS_NUM_COLS));
+            else
+            {
+                ProcessQueueMatrixOp(FN_DeleteMatrixColumns, DELETEMATRIXCOLUMNS_MA, DELETEMATRIXCOLUMNS_C, DELETEMATRIXCOLUMNS_NUM_COLS);
+                rc_push_num(1);
+            }
+        break;
+        case FN_DeleteMatrixRows: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(DeleteMatrixRows(DELETEMATRIXROWS_MA, DELETEMATRIXROWS_R, DELETEMATRIXROWS_NUM_ROWS));
+            else
+            {
+                ProcessQueueMatrixOp(FN_DeleteMatrixRows, DELETEMATRIXROWS_MA, DELETEMATRIXROWS_R, DELETEMATRIXROWS_NUM_ROWS);
+                rc_push_num(1);
+            }
+        break;
+        case FN_ClearMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                ClearMatrix(CLEARMATRIX_MA);
+            else
+                ProcessQueueMatrixOp(FN_ClearMatrix, CLEARMATRIX_MA);
+        break;
+        case FN_ClearMatrixColumns: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(ClearMatrixColumns(CLEARMATRIXCOLUMNS_MA, CLEARMATRIXCOLUMNS_C, CLEARMATRIXCOLUMNS_NUM_COLS));
+            else
+            {
+                ProcessQueueMatrixOp(FN_ClearMatrixColumns, CLEARMATRIXCOLUMNS_MA, CLEARMATRIXCOLUMNS_C, CLEARMATRIXCOLUMNS_NUM_COLS);
+                rc_push_num(1);
+            }
+        break;
+        case FN_ClearMatrixRows: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(ClearMatrixRows(CLEARMATRIXROWS_MA, CLEARMATRIXROWS_R, CLEARMATRIXROWS_NUM_ROWS));
+            else
+            {
+                ProcessQueueMatrixOp(FN_ClearMatrixRows, CLEARMATRIXROWS_MA, CLEARMATRIXROWS_R, CLEARMATRIXROWS_NUM_ROWS);
+                rc_push_num(1);
+            }
+        break;
+        case FN_FillMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                FillMatrix(FILLMATRIX_MA, FILLMATRIX_V);
+            else
+                ProcessQueueMatrixOp(FN_FillMatrix, FILLMATRIX_MA, FILLMATRIX_V);
+        break;
+        case FN_FillMatrixColumns: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(FillMatrixColumns(FILLMATRIXCOLUMNS_MA, FILLMATRIXCOLUMNS_C, FILLMATRIXCOLUMNS_NUM_COLS, FILLMATRIXCOLUMNS_V));
+            else
+            {
+                ProcessQueueMatrixOp(FN_FillMatrixColumns, FILLMATRIXCOLUMNS_MA, FILLMATRIXCOLUMNS_C, FILLMATRIXCOLUMNS_NUM_COLS, FILLMATRIXCOLUMNS_V);
+                rc_push_num(1);
+            }
+        break;
+        case FN_FillMatrixRows: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(FillMatrixRows(FILLMATRIXROWS_MA, FILLMATRIXROWS_R, FILLMATRIXROWS_NUM_ROWS, FILLMATRIXROWS_V));
+            else
+            {
+                ProcessQueueMatrixOp(FN_FillMatrixRows, FILLMATRIXROWS_MA, FILLMATRIXROWS_R, FILLMATRIXROWS_NUM_ROWS, FILLMATRIXROWS_V);
+                rc_push_num(1);
+            }
+        break;
+        case FN_CopyMatrixColumns: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(GetMatrixColumns(COPYMATRIXCOLUMNS_MA, COPYMATRIXCOLUMNS_MB, COPYMATRIXCOLUMNS_C, COPYMATRIXCOLUMNS_NUM_COLS));
+            else
+            {
+                ProcessQueueMatrixOp(FN_CopyMatrixColumns, COPYMATRIXCOLUMNS_MA, COPYMATRIXCOLUMNS_MB, COPYMATRIXCOLUMNS_C, COPYMATRIXCOLUMNS_NUM_COLS);
+                rc_push_num(1);
+            }
+        break;
+        case FN_CopyMatrixRows: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(GetMatrixRows(COPYMATRIXROWS_MA, COPYMATRIXROWS_MB, COPYMATRIXROWS_R, COPYMATRIXROWS_NUM_ROWS));
+            else
+            {
+                ProcessQueueMatrixOp(FN_CopyMatrixRows, COPYMATRIXROWS_MA, COPYMATRIXROWS_MB, COPYMATRIXROWS_R, COPYMATRIXROWS_NUM_ROWS);
+                rc_push_num(1);
+            }
+        break;
+        case FN_IdentityMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                IdentityMatrix(IDENTITYMATRIX_MA, IDENTITYMATRIX_N);
+            else
+                ProcessQueueMatrixOp(FN_IdentityMatrix, IDENTITYMATRIX_MA, IDENTITYMATRIX_N);
+        break;
+        case FN_SolveMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(SolveMatrix(SOLVEMATRIX_MA, SOLVEMATRIX_MB, SOLVEMATRIX_MC));
+            else
+            {
+                ProcessQueueMatrixOp(FN_SolveMatrix, SOLVEMATRIX_MA, SOLVEMATRIX_MB, SOLVEMATRIX_MC);
+                rc_push_num(1);
+            }
+        break;
+
+        //MAIN THREAD ONLY
+        case FN_IsEqualMatrix: //Number Function
+            rc_push_num(IsEqualMatrix(ISEQUALMATRIX_MA, ISEQUALMATRIX_MB, ISEQUALMATRIX_TOLERANCE));
+        break;
+
+        //MAIN THREAD ONLY
+        case FN_Determinant: //Number Function
+            rc_push_num(Determinant(DETERMINANT_MA));
+        break;
+
+        case FN_AdjointMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(AdjointMatrix(ADJOINTMATRIX_MA, ADJOINTMATRIX_MB));
+            else
+            {
+                ProcessQueueMatrixOp(FN_AdjointMatrix, ADJOINTMATRIX_MA, ADJOINTMATRIX_MB);
+                rc_push_num(1);
+            }
+        break;
+        case FN_InvertMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(InvertMatrix(INVERTMATRIX_MA, INVERTMATRIX_MB));
+            else
+            {
+                ProcessQueueMatrixOp(FN_InvertMatrix, INVERTMATRIX_MA, INVERTMATRIX_MB);
+                rc_push_num(1);
+            }
+        break;
+
+        //MAIN THREAD ONLY
+        case FN_MatrixFromBuffer: //Sub Procedure
+            MatrixFromBuffer(MATRIXFROMBUFFER_MA, MATRIXFROMBUFFER_R, MATRIXFROMBUFFER_C, &MATRIXFROMBUFFER_BUFFER);
+        break;
+
+        //MAIN THREAD ONLY
+        case FN_GetMatrix: //Sub Procedure
+            BufferFromMatrix(&GETMATRIX_BUFFER, GETMATRIX_MA);
+        break;
+
+        case FN_RandomizeMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                RandomizeMatrix(RANDOMIZEMATRIX_MA, RANDOMIZEMATRIX_VMIN, RANDOMIZEMATRIX_VMAX);
+            else
+                ProcessQueueMatrixOp(FN_RandomizeMatrix, RANDOMIZEMATRIX_MA, RANDOMIZEMATRIX_VMIN, RANDOMIZEMATRIX_VMAX);
+        break;
+
+        //MAIN THREAD ONLY
+        case FN_MatrixValue: //Number Function
+            rc_push_num(MatrixValue(MATRIXVALUE_MA, MATRIXVALUE_R, MATRIXVALUE_C));
+        break;
+
+        case FN_SetMatrixValue: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                SetMatrixValue(SETMATRIXVALUE_MA, SETMATRIXVALUE_R, SETMATRIXVALUE_C, SETMATRIXVALUE_V);
+            else
+                ProcessQueueMatrixOp(FN_SetMatrixValue, SETMATRIXVALUE_MA, SETMATRIXVALUE_R, SETMATRIXVALUE_C, SETMATRIXVALUE_V);
+        break;
+        case FN_ScalarMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                ScalarMatrix(SCALARMATRIX_MA, SCALARMATRIX_MB, SCALARMATRIX_S_VALUE);
+            else
+                ProcessQueueMatrixOp(FN_ScalarMatrix, SCALARMATRIX_MA, SCALARMATRIX_MB, SCALARMATRIX_S_VALUE);
+        break;
+        case FN_ScalarMatrixColumns: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(ScalarMatrixColumns(SCALARMATRIXCOLUMNS_MA, SCALARMATRIXCOLUMNS_MB, SCALARMATRIXCOLUMNS_C, SCALARMATRIXCOLUMNS_NUM_COLS, SCALARMATRIXCOLUMNS_S_VALUE));
+            else
+            {
+                ProcessQueueMatrixOp(FN_ScalarMatrixColumns, SCALARMATRIXCOLUMNS_MA, SCALARMATRIXCOLUMNS_MB, SCALARMATRIXCOLUMNS_C, SCALARMATRIXCOLUMNS_NUM_COLS, SCALARMATRIXCOLUMNS_S_VALUE);
+                rc_push_num(1);
+            }
+        break;
+        case FN_ScalarMatrixRows: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(ScalarMatrixRows(SCALARMATRIXROWS_MA, SCALARMATRIXROWS_MB, SCALARMATRIXROWS_R, SCALARMATRIXROWS_NUM_ROWS, SCALARMATRIXROWS_S_VALUE));
+            else
+            {
+                ProcessQueueMatrixOp(FN_ScalarMatrixRows, SCALARMATRIXROWS_MA, SCALARMATRIXROWS_MB, SCALARMATRIXROWS_R, SCALARMATRIXROWS_NUM_ROWS, SCALARMATRIXROWS_S_VALUE);
+                rc_push_num(1);
+            }
+        break;
+        case FN_SquareMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(SquareMatrix(SQUAREMATRIX_MA, SQUAREMATRIX_MB));
+            else
+            {
+                ProcessQueueMatrixOp(FN_SquareMatrix, SQUAREMATRIX_MA, SQUAREMATRIX_MB);
+                rc_push_num(1);
+            }
+        break;
+        case FN_SubMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                SubMatrix(SUBMATRIX_MA, SUBMATRIX_R, SUBMATRIX_C);
+            else
+                ProcessQueueMatrixOp(FN_SubMatrix, SUBMATRIX_MA, SUBMATRIX_R, SUBMATRIX_C);
+        break;
+        case FN_SubtractMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(SubtractMatrix(SUBTRACTMATRIX_MA, SUBTRACTMATRIX_MB, SUBTRACTMATRIX_MC));
+            else
+            {
+                ProcessQueueMatrixOp(FN_SubtractMatrix, SUBTRACTMATRIX_MA, SUBTRACTMATRIX_MB, SUBTRACTMATRIX_MC);
+                rc_push_num(1);
+            }
+        break;
+        case FN_SwapMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                SwapMatrix(SWAPMATRIX_MA, SWAPMATRIX_MB);
+            else
+                ProcessQueueMatrixOp(FN_SwapMatrix, SWAPMATRIX_MA, SWAPMATRIX_MB);
+        break;
+        case FN_SwapMatrixColumn: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(SwapMatrixColumn(SWAPMATRIXCOLUMN_MA, SWAPMATRIXCOLUMN_C1, SWAPMATRIXCOLUMN_C2));
+            else
+            {
+                ProcessQueueMatrixOp(FN_SwapMatrixColumn, SWAPMATRIXCOLUMN_MA, SWAPMATRIXCOLUMN_C1, SWAPMATRIXCOLUMN_C2);
+                rc_push_num(1);
+            }
+        break;
+        case FN_SwapMatrixRow: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(SwapMatrixRow(SWAPMATRIXROW_MA, SWAPMATRIXROW_R1, SWAPMATRIXROW_R2));
+            else
+            {
+                ProcessQueueMatrixOp(FN_SwapMatrixRow, SWAPMATRIXROW_MA, SWAPMATRIXROW_R1, SWAPMATRIXROW_R2);
+                rc_push_num(1);
+            }
+        break;
+        case FN_TransposeMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(TransposeMatrix(TRANSPOSEMATRIX_MA, TRANSPOSEMATRIX_MB));
+            else
+            {
+                ProcessQueueMatrixOp(FN_TransposeMatrix, TRANSPOSEMATRIX_MA, TRANSPOSEMATRIX_MB);
+                rc_push_num(1);
+            }
+        break;
+        case FN_UnAugmentMatrix: //Number Function
+            if(rc_active_matrix_process < 0)
+                rc_push_num(UnAugmentMatrix(UNAUGMENTMATRIX_MA, UNAUGMENTMATRIX_MB, UNAUGMENTMATRIX_MC));
+            else
+            {
+                ProcessQueueMatrixOp(FN_UnAugmentMatrix, UNAUGMENTMATRIX_MA, UNAUGMENTMATRIX_MB, UNAUGMENTMATRIX_MC);
+                rc_push_num(1);
+            }
+        break;
+        case FN_ZeroMatrix: //Sub Procedure
+            if(rc_active_matrix_process < 0)
+                ZeroMatrix(ZEROMATRIX_MA);
+            else
+                ProcessQueueMatrixOp(FN_ZeroMatrix, ZEROMATRIX_MA);
+        break;
+
+        //MAIN THREAD ONLY
+        case FN_GetMatrixSize: //Sub Procedure
+            GetMatrixSize(GETMATRIXSIZE_MA, &GETMATRIXSIZE_R, &GETMATRIXSIZE_C);
+        break;
+
+        case FN_SetMatrixProcess: //Number Function
+            rc_push_num(rc_setMatrixProcess(SETMATRIXPROCESS_P_NUM));
+        break;
+        case FN_ProcessOpen: //Number Function
+            rc_push_num(rc_processOpen(PROCESSOPEN_P_NUM));
+        break;
+        case FN_SetProcessErrorMode: //Sub Procedure
+            rc_setProcessErrorMode(SETPROCESSERRORMODE_P_NUM, SETPROCESSERRORMODE_ERROR_MODE);
+        break;
+        case FN_ProcessError: //Number Function
+            rc_push_num(ProcessError(PROCESSERROR_P_NUM));
+        break;
+        case FN_ProcessWait: //Sub Procedure
+            ProcessWait(PROCESSWAIT_P_NUM);
+        break;
+        case FN_ProcessWaitAll: //Sub Procedure
+            ProcessWaitAll();
+        break;
+        case FN_ProcessContinue: //Sub Procedure
+            ProcessContinue(PROCESSCONTINUE_P_NUM);
+        break;
+        case FN_ProcessStop: //Sub Procedure
+            ProcessStop(PROCESSSTOP_P_NUM);
+        break;
+        case FN_ProcessClear: //Sub Procedure
+            ProcessClear(PROCESSCLEAR_P_NUM);
+        break;
+        case FN_ProcessClose: //Number Function
+            rc_push_num(ProcessClose(PROCESSCLOSE_P_NUM));
+        break;
+        case FN_ProcessErrorMode: //Number Function
+            rc_push_num(ProcessErrorMode(PROCESSERRORMODE_P_NUM));
+        break;
+        case FN_ProcessSleep: //Sub Procedure
+            ProcessSleep(PROCESSSLEEP_P_NUM, PROCESSSLEEP_MSEC);
+        break;
+        case FN_ProcessExists: //Number Function
+            rc_push_num(ProcessExists(PROCESSEXISTS_P_NUM));
+        break;
+        case FN_ProcessStopAll: //Sub Procedure
+            ProcessStopAll();
+        break;
+        case FN_ProcessContinueAll: //Sub Procedure
+            ProcessContinueAll();
+        break;
+        case FN_ProcessQueueSize: //Number Function
+            rc_push_num(ProcessQueueSize(PROCESSQUEUESIZE_P_NUM));
+        break;
+        case FN_NumCPUs: //Number Function
+            rc_push_num(NumCPUs());
+        break;
+
+
     }
 }
 
@@ -4235,6 +4616,7 @@ int main(int argc, char * argv[])
     }
 
     rcbasic_init();
+    rc_initSubprocessSystem();
 
     if(rc_filename.length()>=4)
     {
@@ -4288,6 +4670,7 @@ int main(int argc, char * argv[])
     else
         cout << "++Could not load rcbasic program" << endl;
 
+    rc_cleanSubprocessSystem();
     rcbasic_clean();
 
     exit(rcbasic_exit_code);
