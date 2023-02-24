@@ -352,7 +352,7 @@ class rc_find_dialog : public wxDialog
 	public:
 		wxTextCtrl* m_search_textCtrl;
 
-		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 507,225 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 507,308 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_find_dialog();
 
@@ -444,7 +444,7 @@ class rc_gotoLine_dialog : public wxDialog
 
 	public:
 
-		rc_gotoLine_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Go To Line"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,157 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_gotoLine_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Go To Line"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,192 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_gotoLine_dialog();
 
@@ -546,7 +546,7 @@ class rc_projectSettings_dialog : public wxDialog
 
 	public:
 
-		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 522,633 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectSettings_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 522,689 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectSettings_dialog();
 
@@ -577,7 +577,7 @@ class rc_fileProperties_dialog : public wxDialog
 
 	public:
 
-		rc_fileProperties_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("File Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 518,217 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_fileProperties_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("File Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 518,258 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_fileProperties_dialog();
 
@@ -745,7 +745,7 @@ class rc_distribute_dialog : public wxDialog
 
 	public:
 
-		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 695,463 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 695,606 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_distribute_dialog();
 
@@ -773,7 +773,7 @@ class rc_distProcess_dialog : public wxDialog
 
 	public:
 
-		rc_distProcess_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Building Application"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 655,330 ), long style = wxCAPTION );
+		rc_distProcess_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Building Application"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 655,392 ), long style = wxCAPTION );
 
 		~rc_distProcess_dialog();
 
@@ -839,7 +839,7 @@ class rc_preference_dialog : public wxDialog
 
 	public:
 
-		rc_preference_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,508 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_preference_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,631 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_preference_dialog();
 

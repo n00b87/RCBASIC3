@@ -4603,7 +4603,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_find_dialog</property>
             <property name="pos"></property>
-            <property name="size">507,225</property>
+            <property name="size">507,308</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Find</property>
@@ -6908,7 +6908,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_gotoLine_dialog</property>
             <property name="pos"></property>
-            <property name="size">371,157</property>
+            <property name="size">371,192</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Go To Line</property>
@@ -7934,7 +7934,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_projectSettings_dialog</property>
             <property name="pos"></property>
-            <property name="size">522,633</property>
+            <property name="size">522,689</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Project Properties</property>
@@ -9610,7 +9610,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_fileProperties_dialog</property>
             <property name="pos"></property>
-            <property name="size">518,217</property>
+            <property name="size">518,258</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">File Properties</property>
@@ -13206,7 +13206,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_distribute_dialog</property>
             <property name="pos"></property>
-            <property name="size">695,463</property>
+            <property name="size">695,606</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Distribute</property>
@@ -13281,7 +13281,7 @@
                         <object class="notebookpage" expanded="0">
                             <property name="bitmap"></property>
                             <property name="label">General Settings</property>
-                            <property name="select">1</property>
+                            <property name="select">0</property>
                             <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
@@ -14408,7 +14408,7 @@
                         <object class="notebookpage" expanded="0">
                             <property name="bitmap"></property>
                             <property name="label">Android Settings</property>
-                            <property name="select">0</property>
+                            <property name="select">1</property>
                             <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
@@ -15904,7 +15904,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_distProcess_dialog</property>
             <property name="pos"></property>
-            <property name="size">655,330</property>
+            <property name="size">655,392</property>
             <property name="style">wxCAPTION</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Building Application</property>
@@ -16704,7 +16704,7 @@
             <property name="minimum_size"></property>
             <property name="name">rc_preference_dialog</property>
             <property name="pos"></property>
-            <property name="size">600,508</property>
+            <property name="size">600,631</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">Preferences</property>
