@@ -1276,6 +1276,9 @@ rc_gotoLine_dialog::rc_gotoLine_dialog( wxWindow* parent, wxWindowID id, const w
 	bSizer47->Add( bSizer49, 1, wxEXPAND, 5 );
 
 
+	bSizer47->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
 	this->SetSizer( bSizer47 );
 	this->Layout();
 
@@ -1407,6 +1410,9 @@ rc_setColorScheme_dialog::rc_setColorScheme_dialog( wxWindow* parent, wxWindowID
 
 
 	bSizer57->Add( bSizer59, 1, wxEXPAND, 5 );
+
+
+	bSizer57->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( bSizer57 );
@@ -1632,6 +1638,9 @@ rc_projectSettings_dialog::rc_projectSettings_dialog( wxWindow* parent, wxWindow
 	bSizer55->Add( m_panel11, 1, wxEXPAND | wxALL, 5 );
 
 
+	bSizer55->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
 	this->SetSizer( bSizer55 );
 	this->Layout();
 
@@ -1745,6 +1754,9 @@ rc_fileProperties_dialog::rc_fileProperties_dialog( wxWindow* parent, wxWindowID
 	bSizer67->Add( bSizer70, 1, wxEXPAND, 5 );
 
 
+	bSizer67->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
 	this->SetSizer( bSizer67 );
 	this->Layout();
 
@@ -1832,6 +1844,9 @@ rc_projectEnvironment_dialog::rc_projectEnvironment_dialog( wxWindow* parent, wx
 	bSizer71->Add( bSizer75, 1, wxEXPAND, 5 );
 
 
+	bSizer71->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
 	this->SetSizer( bSizer71 );
 	this->Layout();
 
@@ -1884,7 +1899,7 @@ rc_projectVariableEdit_dialog::rc_projectVariableEdit_dialog( wxWindow* parent, 
 	bSizer79->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer78->Add( bSizer79, 1, wxEXPAND, 5 );
+	bSizer78->Add( bSizer79, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer80;
 	bSizer80 = new wxBoxSizer( wxHORIZONTAL );
@@ -1903,13 +1918,13 @@ rc_projectVariableEdit_dialog::rc_projectVariableEdit_dialog( wxWindow* parent, 
 	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer78->Add( bSizer80, 2, wxEXPAND, 5 );
+	bSizer78->Add( bSizer80, 4, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer81;
 	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
 
 
-	bSizer81->Add( 0, 0, 2, wxEXPAND, 5 );
+	bSizer81->Add( 0, 0, 5, wxEXPAND, 5 );
 
 	m_cancel_button = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer81->Add( m_cancel_button, 1, wxALL, 5 );
@@ -1918,7 +1933,13 @@ rc_projectVariableEdit_dialog::rc_projectVariableEdit_dialog( wxWindow* parent, 
 	bSizer81->Add( m_ok_button, 1, wxALL, 5 );
 
 
-	bSizer78->Add( bSizer81, 1, wxEXPAND, 5 );
+	bSizer81->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer78->Add( bSizer81, 2, wxEXPAND, 5 );
+
+
+	bSizer78->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( bSizer78 );
@@ -1965,7 +1986,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer82->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer82, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer82, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer83;
 	bSizer83 = new wxBoxSizer( wxHORIZONTAL );
@@ -1984,7 +2005,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer83->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer83, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer83, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer84;
 	bSizer84 = new wxBoxSizer( wxHORIZONTAL );
@@ -2003,7 +2024,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer84->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer84, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer84, 2, wxEXPAND, 5 );
 
 
 	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -2025,7 +2046,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer85->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer85, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer85, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer86;
 	bSizer86 = new wxBoxSizer( wxHORIZONTAL );
@@ -2044,7 +2065,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer86->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer86, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer86, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer87;
 	bSizer87 = new wxBoxSizer( wxHORIZONTAL );
@@ -2063,7 +2084,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer87->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer87, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer87, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer88;
 	bSizer88 = new wxBoxSizer( wxHORIZONTAL );
@@ -2082,7 +2103,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer88->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer88, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer88, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer89;
 	bSizer89 = new wxBoxSizer( wxHORIZONTAL );
@@ -2101,7 +2122,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer89->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer89, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer89, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer90;
 	bSizer90 = new wxBoxSizer( wxHORIZONTAL );
@@ -2120,7 +2141,7 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer90->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer80->Add( bSizer90, 1, wxEXPAND, 5 );
+	bSizer80->Add( bSizer90, 2, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer91;
 	bSizer91 = new wxBoxSizer( wxHORIZONTAL );
@@ -2139,6 +2160,9 @@ rc_genKey_dialog::rc_genKey_dialog( wxWindow* parent, wxWindowID id, const wxStr
 
 
 	bSizer80->Add( bSizer91, 1, wxEXPAND, 5 );
+
+
+	bSizer80->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( bSizer80 );
@@ -2468,6 +2492,9 @@ rc_distribute_dialog::rc_distribute_dialog( wxWindow* parent, wxWindowID id, con
 	bSizer92->Add( bSizer109, 1, wxEXPAND, 5 );
 
 
+	bSizer92->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
 	this->SetSizer( bSizer92 );
 	this->Layout();
 
@@ -2621,6 +2648,9 @@ rc_cancelDistProcess_dialog::rc_cancelDistProcess_dialog( wxWindow* parent, wxWi
 
 
 	bSizer114->Add( bSizer116, 1, wxEXPAND, 5 );
+
+
+	bSizer114->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( bSizer114 );
@@ -2826,6 +2856,9 @@ rc_preference_dialog::rc_preference_dialog( wxWindow* parent, wxWindowID id, con
 	bSizer118->Add( bSizer126, 1, wxEXPAND, 5 );
 
 
+	bSizer118->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
 	m_panel15->SetSizer( bSizer118 );
 	m_panel15->Layout();
 	bSizer118->Fit( m_panel15 );
@@ -2960,6 +2993,9 @@ rc_debugger::rc_debugger( wxWindow* parent, wxWindowID id, const wxString& title
 
 
 	bSizer127->Add( bSizer134, 1, wxEXPAND, 5 );
+
+
+	bSizer127->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( bSizer127 );

@@ -287,7 +287,7 @@ class rc_closeProjectSavePrompt_dialog : public wxDialog
 
 	public:
 
-		rc_closeProjectSavePrompt_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 385,149 ), long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
+		rc_closeProjectSavePrompt_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 402,163 ), long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
 
 		~rc_closeProjectSavePrompt_dialog();
 
@@ -315,7 +315,7 @@ class rc_newFile_dialog : public wxDialog
 
 	public:
 
-		rc_newFile_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Source File"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 497,200 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_newFile_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create New Source File"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 497,222 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_newFile_dialog();
 
@@ -352,7 +352,7 @@ class rc_find_dialog : public wxDialog
 	public:
 		wxTextCtrl* m_search_textCtrl;
 
-		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 438,203 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_find_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Find"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 507,225 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_find_dialog();
 
@@ -417,7 +417,7 @@ class rc_replace_dialog : public wxDialog
 
 	public:
 
-		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 518,301 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_replace_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Replace"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 518,348 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_replace_dialog();
 
@@ -444,7 +444,7 @@ class rc_gotoLine_dialog : public wxDialog
 
 	public:
 
-		rc_gotoLine_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Go To Line"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 310,118 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_gotoLine_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Go To Line"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,157 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_gotoLine_dialog();
 
@@ -496,7 +496,7 @@ class rc_setColorScheme_dialog : public wxDialog
 
 	public:
 
-		rc_setColorScheme_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color Schemes"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 418,353 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_setColorScheme_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Color Schemes"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 454,396 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_setColorScheme_dialog();
 
@@ -577,7 +577,7 @@ class rc_fileProperties_dialog : public wxDialog
 
 	public:
 
-		rc_fileProperties_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("File Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 494,192 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_fileProperties_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("File Properties"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 518,217 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_fileProperties_dialog();
 
@@ -613,7 +613,7 @@ class rc_projectEnvironment_dialog : public wxDialog
 
 	public:
 
-		rc_projectEnvironment_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Environment Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 505,320 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectEnvironment_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Project Environment Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 602,449 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectEnvironment_dialog();
 
@@ -642,7 +642,7 @@ class rc_projectVariableEdit_dialog : public wxDialog
 
 	public:
 
-		rc_projectVariableEdit_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 489,176 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_projectVariableEdit_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 489,234 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_projectVariableEdit_dialog();
 
@@ -745,7 +745,7 @@ class rc_distribute_dialog : public wxDialog
 
 	public:
 
-		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 660,427 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_distribute_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Distribute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 695,463 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_distribute_dialog();
 
@@ -839,7 +839,7 @@ class rc_preference_dialog : public wxDialog
 
 	public:
 
-		rc_preference_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,493 ), long style = wxDEFAULT_DIALOG_STYLE );
+		rc_preference_dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,508 ), long style = wxDEFAULT_DIALOG_STYLE );
 
 		~rc_preference_dialog();
 
