@@ -40,7 +40,7 @@ void rcbasic_edit_frame::onBuildProcessTerminate( wxProcessEvent& event )
     dbg_fname.SetFullName(_("debug.cbc"));
     dbg_fname.MakeAbsolute();
 
-    if( (!main_fname.Exists()) || ( (!wxFileExists(dbg_fname.GetFullPath())) && isDebugging ) )
+    if( (!main_fname.Exists()) && ( (!wxFileExists(dbg_fname.GetFullPath())) && isDebugging ) )
     {
         wxMessageBox(_("Main Source Target failed to build.\nCheck the build log for more details."));
         //wxMessageBox(_("FILEN NOT FOUND: ") + main_fname.GetFullPath());
