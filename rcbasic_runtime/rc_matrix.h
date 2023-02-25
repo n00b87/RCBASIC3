@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <vector>
-#include <bits/stdc++.h>
+#ifndef RC_WEB
+    #include <bits/stdc++.h>
+#endif
 #include <cstdlib>
 #include <ctime>
 
