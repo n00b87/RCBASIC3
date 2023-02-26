@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/treectrl.h>
+#include <wx/filename.h>
 
 struct rcbasic_symbol
 {
@@ -12,6 +13,8 @@ struct rcbasic_symbol
     int token_type;
     bool in_list;
     wxString upper_id; //storing id uppercase to speed up sort
+    wxFileName source_file;
+    bool is_global=false;
 };
 
 class rc_symbol_treeItem_data : public wxTreeItemData

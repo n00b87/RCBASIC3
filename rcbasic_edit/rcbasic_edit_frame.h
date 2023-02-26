@@ -153,12 +153,21 @@ class rcbasic_edit_frame : public rc_ideFrame
         int symbol_tree_rootImage;
         int symbol_tree_varImage;
         int symbol_tree_fnImage;
+        int symbol_tree_globalSymbolImage;
 
         wxTreeItemId function_root_node;
         wxTreeItemId variable_root_node;
+        wxTreeItemId global_fn_root_node;
+        wxTreeItemId global_var_root_node;
 
         std::vector<wxTreeItemId> fn_nodes;
         std::vector<wxTreeItemId> var_nodes;
+        std::vector<wxTreeItemId> global_fn_nodes;
+        std::vector<wxTreeItemId> global_var_nodes;
+
+        bool global_project_symbol_select_change = false;
+        wxStyledTextCtrl* global_project_symbol_txtCtrl;
+        uint32_t global_project_symbol_line = 0;
 
         wxString recent_projects[10];
         wxString recent_files[10];
@@ -352,9 +361,10 @@ class rcbasic_edit_frame : public rc_ideFrame
 		void replaceInFile(int findDialog_flag, wxString txt, wxString replace_txt);
 		void replaceInProject(int findDialog_flag, wxString txt, wxString replace_txt);
 
-		void addSymbol(rcbasic_symbol sym);
+		void addSymbol(rcbasic_symbol sym, bool in_global=false);
 		void setSymbol(wxTreeItemId s_node, rcbasic_symbol sym);
 		void updateSymbolTree();
+		void updateGlobalSymbolTree(rcbasic_project* project=NULL);
 
 		std::vector<rcbasic_symbol> getSymbols() { return symbols; }
 

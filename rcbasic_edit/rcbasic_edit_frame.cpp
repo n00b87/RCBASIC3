@@ -68,15 +68,21 @@ void rcbasic_edit_frame::pfile_addSymbol(rcbasic_project* p, rcbasic_symbol sym)
             //delete sym;
             return;
         }
+
+        if(id_sym_cmp < 0)
+            insert_pos++;
+        else
+            break;
     }
-    p->project_symbols.push_back(sym);
-    //sym_list->insert(sym_list->begin()+insert_pos, sym);
+
+    p->project_symbols.insert(p->project_symbols.begin()+insert_pos, sym);
 }
 
 
 
 bool rcbasic_edit_frame::pfile_runParser(rcbasic_project* p)
 {
+    notebook_mutex.Lock();
     p->project_symbols.clear();
     std::vector<rcbasic_project_node*> source_files = p->getSourceFiles();
 
@@ -106,15 +112,18 @@ bool rcbasic_edit_frame::pfile_runParser(rcbasic_project* p)
                 sym.dimensions = id_tokens[t_count].dimensions;
                 sym.token_type = id_tokens[t_count].token_type;
                 sym.in_list = id_tokens[t_count].is_in_list;
+                sym.source_file = src_file;
+                sym.is_global = true;
 
 
-                notebook_mutex.Lock();
                 pfile_addSymbol(p, sym);
-                notebook_mutex.Unlock();
             }
 
         }
     }
+
+    updateGlobalSymbolTree(p);
+    notebook_mutex.Unlock();
 
     return true;
 }
@@ -184,21 +193,9 @@ END_EVENT_TABLE()
 
 void rcbasic_edit_frame::updateSymbolTree()
 {
-    //symbol_tree->DeleteChildren(variable_root_node);
-    //symbol_tree->DeleteChildren(function_root_node);
     int v_index = 0;
     int f_index = 0;
 
-    //int v_count = symbol_tree->GetChildrenCount(variable_root_node);
-    //int f_count = symbol_tree->GetChildrenCount(function_root_node);
-
-    /*
-    wxTreeItemIdValue v_cookie;
-    wxTreeItemId v_child = symbol_tree->GetFirstChild(variable_root_node, v_cookie);
-
-    wxTreeItemIdValue f_cookie;
-    wxTreeItemId f_child = symbol_tree->GetFirstChild(function_root_node, f_cookie);
-    */
 
     for(int i = 0; i < symbols.size(); i++)
     {
@@ -249,6 +246,58 @@ void rcbasic_edit_frame::updateSymbolTree()
             delete data;
         symbol_tree->Delete(fn_nodes[f_index]);
         fn_nodes.erase(fn_nodes.begin()+f_index);
+        //f_child = symbol_tree->GetNextChild(function_root_node, f_cookie);
+    }
+}
+
+void rcbasic_edit_frame::updateGlobalSymbolTree(rcbasic_project* project)
+{
+    if(project->project_symbols.size() == 0)
+        return;
+
+    int global_v_index = 0;
+    int global_f_index = 0;
+
+    for(int i = 0; i < project->project_symbols.size(); i++)
+    {
+        switch(project->project_symbols[i].token_type)
+        {
+            case TOKEN_TYPE_VARIABLE:
+                if(global_v_index < global_var_nodes.size())
+                    setSymbol(global_var_nodes[global_v_index], project->project_symbols[i]);
+                else
+                    addSymbol(project->project_symbols[i], true);
+                global_v_index++;
+                break;
+            case TOKEN_TYPE_FUNCTION:
+                if(global_f_index < global_fn_nodes.size())
+                    setSymbol(global_fn_nodes[global_f_index], project->project_symbols[i]);
+                else
+                    addSymbol(project->project_symbols[i], true);
+                global_f_index++;
+                break;
+        }
+    }
+
+    while(global_f_index < global_fn_nodes.size())
+    {
+        rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(global_fn_nodes[global_f_index]);
+        symbol_tree->SetItemData(global_fn_nodes[global_f_index], NULL);
+        if(data)
+            delete data;
+        symbol_tree->Delete(global_fn_nodes[global_f_index]);
+        global_fn_nodes.erase(global_fn_nodes.begin()+global_f_index);
+        //f_child = symbol_tree->GetNextChild(function_root_node, f_cookie);
+    }
+
+    while(global_v_index < global_var_nodes.size())
+    {
+        rcbasic_treeItem_data* data = (rcbasic_treeItem_data*)symbol_tree->GetItemData(global_var_nodes[global_v_index]);
+        symbol_tree->SetItemData(global_var_nodes[global_v_index], NULL);
+        if(data)
+            delete data;
+        symbol_tree->Delete(global_var_nodes[global_v_index]);
+        global_var_nodes.erase(global_var_nodes.begin()+global_v_index);
         //f_child = symbol_tree->GetNextChild(function_root_node, f_cookie);
     }
 
@@ -462,12 +511,14 @@ rc_ideFrame( parent )
     symbol_tree_rootImage = symbol_tree_imageList->Add(wxBitmap(wxImage(symbol_root_image.GetFullPath())));
     symbol_tree_varImage  = symbol_tree_imageList->Add(wxBitmap(wxImage(symbol_item_image.GetFullPath())));
     symbol_tree_fnImage = symbol_tree_imageList->Add(wxBitmap(wxImage(symbol_fn_item_image.GetFullPath())));
+    symbol_tree_globalSymbolImage = symbol_tree_imageList->Add( wxArtProvider::GetBitmap( wxART_FOLDER, wxART_MENU ) );
     symbol_tree->AssignImageList(symbol_tree_imageList);
 
     symbol_tree->AddRoot(_("Symbols"), symbol_tree_rootImage);
     function_root_node = symbol_tree->AppendItem(symbol_tree->GetRootItem(), _("Function"), symbol_tree_fnImage, -1, NULL);
     variable_root_node = symbol_tree->AppendItem(symbol_tree->GetRootItem(), _("Variables"), symbol_tree_varImage, -1, NULL);
-
+    global_fn_root_node = symbol_tree->AppendItem(symbol_tree->GetRootItem(), _("Project Functions"), symbol_tree_globalSymbolImage, -1, NULL);
+    global_var_root_node = symbol_tree->AppendItem(symbol_tree->GetRootItem(), _("Project Variables"), symbol_tree_globalSymbolImage, -1, NULL);
     symbol_tree->Expand(symbol_tree->GetRootItem());
 
     symbol_tree->SetDoubleBuffered(true);
@@ -1732,9 +1783,6 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
             project->addSourceFile(project_source[i], project_source_store_type[i], project_source_target_flag[i]);
         }
 
-        //add to project parser list
-        pfile_runParser(project);
-
         project->setVars(project_vars);
         project->setRootNode(project_tree->AppendItem(project_tree->GetRootItem(), project_name, project_tree_folderImage));
         project->setLastProjectSave();
@@ -1751,6 +1799,7 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
             if(active_project)
             {
                 wxSetWorkingDirectory(active_project->getLocation());
+                pfile_runParser(active_project);
             }
 
             project_tree->SetItemBold(active_project->getRootNode(), true);
@@ -1903,6 +1952,9 @@ void rcbasic_edit_frame::saveFile(int openFile_index, int flag=0)
     open_files[openFile_index]->setTextChangedFlag(false);
 
     last_fileSave_flag = true;
+
+    if(active_project)
+        pfile_runParser(active_project);
 }
 
 void rcbasic_edit_frame::onSaveFileMenuSelect( wxCommandEvent& event )
@@ -3841,12 +3893,16 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
 
             if(active_project)
             {
+                notebook_mutex.Unlock();
+                pfile_runParser(active_project);
+                notebook_mutex.Lock();
                 wxSetWorkingDirectory(active_project->getLocation());
             }
 
             project_tree->SetItemBold(active_project->getRootNode(), true);
             //project_tree->SelectItem(active_project->getRootNode(), true);
             notebook_mutex.Unlock();
+
             return;
         }
         else
@@ -3899,6 +3955,7 @@ void rcbasic_edit_frame::onProjectTreeNodeActivated( wxTreeEvent& event )
             }
         }
     }
+
     notebook_mutex.Unlock();
 }
 
@@ -4179,7 +4236,7 @@ void rcbasic_edit_frame::onTextCtrlModified( wxStyledTextEvent& event )
     notebook_mutex.Unlock();
 }
 
-void rcbasic_edit_frame::addSymbol(rcbasic_symbol sym)
+void rcbasic_edit_frame::addSymbol(rcbasic_symbol sym, bool in_global)
 {
     wxString node_label = sym.id;
 
@@ -4190,15 +4247,31 @@ void rcbasic_edit_frame::addSymbol(rcbasic_symbol sym)
 
     //wxPrintf(_("token_type = %d"), sym->token_type);
 
-    switch(sym.token_type)
+    if(in_global)
     {
-        case TOKEN_TYPE_VARIABLE:
-            var_nodes.push_back(symbol_tree->AppendItem( variable_root_node, node_label, symbol_tree_varImage, -1, new rc_symbol_treeItem_data(sym)));
-            break;
-        case TOKEN_TYPE_FUNCTION:
-            //wxPuts(_("ADD FUNCTION NODE")+sym->id);
-            fn_nodes.push_back(symbol_tree->AppendItem( function_root_node, node_label, symbol_tree_fnImage, -1, new rc_symbol_treeItem_data(sym)));
-            break;
+        switch(sym.token_type)
+        {
+            case TOKEN_TYPE_VARIABLE:
+                global_var_nodes.push_back(symbol_tree->AppendItem( global_var_root_node, node_label, symbol_tree_varImage, -1, new rc_symbol_treeItem_data(sym)));
+                break;
+            case TOKEN_TYPE_FUNCTION:
+                //wxPuts(_("ADD FUNCTION NODE")+sym->id);
+                global_fn_nodes.push_back(symbol_tree->AppendItem( global_fn_root_node, node_label, symbol_tree_fnImage, -1, new rc_symbol_treeItem_data(sym)));
+                break;
+        }
+    }
+    else
+    {
+        switch(sym.token_type)
+        {
+            case TOKEN_TYPE_VARIABLE:
+                var_nodes.push_back(symbol_tree->AppendItem( variable_root_node, node_label, symbol_tree_varImage, -1, new rc_symbol_treeItem_data(sym)));
+                break;
+            case TOKEN_TYPE_FUNCTION:
+                //wxPuts(_("ADD FUNCTION NODE")+sym->id);
+                fn_nodes.push_back(symbol_tree->AppendItem( function_root_node, node_label, symbol_tree_fnImage, -1, new rc_symbol_treeItem_data(sym)));
+                break;
+        }
     }
 }
 
@@ -4206,7 +4279,8 @@ void rcbasic_edit_frame::setSymbol(wxTreeItemId s_node, rcbasic_symbol sym)
 {
     wxString node_label = sym.id;
 
-    if(s_node == variable_root_node || s_node == function_root_node)
+    if(s_node == variable_root_node || s_node == function_root_node ||
+       s_node == global_var_root_node || s_node == global_fn_root_node)
         return;
 
     if(sym.dimensions > 0)
@@ -4249,7 +4323,8 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
         return;
     }
 
-    if(selected_symbol==symbol_tree->GetRootItem() || selected_symbol==variable_root_node || selected_symbol==function_root_node)
+    if(selected_symbol==symbol_tree->GetRootItem() || selected_symbol==variable_root_node || selected_symbol==function_root_node ||
+       selected_symbol==global_var_root_node || selected_symbol==global_fn_root_node)
     {
         notebook_mutex.Unlock();
         #ifdef _WIN32
@@ -4265,7 +4340,29 @@ void rcbasic_edit_frame::onSymbolSelectionChanged( wxTreeEvent& event )
     //wxPrintf(_("Symbol: ") + sym.id + _(" -- line=%d"), sym.line );
 
 
-    wxStyledTextCtrl* t = (wxStyledTextCtrl*) sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection());
+    wxStyledTextCtrl* t = NULL;
+    if(sym.is_global)
+    {
+        if(active_project)
+        {
+            rcbasic_edit_txtCtrl* tc = openFileTab(active_project, sym.source_file);
+            if(tc)
+            {
+                t = tc->getTextCtrl();
+
+                global_project_symbol_txtCtrl = t;
+                global_project_symbol_line = sym.line;
+
+                notebook_mutex.Unlock();
+                event.Veto();
+
+                global_project_symbol_select_change = true;
+                return;
+            }
+        }
+    }
+    else
+        t = (wxStyledTextCtrl*) sourceFile_auinotebook->GetPage(sourceFile_auinotebook->GetSelection());
 
     if(!t)
     {
@@ -4386,6 +4483,15 @@ void rcbasic_edit_frame::onDropFiles( wxDropFilesEvent& event )
 void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
 {
     notebook_mutex.Lock();
+    if(global_project_symbol_select_change)
+    {
+        global_project_symbol_select_change = false;
+        int page_index = sourceFile_auinotebook->GetPageIndex(global_project_symbol_txtCtrl);
+        sourceFile_auinotebook->SetSelection(page_index);
+        global_project_symbol_txtCtrl->GotoLine(global_project_symbol_line);
+        global_project_symbol_txtCtrl->SetSelection(global_project_symbol_txtCtrl->GetCurrentPos(),
+                                                    global_project_symbol_txtCtrl->GetCurrentPos() + global_project_symbol_txtCtrl->GetLineText(global_project_symbol_line).length());
+    }
     int selected_page = sourceFile_auinotebook->GetSelection();
 
     int line_num = 0;
