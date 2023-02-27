@@ -115,8 +115,8 @@ bool rcbasic_edit_frame::pfile_runParser(rcbasic_project* p)
                 sym.source_file = src_file;
                 sym.is_global = true;
 
-
-                pfile_addSymbol(p, sym);
+                if( (!fn_define) || sym.token_type == TOKEN_TYPE_FUNCTION )
+                    pfile_addSymbol(p, sym);
             }
 
         }
