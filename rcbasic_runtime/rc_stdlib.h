@@ -194,7 +194,7 @@ inline size_t rc_intern_bufferFromString(string s, double* buffer)
 {
     for(int i = 0; i < s.length(); i++)
     {
-        buffer[i] = (double)((uint32_t)s[0]);
+        buffer[i] = (double)((uint32_t)s[i]);
     }
     return s.length();
 }
