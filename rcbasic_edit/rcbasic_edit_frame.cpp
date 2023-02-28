@@ -338,8 +338,23 @@ void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
 
         if(active_project)
         {
+            wxString fname = _("");
+            int page_index = sourceFile_auinotebook->GetSelection();
+            wxStyledTextCtrl* pg = (wxStyledTextCtrl*)sourceFile_auinotebook->GetPage(page_index);
+            for(int i = 0; i < open_files.size(); i++)
+            {
+                if(open_files[i]->getTextCtrl() == pg)
+                {
+                    fname = open_files[i]->getSourcePath().GetFullPath();
+                    break;
+                }
+            }
+
             for(int i = 0; i < active_project->project_symbols.size(); i++)
-                user_id_list.Add(active_project->project_symbols[i].id);
+            {
+                if(active_project->project_symbols[i].source_file.GetFullPath().compare(fname)!=0)
+                    user_id_list.Add(active_project->project_symbols[i].id);
+            }
         }
 
         if(pre_parsed_page)
