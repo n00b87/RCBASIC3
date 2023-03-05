@@ -850,7 +850,7 @@ bool ScalarMatrixColumns(uint32_t mA, uint32_t mB, uint32_t c, uint32_t num_cols
     if( (c+num_cols) >= rc_matrix[mA].c)
         num_cols = rc_matrix[mA].c - c;
 
-    DimMatrix(mB, rc_matrix[mA].r, num_cols);
+    CopyMatrix(mA, mB);
 
     int row_offset = 0;
     int b_offset = 0;
@@ -878,7 +878,7 @@ bool ScalarMatrixRows(uint32_t mA, uint32_t mB, uint32_t r, uint32_t num_rows, d
     if( (r+num_rows) > rc_matrix[mA].r)
         num_rows = rc_matrix[mA].r - r;
 
-    DimMatrix( mB, num_rows, rc_matrix[mA].c);
+    CopyMatrix(mA, mB);
 
     uint32_t row_offset = 0;
 
