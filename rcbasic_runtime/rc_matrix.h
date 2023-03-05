@@ -4,7 +4,11 @@
 #include <iostream>
 #include <vector>
 #ifndef RC_WEB
+#ifndef RC_ANDROID
+#ifndef RC_IOS
     #include <bits/stdc++.h>
+#endif
+#endif
 #endif
 #include <cstdlib>
 #include <ctime>
@@ -857,9 +861,8 @@ bool ScalarMatrixColumns(uint32_t mA, uint32_t mB, uint32_t c, uint32_t num_cols
     for(int row = 0; row < rc_matrix[mA].r; row++)
     {
         row_offset = row * rc_matrix[mA].c;
-        b_offset = row * num_cols;
         for(uint32_t col = c; col < (c+num_cols); col++)
-            rc_matrix[mB].data[b_offset + col] = s_value * rc_matrix[mA].data[row_offset + c];
+            rc_matrix[mB].data[row_offset + col] = s_value * rc_matrix[mA].data[row_offset + c];
     }
 
     return true;
