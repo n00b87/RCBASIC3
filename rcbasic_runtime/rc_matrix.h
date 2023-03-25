@@ -28,10 +28,12 @@ struct rc_matrix_type
     vector<double> data;
 };
 
-rc_matrix_type rc_matrix[1026];
+rc_matrix_type rc_matrix[1048];
 
 #define RC_TMP_MATRIX 1024
 #define RC_TMP_MATRIX_2 1025
+
+#define RC_PROCESS_TMP_MATRIX_OFFSET 1026
 
 void DimMatrix(int m, uint32_t m_rows, uint32_t m_cols, bool preserve_flag=false)
 {
@@ -242,7 +244,7 @@ bool MultiplyMatrix (int mA, int mB, int mC)
 }
 
 //Multiplies matrix A() * A() * A(), returns matrix B()
-bool CubeMatrix(int mA, int mB)
+bool CubeMatrix(int mA, int mB, int process_num)
 {
     if(rc_matrix[mA].r != rc_matrix[mA].c)
     {
@@ -250,16 +252,19 @@ bool CubeMatrix(int mA, int mB)
         return false;
     }
 
-    DimMatrix(RC_TMP_MATRIX, rc_matrix[mA].r, rc_matrix[mA].c);
-    MultiplyMatrix(mA, mA, RC_TMP_MATRIX);
-    MultiplyMatrix(RC_TMP_MATRIX, mA, mB);
+    int tmp_mat1 = process_num < 0 ? RC_TMP_MATRIX : (process_num*2) + RC_PROCESS_TMP_MATRIX_OFFSET;
+    //int tmp_mat2 = process_num < 0 ? RC_TMP_MATRIX : (process_num*2) + RC_PROCESS_TMP_MATRIX_OFFSET + 1;
 
-    DimMatrix(RC_TMP_MATRIX, 1, 1);
+    DimMatrix(tmp_mat1, rc_matrix[mA].r, rc_matrix[mA].c);
+    MultiplyMatrix(mA, mA, tmp_mat1);
+    MultiplyMatrix(tmp_mat1, mA, mB);
+
+    DimMatrix(tmp_mat1, 1, 1);
     return true;
 }
 
 // Deletes column N% from matrix
-bool DeleteMatrixColumns(int mA, uint32_t c, uint32_t num_cols)
+bool DeleteMatrixColumns(int mA, uint32_t c, uint32_t num_cols, int process_num)
 {
     if(c >= rc_matrix[mA].c)
     {
@@ -270,26 +275,29 @@ bool DeleteMatrixColumns(int mA, uint32_t c, uint32_t num_cols)
     if((c + num_cols) > rc_matrix[mA].c)
         num_cols = rc_matrix[mA].c - c;
 
-    DimMatrix( RC_TMP_MATRIX, rc_matrix[mA].r, rc_matrix[mA].c - num_cols);
+    int tmp_mat1 = process_num < 0 ? RC_TMP_MATRIX : (process_num*2) + RC_PROCESS_TMP_MATRIX_OFFSET;
+    //int tmp_mat2 = process_num < 0 ? RC_TMP_MATRIX : (process_num*2) + RC_PROCESS_TMP_MATRIX_OFFSET + 1;
+
+    DimMatrix( tmp_mat1, rc_matrix[mA].r, rc_matrix[mA].c - num_cols);
 
     uint32_t old_offset = 0;
     uint32_t row_offset = 0;
     for(uint32_t row = 0; row < rc_matrix[mA].r; row++)
     {
         old_offset = row * rc_matrix[mA].c;
-        row_offset = row * rc_matrix[RC_TMP_MATRIX].c;
-        for(uint32_t col = 0; col < rc_matrix[RC_TMP_MATRIX].c; col++)
+        row_offset = row * rc_matrix[tmp_mat1].c;
+        for(uint32_t col = 0; col < rc_matrix[tmp_mat1].c; col++)
         {
             if(col >= c)
             {
-                rc_matrix[RC_TMP_MATRIX].data[row_offset + col] = rc_matrix[mA].data[old_offset + col + num_cols];
+                rc_matrix[tmp_mat1].data[row_offset + col] = rc_matrix[mA].data[old_offset + col + num_cols];
             }
             else
-                rc_matrix[RC_TMP_MATRIX].data[row_offset + col] = rc_matrix[mA].data[old_offset + col];
+                rc_matrix[tmp_mat1].data[row_offset + col] = rc_matrix[mA].data[old_offset + col];
         }
     }
-    CopyMatrix(RC_TMP_MATRIX, mA);
-    DimMatrix(RC_TMP_MATRIX, 1, 1);
+    CopyMatrix(tmp_mat1, mA);
+    DimMatrix(tmp_mat1, 1, 1);
     return true;
 }
 
@@ -458,7 +466,7 @@ bool GetMatrixColumns(uint32_t mA, uint32_t mB, uint32_t c, uint32_t num_cols)
         row_offset = row * rc_matrix[mA].c;
         b_offset = row * num_cols;
         for(uint32_t col = c; col < (c+num_cols); col++)
-            rc_matrix[mB].data[b_offset + col] = rc_matrix[mA].data[row_offset + c];
+            rc_matrix[mB].data[b_offset + (col-c)] = rc_matrix[mA].data[row_offset + c];
     }
 
     return true;
@@ -941,13 +949,16 @@ bool SubtractMatrix (uint32_t mA, uint32_t mB, uint32_t mC)
 }
 
 // Swaps contents of Matrix A() with Matrix B()
-void SwapMatrix(uint32_t mA, uint32_t mB)
+void SwapMatrix(uint32_t mA, uint32_t mB, int process_num)
 {
-    DimMatrix(RC_TMP_MATRIX, rc_matrix[mA].r, rc_matrix[mA].c);
-    CopyMatrix(mB, RC_TMP_MATRIX);
+    int tmp_mat1 = process_num < 0 ? RC_TMP_MATRIX : (process_num*2) + RC_PROCESS_TMP_MATRIX_OFFSET;
+    //int tmp_mat2 = process_num < 0 ? RC_TMP_MATRIX : (process_num*2) + RC_PROCESS_TMP_MATRIX_OFFSET + 1;
+
+    DimMatrix(tmp_mat1, rc_matrix[mA].r, rc_matrix[mA].c);
+    CopyMatrix(mB, tmp_mat1);
     CopyMatrix(mA, mB);
-    CopyMatrix(RC_TMP_MATRIX, mA);
-    DimMatrix(RC_TMP_MATRIX, 1, 1);
+    CopyMatrix(tmp_mat1, mA);
+    DimMatrix(tmp_mat1, 1, 1);
 }
 
 // Swaps columns C1% and C2% in matrix A()

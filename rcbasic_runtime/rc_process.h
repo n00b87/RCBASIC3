@@ -152,70 +152,70 @@ int rc_subprocess_fn( void* data)
                 DimMatrix(op.n[0], op.n[1], op.n[2], op.n[3]);
             break;
             case FN_AddMatrix: //Number Function
-                rc_subprocess_error[0] = (AddMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (AddMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
             break;
             case FN_AugmentMatrix: //Number Function
-                rc_subprocess_error[0] = (AugmentMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (AugmentMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
             break;
             case FN_CopyMatrix: //Sub Procedure
                 CopyMatrix(op.n[0], op.n[1]);
             break;
             case FN_InsertMatrixColumns: //Number Function
-                rc_subprocess_error[0] = (InsertMatrixColumn(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (InsertMatrixColumn(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
             break;
             case FN_InsertMatrixRows: //Number Function
-                rc_subprocess_error[0] = (InsertMatrixRow(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (InsertMatrixRow(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
             break;
             case FN_MultiplyMatrix: //Number Function
-                rc_subprocess_error[0] = (MultiplyMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (MultiplyMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
             break;
             case FN_CubeMatrix: //Number Function
-                rc_subprocess_error[0] = (CubeMatrix(op.n[0], op.n[1])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (CubeMatrix(op.n[0], op.n[1], process_num)) ? 0 : op.fn;
             break;
             case FN_DeleteMatrixColumns: //Number Function
-                rc_subprocess_error[0] = (DeleteMatrixColumns(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (DeleteMatrixColumns(op.n[0], op.n[1], op.n[2], process_num)) ? 0 : op.fn;
             break;
             case FN_DeleteMatrixRows: //Number Function
-                rc_subprocess_error[0] = (DeleteMatrixRows(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (DeleteMatrixRows(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
             break;
             case FN_ClearMatrix: //Sub Procedure
                 ClearMatrix(op.n[0]);
             break;
             case FN_ClearMatrixColumns: //Number Function
-                rc_subprocess_error[0] = (ClearMatrixColumns(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (ClearMatrixColumns(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
             break;
             case FN_ClearMatrixRows: //Number Function
-                rc_subprocess_error[0] = (ClearMatrixRows(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (ClearMatrixRows(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;
             break;
             case FN_FillMatrix: //Sub Procedure
                 FillMatrix(op.n[0], op.n[1]);
             break;
             case FN_FillMatrixColumns: //Number Function
-                rc_subprocess_error[0] = (FillMatrixColumns(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (FillMatrixColumns(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;
             break;
             case FN_FillMatrixRows: //Number Function
-                rc_subprocess_error[0] = (FillMatrixRows(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;
+                rc_subprocess_error[process_num] = (FillMatrixRows(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;
             break;
             case FN_CopyMatrixColumns: //Number Function
-                rc_subprocess_error[0] = (GetMatrixColumns(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (GetMatrixColumns(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_CopyMatrixRows: //Number Function
-                rc_subprocess_error[0] = (GetMatrixRows(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (GetMatrixRows(op.n[0], op.n[1], op.n[2], op.n[3])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_IdentityMatrix: //Sub Procedure
                 IdentityMatrix(op.n[0], op.n[1]);
             break;
             case FN_SolveMatrix: //Number Function
-                rc_subprocess_error[0] = (SolveMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (SolveMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_IsEqualMatrix: //Number Function
-                rc_subprocess_error[0] = (IsEqualMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (IsEqualMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_AdjointMatrix: //Number Function
-                rc_subprocess_error[0] = (AdjointMatrix(op.n[0], op.n[1])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (AdjointMatrix(op.n[0], op.n[1])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_InvertMatrix: //Number Function
-                rc_subprocess_error[0] = (InvertMatrix(op.n[0], op.n[1])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (InvertMatrix(op.n[0], op.n[1])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_RandomizeMatrix: //Sub Procedure
                 RandomizeMatrix(op.n[0], op.n[1], op.n[2]);
@@ -227,34 +227,34 @@ int rc_subprocess_fn( void* data)
                 ScalarMatrix(op.n[0], op.n[1], op.n[2]);
             break;
             case FN_ScalarMatrixColumns: //Number Function
-                rc_subprocess_error[0] = (ScalarMatrixColumns(op.n[0], op.n[1], op.n[2], op.n[3], op.n[4])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (ScalarMatrixColumns(op.n[0], op.n[1], op.n[2], op.n[3], op.n[4])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_ScalarMatrixRows: //Number Function
-                rc_subprocess_error[0] = (ScalarMatrixRows(op.n[0], op.n[1], op.n[2], op.n[3], op.n[4])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (ScalarMatrixRows(op.n[0], op.n[1], op.n[2], op.n[3], op.n[4])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_SquareMatrix: //Number Function
-                rc_subprocess_error[0] = (SquareMatrix(op.n[0], op.n[1])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (SquareMatrix(op.n[0], op.n[1])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_SubMatrix: //Sub Procedure
                 SubMatrix(op.n[0],  op.n[1], op.n[2]);
             break;
             case FN_SubtractMatrix: //Number Function
-                rc_subprocess_error[0] = (SubtractMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (SubtractMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_SwapMatrix: //Sub Procedure
-                SwapMatrix(op.n[0], op.n[1]);  // 1 needs to be replaced with error code
+                SwapMatrix(op.n[0], op.n[1], process_num);  // 1 needs to be replaced with error code
             break;
             case FN_SwapMatrixColumn: //Number Function
-            rc_subprocess_error[0] = (SwapMatrixColumn(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+            rc_subprocess_error[process_num] = (SwapMatrixColumn(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_SwapMatrixRow: //Number Function
-                rc_subprocess_error[0] = (SwapMatrixRow(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (SwapMatrixRow(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_TransposeMatrix: //Number Function
-                rc_subprocess_error[0] = (TransposeMatrix(op.n[0], op.n[1])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (TransposeMatrix(op.n[0], op.n[1])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_UnAugmentMatrix: //Number Function
-                rc_subprocess_error[0] = (UnAugmentMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
+                rc_subprocess_error[process_num] = (UnAugmentMatrix(op.n[0], op.n[1], op.n[2])) ? 0 : op.fn;  // 1 needs to be replaced with error code
             break;
             case FN_ZeroMatrix: //Sub Procedure
                 ZeroMatrix(op.n[0]);

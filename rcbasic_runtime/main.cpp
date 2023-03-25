@@ -3329,7 +3329,7 @@ void func_130(uint64_t fn)
         break;
         case FN_CubeMatrix: //Number Function
             if(rc_active_matrix_process < 0)
-                rc_push_num(CubeMatrix(CUBEMATRIX_MA, CUBEMATRIX_MB));
+                rc_push_num(CubeMatrix(CUBEMATRIX_MA, CUBEMATRIX_MB, rc_active_matrix_process));
             else
             {
                 ProcessQueueMatrixOp(FN_CubeMatrix, CUBEMATRIX_MA, CUBEMATRIX_MB);
@@ -3338,7 +3338,7 @@ void func_130(uint64_t fn)
         break;
         case FN_DeleteMatrixColumns: //Number Function
             if(rc_active_matrix_process < 0)
-                rc_push_num(DeleteMatrixColumns(DELETEMATRIXCOLUMNS_MA, DELETEMATRIXCOLUMNS_C, DELETEMATRIXCOLUMNS_NUM_COLS));
+                rc_push_num(DeleteMatrixColumns(DELETEMATRIXCOLUMNS_MA, DELETEMATRIXCOLUMNS_C, DELETEMATRIXCOLUMNS_NUM_COLS, rc_active_matrix_process));
             else
             {
                 ProcessQueueMatrixOp(FN_DeleteMatrixColumns, DELETEMATRIXCOLUMNS_MA, DELETEMATRIXCOLUMNS_C, DELETEMATRIXCOLUMNS_NUM_COLS);
@@ -3543,7 +3543,7 @@ void func_130(uint64_t fn)
         break;
         case FN_SwapMatrix: //Sub Procedure
             if(rc_active_matrix_process < 0)
-                SwapMatrix(SWAPMATRIX_MA, SWAPMATRIX_MB);
+                SwapMatrix(SWAPMATRIX_MA, SWAPMATRIX_MB, rc_active_matrix_process);
             else
                 ProcessQueueMatrixOp(FN_SwapMatrix, SWAPMATRIX_MA, SWAPMATRIX_MB);
         break;
