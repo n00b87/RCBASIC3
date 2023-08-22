@@ -153,9 +153,9 @@ void* parserThread::Entry()
         {
             frame->symbolUpdateInProgress = true;
             frame->pre_parsed_page = NULL;
-            notebook_mutex.Unlock();
             //contents.clear();
             wxPostEvent(m_pParent, evt);
+            notebook_mutex.Unlock();
         }
 
         wxMilliSleep(400);

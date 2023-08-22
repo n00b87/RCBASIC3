@@ -3375,6 +3375,7 @@ void rc_media_drawImage_Transform(int slot, int x, int y, int w, int h, int src_
     SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window], &src, &dst, angle, &center, rf);
 }
 
+
 #ifdef RC_WEB
 int rc_media_drawGeometry(int slot, int num_vertices, double* vertices, int num_indices, double* indices)
 {

@@ -22,7 +22,7 @@ bool rc_ideApp::OnInit()
     wxInitAllImageHandlers();
     if ( wxsOK )
     {
-    	rcbasic_edit_frame* Frame = new rcbasic_edit_frame(0);
+    	Frame = new rcbasic_edit_frame(0);
     	Frame->Show();
     	SetTopWindow(Frame);
     }
@@ -33,5 +33,6 @@ bool rc_ideApp::OnInit()
 int rc_ideApp::OnExit()
 {
     wxPuts(_("RCBasic Studio Shutdown Complete"));
+    Frame = NULL;
     return 0;
 }

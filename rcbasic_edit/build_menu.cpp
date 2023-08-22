@@ -158,7 +158,10 @@ void rcbasic_edit_frame::buildProject(wxString build_flags)
     {
         project_fname = openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_SAVE);
         if(project_fname.GetFullPath().compare(_(""))==0)
+        {
+            notebook_mutex.Unlock();
             return;
+        }
     }
 
     //SAVE FILES IN PROJECT

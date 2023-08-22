@@ -1286,6 +1286,38 @@ void init_embedded()
     embed_function("ProcessQueueSize", ID_TYPE_FN_NUM);
     add_embedded_arg("p_num", ID_TYPE_NUM);
     embed_function("NumCPUs", ID_TYPE_FN_NUM);
+    embed_function("GetProjectionGeometry", ID_TYPE_SUB);
+    add_embedded_arg("cam_dist", ID_TYPE_NUM);
+    add_embedded_arg("mA", ID_TYPE_NUM);
+    add_embedded_arg("f_vertex_count", ID_TYPE_NUM);
+    add_embedded_arg("columns", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("uv", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("graph_offset_x", ID_TYPE_NUM);
+    add_embedded_arg("graph_offset_y", ID_TYPE_NUM);
+    add_embedded_arg("v_color", ID_TYPE_NUM);
+    add_embedded_arg("vertex_count", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("vertex2D", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("index_count", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("index", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("clip_dist", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("min_x", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("min_y", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("max_x", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("max_y", ID_TYPE_BYREF_NUM);
+    embed_function("CalculateFaceZ", ID_TYPE_FN_NUM);
+    add_embedded_arg("cam_dist", ID_TYPE_NUM);
+    add_embedded_arg("graph_offset_x", ID_TYPE_NUM);
+    add_embedded_arg("graph_offset_y", ID_TYPE_NUM);
+    add_embedded_arg("view_w", ID_TYPE_NUM);
+    add_embedded_arg("view_h", ID_TYPE_NUM);
+    add_embedded_arg("view_depth", ID_TYPE_NUM);
+    add_embedded_arg("mA", ID_TYPE_NUM);
+    add_embedded_arg("f_vertex_count", ID_TYPE_NUM);
+    add_embedded_arg("columns", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("face_min_z", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("face_max_z", ID_TYPE_BYREF_NUM);
+    add_embedded_arg("z_avg", ID_TYPE_BYREF_NUM);
+
 
 }
 

@@ -269,7 +269,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
             break;
     }
 
-    //wxPuts(_("Testing"));
+    //wxPuts(_("Project Open"));
     //setLastProjectSave();
 
     //rcbasic_project_tree->AddRoot(name);

@@ -11,10 +11,12 @@
 #define RC_IDEAPP_H
 
 #include <wx/app.h>
+#include "rcbasic_edit_frame.h"
 
 class rc_ideApp : public wxApp
 {
     public:
+        rcbasic_edit_frame* Frame;
         virtual bool OnInit();
         virtual int OnExit();
 };

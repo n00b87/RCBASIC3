@@ -493,3 +493,7 @@ sub ProcessContinueAll()
 function ProcessQueueSize(p_num)
 
 function NumCPUs()
+
+
+sub GetProjectionGeometry(cam_dist, mA, f_vertex_count, ByRef columns, ByRef uv, graph_offset_x, graph_offset_y, v_color, ByRef vertex_count, ByRef vertex2D, ByRef index_count, ByRef index, ByRef clip_dist, ByRef min_x, ByRef min_y, ByRef max_x, ByRef max_y)
+function CalculateFaceZ(cam_dist, graph_offset_x, graph_offset_y, view_w, view_h, view_depth, mA, f_vertex_count, ByRef columns, ByRef face_min_z, ByRef face_max_z, ByRef z_avg)

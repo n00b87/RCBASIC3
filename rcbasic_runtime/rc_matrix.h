@@ -1082,4 +1082,5 @@ void GetMatrixSize(uint32_t mA, double* r, double* c)
     *c = rc_matrix[mA].c;
 }
 
+
 #endif // RC_MATRIX_H_INCLUDED

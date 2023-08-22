@@ -21,6 +21,42 @@
 #include "rcbasic_symbol.h"
 
 
+
+rcbasic_edit_mutex::rcbasic_edit_mutex()
+{
+    scope = 0;
+}
+
+rcbasic_edit_mutex::~rcbasic_edit_mutex()
+{
+
+}
+
+void rcbasic_edit_mutex::Lock()
+{
+    nb_class_lock.Lock();
+    if(scope == 0)
+        mutex.Lock();
+
+    scope++;
+    nb_class_lock.Unlock();
+}
+
+void rcbasic_edit_mutex::Unlock()
+{
+    nb_class_lock.Lock();
+    scope--;
+
+    if(scope < 0)
+        scope = 0;
+
+    if(scope == 0)
+        mutex.Unlock();
+
+    nb_class_lock.Unlock();
+}
+
+
 void rcbasic_edit_frame::pfile_readContents(wxString file_path)
 {
     pfile_contents.clear();
@@ -1976,6 +2012,7 @@ void rcbasic_edit_frame::onSaveFileMenuSelect( wxCommandEvent& event )
 {
     notebook_mutex.Lock();
     saveFile(getOpenFileFromSelection());
+    wxMilliSleep(5);
     notebook_mutex.Unlock();
 }
 
