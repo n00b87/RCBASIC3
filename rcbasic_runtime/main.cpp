@@ -3657,6 +3657,76 @@ void func_130(uint64_t fn)
             rc_push_num( CalculateFaceZ(CALCULATEFACEZ_CAM_DIST, CALCULATEFACEZ_GRAPH_OFFSET_X, CALCULATEFACEZ_GRAPH_OFFSET_Y, CALCULATEFACEZ_VIEW_W, CALCULATEFACEZ_VIEW_H, CALCULATEFACEZ_VIEW_DEPTH,
                                         CALCULATEFACEZ_MA, CALCULATEFACEZ_F_VERTEX_COUNT, &CALCULATEFACEZ_COLUMNS, &CALCULATEFACEZ_FACE_MIN_Z, &CALCULATEFACEZ_FACE_MAX_Z, &CALCULATEFACEZ_Z_AVG));
         break;
+        case FN_SetChannelSpacePosition: //Number Function
+            rc_push_num(rc_media_setChannelSpacePosition(SETCHANNELSPACEPOSITION_CHANNEL, SETCHANNELSPACEPOSITION_ANGLE, SETCHANNELSPACEPOSITION_DISTANCE));
+        break;
+        case FN_SaveBMP: //Number Function
+            rc_push_num(SaveBMP(SAVEBMP_IMG, SAVEBMP_FILE$));
+        break;
+        case FN_SavePNG: //Number Function
+            rc_push_num(SavePNG(SAVEPNG_IMG, SAVEPNG_FILE$));
+        break;
+        case FN_SaveJPG: //Number Function
+            rc_push_num(SaveJPG(SAVEJPG_IMG, SAVEJPG_FILE$));
+        break;
+        case FN_GetLineIntersection: //Number Function
+            rc_push_num(GetLineIntersect(GETLINEINTERSECTION_P0_X, GETLINEINTERSECTION_P0_Y,
+                                         GETLINEINTERSECTION_P1_X, GETLINEINTERSECTION_P1_Y,
+                                         GETLINEINTERSECTION_P2_X, GETLINEINTERSECTION_P2_Y,
+                                         GETLINEINTERSECTION_P3_X, GETLINEINTERSECTION_P3_Y,
+                                         &GETLINEINTERSECTION_I_X, &GETLINEINTERSECTION_I_Y));
+        break;
+        case FN_Interpolate: //Number Function
+            rc_push_num(Interpolate(INTERPOLATE_MIN_A, INTERPOLATE_MAX_A, INTERPOLATE_MID_A, INTERPOLATE_MIN_B, INTERPOLATE_MAX_B));
+        break;
+        case FN_ATan2: //Number Function
+            rc_push_num(atan2(ATAN2_Y, ATAN2_X));
+        break;
+        case FN_PointInQuad: //Number Function
+            rc_push_num(PointInQuad(POINTINQUAD_X, POINTINQUAD_Y,
+                                    POINTINQUAD_X1, POINTINQUAD_Y1,
+                                    POINTINQUAD_X2, POINTINQUAD_Y2,
+                                    POINTINQUAD_X3, POINTINQUAD_Y3,
+                                    POINTINQUAD_X4, POINTINQUAD_Y4));
+        break;
+        case FN_PointInTri: //Number Function
+            rc_push_num(PointInTri(POINTINTRI_X, POINTINTRI_Y,
+                                   POINTINTRI_X1, POINTINTRI_Y1,
+                                   POINTINTRI_X2, POINTINTRI_Y2,
+                                   POINTINTRI_X3, POINTINTRI_Y3));
+        break;
+        case FN_Distance2D: //Number Function
+            rc_push_num(Distance2D(DISTANCE2D_X1, DISTANCE2D_Y1, DISTANCE2D_X2, DISTANCE2D_Y2));
+        break;
+        case FN_Distance3D: //Number Function
+            rc_push_num(Distance3D(DISTANCE3D_X1, DISTANCE3D_Y1, DISTANCE3D_Z1, DISTANCE3D_X2, DISTANCE3D_Y2, DISTANCE3D_Z2));
+        break;
+        case FN_GetCircleLineIntersection: //Number Function
+            rc_push_num(GetCircleLineIntersection(GETCIRCLELINEINTERSECTION_CIRCLE_X, GETCIRCLELINEINTERSECTION_CIRCLE_Y, GETCIRCLELINEINTERSECTION_RADIUS,
+                                                  GETCIRCLELINEINTERSECTION_X1, GETCIRCLELINEINTERSECTION_Y1,
+                                                  GETCIRCLELINEINTERSECTION_X2, GETCIRCLELINEINTERSECTION_Y2,
+                                                  &GETCIRCLELINEINTERSECTION_IX1, &GETCIRCLELINEINTERSECTION_IY1,
+                                                  &GETCIRCLELINEINTERSECTION_IX2, &GETCIRCLELINEINTERSECTION_IY2));
+        break;
+        case FN_GetLinePlaneIntersection: //Number Function
+            rc_push_num(GetLinePlaneIntersection(&GETLINEPLANEINTERSECTION_LINE_POINT, &GETLINEPLANEINTERSECTION_LINE_DIRECTION,
+                                                 &GETLINEPLANEINTERSECTION_PLANE_POINT_1,
+                                                 &GETLINEPLANEINTERSECTION_PLANE_POINT_2,
+                                                 &GETLINEPLANEINTERSECTION_PLANE_POINT_3,
+                                                 &GETLINEPLANEINTERSECTION_INTERSECTION));
+        break;
+        case FN_IncrementMatrixRows: //Sub Procedure
+            IncrementMatrixRows(INCREMENTMATRIXROWS_MA, INCREMENTMATRIXROWS_MB, INCREMENTMATRIXROWS_R, INCREMENTMATRIXROWS_NUM_ROWS, INCREMENTMATRIXROWS_VALUE);
+        break;
+        case FN_IncrementMatrixColumns: //Sub Procedure
+            IncrementMatrixColumns(INCREMENTMATRIXCOLUMNS_MA, INCREMENTMATRIXCOLUMNS_MB, INCREMENTMATRIXCOLUMNS_C, INCREMENTMATRIXCOLUMNS_NUM_COLS, INCREMENTMATRIXCOLUMNS_VALUE);
+        break;
+        case FN_JoinMatrixRows: //Sub Procedure
+            JoinMatrixRows(JOINMATRIXROWS_MA, JOINMATRIXROWS_MB, JOINMATRIXROWS_MC);
+        break;
+        case FN_JoinMatrixColumns: //Sub Procedure
+            JoinMatrixColumns(JOINMATRIXCOLUMNS_MA, JOINMATRIXCOLUMNS_MB, JOINMATRIXCOLUMNS_MC);
+        break;
 
 
     }
@@ -4606,7 +4676,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("--version")==0)
     {
-        cout << "RCBASIC Runtime v3.20" << endl;
+        cout << "RCBASIC Runtime v3.21" << endl;
         return 0;
     }
 

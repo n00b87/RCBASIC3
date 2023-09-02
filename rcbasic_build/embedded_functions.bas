@@ -494,6 +494,21 @@ function ProcessQueueSize(p_num)
 
 function NumCPUs()
 
-
+'v3.21
 sub GetProjectionGeometry(cam_dist, mA, f_vertex_count, ByRef columns, ByRef uv, graph_offset_x, graph_offset_y, v_color, ByRef vertex_count, ByRef vertex2D, ByRef index_count, ByRef index, ByRef clip_dist, ByRef min_x, ByRef min_y, ByRef max_x, ByRef max_y)
 function CalculateFaceZ(cam_dist, graph_offset_x, graph_offset_y, view_w, view_h, view_depth, mA, f_vertex_count, ByRef columns, ByRef face_min_z, ByRef face_max_z, ByRef z_avg)
+function SetChannelSpacePosition(channel, angle, distance)
+function SaveBMP(img, file$)
+function SavePNG(img, file$)
+function SaveJPG(img, file$)
+Function GetLineIntersection(p0_x, p0_y, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y, ByRef i_x, ByRef i_y)
+Function Interpolate(min_a, max_a, mid_a, min_b, max_b)
+Function ATan2(y, x)
+function PointInQuad(x, y, x1, y1, x2, y2, x3, y3, x4, y4)
+function PointInTri(x, y, x1, y1, x2, y2, x3, y3)
+Function Distance2D(x1, y1, x2, y2)
+Function Distance3D(x1, y1, z1, x2, y2, z2)
+function GetCircleLineIntersection(circle_x, circle_y, radius, x1, y1, x2, y2, ByRef ix1, ByRef iy1, ByRef ix2, ByRef iy2)
+function GetLinePlaneIntersection(ByRef line_point, ByRef line_direction, ByRef plane_point_1, ByRef plane_point_2, ByRef plane_point_3, ByRef intersection)
+sub IncrementMatrixRows(mA, mB, r, num_rows, value)
+sub IncrementMatrixColumns(mA, mB, c, num_cols, value)

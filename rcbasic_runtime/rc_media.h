@@ -3375,6 +3375,102 @@ void rc_media_drawImage_Transform(int slot, int x, int y, int w, int h, int src_
     SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window], &src, &dst, angle, &center, rf);
 }
 
+int SaveBMP(int slot, string file)
+{
+    SDL_Rect img_rect;
+    img_rect.x = 0;
+    img_rect.y = 0;
+    img_rect.w = rc_image_width[slot];
+    img_rect.h = rc_image_height[slot];
+
+    //cout << "Debug data: " << img_rect.w << ", " << img_rect.h << endl;
+
+
+    //SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_VERTICAL);
+
+    SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[slot], rc_image_height[slot], 32, 0, 0, 0, 0);
+    SDL_Texture * tmp_tex = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, rc_image_width[slot], rc_image_height[slot]);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window],NULL);
+    SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,&img_rect);
+    //SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
+
+    SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &img_rect, rc_pformat->format,tmp_surf->pixels,tmp_surf->pitch);
+
+    if(rc_active_screen >= 0 && rc_active_screen < MAX_SCREENS)
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
+
+    SDL_DestroyTexture(tmp_tex);
+
+    int ret_val = SDL_SaveBMP(tmp_surf, file.c_str());
+    SDL_FreeSurface(tmp_surf);
+
+    return ret_val;
+}
+
+int SavePNG(int slot, string file)
+{
+    SDL_Rect img_rect;
+    img_rect.x = 0;
+    img_rect.y = 0;
+    img_rect.w = rc_image_width[slot];
+    img_rect.h = rc_image_height[slot];
+
+    //cout << "Debug data: " << img_rect.w << ", " << img_rect.h << endl;
+
+
+    //SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_VERTICAL);
+
+    SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[slot], rc_image_height[slot], 32, 0, 0, 0, 0);
+    SDL_Texture * tmp_tex = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, rc_image_width[slot], rc_image_height[slot]);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window],NULL);
+    SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,&img_rect);
+    //SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
+
+    SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &img_rect, rc_pformat->format,tmp_surf->pixels,tmp_surf->pitch);
+
+    if(rc_active_screen >= 0 && rc_active_screen < MAX_SCREENS)
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
+
+    SDL_DestroyTexture(tmp_tex);
+
+    int ret_val = IMG_SavePNG(tmp_surf, file.c_str());
+    SDL_FreeSurface(tmp_surf);
+
+    return ret_val;
+}
+
+int SaveJPG(int slot, string file)
+{
+    SDL_Rect img_rect;
+    img_rect.x = 0;
+    img_rect.y = 0;
+    img_rect.w = rc_image_width[slot];
+    img_rect.h = rc_image_height[slot];
+
+    //cout << "Debug data: " << img_rect.w << ", " << img_rect.h << endl;
+
+
+    //SDL_RendererFlip rf = (SDL_RendererFlip)(SDL_FLIP_VERTICAL);
+
+    SDL_Surface * tmp_surf = SDL_CreateRGBSurface(0, rc_image_width[slot], rc_image_height[slot], 32, 0, 0, 0, 0);
+    SDL_Texture * tmp_tex = SDL_CreateTexture(rc_win_renderer[rc_active_window], rc_pformat->format, SDL_TEXTUREACCESS_TARGET, rc_image_width[slot], rc_image_height[slot]);
+    SDL_SetRenderTarget(rc_win_renderer[rc_active_window],NULL);
+    SDL_RenderCopy(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,&img_rect);
+    //SDL_RenderCopyEx(rc_win_renderer[rc_active_window],rc_himage[slot][rc_active_window],NULL,NULL,0,NULL,rf);
+
+    SDL_RenderReadPixels(rc_win_renderer[rc_active_window], &img_rect, rc_pformat->format,tmp_surf->pixels,tmp_surf->pitch);
+
+    if(rc_active_screen >= 0 && rc_active_screen < MAX_SCREENS)
+        SDL_SetRenderTarget(rc_win_renderer[rc_active_window], rc_hscreen[rc_active_window][rc_active_screen]);
+
+    SDL_DestroyTexture(tmp_tex);
+
+    int ret_val = IMG_SaveJPG(tmp_surf, file.c_str(), 100);
+    SDL_FreeSurface(tmp_surf);
+
+    return ret_val;
+}
+
 
 #ifdef RC_WEB
 int rc_media_drawGeometry(int slot, int num_vertices, double* vertices, int num_indices, double* indices)
@@ -5420,6 +5516,13 @@ int rc_media_setChannelPanning(int channel, Uint8 l, Uint8 r)
 {
     return Mix_SetPanning(channel, l, r);
 }
+
+
+int rc_media_setChannelSpacePosition(int channel, double angle, double distance)
+{
+    return Mix_SetPosition(channel, (Sint16)angle, (Uint8) distance);
+}
+
 
 //NETWORKING
 

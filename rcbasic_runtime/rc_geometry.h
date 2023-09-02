@@ -1,4 +1,5 @@
 #include "rc_matrix.h"
+#include <cmath>
 
 #ifndef RC_GEOMETRY_H_INCLUDED
 #define RC_GEOMETRY_H_INCLUDED
@@ -128,7 +129,7 @@ double CalculateFaceZ(double cam_dist, double graph_offset_x, double graph_offse
 
 
 
-int LinePlaneIntersection(double* line_point, double* line_direction, double* plane_point_1, double* plane_point_2, double* plane_point_3, double* intersection)
+int GetLinePlaneIntersection(double* line_point, double* line_direction, double* plane_point_1, double* plane_point_2, double* plane_point_3, double* intersection)
 {
 	//'    """
 	//'    Calculates the intersection point of a line and a plane in 3D space.
@@ -191,12 +192,124 @@ double Interpolate(double min_a, double max_a, double mid_a, double min_b, doubl
 
 
 
-//double c3d_vertex[ C3D_MAX_VERTICES, 8];
-//double c3d_index[ (C3D_MAX_VERTICES-3) * 3 + 3 + 12 ]; //'After 3 vertices, every new vertex adds 3 indices
+int GetLineIntersect(double p0_x, double p0_y, double p1_x, double p1_y, double p2_x, double p2_y, double p3_x, double p3_y, double* i_x, double* i_y)
+{
+	double s1_x = p1_x - p0_x;
+	double s1_y = p1_y - p0_y;
+    double s2_x = p3_x - p2_x;
+	double s2_y = p3_y - p2_y;
 
-//int c3d_vi = 0;
-//int c3d_index_count = 0;
-//int c3d_vertex_count = 0;
+	double n = ( (-1 * s2_x) * s1_y + s1_x * s2_y);
+
+	if(n == 0)
+		return 0;
+
+    double s = ( (-1 * s1_y) * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / n;
+    double t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / n;
+
+    i_x[0] = p0_x + (t * s1_x);
+    i_y[0] = p0_y + (t * s1_y);
+
+    if(s >= 0 && s <= 1 && t >= 0 && t <= 1)
+    {
+        //' Collision detected
+        return 1;
+    }
+
+	//' No collision
+    return 0;
+}
+
+
+int PointInQuad(double x, double y, double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+{
+    //'"""
+	//'Check if a point (x, y) is inside a quadrilateral defined by its four vertices (x1, y1), (x2, y2), (x3, y3), and (x4, y4).
+	//'"""
+	//'# Compute the cross products of vectors from the point to each vertex of the quadrilateral.
+	//'# If all cross products have the same sign, the point is inside the quadrilateral.
+	double cross1 = (x - x1) * (y2 - y1) - (y - y1) * (x2 - x1);
+	double cross2 = (x - x2) * (y3 - y2) - (y - y2) * (x3 - x2);
+	double cross3 = (x - x3) * (y4 - y3) - (y - y3) * (x4 - x3);
+	double cross4 = (x - x4) * (y1 - y4) - (y - y4) * (x1 - x4);
+
+	if(cross1 >= 0 && cross2 >= 0 && cross3 >= 0 && cross4 >= 0)
+		return 1;
+	else if(cross1 <= 0 && cross2 <= 0 && cross3 <= 0 && cross4 <= 0)
+		return 1;
+	else
+		return 0;
+}
+
+
+int PointInTri(double x, double y, double x1, double y1, double x2, double y2, double x3, double y3)
+{
+    //"""
+    //Check if a point (x, y) is inside a triangle defined by its three vertices (x1, y1), (x2, y2), and (x3, y3).
+    //"""
+    //# Calculate the barycentric coordinates of the point with respect to the triangle vertices.
+    double denominator = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
+
+    double alpha = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / denominator;
+    double beta = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / denominator;
+    double gamma = 1 - alpha - beta;
+
+    //# Check if the barycentric coordinates are within the range [0, 1].
+    if( (0 <= alpha && alpha <= 1) && (0 <= beta && beta <= 1) && (0 <= gamma && gamma <= 1) )
+        return 1;
+    else
+        return 0;
+}
+
+
+double Distance2D(double x1, double y1, double x2, double y2)
+{
+    return sqrt( pow((x2 - x1),2) + pow((y2 - y1),2) );
+}
+
+double GetCircleLineIntersection(double cx, double cy, double r, double x1, double y1, double x2, double y2, double* ix1, double* iy1, double* ix2, double* iy2)
+{
+    //'"""
+    //'Calculate the intersection points between a line defined by two points (x1, y1) and (x2, y2),
+    //'and a circle with center (cx, cy) and radius r.
+    //'"""
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    double a = pow(dx,2) + pow(dy,2);
+    double b = 2 * (dx * (x1 - cx) + dy * (y1 - cy));
+    double c = pow((x1 - cx),2) + pow((y1 - cy),2) - pow(r,2);
+
+    double discriminant = pow(b,2) - 4 * a * c;
+
+    if(discriminant < 0)
+    {
+        //'# No intersection points
+        return 0;
+    }
+    else if( discriminant == 0 )
+    {
+        //'# One intersection point
+        double t = -b / (2 * a);
+        ix1[0] = x1 + t * dx;
+        iy1[0] = y1 + t * dy;
+        return 1;
+    }
+    else
+    {
+        //'# Two intersection points
+        double t1 = (-b + sqrt(discriminant)) / (2 * a);
+        double t2 = (-b - sqrt(discriminant)) / (2 * a);
+
+        ix1[0] = x1 + t1 * dx;
+        iy1[0] = y1 + t1 * dy;
+        ix2[0] = x1 + t2 * dx;
+        iy2[0] = y1 + t2 * dy;
+
+        return 2;
+    }
+}
+
+
 
 int CAMERA_LENS = 0;
 
@@ -290,7 +403,7 @@ int ClipTriangle(double* tri, double* uv, double* clipped_tri, double* clipped_u
 			ld[1] = nc[1] - lp[1];
 			ld[2] = nc[2] - lp[2];
 
-			LinePlaneIntersection(&lp[0], &ld[0], &p1[0], &p2[0], &p3[0], &intersect[0]);
+			GetLinePlaneIntersection(&lp[0], &ld[0], &p1[0], &p2[0], &p3[0], &intersect[0]);
 
 			//'dim clipped_tri[3]
 
@@ -345,7 +458,7 @@ int ClipTriangle(double* tri, double* uv, double* clipped_tri, double* clipped_u
 			ld[1] = nc[4] - lp[1];
 			ld[2] = nc[5] - lp[2];
 
-			LinePlaneIntersection(&lp[0], &ld[0], &p1[0], &p2[0], &p3[0], &intersect[0]);
+			GetLinePlaneIntersection(&lp[0], &ld[0], &p1[0], &p2[0], &p3[0], &intersect[0]);
 
 			//'AC
 			clipped_tri[15] = intersect[0];
@@ -368,7 +481,7 @@ int ClipTriangle(double* tri, double* uv, double* clipped_tri, double* clipped_u
 			ld[1] = nc[1] - lp[1];
 			ld[2] = nc[2] - lp[2];
 
-			LinePlaneIntersection(&lp[0], &ld[0], &p1[0], &p2[0], &p3[0], &intersect[0]);
+			GetLinePlaneIntersection(&lp[0], &ld[0], &p1[0], &p2[0], &p3[0], &intersect[0]);
 
 			AB_dist = Distance3D(pt[0], pt[1], pt[2], nc[0], nc[1], nc[2]);
 			AC_dist = Distance3D(pt[3], pt[4], pt[5], nc[0], nc[1], nc[2]);
@@ -399,7 +512,7 @@ int ClipTriangle(double* tri, double* uv, double* clipped_tri, double* clipped_u
 			ld[1] = nc[1] - lp[1];
 			ld[2] = nc[2] - lp[2];
 
-			LinePlaneIntersection(&lp[0], &ld[0], &p1[0], &p2[0], &p3[0], &intersect[0]);
+			GetLinePlaneIntersection(&lp[0], &ld[0], &p1[0], &p2[0], &p3[0], &intersect[0]);
 
 			clipped_tri[6] = intersect[0];
 			clipped_tri[7] = intersect[1];

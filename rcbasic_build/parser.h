@@ -1043,7 +1043,8 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 
             if(expr_id < 0)
             {
-                rc_setError(token[i].substr(4) + " was not found in this scope-: " + current_scope);
+                //rc_setError(token[i].substr(4) + " was not found in this scope+:  " + current_scope);
+                rc_setError(token[i].substr(4) + " was not found in this scope");
                 //output_vars();
                 return false;
             }
@@ -1140,7 +1141,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 
                 if(num_args > 1)
                 {
-                    rc_setError("..In " + id[expr_id].name + " Expected 0 to 1 dimensions and found " + rc_intToString(num_args));
+                    rc_setError("In " + id[expr_id].name + " Expected 0 to 1 dimensions and found " + rc_intToString(num_args));
                     return false;
                 }
 
@@ -1310,7 +1311,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     if(num_args == 0)
                         continue;
 
-                    rc_setError("7In " + id[expr_id].name + " Expected " + rc_intToString(id[expr_id].num_args) + " dimensions and found " + rc_intToString(num_args));
+                    rc_setError("In " + id[expr_id].name + " Expected " + rc_intToString(id[expr_id].num_args) + " dimensions and found " + rc_intToString(num_args));
                     return false;
                 }
 
@@ -1398,7 +1399,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 
                 if(token_replace.compare("")==0)
                 {
-                    rc_setError("%%could not resolve array " + id[expr_id].name);
+                    rc_setError("Could not resolve array " + id[expr_id].name);
                     return false;
                 }
 
@@ -1484,7 +1485,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                             }
                             else if(token[i].compare("")!=0)
                             {
-                                rc_setError("aInvalid argument in function: "+token[i]);
+                                rc_setError("Invalid argument in function: "+token[i]);
                                 return false;
                             }
                         }
@@ -1496,8 +1497,8 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 
                 if(id[expr_id].num_args != num_args)
                 {
-                    rc_setError("//In " + id[expr_id].name + " Expected " + rc_intToString(id[expr_id].num_args) + " arguments and found " + rc_intToString(num_args));
-                    rc_setError("arg[0]=" + args[0]);
+                    rc_setError("In " + id[expr_id].name + " Expected " + rc_intToString(id[expr_id].num_args) + " arguments and found " + rc_intToString(num_args));
+                    //rc_setError("arg[0]=" + args[0]);
                     //cout <<"TOEK" << endl;
                     output_tokens();
                     return false;
@@ -1533,7 +1534,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                     }
                     if(expr_id < 0)
                     {
-                        rc_setError("Debug ERROR HERE");
+                        rc_setError("ArrayDim Syntax Error");
                         return false;
                     }
                 }
@@ -1704,7 +1705,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                             int arg_id = getIDInScope_ByIndex(args[n].substr(4));
                             if(arg_id < 0)
                             {
-                                rc_setError("Identifier was not declared in byref argument");
+                                rc_setError("Identifier was not declared in ByRef argument");
                                 return false;
                             }
                             if(id[arg_id].type == ID_TYPE_ARR_NUM)
@@ -1883,7 +1884,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 
                 if(token_replace.compare("")==0)
                 {
-                    rc_setError("%%could not resolve function " + id[expr_id].name);
+                    rc_setError("Could not resolve function " + id[expr_id].name);
                     return false;
                 }
 
@@ -2047,7 +2048,7 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
         if(end_block < 0) //if end_block is less than 0 then an error occurred so this function will return false
         {
             //cout << "End block < 0" << endl;
-            rc_setError("Could not evaluate expression");
+            //rc_setError("Could not evaluate expression");
             return false;
         }
 
@@ -2138,7 +2139,7 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
             }
             else if(token[i].substr(0,1).compare("!")!=0)
             {
-                rc_setError("_Could not evaluate expression");
+                //rc_setError("Could not evaluate expression");
                 return false;
             }
         }
@@ -2146,7 +2147,7 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
         if(result_count > 1 && !allow_multi_arg)
         {
             //cout << "ST:ET = " << start_block << ", " << end_block << endl;
-            rc_setError("--Could not evaluate expression");
+            //rc_setError("Could not evaluate expression");
             return false;
         }
     }
@@ -3281,7 +3282,7 @@ bool check_rule()
 
             if(!eval_expression(1, token.size()-1))
             {
-                rc_setError("Could not evaluate expression");
+                //rc_setError("Could not evaluate expression");
                 return false;
             }
             if(id[current_fn_index].type == ID_TYPE_FN_NUM)
@@ -3405,7 +3406,7 @@ bool check_rule()
 
             if(!eval_expression(1, token.size()-1))
             {
-                rc_setError("Could not evaluate expression");
+                //rc_setError("Could not evaluate expression");
                 return false;
             }
 
@@ -3538,7 +3539,7 @@ bool check_rule()
             {
                 if(!eval_expression(2, token.size()-1))
                 {
-                    rc_setError("Could not evaluate expression");
+                    //rc_setError("Could not evaluate expression");
                     return false;
                 }
                 if(expr_result.substr(0,1).compare("n")!=0)
@@ -3558,7 +3559,7 @@ bool check_rule()
             {
                 if(!eval_expression(2, token.size()-1))
                 {
-                    rc_setError("Could not evaluate expression");
+                    //rc_setError("Could not evaluate expression");
                     return false;
                 }
                 if(expr_result.substr(0,1).compare("n")!=0)
@@ -3576,7 +3577,7 @@ bool check_rule()
             }
             else
             {
-                rc_setError("Illegal Syntax");
+                rc_setError("Expected WHILE or UNTIL before expression");
                 return false;
             }
         }
@@ -3753,7 +3754,7 @@ bool check_rule()
 
             if(!eval_expression(for_equal_op_offset+1, token.size()-1, true))
             {
-                rc_setError("Could not evaluate expression");
+                //rc_setError("Could not evaluate expression");
                 return false;
             }
 
@@ -3867,7 +3868,7 @@ bool check_rule()
 
             if(!eval_expression(1, if_then-1))
             {
-                rc_setError("Could not evaluate expression");
+                //rc_setError("Could not evaluate expression");
                 return false;
             }
 
@@ -3983,7 +3984,7 @@ bool check_rule()
             }
             if(!eval_expression(2, token.size()-1))
             {
-                rc_setError("Could not evaluate expression");
+                //rc_setError("Could not evaluate expression");
                 return false;
             }
             select_data select_start;
@@ -4064,7 +4065,7 @@ bool check_rule()
             }
             if(!eval_expression(1, token.size()-1, true))
             {
-                rc_setError("Could not evaluate expression");
+                //rc_setError("Could not evaluate expression");
                 return false;
             }
             string case_reg_type = "n";
@@ -4152,8 +4153,8 @@ bool check_rule()
                     token[i] = "";
                     if(!eval_expression(start_token, i))
                     {
-                        rc_setError("Could not evaluate expression");
-                        output_tokens();
+                        //rc_setError("Could not evaluate expression");
+                        //output_tokens();
                         cout << endl << endl;
                         return false;
                     }
@@ -4168,7 +4169,7 @@ bool check_rule()
             {
                 if(!eval_expression(start_token, token.size()-1))
                 {
-                    rc_setError("Could not evaluate expression");
+                    //rc_setError("Could not evaluate expression");
                     return false;
                 }
                 if(expr_result.substr(0,1).compare("n")==0)
@@ -4343,7 +4344,7 @@ bool check_rule()
 
                 if(!eval_expression(2))
                 {
-                    rc_setError("Could not evaluate expression");
+                    //rc_setError("Could not evaluate expression");
                     return false;
                 }
 
@@ -4432,7 +4433,7 @@ bool check_rule()
                     //cout << "dbg 2" << endl;
                     if(!eval_expression())
                     {
-                        rc_setError("^Could not evaluate expression");
+                        //rc_setError("^Could not evaluate expression");
                         return false;
                     }
                 }
@@ -4462,7 +4463,7 @@ bool check_rule()
                 {
                     if(!eval_expression(start_token, token.size()-1))
                     {
-                        rc_setError("Could not evaluate expression");
+                        //rc_setError("Could not evaluate expression");
                         return false;
                     }
 
@@ -4487,7 +4488,7 @@ bool check_rule()
                 {
                     if(!eval_expression(start_token, token.size()-1))
                     {
-                        rc_setError("Could not evaluate expression");
+                        //rc_setError("Could not evaluate expression");
                         return false;
                     }
                 }
@@ -4499,7 +4500,7 @@ bool check_rule()
                 //output_tokens();
                 if(!eval_expression())
                 {
-                    rc_setError("-+Could not evaluate expression");
+                    //rc_setError("Could not evaluate expression");
                     return false;
                 }
             }
@@ -4508,7 +4509,7 @@ bool check_rule()
         {
             if(!eval_expression(0, token.size()-1))
             {
-                rc_setError("Could not evaluate expression");
+                //rc_setError("Could not evaluate expression");
                 return false;
             }
             //cout <<"THIS IS A TEST" << endl;

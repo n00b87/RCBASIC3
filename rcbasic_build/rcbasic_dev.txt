@@ -1,9 +1,3 @@
-#ifndef RC_BUILTIN_H_INCLUDED
-#define RC_BUILTIN_H_INCLUDED
-#include "identifier.h"
-
-void init_embedded()
-{
 embed_function("FPrint", ID_TYPE_SUB);
 add_embedded_arg("txt$", ID_TYPE_STR);
 embed_function("Input$", ID_TYPE_FN_STR);
@@ -1421,8 +1415,3 @@ embed_function("JoinMatrixColumns", ID_TYPE_SUB);
 add_embedded_arg("mA", ID_TYPE_NUM);
 add_embedded_arg("mB", ID_TYPE_NUM);
 add_embedded_arg("mC", ID_TYPE_NUM);
-
-}
-
-
-#endif // RC_BUILTIN_H_INCLUDED

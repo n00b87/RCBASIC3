@@ -1082,5 +1082,108 @@ void GetMatrixSize(uint32_t mA, double* r, double* c)
     *c = rc_matrix[mA].c;
 }
 
+void IncrementMatrixRows(uint32_t mA, uint32_t mB, uint32_t r, uint32_t num_rows, double value)
+{
+    if(num_rows < 0)
+        return;
+
+    if( r >= rc_matrix[mA].r )
+        r = rc_matrix[mA].r -1;
+
+    if( (r+num_rows) >= rc_matrix[mA].r )
+        num_rows = rc_matrix[mA].r - r;
+
+    CopyMatrix(mA, mB);
+
+    for(int mr = r; mr < (r+num_rows); mr++)
+    {
+        for(int mc = 0; mc < rc_matrix[mA].c; mc++)
+        {
+            double mv = MatrixValue(mA, mr, mc) + value;
+            SetMatrixValue(mB, mr, mc, mv);
+        }
+    }
+}
+
+void IncrementMatrixColumns(uint32_t mA, uint32_t mB, uint32_t c, uint32_t num_cols, double value)
+{
+    if(num_cols < 0)
+        return;
+
+    if( c >= rc_matrix[mA].c )
+        c = rc_matrix[mA].c -1;
+
+    if( (c+num_cols) >= rc_matrix[mA].c )
+        num_cols = rc_matrix[mA].c - c;
+
+    CopyMatrix(mA, mB);
+
+    for(int mr = 0; mr < rc_matrix[mA].r; mr++)
+    {
+        for(int mc = c; mc < (c+num_cols); mc++)
+        {
+            double mv = MatrixValue(mA, mr, mc) + value;
+            SetMatrixValue(mB, mr, mc, mv);
+        }
+    }
+}
+
+void JoinMatrixRows(uint32_t mA, uint32_t mB, uint32_t mC)
+{
+    if(rc_matrix[mA].r != rc_matrix[mB].r)
+        return;
+
+    uint32_t num_cols = rc_matrix[mA].c + rc_matrix[mB].c;
+    uint32_t num_rows = rc_matrix[mA].r;
+
+    DimMatrix(mC, num_rows, num_cols, false);
+
+    for(int c = 0; c < rc_matrix[mA].c; c++)
+    {
+        for(int r = 0; r < num_rows; r++)
+        {
+            double mv = MatrixValue(mA, r, c);
+            SetMatrixValue(mC, r, c, mv);
+        }
+    }
+
+    for(int c = 0; c < rc_matrix[mB].c; c++)
+    {
+        for(int r = 0; r < num_rows; r++)
+        {
+            double mv = MatrixValue(mB, r, c);
+            SetMatrixValue(mC, r, rc_matrix[mA].c + c, mv);
+        }
+    }
+}
+
+void JoinMatrixColumns(uint32_t mA, uint32_t mB, uint32_t mC)
+{
+    if(rc_matrix[mA].c != rc_matrix[mB].c)
+        return;
+
+    uint32_t num_cols = rc_matrix[mA].c;
+    uint32_t num_rows = rc_matrix[mA].r + rc_matrix[mB].r;
+
+    DimMatrix(mC, num_rows, num_cols, false);
+
+    for(int c = 0; c < num_cols; c++)
+    {
+        for(int r = 0; r < rc_matrix[mA].r; r++)
+        {
+            double mv = MatrixValue(mA, r, c);
+            SetMatrixValue(mC, r, c, mv);
+        }
+    }
+
+    for(int c = 0; c < num_cols; c++)
+    {
+        for(int r = 0; r < rc_matrix[mB].r; r++)
+        {
+            double mv = MatrixValue(mB, r, c);
+            SetMatrixValue(mC, rc_matrix[mA].r + r, c, mv);
+        }
+    }
+}
 
 #endif // RC_MATRIX_H_INCLUDED
