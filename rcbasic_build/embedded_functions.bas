@@ -512,3 +512,5 @@ function GetCircleLineIntersection(circle_x, circle_y, radius, x1, y1, x2, y2, B
 function GetLinePlaneIntersection(ByRef line_point, ByRef line_direction, ByRef plane_point_1, ByRef plane_point_2, ByRef plane_point_3, ByRef intersection)
 sub IncrementMatrixRows(mA, mB, r, num_rows, value)
 sub IncrementMatrixColumns(mA, mB, c, num_cols, value)
+sub JoinMatrixRows(mA, mB, mC)
+sub JoinMatrixColumns(mA, mB, mC)

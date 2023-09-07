@@ -815,6 +815,7 @@ void rc_GetProjectionGeometry(int cam_dist, uint32_t mA, int f_vertex_count, dou
                            vertex_count, vertex2D, ind_count, index, clip_dist, min_x, min_y, max_x, max_y);
 }
 
+
 // --------------------------------------------------------------------------
 
 
