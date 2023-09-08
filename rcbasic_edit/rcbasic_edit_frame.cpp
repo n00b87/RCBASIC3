@@ -321,7 +321,7 @@ void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
     notebook_mutex.Unlock();
 }
 
-rcbasic_edit_frame::rcbasic_edit_frame( wxWindow* parent )
+rcbasic_edit_frame::rcbasic_edit_frame( wxWindow* parent, int argc, wxArrayString argv )
 :
 rc_ideFrame( parent )
 {
@@ -601,6 +601,15 @@ rc_ideFrame( parent )
     {
         token_parser = new parserThread(this, 0, this);
         token_parser->Run();
+    }
+
+    for(int i = 1; i < argc; i++)
+    {
+        wxFileName f(argv[i]);
+        if(f.GetExt().compare(_("rcprj"))==0)
+            openProject(f);
+        else if(f.GetExt().compare(_("bas"))==0 || f.GetExt().compare(_("txt"))==0)
+            openSourceFile(f);
     }
 }
 
