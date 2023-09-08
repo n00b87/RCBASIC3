@@ -105,7 +105,6 @@ class rc_ideFrame : public wxFrame
 		wxMenuItem* m_distribute_menuItem;
 		wxMenu* m_help_menu;
 		wxMenuItem* m_doc_menuItem;
-		wxMenuItem* m_editorManual_menuItem;
 		wxMenuItem* m_about_menuItem;
 		wxBoxSizer* mainWindowSizer;
 		wxToolBar* m_toolBar;
@@ -189,7 +188,6 @@ class rc_ideFrame : public wxFrame
 		virtual void onGenKeystoreMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onDistributeMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onDocMenuSelect( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onEditorManualMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAboutMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeNodeActivated( wxTreeEvent& event ) { event.Skip(); }
 		virtual void onProjectTreeContextMenu( wxTreeEvent& event ) { event.Skip(); }

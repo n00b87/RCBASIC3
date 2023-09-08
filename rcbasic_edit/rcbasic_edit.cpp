@@ -245,9 +245,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_doc_menuItem = new wxMenuItem( m_help_menu, wxID_ANY, wxString( wxT("RCBasic Documentation") ) , wxEmptyString, wxITEM_NORMAL );
 	m_help_menu->Append( m_doc_menuItem );
 
-	m_editorManual_menuItem = new wxMenuItem( m_help_menu, wxID_ANY, wxString( wxT("Editor Documentation") ) , wxEmptyString, wxITEM_NORMAL );
-	m_help_menu->Append( m_editorManual_menuItem );
-
 	m_about_menuItem = new wxMenuItem( m_help_menu, wxID_ANY, wxString( wxT("About") ) + wxT('\t') + wxT("F1"), wxEmptyString, wxITEM_NORMAL );
 	m_help_menu->Append( m_about_menuItem );
 
@@ -447,7 +444,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_tools_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onGenKeystoreMenuSelect ), this, m_genKeystore_menuItem->GetId());
 	m_tools_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDistributeMenuSelect ), this, m_distribute_menuItem->GetId());
 	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDocMenuSelect ), this, m_doc_menuItem->GetId());
-	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onEditorManualMenuSelect ), this, m_editorManual_menuItem->GetId());
 	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onAboutMenuSelect ), this, m_about_menuItem->GetId());
 	this->Connect( m_new_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::newFileMenuSelect ) );
 	this->Connect( m_open_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::openFileMenuSelect ) );
