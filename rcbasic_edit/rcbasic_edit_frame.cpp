@@ -4376,6 +4376,8 @@ void rcbasic_edit_frame::onDropFiles( wxDropFilesEvent& event )
             wxFileName fname(files[i]);
             if(fname.GetExt().MakeLower().compare(_("bas"))==0 || fname.GetExt().MakeLower().compare(_("txt"))==0)
                 openSourceFile(wxFileName(files[i]));
+            else if(fname.GetExt().MakeLower().compare(_("rcprj"))==0)
+                openProject(fname);
 
         }
         notebook_mutex.Unlock();
