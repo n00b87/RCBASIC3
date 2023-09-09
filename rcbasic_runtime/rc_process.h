@@ -2,7 +2,11 @@
 #define RC_PROCESS_H_INCLUDED
 
 #include <iostream>
-#include <SDL2/SDL.h>
+#ifdef RC_ANDROID
+	#include "SDL.h"
+#else
+	#include <SDL2/SDL.h>
+#endif
 #include <queue>
 #include "rc_matrix.h"
 #include "rc_defines.h"
