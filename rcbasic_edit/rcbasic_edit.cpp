@@ -207,12 +207,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_build_menu->AppendSeparator();
 
-	wxMenuItem* m_debug_menuItem;
-	m_debug_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Debug (Experimental)") ) + wxT('\t') + wxT("F4"), wxEmptyString, wxITEM_NORMAL );
-	m_build_menu->Append( m_debug_menuItem );
-
-	m_build_menu->AppendSeparator();
-
 	m_abort_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Stop Execution") ) , wxEmptyString, wxITEM_NORMAL );
 	m_build_menu->Append( m_abort_menuItem );
 
@@ -436,7 +430,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildMenuSelect ), this, m_build_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onRunMenuSelect ), this, m_run_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildRunMenuSelect ), this, m_buildRun_menuItem->GetId());
-	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDebugMenuSelect ), this, m_debug_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onStopExecuteMenuSelect ), this, m_abort_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildFileMenuSelect ), this, m_buildFile_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onRunFileMenuSelect ), this, m_runFile_menuItem->GetId());

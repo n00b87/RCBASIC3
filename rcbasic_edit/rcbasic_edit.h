@@ -180,7 +180,6 @@ class rc_ideFrame : public wxFrame
 		virtual void onBuildMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onRunMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onBuildRunMenuSelect( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onDebugMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onStopExecuteMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onBuildFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onRunFileMenuSelect( wxCommandEvent& event ) { event.Skip(); }

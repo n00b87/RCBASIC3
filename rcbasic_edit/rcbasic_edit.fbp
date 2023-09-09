@@ -714,7 +714,7 @@
                         <event name="OnMenuSelection">onProjectEnvironmentMenuSelect</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="1">
+                <object class="wxMenu" expanded="0">
                     <property name="label">Build</property>
                     <property name="name">m_build_menu</property>
                     <property name="permission">protected</property>
@@ -760,11 +760,11 @@
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">onBuildRunMenuSelect</event>
                     </object>
-                    <object class="separator" expanded="1">
+                    <object class="separator" expanded="0">
                         <property name="name">m_separator16</property>
                         <property name="permission">none</property>
                     </object>
-                    <object class="wxMenuItem" expanded="1">
+                    <object class="wxMenuItem" expanded="0">
                         <property name="bitmap"></property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
@@ -893,20 +893,6 @@
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">onDocMenuSelect</event>
-                    </object>
-                    <object class="wxMenuItem" expanded="0">
-                        <property name="bitmap"></property>
-                        <property name="checked">0</property>
-                        <property name="enabled">1</property>
-                        <property name="help"></property>
-                        <property name="id">wxID_ANY</property>
-                        <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">Editor Documentation</property>
-                        <property name="name">m_editorManual_menuItem</property>
-                        <property name="permission">protected</property>
-                        <property name="shortcut"></property>
-                        <property name="unchecked_bitmap"></property>
-                        <event name="OnMenuSelection">onEditorManualMenuSelect</event>
                     </object>
                     <object class="wxMenuItem" expanded="0">
                         <property name="bitmap"></property>
