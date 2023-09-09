@@ -1555,6 +1555,8 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
         wxSetWorkingDirectory(cwd);
         txtCtrl_obj->setTextChangedFlag(false);
         notebook_mutex.Unlock();
+
+        addRecentProject(new_project);
     }
 
     //wxPuts(_("Project_Location: ") + project_location);
