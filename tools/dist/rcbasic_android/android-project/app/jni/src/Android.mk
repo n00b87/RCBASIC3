@@ -21,6 +21,7 @@ THEORAPLAY_PATH := ../src/theoraplay_tremor
 endif
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/$(THEORAPLAY_PATH) -DRC_ANDROID_BUILD
+LOCAL_CPP_FEATURES += exceptions
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include \
 					$(LOCAL_PATH)/$(SDL_IMAGE_PATH) \
