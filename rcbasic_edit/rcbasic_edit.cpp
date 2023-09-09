@@ -2288,7 +2288,7 @@ rc_distribute_dialog::rc_distribute_dialog( wxWindow* parent, wxWindowID id, con
 	m_panel12->SetSizer( bSizer95 );
 	m_panel12->Layout();
 	bSizer95->Fit( m_panel12 );
-	m_notebook4->AddPage( m_panel12, wxT("General Settings"), false );
+	m_notebook4->AddPage( m_panel12, wxT("General Settings"), true );
 	m_panel20 = new wxPanel( m_notebook4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer114;
 	bSizer114 = new wxBoxSizer( wxVERTICAL );
@@ -2461,7 +2461,7 @@ rc_distribute_dialog::rc_distribute_dialog( wxWindow* parent, wxWindowID id, con
 	m_panel13->SetSizer( bSizer116 );
 	m_panel13->Layout();
 	bSizer116->Fit( m_panel13 );
-	m_notebook4->AddPage( m_panel13, wxT("Android Settings"), true );
+	m_notebook4->AddPage( m_panel13, wxT("Android Settings"), false );
 
 	bSizer92->Add( m_notebook4, 8, wxALL|wxEXPAND, 5 );
 

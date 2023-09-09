@@ -714,7 +714,7 @@
                         <event name="OnMenuSelection">onProjectEnvironmentMenuSelect</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">Build</property>
                     <property name="name">m_build_menu</property>
                     <property name="permission">protected</property>
@@ -759,24 +759,6 @@
                         <property name="shortcut">F9</property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">onBuildRunMenuSelect</event>
-                    </object>
-                    <object class="separator" expanded="0">
-                        <property name="name">m_separator16</property>
-                        <property name="permission">none</property>
-                    </object>
-                    <object class="wxMenuItem" expanded="0">
-                        <property name="bitmap"></property>
-                        <property name="checked">0</property>
-                        <property name="enabled">1</property>
-                        <property name="help"></property>
-                        <property name="id">wxID_ANY</property>
-                        <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">Debug (Experimental)</property>
-                        <property name="name">m_debug_menuItem</property>
-                        <property name="permission">none</property>
-                        <property name="shortcut">F4</property>
-                        <property name="unchecked_bitmap"></property>
-                        <event name="OnMenuSelection">onDebugMenuSelect</event>
                     </object>
                     <object class="separator" expanded="0">
                         <property name="name">m_separator131</property>
@@ -13207,11 +13189,11 @@
                 <property name="name">bSizer92</property>
                 <property name="orient">wxVERTICAL</property>
                 <property name="permission">none</property>
-                <object class="sizeritem" expanded="0">
+                <object class="sizeritem" expanded="1">
                     <property name="border">5</property>
                     <property name="flag">wxALL|wxEXPAND</property>
                     <property name="proportion">8</property>
-                    <object class="wxNotebook" expanded="0">
+                    <object class="wxNotebook" expanded="1">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
                         <property name="RightDockable">1</property>
@@ -13264,11 +13246,11 @@
                         <property name="window_extra_style"></property>
                         <property name="window_name"></property>
                         <property name="window_style"></property>
-                        <object class="notebookpage" expanded="0">
+                        <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">General Settings</property>
-                            <property name="select">0</property>
-                            <object class="wxPanel" expanded="0">
+                            <property name="select">1</property>
+                            <object class="wxPanel" expanded="1">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -13319,12 +13301,12 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxBoxSizer" expanded="0">
+                                <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
                                     <property name="name">bSizer95</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
@@ -13637,11 +13619,11 @@
                                             </object>
                                         </object>
                                     </object>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size"></property>
                                             <property name="name">bSizer99</property>
                                             <property name="orient">wxHORIZONTAL</property>
@@ -14394,7 +14376,7 @@
                         <object class="notebookpage" expanded="0">
                             <property name="bitmap"></property>
                             <property name="label">Android Settings</property>
-                            <property name="select">1</property>
+                            <property name="select">0</property>
                             <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
