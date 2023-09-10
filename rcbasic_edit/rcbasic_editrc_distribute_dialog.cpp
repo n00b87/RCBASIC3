@@ -51,7 +51,6 @@ rc_distribute_dialog( parent )
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Windows 64-Bit"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Linux 32-Bit"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Linux 64-Bit"));
-    m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Mac OS (x86)"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Web App (web assembly)"));
 
     if(wxDirExists(android_project_path.GetFullPath()))
