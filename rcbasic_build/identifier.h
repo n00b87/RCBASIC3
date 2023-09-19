@@ -757,7 +757,7 @@ bool create_variable(string name, int type, string utype_name="", int vec = -1)
     {
         if(var.type == ID_TYPE_NUM || var.type == ID_TYPE_ARR_NUM)
             vm_asm.push_back("preset !" + rc_intToString(var.vec_pos) );
-        else
+        else if(var.type == ID_TYPE_STR || var.type == ID_TYPE_ARR_STR)
             vm_asm.push_back("preset$ !" + rc_intToString(var.vec_pos));
     }
     isFunctionArg_flag = false;
@@ -818,7 +818,7 @@ bool create_array(string name, int type, string utype_name, int dim_count, strin
     {
         if(var.type == ID_TYPE_NUM || var.type == ID_TYPE_ARR_NUM)
             vm_asm.push_back("preset !" + rc_intToString(var.vec_pos) );
-        else
+        else if(var.type == ID_TYPE_STR || var.type == ID_TYPE_ARR_STR)
             vm_asm.push_back("preset$ !" + rc_intToString(var.vec_pos));
     }
     isFunctionArg_flag = false;

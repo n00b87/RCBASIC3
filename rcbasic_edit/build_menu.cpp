@@ -123,11 +123,17 @@ void rcbasic_edit_frame::buildProject(wxString build_flags)
     rt = wxExecute(fs, wxEXEC_SYNC);*/
 
     if(isBuilding || isRunning || isDebugging)
+    {
+        wxMessageBox(_("A Program is currently running"));
         return;
+    }
 
 
     if(build_process || run_process)
+    {
+        wxMessageBox(_("A build or run process has not ended"));
         return;
+    }
 
     if(!build_run_project)
     {
@@ -329,10 +335,16 @@ void rcbasic_edit_frame::onRunMenuSelect( wxCommandEvent& event )
 void rcbasic_edit_frame::runProject()
 {
     if(isBuilding || isRunning || isDebugging)
+    {
+        wxMessageBox(_("A Program is currently running"));
         return;
+    }
 
     if(build_process || run_process)
+    {
+        wxMessageBox(_("A build or run process has not ended"));
         return;
+    }
 
     if(!build_run_project)
     {
@@ -441,7 +453,10 @@ void rcbasic_edit_frame::runProject()
 void rcbasic_edit_frame::onBuildRunMenuSelect( wxCommandEvent& event )
 {
     if(isBuilding || isRunning || isBuildingAndRunning || isDebugging)
+    {
+        wxMessageBox(_("A Program is currently running"));
         return;
+    }
 
     if(!active_project)
     {
@@ -530,11 +545,17 @@ void rcbasic_edit_frame::buildCurrentFile()
 {
 
     if(isBuilding || isRunning || isDebugging)
+    {
+        wxMessageBox(_("A Program is currently running"));
         return;
+    }
 
 
     if(build_process || run_process)
+    {
+        wxMessageBox(_("A build or run process has not ended"));
         return;
+    }
 
     build_run_project = NULL;
 
@@ -621,10 +642,16 @@ void rcbasic_edit_frame::onRunFileMenuSelect( wxCommandEvent& event )
 void rcbasic_edit_frame::runCurrentFile()
 {
     if(isBuilding || isRunning || isDebugging)
+    {
+        wxMessageBox(_("A Program is currently running"));
         return;
+    }
 
     if(build_process || run_process)
+    {
+        wxMessageBox(_("A build or run process has not ended"));
         return;
+    }
 
     build_run_project = NULL;
 
@@ -683,9 +710,12 @@ void rcbasic_edit_frame::runCurrentFile()
     run_pid = wxExecute(_("\"") + run_file_fname.GetFullPath() + _("\"") , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
     #else
 
+    wxExecuteEnv env;
+    env.cwd = main_source.GetPath();
+
     wxString run_cmd = _("\"") + rcbasic_run_path.GetFullPath() + _("\" \"") + main_source.GetFullPath() + _("\"");
 
-    run_pid = wxExecute( run_cmd , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, NULL);
+    run_pid = wxExecute( run_cmd , wxEXEC_SHOW_CONSOLE | wxEXEC_ASYNC, run_process, &env);
     #endif
 
     if(run_pid >= 0)
@@ -699,7 +729,10 @@ void rcbasic_edit_frame::runCurrentFile()
 void rcbasic_edit_frame::onBuildRunFileMenuSelect( wxCommandEvent& event )
 {
     if(isBuilding || isRunning || isBuildingAndRunning || isDebugging)
+    {
+        wxMessageBox(_("A Program is currently running"));
         return;
+    }
 
     m_results_notebook->SetSelection(RESULTS_LISTBOX_BUILDMSG);
 

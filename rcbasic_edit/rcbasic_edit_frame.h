@@ -304,7 +304,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 	    void OnParserThread(wxCommandEvent& event);
 	    void activateProject();
 		/** Constructor */
-		rcbasic_edit_frame( wxWindow* parent );
+		rcbasic_edit_frame( wxWindow* parent, int argc, wxArrayString argv );
 		int getProjectFromRoot(wxTreeItemId node);
 		void updateProjectTree(int project_index);
 		void addFileToProject(wxFileName sourceFile);

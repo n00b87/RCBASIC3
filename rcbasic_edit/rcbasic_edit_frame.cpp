@@ -321,11 +321,11 @@ void rcbasic_edit_frame::OnParserThread(wxCommandEvent& event)
     notebook_mutex.Unlock();
 }
 
-rcbasic_edit_frame::rcbasic_edit_frame( wxWindow* parent )
+rcbasic_edit_frame::rcbasic_edit_frame( wxWindow* parent, int argc, wxArrayString argv )
 :
 rc_ideFrame( parent )
 {
-    RCBasic_Studio_Version = _("v1.2");
+    RCBasic_Studio_Version = _("v1.3");
 
     build_run_project = NULL;
     current_file_project = new rcbasic_project();
@@ -601,6 +601,15 @@ rc_ideFrame( parent )
     {
         token_parser = new parserThread(this, 0, this);
         token_parser->Run();
+    }
+
+    for(int i = 1; i < argc; i++)
+    {
+        wxFileName f(argv[i]);
+        if(f.GetExt().compare(_("rcprj"))==0)
+            openProject(f);
+        else if(f.GetExt().compare(_("bas"))==0 || f.GetExt().compare(_("txt"))==0)
+            openSourceFile(f);
     }
 }
 
@@ -1546,6 +1555,8 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
         wxSetWorkingDirectory(cwd);
         txtCtrl_obj->setTextChangedFlag(false);
         notebook_mutex.Unlock();
+
+        addRecentProject(new_project);
     }
 
     //wxPuts(_("Project_Location: ") + project_location);
@@ -4376,6 +4387,8 @@ void rcbasic_edit_frame::onDropFiles( wxDropFilesEvent& event )
             wxFileName fname(files[i]);
             if(fname.GetExt().MakeLower().compare(_("bas"))==0 || fname.GetExt().MakeLower().compare(_("txt"))==0)
                 openSourceFile(wxFileName(files[i]));
+            else if(fname.GetExt().MakeLower().compare(_("rcprj"))==0)
+                openProject(fname);
 
         }
         notebook_mutex.Unlock();
@@ -4387,6 +4400,7 @@ void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
 {
     notebook_mutex.Lock();
     int selected_page = sourceFile_auinotebook->GetSelection();
+    int selected_file_index = -1;
 
     int line_num = 0;
     int total_lines = 0;
@@ -4404,6 +4418,18 @@ void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
             col_num = t->GetColumn(t->GetCurrentPos());
             total_col = t->GetColumn(t->GetLineEndPosition(line_num));
         }
+
+        for(int i = 0; i < open_files.size(); i++)
+        {
+            if(!open_files[i])
+                continue;
+
+            if(sourceFile_auinotebook->GetPageIndex(open_files[i]->getTextCtrl()) == selected_page)
+            {
+                selected_file_index = i;
+                break;
+            }
+        }
     }
 
     notebook_mutex.Unlock();
@@ -4414,7 +4440,12 @@ void rcbasic_edit_frame::onEditorUpdateUI( wxUpdateUIEvent& event )
     line_status.Printf(_("Line: %d / %d"), line_num+1, total_lines);
     column_status.Printf(_("Column: %d / %d"), col_num, total_col);
 
-    m_statusBar->SetStatusText(line_status + _("   ") + column_status, 0);
+    //m_statusBar->SetStatusText(line_status + _("   ") + column_status, 0);
+
+    if(selected_file_index >= 0)
+        m_statusBar->SetStatusText( line_status + _("   ") + column_status + _("\t\tFile: ") + open_files[selected_file_index]->getSourcePath().GetFullPath(), 0);
+    else
+        m_statusBar->SetStatusText(line_status + _("   ") + column_status, 0);
 
     if(isBuilding && (build_process != NULL))
     {

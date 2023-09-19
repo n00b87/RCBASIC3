@@ -539,7 +539,7 @@ bool rc_eval(string line)
 
     //current_Debug
     //cout << "-------BEFORE PP START TOKENS--------" << endl;
-    output_tokens();
+    //output_tokens();
 
     //cout << "get preprocessor" << endl;
     if(!rc_preprocessor())
@@ -599,7 +599,7 @@ bool rc_eval(string line)
                 break;
             else if(!Array_Macros(i))
             {
-                cout << "ERROR:" << rc_getError() << endl;
+                //cout << "ERROR:" << rc_getError() << endl;
                 return false;
             }
             //cout << "### tmp_token[" << i << "] = ";
@@ -612,7 +612,7 @@ bool rc_eval(string line)
 
         if(!check_rule())
         {
-            cout << "ERROR:" << rc_getError() << endl;
+            //cout << "ERROR:" << rc_getError() << endl;
             return false;
         }
     }
@@ -1020,7 +1020,7 @@ int main(int argc, char * argv[])
 
     if(rc_filename.compare("--version")==0)
     {
-        cout << "RCBASIC Compiler v3.20" << endl;
+        cout << "RCBASIC Compiler v3.21" << endl;
         return 0;
     }
 

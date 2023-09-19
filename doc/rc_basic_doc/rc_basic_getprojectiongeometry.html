@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="style.css">
+    <meta  content="text/html; charset=UTF-8"  http-equiv="content-type">
+    <title>RC BASIC GETPROJECTIONGEOMETRY</title>
+  </head>
+  <body><b>GetProjectionGeometry(cam_dist, mA, f_vertex_count, ByRef columns, ByRef uv, graph_offset_x, graph_offset_y, v_color, ByRef vertex_count, ByRef vertex2D, ByRef index_count, ByRef index, ByRef clip_dist, ByRef min_x, ByRef min_y, ByRef max_x, ByRef max_y)</b> <br>
+    <br>
+    Calculates a 2D project from 3D vertices. It can calculate a triangle or quad projection based on the number vertices specified by f_vertex_count.  <br>
+    <br>
+    Parameters: <br>
+    &nbsp; cam_dist - Camera distance from clipping plane<br>
+    &nbsp; mA - A matrix containing the vertices to project<br>
+    &nbsp; f_vertex_count - the number of vertices ( NOTE: it must be 3 or 4 )<br>
+    &nbsp; columns - An array specifying the columns in the matrix for each vertex<br>
+    &nbsp; uv - Texture coordinates for each vertex (Note: must be given in the same order as the columns for the vertices)<br>
+    &nbsp; graph_offset_x - Where X is 0 ( generally the center of the view )<br>
+    &nbsp; graph_offset_y - Where Y is 0 ( generally the bottom of the view )<br>
+    &nbsp; v_color - The color for the polygon ( Note: This only matters if not texture is used when rendering )<br>
+    &nbsp; vertex_count - The number of vertices in the shape after clipping has been applied<br>
+    &nbsp; vertex2D - The returned vertices<br>
+    &nbsp; index_count - The number of indices returned after clipping has been applied<br>
+    &nbsp; index - The returned indices<br>
+    &nbsp; clip_dist - The returned minimum distance from the camera to the shape<br>
+    &nbsp; min_x - The minimum x value returned from the projection<br>
+    &nbsp; min_y - The minimum y value returned from the projection<br>
+    &nbsp; max_x - The maximum x value returned from the projection<br>
+    &nbsp; max_y - The maximum y value returned from the projection<br>
+    <br>
+    NOTE: The vertex structure returned in vertex2D will be in the format the DrawGeometry() function needs
+    <br>
+    Example:<br>
+    <br>
+    
+  </body>
+</html>

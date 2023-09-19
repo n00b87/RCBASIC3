@@ -20,9 +20,12 @@ bool rc_ideApp::OnInit()
 {
     bool wxsOK = true;
     wxInitAllImageHandlers();
+
+    wxArrayString args = argv.GetArguments();
+
     if ( wxsOK )
     {
-    	rcbasic_edit_frame* Frame = new rcbasic_edit_frame(0);
+    	rcbasic_edit_frame* Frame = new rcbasic_edit_frame(0, this->argc, args);
     	Frame->Show();
     	SetTopWindow(Frame);
     }

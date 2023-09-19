@@ -30,6 +30,15 @@ rc_distribute_dialog( parent )
     m_category_comboBox->Append(_("Utility"));
     m_category_comboBox->SetSelection(0);
 
+
+    wxFileName default_icon(parent_frame->getRCBasicBasePath());
+    default_icon.AppendDir(_("gfx"));
+    default_icon.SetFullName(_("rcbasic.png"));
+
+    if(default_icon.Exists())
+        m_icon_filePicker->SetFileName(default_icon);
+
+
     //wxCheckListBox m_targetPlatforms_checkList;
     wxString pkg_home;
     wxGetEnv(_("RC_PKG_HOME"), &pkg_home);
@@ -42,7 +51,6 @@ rc_distribute_dialog( parent )
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Windows 64-Bit"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Linux 32-Bit"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Linux 64-Bit"));
-    m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Mac OS (x86)"));
     m_targetPlatforms_checkList->AppendAndEnsureVisible(_("Web App (web assembly)"));
 
     if(wxDirExists(android_project_path.GetFullPath()))

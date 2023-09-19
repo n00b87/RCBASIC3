@@ -207,12 +207,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_build_menu->AppendSeparator();
 
-	wxMenuItem* m_debug_menuItem;
-	m_debug_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Debug (Experimental)") ) + wxT('\t') + wxT("F4"), wxEmptyString, wxITEM_NORMAL );
-	m_build_menu->Append( m_debug_menuItem );
-
-	m_build_menu->AppendSeparator();
-
 	m_abort_menuItem = new wxMenuItem( m_build_menu, wxID_ANY, wxString( wxT("Stop Execution") ) , wxEmptyString, wxITEM_NORMAL );
 	m_build_menu->Append( m_abort_menuItem );
 
@@ -244,9 +238,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_help_menu = new wxMenu();
 	m_doc_menuItem = new wxMenuItem( m_help_menu, wxID_ANY, wxString( wxT("RCBasic Documentation") ) , wxEmptyString, wxITEM_NORMAL );
 	m_help_menu->Append( m_doc_menuItem );
-
-	m_editorManual_menuItem = new wxMenuItem( m_help_menu, wxID_ANY, wxString( wxT("Editor Documentation") ) , wxEmptyString, wxITEM_NORMAL );
-	m_help_menu->Append( m_editorManual_menuItem );
 
 	m_about_menuItem = new wxMenuItem( m_help_menu, wxID_ANY, wxString( wxT("About") ) + wxT('\t') + wxT("F1"), wxEmptyString, wxITEM_NORMAL );
 	m_help_menu->Append( m_about_menuItem );
@@ -439,7 +430,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildMenuSelect ), this, m_build_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onRunMenuSelect ), this, m_run_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildRunMenuSelect ), this, m_buildRun_menuItem->GetId());
-	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDebugMenuSelect ), this, m_debug_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onStopExecuteMenuSelect ), this, m_abort_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onBuildFileMenuSelect ), this, m_buildFile_menuItem->GetId());
 	m_build_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onRunFileMenuSelect ), this, m_runFile_menuItem->GetId());
@@ -447,7 +437,6 @@ rc_ideFrame::rc_ideFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_tools_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onGenKeystoreMenuSelect ), this, m_genKeystore_menuItem->GetId());
 	m_tools_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDistributeMenuSelect ), this, m_distribute_menuItem->GetId());
 	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onDocMenuSelect ), this, m_doc_menuItem->GetId());
-	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onEditorManualMenuSelect ), this, m_editorManual_menuItem->GetId());
 	m_help_menu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( rc_ideFrame::onAboutMenuSelect ), this, m_about_menuItem->GetId());
 	this->Connect( m_new_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::newFileMenuSelect ) );
 	this->Connect( m_open_tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( rc_ideFrame::openFileMenuSelect ) );
@@ -2299,7 +2288,7 @@ rc_distribute_dialog::rc_distribute_dialog( wxWindow* parent, wxWindowID id, con
 	m_panel12->SetSizer( bSizer95 );
 	m_panel12->Layout();
 	bSizer95->Fit( m_panel12 );
-	m_notebook4->AddPage( m_panel12, wxT("General Settings"), false );
+	m_notebook4->AddPage( m_panel12, wxT("General Settings"), true );
 	m_panel20 = new wxPanel( m_notebook4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer114;
 	bSizer114 = new wxBoxSizer( wxVERTICAL );
@@ -2472,7 +2461,7 @@ rc_distribute_dialog::rc_distribute_dialog( wxWindow* parent, wxWindowID id, con
 	m_panel13->SetSizer( bSizer116 );
 	m_panel13->Layout();
 	bSizer116->Fit( m_panel13 );
-	m_notebook4->AddPage( m_panel13, wxT("Android Settings"), true );
+	m_notebook4->AddPage( m_panel13, wxT("Android Settings"), false );
 
 	bSizer92->Add( m_notebook4, 8, wxALL|wxEXPAND, 5 );
 
