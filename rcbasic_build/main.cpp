@@ -548,7 +548,7 @@ bool rc_eval(string line)
     }
 
     //cout << "-------AFTER PP START TOKENS--------" << endl;
-    //output_tokens();
+    output_tokens(); cout << endl;
 
     //cout << "check rule" << endl;
     //cout << "token: " << token[0] << endl;
@@ -962,6 +962,21 @@ void rcbasic_output_debug_info()
             case ID_TYPE_BYREF_STR:
                 f << "BS " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
                 break;
+            case ID_TYPE_USER:
+                f << "U " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
+            case ID_TYPE_USER_NUM:
+                f << "UN " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
+            case ID_TYPE_USER_NUM_ARRAY:
+                f << "UNA " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
+            case ID_TYPE_USER_STR:
+                f << "US " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
+            case ID_TYPE_USER_STR_ARRAY:
+                f << "USA " << id[i].scope << " " << id[i].name << " " << id[i].vec_pos << "\n";
+                break;
         }
     }
 
@@ -988,7 +1003,7 @@ int main(int argc, char * argv[])
     bool clean_after_build = true;
 
     //DEBUG START
-    //rc_filename = "tst.bas";
+    rc_filename = "/home/n00b/Projects/tst/test_types.bas";
     //DEBUG END
 
     if(argc > 1)
@@ -1116,6 +1131,8 @@ int main(int argc, char * argv[])
 
         if(rcbasic_build_debug)
             rcbasic_output_debug_info();
+
+        rcbasic_output_debug_info();
 
         fstream f("main.rc_data", fstream::trunc | fstream::out);
         f << max_n_reg << endl;

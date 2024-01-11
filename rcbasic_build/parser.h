@@ -2364,6 +2364,7 @@ bool check_rule()
                     int token_index = 2;
 
                     //check for the next rule; must be [], AS, or =
+                    cout << "token = " << token[token_index] << endl;
                     if(token[token_index].compare("<square>")==0 && current_block_state == BLOCK_STATE_TYPE)
                     {
                         token_index++;
@@ -2400,7 +2401,42 @@ bool check_rule()
                             rc_setError("Expected constant for type member array");
                             return false;
                         }
+
                         token_index = end_token+2;
+
+                        cout << "DBG token = " << token[token_index] << std::endl;
+
+                        if(token.size() > token_index)
+                        {
+                            if(token[token_index].compare("<as>")==0)
+                            {
+                                token_index++;
+                                if(token[token_index].substr(0,4).compare("<id>")!=0)
+                                {
+                                    rc_setError("Invalid type identifier name in DIM");
+                                    return false;
+                                }
+
+                                id_type = ID_TYPE_USER;
+                                id_type_name = token[token_index].substr(4);
+                                cout << "Add member (" << id_name << ") of type (" << id_type_name << ") with " << dimensions << " dimensions [" << constant_arg[0] << "," << constant_arg[1] << "," << constant_arg[2] << "]" << endl;
+                                if(!add_type_member(id_name, id_type, id_type_name, dimensions, constant_arg[0], constant_arg[1], constant_arg[2]))
+                                    return false;
+                            }
+                            else
+                            {
+                                rc_setError("Invalid member array declaration in DIM");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            cout << "Add member (" << id_name << ") of type (num/str) with " << dimensions << " dimensions [" << constant_arg[0] << "," << constant_arg[1] << "," << constant_arg[2] << "]" << endl;
+                            if(!add_type_member(id_name, id_type, "", dimensions, constant_arg[0], constant_arg[1], constant_arg[2]))
+                                return false;
+                        }
+
+                        return true;
 
                     }
                     else if(token[token_index].compare("<square>")==0)
@@ -2444,14 +2480,83 @@ bool check_rule()
                             dimensions = multi_arg_count;
                         }
                         token_index = end_token+1;
-                        //if(token.size()<token_index)
-                        //    return true;
-                        //cout << "tok_ind = " << token_index << endl;
+
+                        if(token.size()>token_index)
+                        {
+                            if(token[token_index].compare("<as>")==0)
+                            {
+                                token_index++;
+                                if(token.size()>token_index)
+                                {
+                                    if(token[token_index].substr(0,4).compare("<id>")!=0)
+                                    {
+                                        rc_setError("Invalid type identifier in DIM");
+                                        return false;
+                                    }
+
+                                    id_type_name = token[token_index].substr(4);
+
+                                    cout << "DIM <" << id_name << "> AS < " << id_type_name << " [";
+                                    switch(dimensions)
+                                    {
+                                        case 1: cout << multi_arg[0] << "] >" << endl; break;
+                                        case 2: cout << multi_arg[0] << ", " << multi_arg[1] << "] >" << endl; break;
+                                        case 3: cout << multi_arg[0] << ", " << multi_arg[1] << ", " << multi_arg[2] << "] >" << endl; break;
+                                        default:
+                                            rc_setError("Too many arguments in DIM");
+                                            return false;
+                                    }
+
+                                    create_array(id_name, ID_TYPE_USER, id_type_name, dimensions, multi_arg[0], multi_arg[1], multi_arg[2]);
+                                    return true;
+                                }
+                                else
+                                {
+                                    rc_setError("Expected type identifier in DIM");
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                rc_setError("Invalid array type definition");
+                                return false;
+                            }
+                        }
+                    }
+                    else if(token[token_index].compare("<as>")==0)
+                    {
+                        id_type = ID_TYPE_USER;
+
+                        if(token.size() != 4)
+                        {
+                            rc_setError("Expected single type identifier in DIM");
+                            return false;
+                        }
+                        else if(token[3].substr(0,4).compare("<id>")!=0)
+                        {
+                            rc_setError("Invalid type identifier name in DIM");
+                            return false;
+                        }
+
+                        if(current_block_state == BLOCK_STATE_TYPE)
+                        {
+                            //cout << "create member (" << id_name << ") of type " << token[3].substr(4) << endl;
+                            if(!add_type_member(id_name, ID_TYPE_USER, token[3].substr(4), 0))
+                                return false;
+                        }
+                        else
+                        {
+                            cout << "create variable (" << id_name << ") of type " << token[3].substr(4) << endl;
+                            if(!create_variable(id_name, id_type, token[3].substr(4)))
+                                return false;
+                        }
+
+                        return true;
                     }
 
                     if(token.size()>token_index)
                     {
-                        rc_setError("Invalid variable definition");
+                        rc_setError("Invalid variable definition: " + token[token_index] + ", " + rc_intToString(current_block_state) + " <--> " + rc_intToString(BLOCK_STATE_TYPE));
                         return false;
                     }
 
@@ -2847,6 +2952,23 @@ bool check_rule()
                 isInFunctionScope = false;
                 current_scope = "main";
                 current_fn_index++;
+            }
+            else if(token[1].compare("<type>")==0)
+            {
+                if(token.size()>2)
+                {
+                    rc_setError("Expected End of Line in END TYPE");
+                    return false;
+                }
+                if(current_block_state != BLOCK_STATE_TYPE)
+                {
+                    rc_setError("Cannot exit TYPE definition from this scope");
+                    return false;
+                }
+
+                block_state.pop();
+                current_block_state = BLOCK_STATE_MAIN;
+                current_scope = "main";
             }
             else if(token[1].compare("<if>")==0)
             {
@@ -4213,9 +4335,56 @@ bool check_rule()
             }
             id[id_index].name = "";
         }
+        else if(token[0].compare("<type>")==0)
+        {
+            if(current_scope.compare("main")!=0)
+            {
+                rc_setError("TYPE cannot be defined in this scope");
+                return false;
+            }
+            if(token.size() != 2)
+            {
+                rc_setError("Expected TYPE Identifier in TYPE statement");
+                return false;
+            }
+            if(token[1].substr(0,4).compare("<id>")!=0)
+            {
+                rc_setError("Expected TYPE Identifier in TYPE statement");
+                return false;
+            }
+            int id_index = getIDInScope_ByIndex(token[1].substr(4));
+            if(id_index >= 0)
+            {
+                rc_setError("TYPE Identifier exists in current scope");
+                return false;
+            }
+            create_type(token[1].substr(4));
+            current_block_state = BLOCK_STATE_TYPE;
+            block_state.push(current_block_state);
+
+            string start_label = current_scope + ".#TYPE:" + token[1].substr(4);
+
+            current_scope  = start_label;
+        }
         else if(token.size() > 2)
         {
             //cout << "token[1] = " << token[1] << endl;
+            if(token[0].substr(0,4).compare("<id>")==0)
+            {
+                int id_index = getIDIndex(token[0].substr(4));
+                if(id_index >= 0)
+                {
+                    cout << "DBG TYPE: name = " << id[id_index].name << " -- type = " << id[id_index].type << " -- dim_size = " << id[id_index].num_args << endl;
+
+                    if(id[id_index].type == ID_TYPE_USER || id[id_index].type == ID_TYPE_BYREF_USER)
+                    {
+                        //NOTE: PARSING TYPE VAR HERE
+
+
+                    }
+                }
+            }
+
             if(token[1].compare("<equal>")==0)
             {
                 string var_id = "";

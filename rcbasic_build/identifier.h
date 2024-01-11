@@ -21,6 +21,10 @@
 #define ID_TYPE_USER 10
 #define ID_TYPE_FN_USER 11
 #define ID_TYPE_BYREF_USER 12
+#define ID_TYPE_USER_NUM 13
+#define ID_TYPE_USER_STR 14
+#define ID_TYPE_USER_NUM_ARRAY 15
+#define ID_TYPE_USER_STR_ARRAY 16
 
 #define BLOCK_STATE_MAIN 0
 #define BLOCK_STATE_TYPE 1
@@ -141,6 +145,8 @@ struct identifier
     uint64_t vmFunctionIndex = 0;
     bool isArrayArg = false;
     vector<fid_vector_entry> fn_var;
+    bool isChild = false;
+    int parent_index = -1;
 };
 
 uint64_t current_vmFunction_index = 0;
@@ -288,8 +294,10 @@ void output_vars()
 
 int getUType(string utype_name)
 {
+    utype_name = StringToLower(utype_name);
     for(int i = 0; i < utype.size(); i++)
     {
+        //cout << "TYPE[" << i << "] = " << utype[i].name << endl;
         if(utype_name.compare(utype[i].name)==0)
         {
             return i;
@@ -301,9 +309,15 @@ int getUType(string utype_name)
 
 bool create_type(string utype_name)
 {
+    utype_name = StringToLower(utype_name);
     if(isKeyWord(utype_name) || idExistsInScope(utype_name))
     {
         rc_setError(utype_name + " is not a valid identifier");
+        return false;
+    }
+    else if(getUType(utype_name)>=0)
+    {
+        rc_setError(utype_name + " already exists");
         return false;
     }
     current_type_index = utype.size();
@@ -338,21 +352,31 @@ bool add_type_member(string member_name, int member_type, string member_utype_na
     int utype_index = current_type_index;
     int utype_current_member = utype[utype_index].num_members;
     utype[utype_index].member_name.push_back(member_name);
-    utype[utype_index].member_type.push_back(member_type);
 
     switch(member_type)
     {
         case ID_TYPE_NUM:
+            utype[utype_index].member_type.push_back(ID_TYPE_USER_NUM);
+            utype[utype_index].member_vec_pos.push_back(utype[utype_index].nidCount);
+            utype[utype_index].nidCount++;
+            break;
         case ID_TYPE_ARR_NUM:
+            utype[utype_index].member_type.push_back(ID_TYPE_USER_NUM_ARRAY);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].nidCount);
             utype[utype_index].nidCount++;
             break;
         case ID_TYPE_STR:
+            utype[utype_index].member_type.push_back(ID_TYPE_USER_STR);
+            utype[utype_index].member_vec_pos.push_back(utype[utype_index].sidCount);
+            utype[utype_index].sidCount++;
+            break;
         case ID_TYPE_ARR_STR:
+            utype[utype_index].member_type.push_back(ID_TYPE_USER_STR_ARRAY);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].sidCount);
             utype[utype_index].sidCount++;
             break;
         case ID_TYPE_USER:
+            utype[utype_index].member_type.push_back(ID_TYPE_USER);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].uidCount);
             utype[utype_index].uidCount++;
             break;
@@ -683,6 +707,8 @@ bool create_type_members(int id_index, int type_index)
         var.name = utype[utype_index].member_name[i];
         var.type = utype[utype_index].member_type[i];
         var.type_index = utype[utype_index].member_utype_index[i];
+        var.isChild = true;
+        var.parent_index = id_index;
         set_vectorPosition(var, true, utype_index, i);
         //cout << "vec -> " << var.vec_pos << endl;
         var.scope = id[id_index].scope + "." + id[id_index].name;
@@ -1065,4 +1091,17 @@ bool enter_scope(string sub_scope)
 {
     return false;
 }
+
+int getIDIndex(string id_name)
+{
+    id_name = StringToLower(id_name);
+
+    for(int i = 0; i < id.size(); i++)
+    {
+        if(id[i].name.compare(id_name)==0)
+            return i;
+    }
+    return -1;
+}
+
 #endif // IDENTIFIER_H_INCLUDED

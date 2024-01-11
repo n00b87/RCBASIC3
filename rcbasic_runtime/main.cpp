@@ -132,6 +132,26 @@ struct rc_strId
     #endif // RCBASIC_DEBUG
 };
 
+struct usr_val
+{
+    vector<rc_numId> num_var;
+    vector<rc_strId> str_var;
+    vector<usr_val> usr_var;
+};
+
+struct rc_usrId
+{
+    vector<usr_val> uid_value;
+    int dimensions;
+    uint64_t dim[3];
+    uint64_t byref_offset;
+
+    #ifdef RCBASIC_DEBUG
+    bool is_debug_var;
+    uint64_t dbg_var_index;
+    #endif // RCBASIC_DEBUG
+};
+
 struct rc_loop
 {
     rc_numId * counter;
