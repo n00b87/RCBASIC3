@@ -132,19 +132,26 @@ struct rc_strId
     #endif // RCBASIC_DEBUG
 };
 
-struct usr_val
+
+struct rc_udtDefinition
 {
-    vector<rc_numId> num_var;
-    vector<rc_strId> str_var;
-    vector<usr_val> usr_var;
+    int num_fields;
+    vector<int> field_type; // 0 - num, 1 - str, 2 - UDT
+    vector<int> field_type_index; //if field type is UDT
+    vector<int> field_dimensions;
 };
+
+vector<rc_udtDefinition> rc_types;
 
 struct rc_usrId
 {
-    vector<usr_val> uid_value;
+    vector<rc_numId> num_var;
+    vector<rc_strId> str_var;
+    vector<rc_usrId> uid_value;
     int dimensions;
     uint64_t dim[3];
     uint64_t byref_offset;
+    int udt_index; //index of the type definition in rc_types
 
     #ifdef RCBASIC_DEBUG
     bool is_debug_var;
@@ -196,6 +203,7 @@ uint64_t s_stack_size = 0;
 uint64_t loop_stack_size = 0;
 uint64_t numID_count = 0;
 uint64_t strID_count = 0;
+uint64_t usrID_count = 0;
 uint64_t code_segment_size = 0;
 uint64_t data_segment_size = 0;
 
@@ -235,6 +243,7 @@ int current_loop_stack_count = 0;
 
 rc_numId * num_var;
 rc_strId * str_var;
+rc_usrId * usr_var;
 
 unsigned char ** segment;
 
@@ -499,6 +508,38 @@ bool rcbasic_load(string filename)
         return false;
     }
 
+    //--------- type definition header -------------------
+    uint64_t num_types = rcbasic_readInt();
+
+    rc_udtDefinition utype;
+
+    for(int i = 0; i < num_types; i++)
+    {
+        utype.num_fields = rcbasic_readInt();
+
+        //clear field vectors
+        utype.field_type.clear();
+        utype.field_type_index.clear();
+        utype.field_dimensions.clear();
+
+        for(int members = 0; members < utype.num_fields; members++)
+        {
+            utype.field_type.push_back(rcbasic_readInt());
+            utype.field_type_index.push_back(rcbasic_readInt());
+            utype.field_dimensions.push_back(rcbasic_readInt());
+        }
+
+        //debug
+        //cout << "Type #" << i << endl;
+        //for(int n = 0; n < utype.num_fields; n++)
+        //    cout << "   Field #" << n << ": " << utype.field_type[n] << ", " << utype.field_type_index[n] << ", " << utype.field_dimensions[n] << endl;
+        //cout << endl;
+
+        rc_types.push_back(utype);
+    }
+
+    // -------- end type definition header ---------------
+
     n_count = rcbasic_readInt();
     s_count = rcbasic_readInt();
     n_stack_size = rcbasic_readInt();
@@ -506,6 +547,7 @@ bool rcbasic_load(string filename)
     loop_stack_size = rcbasic_readInt();
     numID_count = rcbasic_readInt();
     strID_count = rcbasic_readInt();
+    usrID_count = rcbasic_readInt();
     code_segment_size = rcbasic_readInt();
     data_segment_size = rcbasic_readInt();
 
@@ -540,6 +582,9 @@ bool rcbasic_load(string filename)
         str_var[i].is_debug_var = false;
         #endif // RCBASIC_DEBUG
     }
+
+    usr_var = new rc_usrId[usrID_count]; // this will have all of its members allocated by the dim_type instructions
+
 
     segment = new unsigned char*[2];
     segment[CODE_SEGMENT] = new unsigned char[code_segment_size];
@@ -1334,19 +1379,19 @@ void clear_obj_89()
 {
 }
 
-void dim_type_90()
+void dim_type_90(uint64_t uid, int udt_index)
 {
 }
 
-void dim_type1_91()
+void dim_type1_91(uint64_t uid, int udt_index, int n1)
 {
 }
 
-void dim_type2_92()
+void dim_type2_92(uint64_t uid, int udt_index, int n1, int n2)
 {
 }
 
-void dim_type3_93()
+void dim_type3_93(uint64_t uid, int udt_index, int n1, int n2, int n3)
 {
 }
 

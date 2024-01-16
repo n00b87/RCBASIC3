@@ -26,6 +26,8 @@
 #define ID_TYPE_USER_NUM_ARRAY 15
 #define ID_TYPE_USER_STR_ARRAY 16
 
+#define ID_TYPE_USER_ALL(id_index)   ( id[id_index].type == ID_TYPE_USER || id[id_index].type == ID_TYPE_USER_NUM || id[id_index].type == ID_TYPE_USER_STR || id[id_index].type == ID_TYPE_USER_NUM_ARRAY || id[id_index].type == ID_TYPE_USER_STR_ARRAY )
+
 #define BLOCK_STATE_MAIN 0
 #define BLOCK_STATE_TYPE 1
 #define BLOCK_STATE_FUNCTION 2
@@ -183,7 +185,7 @@ bool idExists(string id_name)
     return false;
 }
 
-bool matchCurrentScope(string id_scope)
+bool matchCurrentScope(string id_scope, string check_scope = "")
 {
     string tmp_current_scope = "";
     string tmp_id_scope = "";
@@ -191,18 +193,21 @@ bool matchCurrentScope(string id_scope)
     int cs_i = 0;
     int id_i = 0;
 
+    if(check_scope.compare("")==0)
+        check_scope = current_scope;
+
     while(true)
     {
         tmp_current_scope = "";
         tmp_id_scope = "";
-        for(; cs_i < current_scope.length(); cs_i++)
+        for(; cs_i < check_scope.length(); cs_i++)
         {
-            if(current_scope.substr(cs_i,1).compare(".")==0)
+            if(check_scope.substr(cs_i,1).compare(".")==0)
             {
                 cs_i++;
                 break;
             }
-            tmp_current_scope += current_scope.substr(cs_i,1);
+            tmp_current_scope += check_scope.substr(cs_i,1);
         }
         for(; id_i < id_scope.length(); id_i++)
         {
@@ -425,13 +430,14 @@ int getIDInScope_ByIndex2(string id_name, string check_scope="")
             //id has to exist in or above current scope
             if(check_scope.length() < id[i].scope.length())
             {
+                //cout << "SCOPE CHECK: " << check_scope.length() << " <>  " << id[i].scope.length() << endl;
                 continue;
             }
 
             //if(current_scope.find(id[i].scope)==0)
-            if(matchCurrentScope(id[i].scope))
+            if(matchCurrentScope(id[i].scope, check_scope))
             {
-                //cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << i << endl;
+                //cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << i << endl << endl;
                 return i;
             }
         }
@@ -1103,5 +1109,25 @@ int getIDIndex(string id_name)
     }
     return -1;
 }
+
+
+/*type definitions header
+-------------------------------
+num types
+
+type #1  num fields
+	field #1 type (0 - num, 1 - str, 3 - udt)
+	field #1 num dimensions
+	...
+	field #<num fields> type (0 - num, 1 - str, 3 - udt)
+	field #<num fields> num dimensions
+
+type #<num types>  num fields
+	field #1 type (0 - num, 1 - str, 3 - udt)
+	field #1 num dimensions
+	...
+	field #<num fields> type (0 - num, 1 - str, 3 - udt)
+	field #<num fields> num dimensions
+*/
 
 #endif // IDENTIFIER_H_INCLUDED

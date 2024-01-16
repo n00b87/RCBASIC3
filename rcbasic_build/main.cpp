@@ -548,7 +548,7 @@ bool rc_eval(string line)
     }
 
     //cout << "-------AFTER PP START TOKENS--------" << endl;
-    output_tokens(); cout << endl;
+    //output_tokens(); cout << endl;
 
     //cout << "check rule" << endl;
     //cout << "token: " << token[0] << endl;
@@ -1000,7 +1000,7 @@ int main(int argc, char * argv[])
 
     string rc_filename = "";// = "tst.bas";
 
-    bool clean_after_build = true;
+    bool clean_after_build = false;
 
     //DEBUG START
     rc_filename = "/home/n00b/Projects/tst/test_types.bas";
@@ -1142,12 +1142,13 @@ int main(int argc, char * argv[])
         f << max_for_count << endl;
         f << num_id_count << endl;
         f << str_id_count << endl;
+        f << usr_id_count << endl;
         f << vm_asm.label.size() << endl;
         for(int i = 0; i < vm_asm.label.size(); i++)
             f << vm_asm.label[i].label_name << " " << vm_asm.label[i].label_address << " " << vm_asm.label[i].label_segment << endl;
         f.close();
 
-        rc_cbc_assembler::rc_assemble(cbc_file, clean_after_build);
+        //rc_cbc_assembler::rc_assemble(cbc_file, clean_after_build);
     }
     else
     {

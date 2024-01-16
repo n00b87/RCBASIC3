@@ -28,6 +28,7 @@ namespace rc_cbc_assembler
 
     uint64_t numID_count = 0;
     uint64_t strID_count = 0;
+    uint64_t usrID_count = 0;
 
     uint64_t vm_n_count = 0;
     uint64_t vm_s_count = 0;
@@ -145,6 +146,9 @@ namespace rc_cbc_assembler
 
         getline(f, line);
         strID_count = rc_stringToInt(line);
+
+        getline(f, line);
+        usrID_count = rc_stringToInt(line);
 
         getline(f, line);
         int num_labels = rc_stringToInt(line);
@@ -1128,6 +1132,48 @@ namespace rc_cbc_assembler
 
         output_file.write(header, 3);
 
+        //------type header here------------
+        rc_int.i = utype.size();
+        rc_write(rc_int);
+
+        //loop through each type
+        for(int i = 0; i < utype.size(); i++)
+        {
+            //num fields
+            rc_int.i = utype[i].num_members;
+            rc_write(rc_int);
+
+            //loop through each member
+            for(int member = 0; member < utype[i].num_members; member++)
+            {
+                // member type
+                switch(utype[i].member_type[member])
+                {
+                    case ID_TYPE_USER_NUM:
+                    case ID_TYPE_USER_NUM_ARRAY:
+                        rc_int.i = 0;
+                        break;
+                    case ID_TYPE_USER_STR:
+                    case ID_TYPE_USER_STR_ARRAY:
+                        rc_int.i = 1;
+                        break;
+                    case ID_TYPE_USER:
+                        rc_int.i = 2;
+                        break;
+                    default:
+                        cout << "type = " << utype[i].member_type[member] << endl;
+                }
+                rc_write(rc_int);
+
+                rc_int.i = utype[i].member_utype_index[member];
+                rc_write(rc_int);
+
+                rc_int.i = utype[i].member_dim_count[member];
+                rc_write(rc_int);
+            }
+        }
+        //-------end type header-------------
+
         rc_int.i = vm_n_count;
         rc_write(rc_int);
 
@@ -1147,6 +1193,9 @@ namespace rc_cbc_assembler
         rc_write(rc_int);
 
         rc_int.i = strID_count;
+        rc_write(rc_int);
+
+        rc_int.i = usrID_count;
         rc_write(rc_int);
 
         rc_int.i = rc_code_segment.size();

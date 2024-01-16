@@ -21,7 +21,7 @@ int s_reg = 0;
 string expr_result = "";
 
 
-bool pre_parse(int start_token, int end_token, int pp_flags = 0); //puts number and string values and variables inside number and string registers
+bool pre_parse(int start_token, int end_token, int pp_flags = 0, bool eval_udt = false); //puts number and string values and variables inside number and string registers
 //void getBlock(int& start_block, int& end_block); //gets the start and end index of the next block to evaluate (first and last token if there isnt a block left to evaluate
 bool eval_pow(int start_block, int end_block);
 bool eval_muldiv(int start_block, int end_block); //MOD operator is also evaluated in this function
@@ -990,7 +990,8 @@ int getArrayObjStart(int arg_id)
 
 }
 
-bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
+
+bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_udt)
 {
 
     if(end_token == -1)
@@ -1040,6 +1041,16 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
 
             //cout << "expr = " << expr_id << endl;
             //cout << "TYPE: " << id[expr_id].type << endl << endl;
+
+            bool is_udt_member = false;
+
+            if(i > 0)
+                if(token[i-1].compare("<child>")==0)
+                    is_udt_member = true;
+
+            if(is_udt_member)
+                continue;
+
 
             if(expr_id < 0)
             {
@@ -1214,6 +1225,208 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags)
                 token[arr_token_start] = token_replace;
 
                 //cout << "the end of array" << endl;
+
+            }
+            else if( ID_TYPE_USER_ALL(expr_id) && eval_udt )
+            {
+                cout << "-Parsing User Variable: " << id[expr_id].name << endl;
+                cout << "----------------------------------------------- : " << eval_udt << endl;
+
+                string tmp_scope = id[expr_id].scope;
+
+                for(int t = i; t < token.size(); t++)
+                {
+                    try
+                    {
+                        cout << t << ":" << token.at(t) << endl;
+                    }
+                    catch(out_of_range& e)
+                    {
+                        cout << "Token Out of Range Error: " << e.what() << endl;
+                    }
+                }
+
+
+                for(int t = i; t < end_token; t++)
+                {
+
+                    if(token[t].substr(0,4).compare("<id>")==0)
+                    {
+                        cout << "FIGURE IT OUT: " << t  << endl;
+                        string args[3];
+                        int arg_count = 0;
+                        string full_id = token[t].substr(4);
+                        token[t] = "";
+                        int tmp_id = getIDInScope_ByIndex(full_id, tmp_scope);
+                        //cout << "\ntmp_id = " << tmp_id << endl;
+
+                        if(tmp_id < 0)
+                        {
+                            rc_setError(tmp_scope.substr(5) + " does not have member [" + full_id + "]");
+                            return false;
+                        }
+
+                        cout << "Scope = " << id[tmp_id].scope << "  ID = " << full_id << "  --  " << tmp_id << endl << endl;
+
+                        tmp_scope += "." + full_id;
+
+
+                        //get arguments (ie. the dimensions of an array
+                        int t2 = t+1;
+
+                        if(t2 < end_token)
+                        {
+                            int arr_scope = 0;
+                            if(token[t2].compare("!<square>")==0)
+                            {
+                                token[t2] = "";
+                                args[0] = "";
+                                args[1] = "";
+                                args[2] = "";
+                                arg_count = 0;
+                                arr_scope = 1;
+                                //cout << "T2 = " << t2 << endl << endl;
+
+                                for(t2++; t2 < end_token; t2++)
+                                {
+                                    if(token[t2].compare("!</square>")==0)
+                                        arr_scope--;
+                                    else if(token[t2].compare("!<square>")==0)
+                                        arr_scope++;
+                                    else if(token[t2].compare("!<comma>")==0)
+                                        arg_count++;
+                                    else if(token[t2].substr(0,1).compare("n")==0)
+                                    {
+                                        if(args[arg_count].compare("")==0)
+                                            args[arg_count] = token[t2];
+                                        else
+                                        {
+                                            rc_setError("Error parsing array dimension: " + args[arg_count] + " :: " + token[t2] + " -- " + rc_intToString(t2) + ", " + rc_intToString(arg_count));
+                                            return false;
+                                        }
+                                    }
+
+                                    token[t2] = "";
+
+                                    if(arg_count >= 3)
+                                    {
+                                        rc_setError("Too many dimensions in array");
+                                        return false;
+                                    }
+
+                                    if(arr_scope == 0)
+                                        break;
+
+                                }
+
+                                if(arr_scope > 0)
+                                {
+                                    rc_setError("Expected ]] in expression");
+                                    return false;
+                                }
+
+                                arg_count++;
+                            }
+
+                        }
+
+                        if(arg_count != id[tmp_id].num_args)
+                        {
+                            rc_setError("Expected " + rc_intToString(id[tmp_id].num_args) + " dimension in " + id[tmp_id].name);
+                            return false;
+                        }
+
+                        switch(arg_count)
+                        {
+                            case 0:
+                                if(id[tmp_id].type == ID_TYPE_USER || id[tmp_id].type == ID_TYPE_BYREF_USER)
+                                    vm_asm.push_back("obj_usr !" + rc_intToString(id[tmp_id].vec_pos));
+                                else if(id[tmp_id].type == ID_TYPE_USER_NUM)
+                                    vm_asm.push_back("obj_usr_n !" + rc_intToString(id[tmp_id].vec_pos));
+                                else if(id[tmp_id].type == ID_TYPE_USER_STR)
+                                    vm_asm.push_back("obj_usr_s !" + rc_intToString(id[tmp_id].vec_pos));
+                                else
+                                {
+                                    rc_setError("Invalid type in User Defined Type");
+                                    return false;
+                                }
+                                break;
+                            case 1:
+                                if(id[tmp_id].type == ID_TYPE_USER || id[tmp_id].type == ID_TYPE_BYREF_USER)
+                                    vm_asm.push_back("obj_usr1 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0]);
+                                else if(id[tmp_id].type == ID_TYPE_USER_NUM)
+                                    vm_asm.push_back("obj_usr_n1 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0]);
+                                else if(id[tmp_id].type == ID_TYPE_USER_STR)
+                                    vm_asm.push_back("obj_usr_s1 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0]);
+                                else
+                                {
+                                    rc_setError("Invalid type in User Defined Type");
+                                    return false;
+                                }
+                                break;
+                            case 2:
+                                if(id[tmp_id].type == ID_TYPE_USER || id[tmp_id].type == ID_TYPE_BYREF_USER)
+                                    vm_asm.push_back("obj_usr2 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1]);
+                                else if(id[tmp_id].type == ID_TYPE_USER_NUM)
+                                    vm_asm.push_back("obj_usr_n2 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1]);
+                                else if(id[tmp_id].type == ID_TYPE_USER_STR)
+                                    vm_asm.push_back("obj_usr_s2 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1]);
+                                else
+                                {
+                                    rc_setError("Invalid type in User Defined Type");
+                                    return false;
+                                }
+                                break;
+                            case 3:
+                                if(id[tmp_id].type == ID_TYPE_USER || id[tmp_id].type == ID_TYPE_BYREF_USER)
+                                    vm_asm.push_back("obj_usr3 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1] + " " + args[2]);
+                                else if(id[tmp_id].type == ID_TYPE_USER_NUM)
+                                    vm_asm.push_back("obj_usr_n3 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1] + " " + args[2]);
+                                else if(id[tmp_id].type == ID_TYPE_USER_STR)
+                                    vm_asm.push_back("obj_usr_s3 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1] + " " + args[2]);
+                                else
+                                {
+                                    rc_setError("Invalid type in User Defined Type");
+                                    return false;
+                                }
+                                break;
+                        }
+
+
+
+                    }
+                    else if(token[t].compare("<child>")==0)
+                    {
+                        token[t] = "";
+                        continue;
+                    }
+                    else if(token[t].compare("")!=0)
+                    {
+                        break;
+                    }
+
+                }
+
+                token[i] = "n9";
+
+                cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+
+                for(int t = 0; t < token.size(); t++)
+                {
+                    try
+                    {
+                        cout << t << ":" << token.at(t) << endl;
+                    }
+                    catch(out_of_range& e)
+                    {
+                        cout << "Token Out of Range Error: " << e.what() << endl;
+                    }
+                }
+
+                cout << "-----------------------------------------------" << endl;
+
+                //for(int t = 0; t < id.size(); t++)
+                  //  if(id[t].type == ID_TYPE_USER) cout << "ID[" << id[t].name << "]  SCOPE=" << id[t].scope << "  --  " << id[t].vec_pos << endl;
 
             }
             else if( (id[expr_id].type == ID_TYPE_ARR_NUM || id[expr_id].type == ID_TYPE_ARR_STR) && pp_flags == PP_FLAG_ARRAY)
@@ -2034,8 +2247,8 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
     {
         getBlock(start_token, end_token, start_block, end_block); //sets the current start_block and end_block
 
-        //cout << "start pp" << endl;
-        if(!pre_parse(start_block, end_block, PP_FLAG_ARRAY))
+        //cout << "\nstart pp" << endl;
+        if(!pre_parse(start_block, end_block, PP_FLAG_ARRAY, true))
         {
             return false;
         }
@@ -4376,11 +4589,9 @@ bool check_rule()
                 {
                     cout << "DBG TYPE: name = " << id[id_index].name << " -- type = " << id[id_index].type << " -- dim_size = " << id[id_index].num_args << endl;
 
-                    if(id[id_index].type == ID_TYPE_USER || id[id_index].type == ID_TYPE_BYREF_USER)
+                    if( ID_TYPE_USER_ALL(id_index) )
                     {
                         //NOTE: PARSING TYPE VAR HERE
-
-
                     }
                 }
             }
