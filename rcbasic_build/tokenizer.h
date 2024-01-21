@@ -50,6 +50,28 @@ bool isOperatorToken(int token_index)
     return false;
 }
 
+bool isOperatorToken2(int token_index)
+{
+    int x = token_index;
+
+    if(x < 0)
+        return false;
+
+    if(token[x].compare("<add>")==0 || token[x].compare("<sub>")==0 ||
+       token[x].compare("<mul>")==0 || token[x].compare("<div>")==0 ||
+       token[x].compare("<mod>")==0 || token[x].compare("<pow>")==0 ||
+       token[x].compare("<equal>")==0 || token[x].compare("<greater>")==0 ||
+       token[x].compare("<less>")==0 || token[x].compare("<greater_equal>")==0 ||
+       token[x].compare("<less_equal>")==0 || token[x].compare("<not_equal>")==0 ||
+       token[x].compare("<not>")==0 || token[x].compare("<and>")==0 ||
+       token[x].compare("<or>")==0 || token[x].compare("<xor>")==0)
+       {
+           return true;
+       }
+
+    return false;
+}
+
 bool isSubDelimToken(int token_index)
 {
     if(token_index < 0)

@@ -26,7 +26,7 @@
 #define ID_TYPE_USER_NUM_ARRAY 15
 #define ID_TYPE_USER_STR_ARRAY 16
 
-#define ID_TYPE_USER_ALL(id_index)   ( id[id_index].type == ID_TYPE_USER || id[id_index].type == ID_TYPE_USER_NUM || id[id_index].type == ID_TYPE_USER_STR || id[id_index].type == ID_TYPE_USER_NUM_ARRAY || id[id_index].type == ID_TYPE_USER_STR_ARRAY )
+#define ID_TYPE_USER_ALL(id_index)   ( id[id_index].type == ID_TYPE_USER || id[id_index].type == ID_TYPE_BYREF_USER || id[id_index].type == ID_TYPE_USER_NUM || id[id_index].type == ID_TYPE_USER_STR || id[id_index].type == ID_TYPE_USER_NUM_ARRAY || id[id_index].type == ID_TYPE_USER_STR_ARRAY )
 
 #define BLOCK_STATE_MAIN 0
 #define BLOCK_STATE_TYPE 1
@@ -420,6 +420,8 @@ int getIDInScope_ByIndex2(string id_name, string check_scope="")
     int id_match = -1;
     for(int i = 0; i < id.size(); i++)
     {
+        //if(StringToLower(id_name).compare("tst")==0 && StringToLower(id[i].name.substr(0,1)).compare("t")==0)
+        //    cout << "CMP: " << id_name << " to " << id[i].name << endl;
         if(id_name.compare(StringToLower(id[i].name))==0)
         {
             //cout << endl;
@@ -437,7 +439,7 @@ int getIDInScope_ByIndex2(string id_name, string check_scope="")
             //if(current_scope.find(id[i].scope)==0)
             if(matchCurrentScope(id[i].scope, check_scope))
             {
-                //cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << i << endl << endl;
+                cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << i << endl << endl;
                 return i;
             }
         }
@@ -488,9 +490,9 @@ int getIDInScope2(string id_name, string check_scope="")
             }
 
             //if(current_scope.find(id[i].scope)==0)
-            if(matchCurrentScope(id[i].scope))
+            if(matchCurrentScope(id[i].scope, check_scope))
             {
-                //cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << i << endl;
+                cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << i << endl;
                 return id[i].vec_pos;
             }
         }
@@ -500,6 +502,9 @@ int getIDInScope2(string id_name, string check_scope="")
 
 int getIDInScope(string id_name, string check_scope="")
 {
+    if(check_scope.compare("")==0)
+        check_scope = current_scope;
+
     int id_vec = getIDInScope2(id_name, check_scope);
     if(id_vec < 0)
     {
@@ -558,7 +563,7 @@ void set_vectorPosition(identifier &var, bool isMember = false, int utype_index 
         var.vec_pos = str_id_count;
         str_id_count++;
     }
-    else if(var.type == ID_TYPE_USER)
+    else if(var.type == ID_TYPE_USER || var.type == ID_TYPE_BYREF_USER)
     {
         var.vec_pos = usr_id_count;
         usr_id_count++;
@@ -751,15 +756,17 @@ bool create_variable(string name, int type, string utype_name="", int vec = -1)
         var.scope = "main";
     else
         var.scope = current_scope;
-    if(var.type == ID_TYPE_USER)
+    if(var.type == ID_TYPE_USER || var.type == ID_TYPE_BYREF_USER)
     {
         var.type_index = getUType(utype_name);
         if(var.type_index < 0)
         {
+            rc_setError("Type \"" + utype_name +"\" does not exists");
             return false;
         }
         int var_index = id.size();
         var.num_args = 0;
+        var.parent_index = -1;
         set_vectorPosition(var);
         id.push_back(var);
         id_emit(var);
@@ -991,6 +998,9 @@ bool create_function(string name, int type, string utype_name)
         case ID_TYPE_FN_STR:
             current_block_state = BLOCK_STATE_FUNCTION;
             break;
+        case ID_TYPE_FN_USER:
+            current_block_state = BLOCK_STATE_FUNCTION;
+            break;
         default:
             rc_setError("Invalid type for function definition");
             return false;
@@ -1010,6 +1020,14 @@ bool create_function(string name, int type, string utype_name)
     fn.name = name;
     fn.scope = "main";
     fn.type = type;
+    fn.type_index = getUType(utype_name);
+
+    if(fn.type_index < 0)
+    {
+        rc_setError("Type \"" + utype_name + "\" does not exists");
+        return false;
+    }
+
     fn.isBuiltin = false;
     fn.isArrayArg = false;
     fn.fn_var.clear();
@@ -1031,10 +1049,24 @@ bool add_function_arg(string arg_name, int arg_type, string utype_name)
 
     isFunctionArg_flag = true;
 
-    create_variable(arg_name, arg_type);
+    if(!create_variable(arg_name, arg_type, utype_name))
+    {
+        rc_setError("Invalid argument in Function definition");
+        return false;
+    }
 
     //id[fn_index].fn_reg.push_back( fn_id );
-    id[fn_index].fn_arg_vec.push_back( getIDInScope(arg_name) );
+    int arg_id_vec = getIDInScope(arg_name);
+    int arg_id_index = getIDInScope_ByIndex(arg_name);
+
+    if(arg_id_index < 0)
+    {
+        rc_setError("Could not create argument of type \"" + utype_name + "\"");
+        return false;
+    }
+
+    id[fn_index].fn_arg_vec.push_back( arg_id_vec );
+    id[fn_index].fn_arg_utype.push_back( id[arg_id_index].type_index );
     id[fn_index].num_args++;
 
     return true;

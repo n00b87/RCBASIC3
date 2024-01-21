@@ -1,0 +1,9 @@
+TGT_PLATFORM=WEB,WIN_32,MAC
+PROJECT_NAME=testing 123
+PROJECT_CATEGORY=Development
+APP_TYPE=Application
+TERMINAL_FLAG=true
+PROJECT_DIR=C:\Users\omega\Desktop\rcbasic_313\in
+OUTPUT_DIR=C:\Users\omega
+ENABLE_WEB_THREADS=false
+ICON=C:\Users\omega\Desktop\rcbasic_313\rcpkg_linux\rcpkg_linux\assets\rcbasic.AppDir\rcbasic.png

@@ -762,7 +762,7 @@ bool rcbasic_compile()
         {
             vm_asm.push_back("dbg uint=0 uint=" + rc_uint64ToString(rcbasic_program.top().dbg_inc_index) + " uint=" + rc_uint64ToString(rcbasic_program.top().line_number));
         }
-        //cout << "line " << rcbasic_program.top().line_number << ": " << rcbasic_file.tellg() << " -> " << line << endl;
+        cout << "line " << rcbasic_program.top().line_number << ": " << rcbasic_file.tellg() << " -> " << line << endl;
         if(!rcbasic_program.top().eof_reached)
             rcbasic_program.top().line_position = rcbasic_file.tellg();
         //vm_asm.push_back("mov n0 " + rc_intToString(rcbasic_program.top().line_number));

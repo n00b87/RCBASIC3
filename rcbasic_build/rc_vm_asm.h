@@ -1018,6 +1018,55 @@ namespace rc_cbc_assembler
                 else
                     cout << "Error lval$" << endl;
             }
+            else if(line_arg[0].compare("obj_usr_n")==0)
+            {
+                writeSegment(156);
+            }
+            else if(line_arg[0].compare("obj_usr_n1")==0)
+            {
+                writeSegment(157);
+            }
+            else if(line_arg[0].compare("obj_usr_n2")==0)
+            {
+                writeSegment(158);
+            }
+            else if(line_arg[0].compare("obj_usr_n3")==0)
+            {
+                writeSegment(159);
+            }
+            else if(line_arg[0].compare("obj_usr_s")==0)
+            {
+                writeSegment(160);
+            }
+            else if(line_arg[0].compare("obj_usr_s1")==0)
+            {
+                writeSegment(161);
+            }
+            else if(line_arg[0].compare("obj_usr_s2")==0)
+            {
+                writeSegment(162);
+            }
+            else if(line_arg[0].compare("obj_usr_s3")==0)
+            {
+                writeSegment(163);
+            }
+            else if(line_arg[0].compare("obj_usr_get")==0)
+            {
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("n")==0)
+                {
+                    writeSegment(164);
+                }
+                else if(arg1_type.compare("s")==0)
+                {
+                    writeSegment(165);
+                }
+                else if(arg1_type.compare("u")==0)
+                {
+                    writeSegment(166);
+                }
+            }
             else
             {
                 cout << "unrecognized cmd: " << line_arg[0] << endl;

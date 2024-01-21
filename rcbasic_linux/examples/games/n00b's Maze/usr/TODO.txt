@@ -1,0 +1,101 @@
+DONE
+----------------------------------------------------
+1. Renderer
+2. Transforms (Scale, Rotate, Translate)
+3. Calculate Forward Vector
+4. Calculate Object Look At
+5. Off screen occlusion
+
+
+
+TODO
+----------------------------------------------------
+1. Collision Detection  (Due Date: 3-14)
+	* NOTE: Will probably need to implement atleast 2 different shapes: Axis Aligned Boxes and Spheres
+
+2. Single Texture System (Due Date: 3-15)
+
+3. Animation System (Due Date: 3-18)
+	* Break down animation frames into separate obj files
+	* Implement actor_source swapping on frame change timer
+	* Implement texture swapping for Sprite2D and Sprite3D
+
+4. Build Custom Level Editor (Due Date: 3-26)
+	* Basic UI Layout (Due Date: 3-19)
+
+	TOP BAR (Due Date: 3-19)
+	----------------------------------------------------
+	* New Level
+		* Level Name
+	* Load Level
+	* Save Level
+		* Automatically saves everything from other tabs
+
+	TEXTURE TAB (Due Date: 3-19)
+	----------------------------------------------------
+	* Import textures
+	* Texture Viewer
+
+	MESH TAB (Due Date: 3-21)
+	----------------------------------------------------
+	* Save Mesh Data (texture, collision)
+	* Import obj files
+	* Applying texture to mesh
+	* Add a collision mesh to a mesh
+	* implement a similar bounding box system to n00b engine
+
+
+	ANIMATION TAB (Due Date: 3-23)
+	----------------------------------------------------
+	* New Animation
+	* Save Animation
+	* Delete Animation
+	* Animated texture system (probably similiar to animated tiles in n00b engine)
+	* Animated Mesh System
+		* similar to sprite animation in n00b engine
+		* instead of picking from a tile screen for each frame, it should probably just select from a list
+
+	
+	SCENE TAB (Due Date: 3-26)
+	----------------------------------------------------
+	* First Person controls for navigating the scene
+	* View as Wireframe or Texture (I might just have a default wire frame texture to do this)
+	* Selection and Placement Modes
+	* Placing objects
+		* Enable Snapping ( Set a translation, rotation, and scale snap value)
+		* Multi Select (hold shift and click)
+			* Set a specific property for all selected objects
+		* Box Select
+		* New Actor should be created on placement
+		* Selected object should get a modifier cursor (translate, rotate, or scale)
+		* Translate cursor should translate when clicking on a axis and holding the mouse and moving it
+		* Rotate cursor should rotate when clicking on a axis and holding the mouse and moving it
+		* Scale is uniform so the scale will increase when clicking and holding the mouse and moving it
+	* Set object as terrain
+	* Object Properties Window
+		* Name
+		* Type
+		* Position
+		* Rotation
+		* Scale
+		* Enable Collision
+			* Use Collision Mesh
+		* Mesh
+			* Mesh Properties
+		* Animation (window with a listbox for easier searching)
+	* Background Window (Max of 4 layers)
+		* Layer 1 Texture
+		* Layer 2 Texture
+		* Layer 3 Texture
+		* Layer 4 Texture
+		* Plain Texture
+	* Mesh Selection Tab
+		* Select Mesh from list for placement in scene
+
+5. Finish Puzzle designs (Due Date: 3-27)
+
+6. Finish Models (Due Date: 3-27)
+
+7. Finish Levels (Due Date: 3-28)
+
+8. Finish Testing and Upload (Due Date: 3-29)

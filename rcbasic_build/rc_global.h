@@ -21,8 +21,10 @@ public:
     uint64_t current_address[2];
     uint64_t n_stack_count = 0;
     uint64_t s_stack_count = 0;
+    uint64_t u_stack_count = 0;
     uint64_t max_n_stack_count = 0;
     uint64_t max_s_stack_count = 0;
+    uint64_t max_u_stack_count = 0;
 
     void push_back(string s)
     {
