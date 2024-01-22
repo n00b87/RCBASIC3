@@ -2183,6 +2183,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                 else if(id[expr_id].type == ID_TYPE_FN_USER)
                 {
                     token_replace = "u" + rc_intToString(u_reg);
+                    vm_asm.push_back("dim_type " + token_replace + " " + rc_intToString(id[expr_id].type_index));
                     vm_asm.push_back("pop_t " + token_replace);
                     resolveID_id_reg.push_back(token_replace);
                     resolveID_id_type.push_back(ID_TYPE_USER);
