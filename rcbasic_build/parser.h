@@ -2196,7 +2196,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                     token_replace = "?";
                 }
 
-                cout << "start_dbg USER DT" << endl;
+                //cout << "start_dbg USER DT" << endl;
 
                 if(!id[expr_id].isBuiltin)
                 {
@@ -2217,7 +2217,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                     u_tmp.clear();
                 }
 
-                cout << "end dbg" << endl;
+                //cout << "end dbg" << endl;
 
 //                if(isInFunctionScope)
 //                {
