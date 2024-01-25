@@ -32,9 +32,11 @@ namespace rc_cbc_assembler
 
     uint64_t vm_n_count = 0;
     uint64_t vm_s_count = 0;
+    uint64_t vm_u_count = 0;
 
     uint64_t n_stack_size = 0;
     uint64_t s_stack_size = 0;
+    uint64_t u_stack_size = 0;
     uint64_t loop_stack_size = 0;
 
     uint64_t str_data_size = 0;
@@ -133,10 +135,16 @@ namespace rc_cbc_assembler
         vm_s_count = rc_stringToInt(line);
 
         getline(f, line);
+        vm_u_count = rc_stringToInt(line);
+
+        getline(f, line);
         n_stack_size = rc_stringToInt(line);
 
         getline(f, line);
         s_stack_size = rc_stringToInt(line);
+
+        getline(f, line);
+        u_stack_size = rc_stringToInt(line);
 
         getline(f, line);
         loop_stack_size = rc_stringToInt(line);
@@ -379,8 +387,14 @@ namespace rc_cbc_assembler
                 string arg1_type = line_arg[1].substr(0,1);
                 string arg2_type = line_arg[2].substr(0,1);
 
-                //mov_type is not currently supported
-                cout << "Error mov_type not supported yet" << endl;
+                if(arg1_type.compare("!")==0 && arg2_type.compare("u")==0)
+                {
+                    writeSegment(168);
+                }
+                else if(arg1_type.compare("u")==0 && arg2_type.compare("u")==0)
+                {
+                    writeSegment(42);
+                }
             }
             else if(line_arg[0].compare("add$")==0)
             {
@@ -752,19 +766,35 @@ namespace rc_cbc_assembler
             }
             else if(line_arg[0].compare("dim_type")==0)
             {
-                writeSegment(90);
+                string arg_type = line_arg[1].substr(0,1);
+                if(arg_type.compare("u")==0)
+                    writeSegment(175);
+                else if(arg_type.compare("!")==0)
+                    writeSegment(90);
             }
             else if(line_arg[0].compare("dim_type1")==0)
             {
-                writeSegment(91);
+                string arg_type = line_arg[1].substr(0,1);
+                if(arg_type.compare("u")==0)
+                    writeSegment(176);
+                else if(arg_type.compare("!")==0)
+                    writeSegment(91);
             }
             else if(line_arg[0].compare("dim_type2")==0)
             {
-                writeSegment(92);
+                string arg_type = line_arg[1].substr(0,1);
+                if(arg_type.compare("u")==0)
+                    writeSegment(177);
+                else if(arg_type.compare("!")==0)
+                    writeSegment(92);
             }
             else if(line_arg[0].compare("dim_type3")==0)
             {
-                writeSegment(93);
+                string arg_type = line_arg[1].substr(0,1);
+                if(arg_type.compare("u")==0)
+                    writeSegment(178);
+                else if(arg_type.compare("!")==0)
+                    writeSegment(93);
             }
             else if(line_arg[0].compare("dim_num1")==0)
             {
@@ -1067,9 +1097,52 @@ namespace rc_cbc_assembler
                     writeSegment(166);
                 }
             }
+            else if(line_arg[0].compare("uref_ptr")==0)
+            {
+                writeSegment(167);
+            }
+            else if(line_arg[0].compare("push_t")==0)
+            {
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("u")==0)
+                {
+                    writeSegment(169);
+                }
+                else if(arg1_type.compare("!")==0)
+                {
+                    writeSegment(170);
+                }
+            }
+            else if(line_arg[0].compare("pop_t")==0)
+            {
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("u")==0)
+                {
+                    writeSegment(171);
+                }
+                else if(arg1_type.compare("!")==0)
+                {
+                    writeSegment(172);
+                }
+            }
+            else if(line_arg[0].compare("push_t_null")==0)
+            {
+                writeSegment(173);
+            }
+            else if(line_arg[0].compare("delete_t")==0)
+            {
+                writeSegment(174);
+            }
+            else if(line_arg[0].compare("dim_tfield")==0)
+            {
+                writeSegment(179);
+            }
             else
             {
                 cout << "unrecognized cmd: " << line_arg[0] << endl;
+                return false;
             }
 
 
@@ -1169,7 +1242,7 @@ namespace rc_cbc_assembler
 
     bool compileCBC(string file_name)
     {
-        char header[] = {'R','C','3'};
+        char header[] = {'R','C','4','0','A'};
 
         ru_int rc_int;
         u_double rc_dbl;
@@ -1179,7 +1252,7 @@ namespace rc_cbc_assembler
         if(!output_file.is_open())
             return false;
 
-        output_file.write(header, 3);
+        output_file.write(header, 5);
 
         //------type header here------------
         rc_int.i = utype.size();
@@ -1209,8 +1282,8 @@ namespace rc_cbc_assembler
                     case ID_TYPE_USER:
                         rc_int.i = 2;
                         break;
-                    default:
-                        cout << "type = " << utype[i].member_type[member] << endl;
+                    //default:
+                      //  cout << "type = " << utype[i].member_type[member] << endl;
                 }
                 rc_write(rc_int);
 
@@ -1229,10 +1302,16 @@ namespace rc_cbc_assembler
         rc_int.i = vm_s_count;
         rc_write(rc_int);
 
+        rc_int.i = vm_u_count;
+        rc_write(rc_int);
+
         rc_int.i = n_stack_size;
         rc_write(rc_int);
 
         rc_int.i = s_stack_size;
+        rc_write(rc_int);
+
+        rc_int.i = u_stack_size;
         rc_write(rc_int);
 
         rc_int.i = loop_stack_size;

@@ -68,7 +68,8 @@ public:
             s.substr(0,s.find_first_of(" ")).compare("while")==0 || s.substr(0,s.find_first_of(" ")).compare("mov_arr")==0 ||
             s.substr(0,s.find_first_of(" ")).compare("ptr")==0 || s.substr(0,s.find_first_of(" ")).compare("ptr$")==0 ||
             s.substr(0,s.find_first_of(" ")).compare("redim1")==0 || s.substr(0,s.find_first_of(" ")).compare("redim1$")==0 ||
-            s.substr(0,s.find_first_of(" ")).compare("for_offset_arr2")==0 )
+            s.substr(0,s.find_first_of(" ")).compare("for_offset_arr2")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_n1")==0 ||
+            s.substr(0,s.find_first_of(" ")).compare("obj_usr_s1")==0 || s.substr(0,s.find_first_of(" ")).compare("uref_ptr")==0)
         {
             current_address[current_segment] += 17; //1 byte for instruction and 8 bytes for each argument
         }
@@ -86,6 +87,13 @@ public:
                 max_s_stack_count = s_stack_count+1;
             current_address[current_segment] += 9;
         }
+        else if(s.substr(0,s.find_first_of(" ")).compare("push_t")==0 )
+        {
+            u_stack_count++;
+            if( (u_stack_count+1) > max_u_stack_count)
+                max_u_stack_count = u_stack_count+1;
+            current_address[current_segment] += 9;
+        }
         else if(s.substr(0,s.find_first_of(" ")).compare("pop")==0)
         {
             n_stack_count--;
@@ -94,6 +102,11 @@ public:
         else if(s.substr(0,s.find_first_of(" ")).compare("pop$")==0)
         {
             s_stack_count--;
+            current_address[current_segment] += 9;
+        }
+        else if(s.substr(0,s.find_first_of(" ")).compare("pop_t")==0)
+        {
+            u_stack_count--;
             current_address[current_segment] += 9;
         }
         else if(s.substr(0,s.find_first_of(" ")).compare("jmp")==0 || s.substr(0,s.find_first_of(" ")).compare("je")==0 ||
@@ -112,7 +125,9 @@ public:
                 s.substr(0,s.find_first_of(" ")).compare("pop_ptr")==0 || s.substr(0,s.find_first_of(" ")).compare("preset")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("preset$")==0 || s.substr(0,s.find_first_of(" ")).compare("for_offset_arr1")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("end_x")==0 || s.substr(0,s.find_first_of(" ")).compare("lval")==0 ||
-                s.substr(0,s.find_first_of(" ")).compare("lval$")==0)
+                s.substr(0,s.find_first_of(" ")).compare("lval$")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_n")==0 ||
+                s.substr(0,s.find_first_of(" ")).compare("obj_usr_s")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_get")==0 ||
+                s.substr(0,s.find_first_of(" ")).compare("delete_t")==0)
         {
             current_address[current_segment] += 9; //1 byte for instruction and 8 bytes a single argument
         }
@@ -120,14 +135,16 @@ public:
                 s.substr(0,s.find_first_of(" ")).compare("obj_usr2")==0 || s.substr(0,s.find_first_of(" ")).compare("dim_type1")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("dim_num2")==0 || s.substr(0,s.find_first_of(" ")).compare("dim_str2")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("redim2")==0 || s.substr(0,s.find_first_of(" ")).compare("redim2$")==0 ||
-                s.substr(0,s.find_first_of(" ")).compare("for_offset_arr3")==0 || s.substr(0,s.find_first_of(" ")).compare("dbg")==0)
+                s.substr(0,s.find_first_of(" ")).compare("for_offset_arr3")==0 || s.substr(0,s.find_first_of(" ")).compare("dbg")==0 ||
+                s.substr(0,s.find_first_of(" ")).compare("obj_usr_n2")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_s2")==0)
         {
             current_address[current_segment] += 25; //1 byte for instruction and 8 bytes for 3 arguments
         }
         else if(s.substr(0,s.find_first_of(" ")).compare("dim_type2")==0 || s.substr(0,s.find_first_of(" ")).compare("dim_num3")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("dim_str3")==0 || s.substr(0,s.find_first_of(" ")).compare("for")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("obj_num3")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_str3")==0 ||
-                s.substr(0,s.find_first_of(" ")).compare("redim3")==0 || s.substr(0,s.find_first_of(" ")).compare("redim3$")==0)
+                s.substr(0,s.find_first_of(" ")).compare("redim3")==0 || s.substr(0,s.find_first_of(" ")).compare("redim3$")==0 ||
+                s.substr(0,s.find_first_of(" ")).compare("obj_usr_n3")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_s3")==0)
         {
             current_address[current_segment] += 33; //1 byte for instruction and 8 bytes for 4 arguments
         }
@@ -139,9 +156,18 @@ public:
                 s.substr(0,s.find_first_of(" ")).compare("push_empty$")==0 || s.substr(0,s.find_first_of(" ")).compare("clear_stack")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("clear_stack$")==0 || s.substr(0,s.find_first_of(" ")).compare("do")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("pop_loop_stack")==0 || s.substr(0,s.find_first_of(" ")).compare("return")==0 ||
-                s.substr(0,s.find_first_of(" ")).compare("println")==0 || s.substr(0,s.find_first_of(" ")).compare("for_offset_0")==0 )
+                s.substr(0,s.find_first_of(" ")).compare("println")==0 || s.substr(0,s.find_first_of(" ")).compare("for_offset_0")==0 ||
+                s.substr(0,s.find_first_of(" ")).compare("push_t_null")==0)
         {
             current_address[current_segment] += 1; //1 byte for instruction and no arguments
+        }
+        else if(s.substr(0,s.find_first_of(" ")).compare("dim_tfield")==0)
+        {
+            current_address[current_segment] += 57;
+        }
+        else
+        {
+            cout << "Unknown Instruction" << endl;
         }
     }
 

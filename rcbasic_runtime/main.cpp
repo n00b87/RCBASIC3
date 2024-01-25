@@ -153,6 +153,8 @@ struct rc_usrId
     uint64_t byref_offset;
     int udt_index; //index of the type definition in rc_types
 
+    rc_usrId * var_ref;
+
     #ifdef RCBASIC_DEBUG
     bool is_debug_var;
     uint64_t dbg_var_index;
@@ -198,8 +200,10 @@ stack<uint64_t> byref_var_byref_offset;
 
 uint64_t n_count = 0;
 uint64_t s_count = 0;
+uint64_t u_count = 0;
 uint64_t n_stack_size = 0;
 uint64_t s_stack_size = 0;
+uint64_t u_stack_size = 0;
 uint64_t loop_stack_size = 0;
 uint64_t numID_count = 0;
 uint64_t strID_count = 0;
@@ -232,13 +236,16 @@ s_obj_struct str_object;
 
 rc_vm_n * vm_n;
 rc_vm_s * vm_s;
+rc_usrId * vm_u;
 
 stack<rc_vm_n>  n_stack;
 stack<rc_vm_s> s_stack;
+stack<rc_usrId> u_stack;
 stack<rc_loop> loop_stack;
 
 int current_n_stack_count = 0;
 int current_s_stack_count = 0;
+int current_u_stack_count = 0;
 int current_loop_stack_count = 0;
 
 rc_numId * num_var;
@@ -500,9 +507,9 @@ bool rcbasic_load(string filename)
             return false;
     }
 
-    SDL_RWread(rc_fstream[0], rc, 3, 1);
+    SDL_RWread(rc_fstream[0], rc, 5, 1);
 
-    if(! (rc[0]=='R' && rc[1] =='C' && rc[2]=='3') )
+    if(! (rc[0]=='R' && rc[1] =='C' && rc[2]=='4') )
     {
         cout << "This program was not built for this version of the runtime" << endl;
         return false;
@@ -542,20 +549,25 @@ bool rcbasic_load(string filename)
 
     n_count = rcbasic_readInt();
     s_count = rcbasic_readInt();
+    u_count = rcbasic_readInt();
+
     n_stack_size = rcbasic_readInt();
     s_stack_size = rcbasic_readInt();
+    u_stack_size = rcbasic_readInt();
+
     loop_stack_size = rcbasic_readInt();
+
     numID_count = rcbasic_readInt();
     strID_count = rcbasic_readInt();
     usrID_count = rcbasic_readInt();
+
     code_segment_size = rcbasic_readInt();
     data_segment_size = rcbasic_readInt();
 
     vm_n = new rc_vm_n[n_count];
     vm_s = new rc_vm_s[s_count];
-    //n_stack = new double[n_stack_size];
-    //s_stack = new string[s_stack_size];
-    //loop_stack = new rc_loop[loop_stack_size];
+    vm_u = new rc_usrId[u_count];
+
 
     num_var = new rc_numId[numID_count];
     for(int i = 0; i < numID_count; i++)
@@ -811,8 +823,9 @@ void mov_rS_41(int s1, int s2)
     #endif // RCBASIC_DEBUG
 }
 
-void mov_type_42()
+void mov_type_42(int u1, int u2)
 {
+    vm_u[u1].var_ref[0] = vm_u[u2];
 }
 
 void addS_43(int s1, int s2)
@@ -1377,6 +1390,12 @@ void obj_setS_88(int s1)
 
 void clear_obj_89()
 {
+}
+
+bool rc_dim_type(rc_usrId* parent, uint64_t udt_index, uint64_t d1, uint64_t d2, uint64_t d3)
+{
+
+    return true;
 }
 
 void dim_type_90(uint64_t uid, int udt_index)

@@ -1100,6 +1100,9 @@ int main(int argc, char * argv[])
             case BLOCK_STATE_IF:
                 cout << "Compile Error: Failed to close IF" << endl;
                 break;
+            case BLOCK_STATE_TYPE:
+                cout << "Compile Error: Failed to close TYPE" << endl;
+                break;
             }
             cout << "Compile Failed" << endl;
             return 0;
@@ -1137,8 +1140,10 @@ int main(int argc, char * argv[])
         fstream f("main.rc_data", fstream::trunc | fstream::out);
         f << max_n_reg << endl;
         f << max_s_reg << endl;
+        f << max_u_reg << endl;
         f << vm_asm.max_n_stack_count << endl;
         f << vm_asm.max_s_stack_count << endl;
+        f << vm_asm.max_u_stack_count << endl;
         f << max_for_count << endl;
         f << num_id_count << endl;
         f << str_id_count << endl;
@@ -1148,7 +1153,7 @@ int main(int argc, char * argv[])
             f << vm_asm.label[i].label_name << " " << vm_asm.label[i].label_address << " " << vm_asm.label[i].label_segment << endl;
         f.close();
 
-        //rc_cbc_assembler::rc_assemble(cbc_file, clean_after_build);
+        rc_cbc_assembler::rc_assemble(cbc_file, clean_after_build);
     }
     else
     {

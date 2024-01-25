@@ -344,9 +344,9 @@ bool memberExists(string member_name)
     return false;
 }
 
-bool add_type_member(string member_name, int member_type, string member_utype_name, int member_dim_count, int dim1 = 0, int dim2 = 0, int dim3 = 0)
+bool add_type_member(string member_name, int member_type, string member_utype_name, int member_dim_count, string dim1 = "n0", string dim2 = "n0", string dim3 = "n0")
 {
-    int m_utype_index = getUType(member_utype_name);
+    int m_utype_index = member_utype_name.compare("")!=0 ? getUType(member_utype_name) : -1;
     if(m_utype_index == current_type_index)
     {
         //cout << "you canno do is" << endl;
@@ -358,29 +358,36 @@ bool add_type_member(string member_name, int member_type, string member_utype_na
     int utype_current_member = utype[utype_index].num_members;
     utype[utype_index].member_name.push_back(member_name);
 
+    string dim_mem_type = "";
+
     switch(member_type)
     {
         case ID_TYPE_NUM:
+            dim_mem_type = "0 " + rc_intToString(utype[utype_index].nidCount);
             utype[utype_index].member_type.push_back(ID_TYPE_USER_NUM);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].nidCount);
             utype[utype_index].nidCount++;
             break;
         case ID_TYPE_ARR_NUM:
+            dim_mem_type = "0 " + rc_intToString(utype[utype_index].nidCount);
             utype[utype_index].member_type.push_back(ID_TYPE_USER_NUM_ARRAY);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].nidCount);
             utype[utype_index].nidCount++;
             break;
         case ID_TYPE_STR:
+            dim_mem_type = "1 " + rc_intToString(utype[utype_index].sidCount);
             utype[utype_index].member_type.push_back(ID_TYPE_USER_STR);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].sidCount);
             utype[utype_index].sidCount++;
             break;
         case ID_TYPE_ARR_STR:
+            dim_mem_type = "1 " + rc_intToString(utype[utype_index].sidCount);
             utype[utype_index].member_type.push_back(ID_TYPE_USER_STR_ARRAY);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].sidCount);
             utype[utype_index].sidCount++;
             break;
         case ID_TYPE_USER:
+            dim_mem_type = "2 " + rc_intToString(utype[utype_index].uidCount);
             utype[utype_index].member_type.push_back(ID_TYPE_USER);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].uidCount);
             utype[utype_index].uidCount++;
@@ -393,10 +400,20 @@ bool add_type_member(string member_name, int member_type, string member_utype_na
 
     utype[utype_index].member_dim_count.push_back(member_dim_count);
     utype[utype_index].member_utype_index.push_back(m_utype_index);
+
+    dim1 = dim1.compare("")==0 ? "n0" : dim1;
+    dim2 = dim2.compare("")==0 ? "n0" : dim2;
+    dim3 = dim3.compare("")==0 ? "n0" : dim3;
+
+    vm_asm.push_back("dim_tfield  " + rc_intToString(utype_index) + " " + dim_mem_type + " "
+                                    + rc_intToString(member_dim_count) + " "
+                                    + dim1 + " " + dim2 + " " + dim3);
+
+    //NOTE: user_array_dim is no longer used
     user_array_dim d;
-    d.dim_size[0] = dim1;
-    d.dim_size[1] = dim2;
-    d.dim_size[2] = dim3;
+    //d.dim_size[0] = dim1;
+    //d.dim_size[1] = dim2;
+    //d.dim_size[2] = dim3;
     utype[utype_index].member_dim.push_back(d);
     //cout << member_name << " has " << member_dim_count << " dimensions" << endl;
     //utype[utype_index].member_dim[utype_current_member].dim_size[1] = dim2;

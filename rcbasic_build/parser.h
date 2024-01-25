@@ -2398,6 +2398,8 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
 
         getArgBlockStuff(start_block, arg_count);
 
+        cout << "block arg count --> " << arg_count << endl;
+
         //cout << "start block = " << start_token << endl << endl; cout << "end block = " << end_token << endl;
 
         if(end_block < 0) //if end_block is less than 0 then an error occurred so this function will return false
@@ -2721,11 +2723,11 @@ bool check_rule()
                     int token_index = 2;
 
                     //check for the next rule; must be [], AS, or =
-                    cout << "token = " << token[token_index] << endl;
+                    //cout << "token = " << token[token_index] << endl;
                     if(token[token_index].compare("<square>")==0 && current_block_state == BLOCK_STATE_TYPE)
                     {
-                        token_index++;
-                        int end_token = token_index;
+                        //token_index++;
+                        int end_token = token_index+1;
                         int sq_scope = 1;
                         for(; end_token < token.size(); end_token++)
                         {
@@ -2742,16 +2744,18 @@ bool check_rule()
                             rc_setError("Expected ] in array definition");
                             return false;
                         }
-                        if(end_token > token_index)
+                        /*if(end_token > token_index)
                             end_token--;
                         else
                         {
                             rc_setError("Expected atleast 1 parameter in member array definition");
                             return false;
-                        }
-                        if(eval_constantExpression(token_index, end_token))
+                        }*/
+                        //if(eval_constantExpression(token_index, end_token))
+                        cout << "EVAL EXPR" << endl;
+                        if(eval_expression(token_index, end_token, true))
                         {
-                            dimensions = constant_arg_count;
+                            dimensions = multi_arg_count;
                         }
                         else
                         {
@@ -2759,9 +2763,9 @@ bool check_rule()
                             return false;
                         }
 
-                        token_index = end_token+2;
+                        token_index = end_token+1;
 
-                        cout << "DBG token = " << token[token_index] << std::endl;
+                        //cout << "DBG token = " << token[token_index] << std::endl;
 
                         if(token.size() > token_index)
                         {
@@ -2776,8 +2780,9 @@ bool check_rule()
 
                                 id_type = ID_TYPE_USER;
                                 id_type_name = token[token_index].substr(4);
-                                cout << "Add member (" << id_name << ") of type (" << id_type_name << ") with " << dimensions << " dimensions [" << constant_arg[0] << "," << constant_arg[1] << "," << constant_arg[2] << "]" << endl;
-                                if(!add_type_member(id_name, id_type, id_type_name, dimensions, constant_arg[0], constant_arg[1], constant_arg[2]))
+                                //cout << "Add member (" << id_name << ") of type (" << id_type_name << ") with " << dimensions << " dimensions [" << constant_arg[0] << "," << constant_arg[1] << "," << constant_arg[2] << "]" << endl;
+                                //if(!add_type_member(id_name, id_type, id_type_name, dimensions, constant_arg[0], constant_arg[1], constant_arg[2]))
+                                if(!add_type_member(id_name, id_type, id_type_name, dimensions, multi_arg[0], multi_arg[1], multi_arg[2]))
                                     return false;
                             }
                             else
@@ -2788,8 +2793,9 @@ bool check_rule()
                         }
                         else
                         {
-                            cout << "Add member (" << id_name << ") of type (num/str) with " << dimensions << " dimensions [" << constant_arg[0] << "," << constant_arg[1] << "," << constant_arg[2] << "]" << endl;
-                            if(!add_type_member(id_name, id_type, "", dimensions, constant_arg[0], constant_arg[1], constant_arg[2]))
+                            //cout << "Add member (" << id_name << ") of type (num/str) with " << dimensions << " dimensions [" << constant_arg[0] << "," << constant_arg[1] << "," << constant_arg[2] << "]" << endl;
+                            //if(!add_type_member(id_name, id_type, "", dimensions, constant_arg[0], constant_arg[1], constant_arg[2]))
+                            if(!add_type_member(id_name, id_type, "", dimensions, multi_arg[0], multi_arg[1], multi_arg[2]))
                                 return false;
                         }
 
