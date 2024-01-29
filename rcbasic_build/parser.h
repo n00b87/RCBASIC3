@@ -1246,6 +1246,8 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                 cout << "-Parsing User Variable: " << id[expr_id].name << endl;
                 cout << "----------------------------------------------- : " << eval_udt << endl;
 
+                bool udt_id_init = true;
+
                 string tmp_scope = id[expr_id].scope;
 
                 for(int t = i; t < token.size(); t++)
@@ -1398,7 +1400,12 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                             {
                                 case 0:
                                     if(id[tmp_id].type == ID_TYPE_USER || id[tmp_id].type == ID_TYPE_BYREF_USER)
-                                        vm_asm.push_back("obj_usr !" + rc_intToString(id[tmp_id].vec_pos));
+                                    {
+                                        if(udt_id_init)
+                                            vm_asm.push_back("obj_usr_init !" + rc_intToString(id[tmp_id].vec_pos));
+                                        else
+                                            vm_asm.push_back("obj_usr !" + rc_intToString(id[tmp_id].vec_pos));
+                                    }
                                     else if(id[tmp_id].type == ID_TYPE_USER_NUM)
                                         vm_asm.push_back("obj_usr_n !" + rc_intToString(id[tmp_id].vec_pos));
                                     else if(id[tmp_id].type == ID_TYPE_USER_STR)
@@ -1411,7 +1418,12 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                                     break;
                                 case 1:
                                     if(id[tmp_id].type == ID_TYPE_USER || id[tmp_id].type == ID_TYPE_BYREF_USER)
-                                        vm_asm.push_back("obj_usr1 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0]);
+                                    {
+                                        if(udt_id_init)
+                                            vm_asm.push_back("obj_usr_init1 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0]);
+                                        else
+                                            vm_asm.push_back("obj_usr1 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0]);
+                                    }
                                     else if(id[tmp_id].type == ID_TYPE_USER_NUM)
                                         vm_asm.push_back("obj_usr_n1 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0]);
                                     else if(id[tmp_id].type == ID_TYPE_USER_STR)
@@ -1424,7 +1436,12 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                                     break;
                                 case 2:
                                     if(id[tmp_id].type == ID_TYPE_USER || id[tmp_id].type == ID_TYPE_BYREF_USER)
-                                        vm_asm.push_back("obj_usr2 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1]);
+                                    {
+                                        if(udt_id_init)
+                                            vm_asm.push_back("obj_usr_init2 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1]);
+                                        else
+                                            vm_asm.push_back("obj_usr2 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1]);
+                                    }
                                     else if(id[tmp_id].type == ID_TYPE_USER_NUM)
                                         vm_asm.push_back("obj_usr_n2 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1]);
                                     else if(id[tmp_id].type == ID_TYPE_USER_STR)
@@ -1437,7 +1454,12 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                                     break;
                                 case 3:
                                     if(id[tmp_id].type == ID_TYPE_USER || id[tmp_id].type == ID_TYPE_BYREF_USER)
-                                        vm_asm.push_back("obj_usr3 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1] + " " + args[2]);
+                                    {
+                                        if(udt_id_init)
+                                            vm_asm.push_back("obj_usr_init3 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1] + " " + args[2]);
+                                        else
+                                            vm_asm.push_back("obj_usr3 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1] + " " + args[2]);
+                                    }
                                     else if(id[tmp_id].type == ID_TYPE_USER_NUM)
                                         vm_asm.push_back("obj_usr_n3 !" + rc_intToString(id[tmp_id].vec_pos) + " " + args[0] + " " + args[1] + " " + args[2]);
                                     else if(id[tmp_id].type == ID_TYPE_USER_STR)
@@ -1449,6 +1471,8 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                                     }
                                     break;
                             }
+
+                            udt_id_init = false;
                         }
 
 
@@ -2159,7 +2183,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                 int ptr_count = 0;
                 for(int n = 0; n < id[expr_id].fn_arg.size(); n++)
                 {
-                    if(id[expr_id].fn_arg_type[n] == ID_TYPE_BYREF_NUM || id[expr_id].fn_arg_type[n] == ID_TYPE_BYREF_STR)
+                    if(id[expr_id].fn_arg_type[n] == ID_TYPE_BYREF_NUM || id[expr_id].fn_arg_type[n] == ID_TYPE_BYREF_STR || id[expr_id].fn_arg_type[n] == ID_TYPE_BYREF_USER)
                         ptr_count++;
                 }
 
@@ -2183,7 +2207,7 @@ bool pre_parse(int start_token = 0, int end_token = -1, int pp_flags, bool eval_
                 else if(id[expr_id].type == ID_TYPE_FN_USER)
                 {
                     token_replace = "u" + rc_intToString(u_reg);
-                    vm_asm.push_back("dim_type " + token_replace + " " + rc_intToString(id[expr_id].type_index));
+                    //vm_asm.push_back("dim_type " + token_replace + " " + rc_intToString(id[expr_id].type_index)); NOTE: I decided to have pop_t free the memory for the variable before setting it
                     vm_asm.push_back("pop_t " + token_replace);
                     resolveID_id_reg.push_back(token_replace);
                     resolveID_id_type.push_back(ID_TYPE_USER);
@@ -2364,6 +2388,12 @@ bool eval_expression(int start_token = 0, int end_token = 0, bool allow_multi_ar
     int arg_start = 0;
     int arg_end = 0;
     int arg_count = 0;
+
+    multi_arg[0] = "";
+    multi_arg[1] = "";
+    multi_arg[2] = "";
+
+    expr_result = "";
 
     int current_block_start = 0;
     int current_block_end = 0;
@@ -4805,9 +4835,9 @@ bool check_rule()
                     rc_setError("Could not evaluate identifer");
                     return false;
                 }
-                if(expr_result.substr(0,1).compare("u")!=0)
+                if(type_delete_arg.substr(0,1).compare("!")!=0)
                 {
-                    rc_setError("Could not determine Identifier Type in DELETE");
+                    rc_setError("Could not determine Identifier Type in DELETE: " + type_delete_arg);
                     return false;
                 }
                 vm_asm.push_back("delete_t " + type_delete_arg);

@@ -363,31 +363,31 @@ bool add_type_member(string member_name, int member_type, string member_utype_na
     switch(member_type)
     {
         case ID_TYPE_NUM:
-            dim_mem_type = "0 " + rc_intToString(utype[utype_index].nidCount);
+            dim_mem_type = "!0 !" + rc_intToString(utype_current_member);
             utype[utype_index].member_type.push_back(ID_TYPE_USER_NUM);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].nidCount);
             utype[utype_index].nidCount++;
             break;
         case ID_TYPE_ARR_NUM:
-            dim_mem_type = "0 " + rc_intToString(utype[utype_index].nidCount);
+            dim_mem_type = "!0 !" + rc_intToString(utype_current_member);
             utype[utype_index].member_type.push_back(ID_TYPE_USER_NUM_ARRAY);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].nidCount);
             utype[utype_index].nidCount++;
             break;
         case ID_TYPE_STR:
-            dim_mem_type = "1 " + rc_intToString(utype[utype_index].sidCount);
+            dim_mem_type = "!1 !" + rc_intToString(utype_current_member);
             utype[utype_index].member_type.push_back(ID_TYPE_USER_STR);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].sidCount);
             utype[utype_index].sidCount++;
             break;
         case ID_TYPE_ARR_STR:
-            dim_mem_type = "1 " + rc_intToString(utype[utype_index].sidCount);
+            dim_mem_type = "!1 !" + rc_intToString(utype_current_member);
             utype[utype_index].member_type.push_back(ID_TYPE_USER_STR_ARRAY);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].sidCount);
             utype[utype_index].sidCount++;
             break;
         case ID_TYPE_USER:
-            dim_mem_type = "2 " + rc_intToString(utype[utype_index].uidCount);
+            dim_mem_type = "!2 !" + rc_intToString(utype_current_member);
             utype[utype_index].member_type.push_back(ID_TYPE_USER);
             utype[utype_index].member_vec_pos.push_back(utype[utype_index].uidCount);
             utype[utype_index].uidCount++;
@@ -405,7 +405,7 @@ bool add_type_member(string member_name, int member_type, string member_utype_na
     dim2 = dim2.compare("")==0 ? "n0" : dim2;
     dim3 = dim3.compare("")==0 ? "n0" : dim3;
 
-    vm_asm.push_back("dim_tfield  " + rc_intToString(utype_index) + " " + dim_mem_type + " "
+    vm_asm.push_back("dim_tfield  !" + rc_intToString(utype_index) + " " + dim_mem_type + " !"
                                     + rc_intToString(member_dim_count) + " "
                                     + dim1 + " " + dim2 + " " + dim3);
 
@@ -695,7 +695,7 @@ bool id_emit(identifier var, string dim1="_", string dim2="_", string dim3="_")
 
         var_id = rc_intToString(getIDInScope(var.name, var.scope));
 
-        emit_asm += "!" + var_id + " " + rc_intToString(var.type_index) + " ";
+        emit_asm += "!" + var_id + " !" + rc_intToString(var.type_index) + " ";
 
         if(var.num_args == 1)
             emit_asm += dim1;

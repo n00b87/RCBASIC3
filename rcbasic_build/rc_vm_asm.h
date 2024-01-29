@@ -1139,6 +1139,22 @@ namespace rc_cbc_assembler
             {
                 writeSegment(179);
             }
+            else if(line_arg[0].compare("obj_usr_init")==0)
+            {
+                writeSegment(180);
+            }
+            else if(line_arg[0].compare("obj_usr_init1")==0)
+            {
+                writeSegment(181);
+            }
+            else if(line_arg[0].compare("obj_usr_init2")==0)
+            {
+                writeSegment(182);
+            }
+            else if(line_arg[0].compare("obj_usr_init3")==0)
+            {
+                writeSegment(183);
+            }
             else
             {
                 cout << "unrecognized cmd: " << line_arg[0] << endl;
