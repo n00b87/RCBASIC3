@@ -4887,10 +4887,10 @@ bool check_rule()
             //cout << "token[1] = " << token[1] << endl;
             if(token[0].substr(0,4).compare("<id>")==0)
             {
-                int id_index = getIDIndex(token[0].substr(4));
+                int id_index = getIDInScope_ByIndex(token[0].substr(4));
                 if(id_index >= 0)
                 {
-                    //cout << "DBG TYPE: name = " << id[id_index].name << " -- type = " << id[id_index].type << " -- dim_size = " << id[id_index].num_args << endl;
+                    cout << "DBG TYPE: name = " << id[id_index].name << " -- type = " << id[id_index].type << " -- scope = " << id[id_index].scope << endl;
 
                     if( ID_TYPE_USER_ALL(id_index) )
                     {
@@ -4904,6 +4904,8 @@ bool check_rule()
                         //getting the id to parse
                         for(int i = 0; i < token.size(); i++)
                         {
+                            cout << "DEBUG TOKEN[" << i << "] = " << token[i] << endl;
+
                             if(token[i].compare("<square>")==0 || token[i].compare("!<square>")==0 ||
                                token[i].compare("<par>")==0 || token[i].compare("!<par>")==0)
                                 tmp_scope++;
@@ -4912,7 +4914,7 @@ bool check_rule()
                                 tmp_scope--;
                             else if(tmp_scope == 0 && isOperatorToken2(i))
                             {
-                                //cout << "PARSE ID = \n" << full_id << endl;
+                                cout << "PARSE ID = \n" << full_id << endl;
                                 op_token = i;
                                 end_token = i-1;
                                 break;

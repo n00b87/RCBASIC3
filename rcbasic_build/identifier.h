@@ -456,7 +456,7 @@ int getIDInScope_ByIndex2(string id_name, string check_scope="")
             //if(current_scope.find(id[i].scope)==0)
             if(matchCurrentScope(id[i].scope, check_scope))
             {
-                cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << i << endl << endl;
+                cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << id[i].scope << " : t=" << id[i].type << endl << endl;
                 return i;
             }
         }
@@ -509,7 +509,7 @@ int getIDInScope2(string id_name, string check_scope="")
             //if(current_scope.find(id[i].scope)==0)
             if(matchCurrentScope(id[i].scope, check_scope))
             {
-                cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << i << endl;
+                cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << id[i].scope << endl;
                 return id[i].vec_pos;
             }
         }
@@ -786,7 +786,8 @@ bool create_variable(string name, int type, string utype_name="", int vec = -1)
         var.parent_index = -1;
         set_vectorPosition(var);
         id.push_back(var);
-        id_emit(var);
+        if(!isFunctionArg_flag)
+            id_emit(var);
         //create all sub variables here
         create_type_members(var_index, var.type_index);
     }
@@ -1065,6 +1066,8 @@ bool add_function_arg(string arg_name, int arg_type, string utype_name)
     id[fn_index].fn_arg_type.push_back(arg_type);
 
     isFunctionArg_flag = true;
+
+    cout << "ARG = " << arg_name << "  type = " << arg_type << endl;
 
     if(!create_variable(arg_name, arg_type, utype_name))
     {

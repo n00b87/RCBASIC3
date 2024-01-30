@@ -1362,8 +1362,8 @@ void obj_usr_81(uint64_t uid)
 void obj_usr1_82(uint64_t uid, int n1)
 {
     cout << "obj_usr1 " << uid << " " << (uint64_t)vm_n[n1].value << endl;
-    cout << "  ---dbg[uid]: " << usr_object.obj_ref->uid_value[uid].uid_value.size() << endl;
-    cout << "  ---dbg[str]: " << usr_object.obj_ref->uid_value[uid].str_var.size() << endl;
+    cout << "  ---dbg[uid]: " << usr_object.obj_ref->uid_value[uid].uid_value[0].uid_value.size() << endl;
+    cout << "  ---dbg[str]: " << usr_object.obj_ref->uid_value[uid].uid_value[0].str_var.size() << endl;
     usr_object.index = (uint64_t)vm_n[n1].value;
     usr_object.obj_ref = &usr_object.obj_ref->uid_value[uid].uid_value[usr_object.index];
 }
@@ -1469,7 +1469,7 @@ bool rc_dim_type(rc_usrId* parent, uint64_t udt_index, int num_dim, uint64_t d1,
 
     uint64_t field_size = 0;
 
-    cout << "starting field: " << udt_index << " " << num_dim << " " << d1 << " " << d2 << " " << d3 << ": " << parent->uid_value.size() << endl;
+    //cout << "starting field: " << udt_index << " " << num_dim << " " << d1 << " " << d2 << " " << d3 << ": " << parent->uid_value.size() << endl;
 
     for(int i = 0; i < dim_size; i++)
     {
@@ -1513,10 +1513,12 @@ bool rc_dim_type(rc_usrId* parent, uint64_t udt_index, int num_dim, uint64_t d1,
                     break;
                 case RC_UDT_TYPE_USR:
                     //WIP: p_obj is just going to get resized everytime this is called. So instead I need to create a type object to add and run rc_dim_type on that
-                    rc_dim_type(p_obj, rc_types[udt_index].field_type_index[field], rc_types[udt_index].field_dimensions[field],
+                    rc_usrId usr_field;
+                    rc_dim_type(&usr_field, rc_types[udt_index].field_type_index[field], rc_types[udt_index].field_dimensions[field],
                                 rc_types[udt_index].field_size[field].dim[0],
                                 rc_types[udt_index].field_size[field].dim[1],
                                 rc_types[udt_index].field_size[field].dim[2]);
+                    p_obj->uid_value.push_back(usr_field);
                     break;
             }
         }
@@ -4338,7 +4340,7 @@ void obj_usr_get_164(int n1)
     vm_n[n1].value = usr_object.num_ref->nid_value[0].value[usr_object.index];
     vm_n[n1].r = usr_object.num_ref->nid_value;
     vm_n[n1].r_index = usr_object.index;
-    cout << "obj_usr_get_N done" << endl;
+    cout << "obj_usr_get_N done: " << vm_n[n1].r[0].value[vm_n[n1].r_index] << endl;
 }
 
 void obj_usr_get_165(int s1)
@@ -4372,15 +4374,22 @@ void uref_ptr_167(uint64_t uid, int u1)
 
 void mov_type_168(uint64_t uid, int u1)
 {
-    rc_free_type(usr_var[uid].var_ref);
-    usr_var[uid].uid_value.push_back(vm_u[u1].var_ref[0]);
+    cout << "mov_type " << uid << " " << u1 << endl;
+    cout << "dbg[var_ref] : " << vm_u[u1].var_ref[0].uid_value.size() << endl;
+    rc_free_type(&usr_var[uid]);
+    //usr_var[uid].uid_value.resize(1);
+    cout << "dbg[usr_var]: " << usr_var[uid].uid_value.size() << endl;
+    usr_var[uid].uid_value.push_back(vm_u[u1]);
     usr_var[uid].var_ref = &usr_var[uid];
     usr_var[uid].var_ref_index = 0;
+    cout << "mov_type end" << endl;
 }
 
 void push_t_169(int u1)
 {
+    cout << "push_t " << u1 << endl;
     u_stack.push(vm_u[u1]);
+    cout << "push_t end" << endl;
 }
 
 void push_t_170(uint64_t uid)
@@ -4456,18 +4465,25 @@ void obj_usr_init_180(uint64_t uid)
 
 void obj_usr_init1_181(uint64_t uid, int n1)
 {
+    cout << "obj_usr_init1 " << uid << endl;
     usr_object.index = (uint64_t)vm_n[n1].value;
     usr_object.obj_ref = &usr_var[uid].var_ref->uid_value[usr_object.index];
 }
 
 void obj_usr_init2_182(uint64_t uid, int n1, int n2)
 {
+    uint64_t d[3];
+    d[0] = usr_var[uid].dim[0];
+    d[1] = usr_var[uid].dim[1];
+    d[2] = usr_var[uid].dim[2];
+    cout << "obj_usr_init2: " << uid << "  --dim=[" << d[0] << ", " << d[1] << ", " << d[2] << "]" << endl;
     usr_object.index = (uint64_t)vm_n[n1].value * usr_var[uid].dim[1] + (uint64_t)vm_n[n2].value;
     usr_object.obj_ref = &usr_var[uid].var_ref->uid_value[usr_object.index];
 }
 
 void obj_usr_init3_183(uint64_t uid, int n1, int n2, int n3)
 {
+    cout << "obj_usr_init3 " << uid << endl;
     usr_object.index = ( (uint64_t)vm_n[n1].value * usr_var[uid].dim[1] * usr_var[uid].dim[2] ) + ((uint64_t)vm_n[n2].value * usr_var[uid].dim[2]) + (uint64_t)vm_n[n3].value;;
     usr_object.obj_ref = &usr_var[uid].var_ref->uid_value[usr_object.index];
 }
