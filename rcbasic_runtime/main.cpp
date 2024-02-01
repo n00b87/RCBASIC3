@@ -65,6 +65,11 @@ using namespace std;
 #define CODE_SEGMENT 0
 #define DATA_SEGMENT 1
 
+#define RC_UDT_TYPE_NUM 0
+#define RC_UDT_TYPE_STR 1
+#define RC_UDT_TYPE_USR 2
+
+
 bool CMP_FLAG_EQUAL = false;
 bool CMP_FLAG_LESS = false;
 bool CMP_FLAG_LESS_EQUAL = false;
@@ -108,10 +113,12 @@ struct rc_vm_s
 
 struct rc_numId
 {
-    n_value * nid_value;
+    n_value nid_value;
     int dimensions;
     uint64_t dim[3];
     uint64_t byref_offset;
+
+    n_value * nref;
 
     #ifdef RCBASIC_DEBUG
     bool is_debug_var;
@@ -121,10 +128,12 @@ struct rc_numId
 
 struct rc_strId
 {
-    s_value * sid_value;
+    s_value sid_value;
     int dimensions;
     uint64_t dim[3];
     uint64_t byref_offset;
+
+    s_value * sref;
 
     #ifdef RCBASIC_DEBUG
     bool is_debug_var;
@@ -593,10 +602,11 @@ bool rcbasic_load(string filename)
     num_var = new rc_numId[numID_count];
     for(int i = 0; i < numID_count; i++)
     {
-        num_var[i].nid_value = new n_value;
-        num_var[i].nid_value[0].value.resize(1);
+        //num_var[i].nid_value = new n_value;
+        num_var[i].nid_value.value.resize(1);
         num_var[i].dimensions = 0;
         num_var[i].byref_offset = 0;
+        num_var[i].nref = &num_var[i].nid_value;
 
         #ifdef RCBASIC_DEBUG
         num_var[i].is_debug_var = false;
@@ -606,10 +616,11 @@ bool rcbasic_load(string filename)
     str_var = new rc_strId[strID_count];
     for(int i = 0; i < strID_count; i++)
     {
-        str_var[i].sid_value = new s_value;
-        str_var[i].sid_value[0].value.resize(1);
+        //str_var[i].sid_value = new s_value;
+        str_var[i].sid_value.value.resize(1);
         str_var[i].dimensions = 0;
         str_var[i].byref_offset = 0;
+        str_var[i].sref = &str_var[i].sid_value;
 
         #ifdef RCBASIC_DEBUG
         str_var[i].is_debug_var = false;
@@ -720,9 +731,9 @@ void mov_33(int n1, double val)
 
 void mov_34(int n1, uint64_t nid)
 {
-    int byref_offset = num_var[nid].byref_offset;
-    vm_n[n1].value = num_var[nid].nid_value[0].value[byref_offset];
-    vm_n[n1].r = num_var[nid].nid_value;
+    uint64_t byref_offset = num_var[nid].byref_offset;
+    vm_n[n1].value = num_var[nid].nref[0].value[byref_offset];
+    vm_n[n1].r = num_var[nid].nref;
     vm_n[n1].r_index = byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -741,8 +752,8 @@ void mov_34(int n1, uint64_t nid)
 
 void mov_35(uint64_t nid, int n1)
 {
-    int byref_offset = num_var[nid].byref_offset;
-    num_var[nid].nid_value[0].value[byref_offset] = vm_n[n1].value;
+    uint64_t byref_offset = num_var[nid].byref_offset;
+    num_var[nid].nref[0].value[byref_offset] = vm_n[n1].value;
 
     #ifdef RCBASIC_DEBUG
     if(!num_var[nid].is_debug_var)
@@ -779,9 +790,9 @@ void movS_37(int s1, uint64_t str_addr)
 
 void movS_38(int s1, uint64_t sid)
 {
-    int byref_offset = str_var[sid].byref_offset;
-    vm_s[s1].value = str_var[sid].sid_value[0].value[byref_offset];
-    vm_s[s1].r = &str_var[sid].sid_value[0];
+    uint64_t byref_offset = str_var[sid].byref_offset;
+    vm_s[s1].value = str_var[sid].sref[0].value[byref_offset];
+    vm_s[s1].r = str_var[sid].sref;
     vm_s[s1].r_index = byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -798,8 +809,8 @@ void movS_38(int s1, uint64_t sid)
 
 void movS_39(uint64_t sid, int s1)
 {
-    int byref_offset = str_var[sid].byref_offset;
-    str_var[sid].sid_value[0].value[byref_offset] = vm_s[s1].value;
+    uint64_t byref_offset = str_var[sid].byref_offset;
+    str_var[sid].sref[0].value[byref_offset] = vm_s[s1].value;
 
     #ifdef RCBASIC_DEBUG
     if(!str_var[sid].is_debug_var)
@@ -1035,8 +1046,8 @@ void jle_72(uint64_t jmp_addr)
 
 void obj_num_73(uint64_t nid)
 {
-    num_object.obj_val = &num_var[nid].nid_value[0];
-    int byref_offset = num_var[nid].byref_offset;
+    num_object.obj_val = num_var[nid].nref;
+    uint64_t byref_offset = num_var[nid].byref_offset;
     num_object.index = byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -1073,8 +1084,8 @@ void obj_num_73(uint64_t nid)
 
 void obj_num1_74(uint64_t nid, int n1)
 {
-    num_object.obj_val = num_var[nid].nid_value;
-    int byref_offset = num_var[nid].byref_offset;
+    num_object.obj_val = num_var[nid].nref;
+    uint64_t byref_offset = num_var[nid].byref_offset;
     num_object.index = (uint64_t)vm_n[n1].value + byref_offset;
     //cout << "obj_num index = " << num_object.index << endl;
 
@@ -1114,8 +1125,8 @@ void obj_num1_74(uint64_t nid, int n1)
 void obj_num2_75(uint64_t nid, int n1, int n2)
 {
     uint64_t arr_pos = (uint64_t)vm_n[n1].value * num_var[nid].dim[1] + (uint64_t)vm_n[n2].value;
-    num_object.obj_val = &num_var[nid].nid_value[0];
-    int byref_offset = num_var[nid].byref_offset;
+    num_object.obj_val = num_var[nid].nref;
+    uint64_t byref_offset = num_var[nid].byref_offset;
     num_object.index = arr_pos + byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -1155,8 +1166,8 @@ void obj_num2_75(uint64_t nid, int n1, int n2)
 void obj_num3_76(uint64_t nid, int n1, int n2, int n3)
 {
     uint64_t arr_pos = ( (uint64_t)vm_n[n1].value * num_var[nid].dim[1] * num_var[nid].dim[2] ) + ((uint64_t)vm_n[n2].value * num_var[nid].dim[2]) + (uint64_t)vm_n[n3].value;
-    num_object.obj_val = &num_var[nid].nid_value[0];
-    int byref_offset = num_var[nid].byref_offset;
+    num_object.obj_val = num_var[nid].nref;
+    uint64_t byref_offset = num_var[nid].byref_offset;
     num_object.index = arr_pos + byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -1196,8 +1207,8 @@ void obj_num3_76(uint64_t nid, int n1, int n2, int n3)
 
 void obj_str_77(uint64_t sid)
 {
-    str_object.obj_val = &str_var[sid].sid_value[0];
-    int byref_offset = str_var[sid].byref_offset;
+    str_object.obj_val = str_var[sid].sref;
+    uint64_t byref_offset = str_var[sid].byref_offset;
     str_object.index = byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -1234,8 +1245,8 @@ void obj_str_77(uint64_t sid)
 
 void obj_str1_78(uint64_t sid, int n1)
 {
-    str_object.obj_val = &str_var[sid].sid_value[0];
-    int byref_offset = str_var[sid].byref_offset;
+    str_object.obj_val = str_var[sid].sref;
+    uint64_t byref_offset = str_var[sid].byref_offset;
     str_object.index = (uint64_t)vm_n[n1].value + byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -1272,8 +1283,8 @@ void obj_str1_78(uint64_t sid, int n1)
 void obj_str2_79(uint64_t sid, int n1, int n2)
 {
     uint64_t arr_pos = (uint64_t)vm_n[n1].value * str_var[sid].dim[1] + (uint64_t)vm_n[n2].value;
-    str_object.obj_val = &str_var[sid].sid_value[0];
-    int byref_offset = str_var[sid].byref_offset;
+    str_object.obj_val = str_var[sid].sref;
+    uint64_t byref_offset = str_var[sid].byref_offset;
     str_object.index = arr_pos + byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -1313,8 +1324,8 @@ void obj_str2_79(uint64_t sid, int n1, int n2)
 void obj_str3_80(uint64_t sid, int n1, int n2, int n3)
 {
     uint64_t arr_pos = ( (uint64_t)vm_n[n1].value * str_var[sid].dim[1] * str_var[sid].dim[2] ) + ((uint64_t)vm_n[n2].value * str_var[sid].dim[2]) + (uint64_t)vm_n[n3].value;
-    str_object.obj_val = &str_var[sid].sid_value[0];
-    int byref_offset = str_var[sid].byref_offset;
+    str_object.obj_val = str_var[sid].sref;
+    uint64_t byref_offset = str_var[sid].byref_offset;
     str_object.index = arr_pos + byref_offset;
 
     #ifdef RCBASIC_DEBUG
@@ -1431,10 +1442,6 @@ void clear_obj_89()
 {
 }
 
-#define RC_UDT_TYPE_NUM 0
-#define RC_UDT_TYPE_STR 1
-#define RC_UDT_TYPE_USR 2
-
 bool rc_dim_type(rc_usrId* parent, uint64_t udt_index, int num_dim, uint64_t d1, uint64_t d2, uint64_t d3)
 {
     uint64_t dim_size = 0;
@@ -1471,7 +1478,7 @@ bool rc_dim_type(rc_usrId* parent, uint64_t udt_index, int num_dim, uint64_t d1,
 
     //cout << "starting field: " << udt_index << " " << num_dim << " " << d1 << " " << d2 << " " << d3 << ": " << parent->uid_value.size() << endl;
 
-    for(int i = 0; i < dim_size; i++)
+    for(uint64_t i = 0; i < dim_size; i++)
     {
         p_obj = &parent->uid_value[i];
 
@@ -1492,33 +1499,43 @@ bool rc_dim_type(rc_usrId* parent, uint64_t udt_index, int num_dim, uint64_t d1,
             switch(rc_types[udt_index].field_type[field])
             {
                 case RC_UDT_TYPE_NUM:
-                    rc_numId tmp_num_var;
-                    tmp_num_var.nid_value = new n_value;
-                    tmp_num_var.nid_value[0].value.resize(field_size);
-                    tmp_num_var.dimensions =  rc_types[udt_index].field_dimensions[field];
-                    tmp_num_var.dim[0] = rc_types[udt_index].field_size[field].dim[0];
-                    tmp_num_var.dim[1] = rc_types[udt_index].field_size[field].dim[1];
-                    tmp_num_var.dim[2] = rc_types[udt_index].field_size[field].dim[2];
-                    p_obj->num_var.push_back(tmp_num_var);
+                    {
+                        rc_numId tmp_num_var;
+                        //tmp_num_var.nid_value = new n_value;
+                        tmp_num_var.nid_value.value.resize(field_size);
+                        tmp_num_var.dimensions =  rc_types[udt_index].field_dimensions[field];
+                        tmp_num_var.dim[0] = rc_types[udt_index].field_size[field].dim[0];
+                        tmp_num_var.dim[1] = rc_types[udt_index].field_size[field].dim[1];
+                        tmp_num_var.dim[2] = rc_types[udt_index].field_size[field].dim[2];
+                        p_obj->num_var.push_back(tmp_num_var);
+                        uint64_t nv_index = p_obj->num_var.size()-1;
+                        p_obj->num_var[nv_index].nref = &p_obj->num_var[nv_index].nid_value;
+                    }
                     break;
                 case RC_UDT_TYPE_STR:
-                    rc_strId tmp_str_var;
-                    tmp_str_var.sid_value = new s_value;
-                    tmp_str_var.sid_value[0].value.resize(field_size);
-                    tmp_str_var.dimensions =  rc_types[udt_index].field_dimensions[field];
-                    tmp_str_var.dim[0] = rc_types[udt_index].field_size[field].dim[0];
-                    tmp_str_var.dim[1] = rc_types[udt_index].field_size[field].dim[1];
-                    tmp_str_var.dim[2] = rc_types[udt_index].field_size[field].dim[2];
-                    p_obj->str_var.push_back(tmp_str_var);
+                    {
+                        rc_strId tmp_str_var;
+                        //tmp_str_var.sid_value = new s_value;
+                        tmp_str_var.sid_value.value.resize(field_size);
+                        tmp_str_var.dimensions =  rc_types[udt_index].field_dimensions[field];
+                        tmp_str_var.dim[0] = rc_types[udt_index].field_size[field].dim[0];
+                        tmp_str_var.dim[1] = rc_types[udt_index].field_size[field].dim[1];
+                        tmp_str_var.dim[2] = rc_types[udt_index].field_size[field].dim[2];
+                        p_obj->str_var.push_back(tmp_str_var);
+                        uint64_t sv_index = p_obj->str_var.size()-1;
+                        p_obj->str_var[sv_index].sref = &p_obj->str_var[sv_index].sid_value;
+                    }
                     break;
                 case RC_UDT_TYPE_USR:
-                    //WIP: p_obj is just going to get resized everytime this is called. So instead I need to create a type object to add and run rc_dim_type on that
-                    rc_usrId usr_field;
-                    rc_dim_type(&usr_field, rc_types[udt_index].field_type_index[field], rc_types[udt_index].field_dimensions[field],
-                                rc_types[udt_index].field_size[field].dim[0],
-                                rc_types[udt_index].field_size[field].dim[1],
-                                rc_types[udt_index].field_size[field].dim[2]);
-                    p_obj->uid_value.push_back(usr_field);
+                    {
+                        //WIP: p_obj is just going to get resized everytime this is called. So instead I need to create a type object to add and run rc_dim_type on that
+                        rc_usrId usr_field;
+                        rc_dim_type(&usr_field, rc_types[udt_index].field_type_index[field], rc_types[udt_index].field_dimensions[field],
+                                    rc_types[udt_index].field_size[field].dim[0],
+                                    rc_types[udt_index].field_size[field].dim[1],
+                                    rc_types[udt_index].field_size[field].dim[2]);
+                        p_obj->uid_value.push_back(usr_field);
+                    }
                     break;
             }
         }
@@ -1535,22 +1552,22 @@ bool rc_free_type(rc_usrId* parent)
 
     uint64_t field_size = 0;
 
-    for(int i = 0; i < dim_size; i++)
+    for(uint64_t i = 0; i < dim_size; i++)
     {
         p_obj = &parent->uid_value[i];
 
         for(uint64_t n_field = 0; n_field < p_obj->num_var.size(); n_field++)
         {
-            p_obj->num_var[n_field].nid_value->value.clear();
-            p_obj->num_var[n_field].nid_value->value.shrink_to_fit();
-            delete p_obj->num_var[n_field].nid_value;
+            p_obj->num_var[n_field].nid_value.value.clear();
+            p_obj->num_var[n_field].nid_value.value.shrink_to_fit();
+            //delete p_obj->num_var[n_field].nid_value;
         }
 
         for(uint64_t s_field = 0; s_field < p_obj->str_var.size(); s_field++)
         {
-            p_obj->str_var[s_field].sid_value->value.clear();
-            p_obj->str_var[s_field].sid_value->value.shrink_to_fit();
-            delete p_obj->str_var[s_field].sid_value;
+            p_obj->str_var[s_field].sid_value.value.clear();
+            p_obj->str_var[s_field].sid_value.value.shrink_to_fit();
+            //delete p_obj->str_var[s_field].sid_value;
         }
 
         for(uint64_t u_field = 0; u_field < p_obj->uid_value.size(); u_field++)
@@ -1567,7 +1584,7 @@ bool rc_free_type(rc_usrId* parent)
     return true;
 }
 
-void dim_type_90(uint64_t uid, int udt_index)
+void dim_type_90(uint64_t uid, uint64_t udt_index)
 {
     cout << "DimType " << uid << " " << udt_index << endl;
     rc_free_type(&usr_var[uid]);
@@ -1576,7 +1593,7 @@ void dim_type_90(uint64_t uid, int udt_index)
     cout << "DimType End" << endl;
 }
 
-void dim_type1_91(uint64_t uid, int udt_index, int n1)
+void dim_type1_91(uint64_t uid, uint64_t udt_index, int n1)
 {
     cout << "DimType1 " << uid << " " << udt_index << " " << (uint64_t)vm_n[n1].value << endl;
     rc_free_type(&usr_var[uid]);
@@ -1584,7 +1601,7 @@ void dim_type1_91(uint64_t uid, int udt_index, int n1)
     cout << "DimType End" << endl;
 }
 
-void dim_type2_92(uint64_t uid, int udt_index, int n1, int n2)
+void dim_type2_92(uint64_t uid, uint64_t udt_index, int n1, int n2)
 {
     cout << "DimType2 " << uid << " " << udt_index << " " << (uint64_t)vm_n[n1].value << " " << (uint64_t)vm_n[n2].value << endl;
     rc_free_type(&usr_var[uid]);
@@ -1592,7 +1609,7 @@ void dim_type2_92(uint64_t uid, int udt_index, int n1, int n2)
     cout << "DimType End" << endl;
 }
 
-void dim_type3_93(uint64_t uid, int udt_index, int n1, int n2, int n3)
+void dim_type3_93(uint64_t uid, uint64_t udt_index, int n1, int n2, int n3)
 {
     cout << "DimType3 " << uid << " " << udt_index << " " << (uint64_t)vm_n[n1].value << " " << (uint64_t)vm_n[n2].value << " " << (uint64_t)vm_n[n3].value << endl;
     rc_free_type(&usr_var[uid]);
@@ -1610,7 +1627,8 @@ void dim_num1_94(uint64_t nid, int n1)
             return;
         }
     #endif // RCBASIC_DEBUG
-    num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value);
+    num_var[nid].nid_value.value.resize((uint64_t)vm_n[n1].value);
+    num_var[nid].nref = &num_var[nid].nid_value;
     num_var[nid].dimensions = 1;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
     num_var[nid].dim[1] = 0;
@@ -1627,7 +1645,8 @@ void dim_num2_95(uint64_t nid, int n1, int n2)
             return;
         }
     #endif // RCBASIC_DEBUG
-    num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value);
+    num_var[nid].nid_value.value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value);
+    num_var[nid].nref = &num_var[nid].nid_value;
     num_var[nid].dimensions = 2;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
     num_var[nid].dim[1] = (uint64_t)vm_n[n2].value;
@@ -1644,7 +1663,8 @@ void dim_num3_96(uint64_t nid, int n1, int n2, int n3)
             return;
         }
     #endif // RCBASIC_DEBUG
-    num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
+    num_var[nid].nid_value.value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
+    num_var[nid].nref = &num_var[nid].nid_value;
     num_var[nid].dimensions = 3;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
     num_var[nid].dim[1] = (uint64_t)vm_n[n2].value;
@@ -1661,7 +1681,8 @@ void dim_str1_97(uint64_t sid, int n1)
             return;
         }
     #endif // RCBASIC_DEBUG
-    str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value);
+    str_var[sid].sid_value.value.resize((uint64_t)vm_n[n1].value);
+    str_var[sid].sref = &str_var[sid].sid_value;
     str_var[sid].dimensions = 1;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
     str_var[sid].dim[1] = 0;
@@ -1678,7 +1699,8 @@ void dim_str2_98(uint64_t sid, int n1, int n2)
             return;
         }
     #endif // RCBASIC_DEBUG
-    str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value);
+    str_var[sid].sid_value.value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value);
+    str_var[sid].sref = &str_var[sid].sid_value;
     str_var[sid].dimensions = 2;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
     str_var[sid].dim[1] = (uint64_t)vm_n[n2].value;
@@ -1695,7 +1717,8 @@ void dim_str3_99(uint64_t sid, int n1, int n2, int n3)
             return;
         }
     #endif // RCBASIC_DEBUG
-    str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
+    str_var[sid].sid_value.value.resize((uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
+    str_var[sid].sref = &str_var[sid].sid_value;
     str_var[sid].dimensions = 3;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
     str_var[sid].dim[1] = (uint64_t)vm_n[n2].value;
@@ -1704,7 +1727,8 @@ void dim_str3_99(uint64_t sid, int n1, int n2, int n3)
 
 void delete_100(uint64_t nid)
 {
-    num_var[nid].nid_value[0].value.clear();
+    num_var[nid].nid_value.value.clear();
+    num_var[nid].nid_value.value.shrink_to_fit();
     num_var[nid].dimensions = 0;
     num_var[nid].dim[0] = 0;
     num_var[nid].dim[1] = 0;
@@ -1713,7 +1737,8 @@ void delete_100(uint64_t nid)
 
 void deleteS_101(uint64_t sid)
 {
-    str_var[sid].sid_value[0].value.clear();
+    str_var[sid].sid_value.value.clear();
+    str_var[sid].sid_value.value.shrink_to_fit();
     str_var[sid].dimensions = 0;
     str_var[sid].dim[0] = 0;
     str_var[sid].dim[1] = 0;
@@ -1732,8 +1757,8 @@ void push_103(uint64_t nid)
     //n_stack[current_n_stack_count] = num_var[nid].value[0];
     //current_n_stack_count++;
     rc_vm_n n;
-    int byref_offset = num_var[nid].byref_offset;
-    n.value = num_var[nid].nid_value[0].value[byref_offset];
+    uint64_t byref_offset = num_var[nid].byref_offset;
+    n.value = num_var[nid].nref[0].value[byref_offset];
     n.r_index = byref_offset;
     n_stack.push(n);
 }
@@ -1750,8 +1775,8 @@ void pushS_105(uint64_t sid)
     //s_stack[current_s_stack_count] = str_var[sid].value[0];
     //current_s_stack_count++;
     rc_vm_s s;
-    int byref_offset = str_var[sid].byref_offset;
-    s.value = str_var[sid].sid_value[0].value[byref_offset];
+    uint64_t byref_offset = str_var[sid].byref_offset;
+    s.value = str_var[sid].sref[0].value[byref_offset];
     s.r_index = byref_offset;
     s_stack.push(s);
 }
@@ -1779,8 +1804,8 @@ void pop_108(uint64_t nid)
 {
     //current_n_stack_count--;
     //num_var[nid].value[0] = n_stack[current_n_stack_count];
-    int byref_offset = n_stack.top().r_index;
-    num_var[nid].nid_value[0].value[byref_offset] = n_stack.top().value;
+    uint64_t byref_offset = n_stack.top().r_index;
+    num_var[nid].nref[0].value[byref_offset] = n_stack.top().value;
     num_var[nid].byref_offset = byref_offset;
     n_stack.pop();
 }
@@ -1799,8 +1824,8 @@ void popS_110(uint64_t sid)
 {
     //current_s_stack_count--;
     //str_var[sid].value[0] = s_stack[current_s_stack_count];
-    int byref_offset = s_stack.top().r_index;
-    str_var[sid].sid_value[0].value[byref_offset] = s_stack.top().value;
+    uint64_t byref_offset = s_stack.top().r_index;
+    str_var[sid].sref[0].value[byref_offset] = s_stack.top().value;
     str_var[sid].byref_offset = byref_offset;
     s_stack.pop();
 }
@@ -1861,7 +1886,7 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
             for_loop.counter_offset = 0;
     }
 
-    int byref_offset = num_var[nid].byref_offset;
+    uint64_t byref_offset = num_var[nid].byref_offset;
 
     #ifdef RCBASIC_DEBUG
         uint64_t nv_size = 1;
@@ -1911,7 +1936,7 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
         }
     #endif // RCBASIC_DEBUG
 
-    num_var[nid].nid_value[0].value[byref_offset + for_loop.counter_offset] = vm_n[n1].value;
+    num_var[nid].nref[0].value[byref_offset + for_loop.counter_offset] = vm_n[n1].value;
 
 
     //These 3 lines reads the line value passed by the compiler
@@ -1956,11 +1981,11 @@ void for_117(uint64_t nid, int n1, int n2, int n3)
 void next_118(uint64_t f_addr)
 {
     //int l_index = current_loop_stack_count-1;
-    int byref_offset = loop_stack.top().counter[0].byref_offset + loop_stack.top().counter_offset;
-    double next_step = loop_stack.top().counter[0].nid_value[0].value[byref_offset] + loop_stack.top().f_step;
-    if(loop_stack.top().isNegative && next_step <= loop_stack.top().counter[0].nid_value[0].value[byref_offset] && next_step >= loop_stack.top().f_end)
+    uint64_t byref_offset = loop_stack.top().counter[0].byref_offset + loop_stack.top().counter_offset;
+    double next_step = loop_stack.top().counter[0].nref[0].value[byref_offset] + loop_stack.top().f_step;
+    if(loop_stack.top().isNegative && next_step <= loop_stack.top().counter[0].nref[0].value[byref_offset] && next_step >= loop_stack.top().f_end)
     {
-        loop_stack.top().counter[0].nid_value[0].value[byref_offset] += loop_stack.top().f_step;
+        loop_stack.top().counter[0].nref[0].value[byref_offset] += loop_stack.top().f_step;
         current_address = f_addr;
 
         #ifdef RCBASIC_DEBUG
@@ -1977,9 +2002,9 @@ void next_118(uint64_t f_addr)
         }
         #endif // RCBASIC_DEBUG
     }
-    else if( (!loop_stack.top().isNegative) && next_step >= loop_stack.top().counter[0].nid_value[0].value[byref_offset] && next_step <= loop_stack.top().f_end)
+    else if( (!loop_stack.top().isNegative) && next_step >= loop_stack.top().counter[0].nref[0].value[byref_offset] && next_step <= loop_stack.top().f_end)
     {
-        loop_stack.top().counter[0].nid_value[0].value[byref_offset] += loop_stack.top().f_step;
+        loop_stack.top().counter[0].nref[0].value[byref_offset] += loop_stack.top().f_step;
         current_address = f_addr;
 
         #ifdef RCBASIC_DEBUG
@@ -2068,22 +2093,22 @@ addr_entry byref_id;
 void ptr_126(uint64_t nid, int n1)
 {
     byref_id.ptr_id = nid;
-    byref_id.ptr_addr = &num_var[nid].nid_value[0];
+    byref_id.ptr_addr = num_var[nid].nref;
     byref_id.type = BYREF_TYPE_NUM;
     byref_addr_table.push(byref_id);
     byref_var_byref_offset.push(num_var[nid].byref_offset);
-    num_var[nid].nid_value = vm_n[n1].r;
+    num_var[nid].nref = vm_n[n1].r;
     num_var[nid].byref_offset = vm_n[n1].r_index;
 }
 
 void ptrS_127(uint64_t sid, int s1)
 {
     byref_id.ptr_id = sid;
-    byref_id.ptr_addr = &str_var[sid].sid_value[0];
+    byref_id.ptr_addr = str_var[sid].sref;
     byref_id.type = BYREF_TYPE_STR;
     byref_addr_table.push(byref_id);
     byref_var_byref_offset.push(str_var[sid].byref_offset);
-    str_var[sid].sid_value = vm_s[s1].r;
+    str_var[sid].sref = vm_s[s1].r;
     str_var[sid].byref_offset = vm_s[s1].r_index;
 }
 
@@ -2192,7 +2217,7 @@ void rc_number_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
     {
         case 1:
             total_size = src_dim_size[0];
-            num_var[dst_ref_id].nid_value[0].value.resize(total_size);
+            num_var[dst_ref_id].nref[0].value.resize(total_size);
             num_var[dst_ref_id].dimensions = 1;
             num_var[dst_ref_id].dim[0] = src_dim_size[0];
             num_var[dst_ref_id].dim[1] = 0;
@@ -2200,7 +2225,7 @@ void rc_number_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
             break;
         case 2:
             total_size = src_dim_size[0] * src_dim_size[1];
-            num_var[dst_ref_id].nid_value[0].value.resize(total_size);
+            num_var[dst_ref_id].nref[0].value.resize(total_size);
             num_var[dst_ref_id].dimensions = 2;
             num_var[dst_ref_id].dim[0] = src_dim_size[0];
             num_var[dst_ref_id].dim[1] = src_dim_size[1];
@@ -2208,7 +2233,7 @@ void rc_number_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
             break;
         case 3:
             total_size = src_dim_size[0] * src_dim_size[1] * src_dim_size[2];
-            num_var[dst_ref_id].nid_value[0].value.resize(total_size);
+            num_var[dst_ref_id].nref[0].value.resize(total_size);
             num_var[dst_ref_id].dimensions = 3;
             num_var[dst_ref_id].dim[0] = src_dim_size[0];
             num_var[dst_ref_id].dim[1] = src_dim_size[1];
@@ -2218,7 +2243,7 @@ void rc_number_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
 
     for(int i = 0; i < total_size; i++)
     {
-        num_var[dst_ref_id].nid_value[0].value[i] = num_var[src_ref_id].nid_value[0].value[i];
+        num_var[dst_ref_id].nref[0].value[i] = num_var[src_ref_id].nref[0].value[i];
     }
 }
 
@@ -2236,7 +2261,7 @@ void rc_string_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
     {
         case 1:
             total_size = src_dim_size[0];
-            str_var[dst_ref_id].sid_value[0].value.resize(total_size);
+            str_var[dst_ref_id].sref[0].value.resize(total_size);
             str_var[dst_ref_id].dimensions = 1;
             str_var[dst_ref_id].dim[0] = src_dim_size[0];
             str_var[dst_ref_id].dim[1] = 0;
@@ -2244,7 +2269,7 @@ void rc_string_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
             break;
         case 2:
             total_size = src_dim_size[0] * src_dim_size[1];
-            str_var[dst_ref_id].sid_value[0].value.resize(total_size);
+            str_var[dst_ref_id].sref[0].value.resize(total_size);
             str_var[dst_ref_id].dimensions = 2;
             str_var[dst_ref_id].dim[0] = src_dim_size[0];
             str_var[dst_ref_id].dim[1] = src_dim_size[1];
@@ -2252,7 +2277,7 @@ void rc_string_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
             break;
         case 3:
             total_size = src_dim_size[0] * src_dim_size[1] * src_dim_size[2];
-            str_var[dst_ref_id].sid_value[0].value.resize(total_size);
+            str_var[dst_ref_id].sref[0].value.resize(total_size);
             str_var[dst_ref_id].dimensions = 3;
             str_var[dst_ref_id].dim[0] = src_dim_size[0];
             str_var[dst_ref_id].dim[1] = src_dim_size[1];
@@ -2262,7 +2287,7 @@ void rc_string_array_copy(uint64_t src_ref_id, uint64_t dst_ref_id)
 
     for(int i = 0; i < total_size; i++)
     {
-        str_var[dst_ref_id].sid_value[0].value[i] = str_var[src_ref_id].sid_value[0].value[i];
+        str_var[dst_ref_id].sref[0].value[i] = str_var[src_ref_id].sref[0].value[i];
     }
 }
 
@@ -2291,7 +2316,7 @@ void rc_number_array_fill(uint64_t src_ref_id, double n)
 
     for(int i = 0; i < total_size; i++)
     {
-        num_var[src_ref_id].nid_value[0].value[i] = n;
+        num_var[src_ref_id].nref[0].value[i] = n;
     }
 }
 
@@ -2320,7 +2345,7 @@ void rc_string_array_fill(uint64_t src_ref_id, string s)
 
     for(int i = 0; i < total_size; i++)
     {
-        str_var[src_ref_id].sid_value[0].value[i] = s;
+        str_var[src_ref_id].sref[0].value[i] = s;
     }
 }
 
@@ -4055,13 +4080,13 @@ void cmp_134(int n1, double num)
 void mov_arr_135(int n1, uint64_t nid)
 {
     arr_ref_id.push_back( nid );
-    vm_n[n1].r = num_var[nid].nid_value;
+    vm_n[n1].r = num_var[nid].nref;
 }
 
 void mov_arrS_136(int s1, uint64_t sid)
 {
     arr_ref_id.push_back( sid );
-    vm_s[s1].r = str_var[sid].sid_value;
+    vm_s[s1].r = str_var[sid].sref;
 }
 
 void pop_ptr_137(uint64_t n)
@@ -4074,11 +4099,11 @@ void pop_ptr_137(uint64_t n)
         switch(byref_addr_table.top().type)
         {
             case BYREF_TYPE_NUM:
-                num_var[byref_addr_table.top().ptr_id].nid_value = (n_value*)byref_addr_table.top().ptr_addr;
+                num_var[byref_addr_table.top().ptr_id].nref = (n_value*)byref_addr_table.top().ptr_addr;
                 num_var[byref_addr_table.top().ptr_id].byref_offset = byref_var_byref_offset.top();
                 break;
             case BYREF_TYPE_STR:
-                str_var[byref_addr_table.top().ptr_id].sid_value = (s_value*)byref_addr_table.top().ptr_addr;
+                str_var[byref_addr_table.top().ptr_id].sref = (s_value*)byref_addr_table.top().ptr_addr;
                 str_var[byref_addr_table.top().ptr_id].byref_offset = byref_var_byref_offset.top();
                 break;
             case BYREF_TYPE_USR:
@@ -4105,7 +4130,7 @@ void preset_138(uint64_t nid)
             break;
     }
     for(int i = 0; i < nid_size; i++)
-        num_var[nid].nid_value[0].value[i] = 0;
+        num_var[nid].nref[0].value[i] = 0;
 }
 
 void presetS_139(uint64_t sid)
@@ -4122,7 +4147,7 @@ void presetS_139(uint64_t sid)
             break;
     }
     for(int i = 0; i < sid_size; i++)
-        str_var[sid].sid_value[0].value[i] = "";
+        str_var[sid].sref[0].value[i] = "";
 }
 
 void redim_140(uint64_t nid, int n1)
@@ -4135,7 +4160,7 @@ void redim_140(uint64_t nid, int n1)
         return;
     }
     #endif // RCBASIC_DEBUG
-    num_var[nid].nid_value[0].value.resize((uint64_t)vm_n[n1].value);
+    num_var[nid].nref[0].value.resize((uint64_t)vm_n[n1].value);
     num_var[nid].dimensions = 1;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
     num_var[nid].dim[1] = 0;
@@ -4152,7 +4177,7 @@ void redim_141(uint64_t nid, int n1, int n2)
         return;
     }
     #endif // RCBASIC_DEBUG
-    num_var[nid].nid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value );
+    num_var[nid].nref[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value );
     num_var[nid].dimensions = 2;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
     num_var[nid].dim[1] = (uint64_t)vm_n[n2].value;
@@ -4169,7 +4194,7 @@ void redim_142(uint64_t nid, int n1, int n2, int n3)
         return;
     }
     #endif // RCBASIC_DEBUG
-    num_var[nid].nid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
+    num_var[nid].nref[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
     num_var[nid].dimensions = 3;
     num_var[nid].dim[0] = (uint64_t)vm_n[n1].value;
     num_var[nid].dim[1] = (uint64_t)vm_n[n2].value;
@@ -4186,7 +4211,7 @@ void redimS_143(uint64_t sid, int n1)
         return;
     }
     #endif // RCBASIC_DEBUG
-    str_var[sid].sid_value[0].value.resize((uint64_t)vm_n[n1].value);
+    str_var[sid].sref[0].value.resize((uint64_t)vm_n[n1].value);
     str_var[sid].dimensions = 1;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
     str_var[sid].dim[1] = 0;
@@ -4203,7 +4228,7 @@ void redimS_144(uint64_t sid, int n1, int n2)
         return;
     }
     #endif // RCBASIC_DEBUG
-    str_var[sid].sid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value );
+    str_var[sid].sref[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value );
     str_var[sid].dimensions = 2;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
     str_var[sid].dim[1] = (uint64_t)vm_n[n2].value;
@@ -4220,7 +4245,7 @@ void redimS_145(uint64_t sid, int n1, int n2, int n3)
         return;
     }
     #endif // RCBASIC_DEBUG
-    str_var[sid].sid_value[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
+    str_var[sid].sref[0].value.resize( (uint64_t)vm_n[n1].value * (uint64_t)vm_n[n2].value * (uint64_t)vm_n[n3].value);
     str_var[sid].dimensions = 3;
     str_var[sid].dim[0] = (uint64_t)vm_n[n1].value;
     str_var[sid].dim[1] = (uint64_t)vm_n[n2].value;
@@ -4287,6 +4312,7 @@ void obj_usr_n_156(uint64_t nid)
 {
     cout << "obj_usr_n start" << endl;
     usr_object.num_ref = &usr_object.obj_ref->num_var[nid];
+    usr_object.num_ref->nref = &usr_object.num_ref->nid_value;
     usr_object.index = 0;
     cout << "obj_usr_n done" << endl;
 }
@@ -4294,18 +4320,21 @@ void obj_usr_n_156(uint64_t nid)
 void obj_usr_n1_157(uint64_t nid, int n1)
 {
     usr_object.num_ref = &usr_object.obj_ref->num_var[nid];
+    usr_object.num_ref->nref = &usr_object.num_ref->nid_value;
     usr_object.index = (uint64_t)vm_n[n1].value;
 }
 
 void obj_usr_n2_158(uint64_t nid, int n1, int n2)
 {
     usr_object.num_ref = &usr_object.obj_ref->num_var[nid];
+    usr_object.num_ref->nref = &usr_object.num_ref->nid_value;
     usr_object.index = (uint64_t)vm_n[n1].value * usr_object.num_ref->dim[1] + (uint64_t)vm_n[n2].value;
 }
 
 void obj_usr_n3_159(uint64_t nid, int n1, int n2, int n3)
 {
     usr_object.num_ref = &usr_object.obj_ref->num_var[nid];
+    usr_object.num_ref->nref = &usr_object.num_ref->nid_value;
     usr_object.index = ((uint64_t)vm_n[n1].value * usr_object.num_ref->dim[1] * usr_object.num_ref->dim[2]) + ( (uint64_t)vm_n[n2].value * usr_object.num_ref->dim[2]) + (uint64_t)vm_n[n3].value;
 }
 
@@ -4313,40 +4342,44 @@ void obj_usr_n3_159(uint64_t nid, int n1, int n2, int n3)
 void obj_usr_s_160(uint64_t sid)
 {
     usr_object.str_ref = &usr_object.obj_ref->str_var[sid];
+    usr_object.str_ref->sref = &usr_object.str_ref->sid_value;
     usr_object.index = 0;
 }
 
 void obj_usr_s1_161(uint64_t sid, int n1)
 {
     usr_object.str_ref = &usr_object.obj_ref->str_var[sid];
+    usr_object.str_ref->sref = &usr_object.str_ref->sid_value;
     usr_object.index = (uint64_t)vm_n[n1].value;
 }
 
 void obj_usr_s2_162(uint64_t sid, int n1, int n2)
 {
     usr_object.str_ref = &usr_object.obj_ref->str_var[sid];
+    usr_object.str_ref->sref = &usr_object.str_ref->sid_value;
     usr_object.index = (uint64_t)vm_n[n1].value * usr_object.str_ref->dim[1] + (uint64_t)vm_n[n2].value;
 }
 
 void obj_usr_s3_163(uint64_t sid, int n1, int n2, int n3)
 {
     usr_object.str_ref = &usr_object.obj_ref->str_var[sid];
+    usr_object.str_ref->sref = &usr_object.str_ref->sid_value;
     usr_object.index = ((uint64_t)vm_n[n1].value * usr_object.str_ref->dim[1] * usr_object.str_ref->dim[2]) + ( (uint64_t)vm_n[n2].value * usr_object.str_ref->dim[2]) + (uint64_t)vm_n[n3].value;
 }
 
 void obj_usr_get_164(int n1)
 {
     cout << "obj_usr_get_N start" << endl;
-    vm_n[n1].value = usr_object.num_ref->nid_value[0].value[usr_object.index];
-    vm_n[n1].r = usr_object.num_ref->nid_value;
+    vm_n[n1].value = usr_object.num_ref->nref[0].value[usr_object.index];
+    vm_n[n1].r = usr_object.num_ref->nref;
     vm_n[n1].r_index = usr_object.index;
     cout << "obj_usr_get_N done: " << vm_n[n1].r[0].value[vm_n[n1].r_index] << endl;
 }
 
 void obj_usr_get_165(int s1)
 {
-    vm_s[s1].value = usr_object.str_ref->sid_value[0].value[usr_object.index];
-    vm_s[s1].r = usr_object.str_ref->sid_value;
+    vm_s[s1].value = usr_object.str_ref->sref[0].value[usr_object.index];
+    vm_s[s1].r = usr_object.str_ref->sref;
     vm_s[s1].r_index = usr_object.index;
 }
 
