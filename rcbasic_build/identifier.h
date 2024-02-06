@@ -151,6 +151,7 @@ struct identifier
     int parent_index = -1;
 };
 
+
 uint64_t current_vmFunction_index = 0;
 
 vector<user_type> utype;
@@ -224,6 +225,8 @@ bool matchCurrentScope(string id_scope, string check_scope = "")
         }
         if(id_i == id_scope.length())
         {
+            //cout << "SCOPE_MATCH: " << tmp_current_scope << "  ~  " << tmp_id_scope << endl;
+            //cout << "INFO: " << id_scope << "  ~  " << check_scope << endl;
             return true;
         }
     }
@@ -356,6 +359,7 @@ bool add_type_member(string member_name, int member_type, string member_utype_na
     //cout << "utype index = " << current_type_index << endl;
     int utype_index = current_type_index;
     int utype_current_member = utype[utype_index].num_members;
+    member_name = StringToLower(member_name);
     utype[utype_index].member_name.push_back(member_name);
 
     string dim_mem_type = "";
@@ -423,6 +427,33 @@ bool add_type_member(string member_name, int member_type, string member_utype_na
 }
 
 //return the index of the id name or -1 on failure
+int getIDInScope_ByIndex_TypeMatch(string id_name, string check_scope="")
+{
+    id_name = StringToLower(id_name);
+    int cs_start = 0;
+    int cs_length = 0;
+    bool match = true;
+    string id_scope = "";
+    if(check_scope.compare("")==0)
+        check_scope = current_scope;
+    int scope_match = 0;
+    int tmp_match = 0;
+    int id_match = -1;
+    check_scope = StringToLower(check_scope);
+    //cout << "CHECK SCOPE = " << check_scope << endl;
+    for(int i = 0; i < id.size(); i++)
+    {
+        if(id[i].scope.compare(check_scope)==0)
+        {
+            //cout << id_name << " ~ " << id[i].name << endl;
+            if(id_name.compare(id[i].name)==0)
+                return i;
+        }
+    }
+    return id_match;
+}
+
+//return the index of the id name or -1 on failure
 int getIDInScope_ByIndex2(string id_name, string check_scope="")
 {
     id_name = StringToLower(id_name);
@@ -456,7 +487,7 @@ int getIDInScope_ByIndex2(string id_name, string check_scope="")
             //if(current_scope.find(id[i].scope)==0)
             if(matchCurrentScope(id[i].scope, check_scope))
             {
-                cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << id[i].scope << " : t=" << id[i].type << endl << endl;
+                //cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << id[i].scope << " : t=" << id[i].type << endl << endl;
                 return i;
             }
         }
@@ -509,7 +540,7 @@ int getIDInScope2(string id_name, string check_scope="")
             //if(current_scope.find(id[i].scope)==0)
             if(matchCurrentScope(id[i].scope, check_scope))
             {
-                cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << id[i].scope << endl;
+                //cout << "FOUND MATCH FOR [" << id[i].name << "] : " << id[i].vec_pos << " ; " << id[i].scope << endl;
                 return id[i].vec_pos;
             }
         }
@@ -732,14 +763,14 @@ bool create_type_members(int id_index, int type_index)
     for(int i = 0; i < utype[utype_index].num_members; i++)
     {
         member_index = id.size();
-        var.name = utype[utype_index].member_name[i];
+        var.name = StringToLower(utype[utype_index].member_name[i]);
         var.type = utype[utype_index].member_type[i];
         var.type_index = utype[utype_index].member_utype_index[i];
         var.isChild = true;
         var.parent_index = id_index;
         set_vectorPosition(var, true, utype_index, i);
         //cout << "vec -> " << var.vec_pos << endl;
-        var.scope = id[id_index].scope + "." + id[id_index].name;
+        var.scope = StringToLower(id[id_index].scope + "." + id[id_index].name);
         var.num_args = utype[utype_index].member_dim_count[i];
         var.dim_size[0] = utype[utype_index].member_dim[i].dim_size[0];
         var.dim_size[1] = utype[utype_index].member_dim[i].dim_size[1];
@@ -786,7 +817,12 @@ bool create_variable(string name, int type, string utype_name="", int vec = -1)
         var.parent_index = -1;
         set_vectorPosition(var);
         id.push_back(var);
-        if(!isFunctionArg_flag)
+
+        if(isInFunctionScope && !isFunctionArg_flag)
+        {
+            vm_asm.push_back("preset_t !" + rc_intToString(var.vec_pos) + " !" + rc_intToString(var.type_index));
+        }
+        else if(!isFunctionArg_flag)
             id_emit(var);
         //create all sub variables here
         create_type_members(var_index, var.type_index);
@@ -846,7 +882,28 @@ bool create_array(string name, int type, string utype_name, int dim_count, strin
         int var_index = id.size();
         set_vectorPosition(var);
         id.push_back(var);
-        id_emit(var, dim1, dim2, dim3);
+
+        if(isInFunctionScope)
+        {
+            switch(var.num_args)
+            {
+                case 0:
+                    vm_asm.push_back("preset_t !" + rc_intToString(var.vec_pos) + " !" + rc_intToString(var.type_index));
+                    break;
+                case 1:
+                    vm_asm.push_back("preset_t1 !" + rc_intToString(var.vec_pos) + " !" + rc_intToString(var.type_index) + " " + dim1);
+                    break;
+                case 2:
+                    vm_asm.push_back("preset_t2 !" + rc_intToString(var.vec_pos) + " !" + rc_intToString(var.type_index) + " " + dim1 + " " + dim2);
+                    break;
+                case 3:
+                    vm_asm.push_back("preset_t3 !" + rc_intToString(var.vec_pos) + " !" + rc_intToString(var.type_index) + " " + dim1 + " " + dim2 + " " + dim3);
+                    break;
+            }
+        }
+        else
+            id_emit(var, dim1, dim2, dim3);
+
         //create all sub variables here
         create_type_members(var_index, var.type_index);
     }
@@ -1040,7 +1097,7 @@ bool create_function(string name, int type, string utype_name)
     fn.type = type;
     fn.type_index = getUType(utype_name);
 
-    if(fn.type_index < 0)
+    if(type == ID_TYPE_FN_USER && fn.type_index < 0)
     {
         rc_setError("Type \"" + utype_name + "\" does not exists");
         return false;
@@ -1050,9 +1107,15 @@ bool create_function(string name, int type, string utype_name)
     fn.isArrayArg = false;
     fn.fn_var.clear();
 
+    int id_index = id.size();
+
     fn.num_args = 0;  //function args default to 0; args are added with add_function_args
     current_fn_index = id.size();
     id.push_back(fn);
+
+    if(fn.type == ID_TYPE_FN_USER)
+        create_type_members(id_index, fn.type_index);
+
     return true;
 }
 
@@ -1067,7 +1130,7 @@ bool add_function_arg(string arg_name, int arg_type, string utype_name)
 
     isFunctionArg_flag = true;
 
-    cout << "ARG = " << arg_name << "  type = " << arg_type << endl;
+    //cout << "ARG = " << arg_name << "  type = " << arg_type << endl;
 
     if(!create_variable(arg_name, arg_type, utype_name))
     {
@@ -1092,14 +1155,14 @@ bool add_function_arg(string arg_name, int arg_type, string utype_name)
     return true;
 }
 
-bool create_function_variable(string arg_name, int arg_type, string utype_name)
+bool create_function_variable(string arg_name, int arg_type, string utype_name="")
 {
     //fn_arg
     //fn_arg_type
     //fn_arg_utype
     int fn_index = current_fn_index;
 
-    create_variable(arg_name, arg_type);
+    create_variable(arg_name, arg_type, utype_name);
 
     return true;
 }

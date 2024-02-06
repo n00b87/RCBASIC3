@@ -170,6 +170,8 @@ struct rc_usrId
     rc_usrId * var_ref;
     uint64_t var_ref_index;
 
+    bool preset_init = false;
+
     #ifdef RCBASIC_DEBUG
     bool is_debug_var;
     uint64_t dbg_var_index;
@@ -862,6 +864,11 @@ void mov_type_42(int u1, int u2)
 {
     vm_u[u1].var_ref[0] = vm_u[u2];
     vm_u[u1].var_ref_index = 0;
+
+    if(u2 == 3)
+    {
+        cout << "\nSetting value = " << vm_u[u1].var_ref[0].num_var[0].nid_value.value[0] << endl << endl;
+    }
 }
 
 void addS_43(int s1, int s2)
@@ -1365,7 +1372,7 @@ void obj_str3_80(uint64_t sid, int n1, int n2, int n3)
 
 void obj_usr_81(uint64_t uid)
 {
-    cout << "obj_usr" << endl;
+    cout << "obj_usr " << uid << ":  size = " << usr_object.obj_ref->uid_value[uid].uid_value.size() << endl;
     usr_object.index = 0;
     usr_object.obj_ref = &usr_object.obj_ref->uid_value[uid].uid_value[0];
 }
@@ -1373,15 +1380,15 @@ void obj_usr_81(uint64_t uid)
 void obj_usr1_82(uint64_t uid, int n1)
 {
     cout << "obj_usr1 " << uid << " " << (uint64_t)vm_n[n1].value << endl;
-    cout << "  ---dbg[uid]: " << usr_object.obj_ref->uid_value[uid].uid_value[0].uid_value.size() << endl;
-    cout << "  ---dbg[str]: " << usr_object.obj_ref->uid_value[uid].uid_value[0].str_var.size() << endl;
+    cout << "  ---dbg[uid]: " << usr_object.obj_ref->uid_value[uid].uid_value[1].num_var[0].nid_value.value[0] << endl;
+    //cout << "  ---dbg[str]: " << usr_object.obj_ref->uid_value[uid].uid_value[0].str_var.size() << endl;
     usr_object.index = (uint64_t)vm_n[n1].value;
     usr_object.obj_ref = &usr_object.obj_ref->uid_value[uid].uid_value[usr_object.index];
 }
 
 void obj_usr2_83(uint64_t uid, int n1, int n2)
 {
-    cout << "obj_usr2 " << uid << " " << (uint64_t)vm_n[n1].value << " " << (uint64_t)vm_n[n2].value <<  endl;
+    cout << "obj_usr2 " << uid << " " << (uint64_t)vm_n[n1].value << " " << (uint64_t)vm_n[n2].value << ":  size = " << usr_object.obj_ref->uid_value.size() << endl;
     usr_object.index = (uint64_t)vm_n[n1].value * usr_object.obj_ref->uid_value[uid].dim[1] + (uint64_t)vm_n[n2].value;
     usr_object.obj_ref = &usr_object.obj_ref->uid_value[uid].uid_value[usr_object.index];
 }
@@ -4385,16 +4392,20 @@ void obj_usr_get_165(int s1)
 
 void obj_usr_get_166(int u1)
 {
-    cout << "obj_usr_get start" << endl;
+    cout << "obj_usr_get start  u" << u1 << endl;
     rc_free_type(&vm_u[u1]); //this should free any memory previously allocated in u1
+    cout << "mem free: " << usr_object.obj_ref->dimensions << endl;
     vm_u[u1] = usr_object.obj_ref[0];
+    cout << "1: " << usr_object.obj_ref[0].uid_value.size() << endl;
     vm_u[u1].var_ref = usr_object.obj_ref;
+    cout << "2" << endl;
     vm_u[u1].var_ref_index = 0 ; //usr_object.index;  This has become unnecessary because var_ref points to the correct index
     cout << "obj_usr_get end" << endl;
 }
 
 void uref_ptr_167(uint64_t uid, int u1)
 {
+    cout << "<--------UREF-------> : " << uid << " " << u1 << endl;
     byref_id.ptr_id = uid;
     byref_id.ptr_addr = usr_var[uid].var_ref;
     byref_id.type = BYREF_TYPE_USR;
@@ -4420,7 +4431,7 @@ void mov_type_168(uint64_t uid, int u1)
 
 void push_t_169(int u1)
 {
-    cout << "push_t " << u1 << endl;
+    cout << "push_t u" << u1 << " :: " << vm_u[u1].uid_value.size() << endl;
     u_stack.push(vm_u[u1]);
     cout << "push_t end" << endl;
 }
@@ -4432,13 +4443,16 @@ void push_t_170(uint64_t uid)
 
 void pop_t_171(int u1)
 {
+    cout << "pop_t u" << u1 << " :: " << vm_u[u1].uid_value.size() << endl;
     rc_free_type(&vm_u[u1]);
     vm_u[u1] = u_stack.top();
+    cout << "test: " << vm_u[u1].var_ref->uid_value.size() << endl;
     u_stack.pop();
 }
 
 void pop_t_172(uint64_t uid)
 {
+    cout << "pop_T  USER" << endl;
     rc_free_type(usr_var[uid].var_ref);
     usr_var[uid].var_ref[0] = u_stack.top();
     u_stack.pop();
@@ -4521,11 +4535,141 @@ void obj_usr_init3_183(uint64_t uid, int n1, int n2, int n3)
     usr_object.obj_ref = &usr_var[uid].var_ref->uid_value[usr_object.index];
 }
 
+
+void obj_usr_init_184(int u1)
+{
+    cout << "obj_usr_init u" << u1 << endl;
+    usr_object.index = 0;
+    usr_object.obj_ref = &vm_u[u1]; //need to switch to var_ref
+    usr_object.obj_ref->var_ref = usr_object.obj_ref;
+    cout << "obj_usr_init done: " << usr_object.obj_ref->var_ref[0].uid_value.size() << " ~ " << vm_u[u1].uid_value.size() << endl;
+}
+
+void obj_usr_init1_185(int u1, int n1)
+{
+    cout << "obj_usr_init1 u" << u1 << endl;
+    usr_object.index = (uint64_t)vm_n[n1].value;
+    usr_object.obj_ref = &vm_u[u1].var_ref->uid_value[usr_object.index];
+}
+
+void obj_usr_init2_186(int u1, int n1, int n2)
+{
+    uint64_t d[3];
+    //cout << "obj_usr_init2: u" << u1 << "  --dim=[" << d[0] << ", " << d[1] << ", " << d[2] << "]" << endl;
+    usr_object.index = (uint64_t)vm_n[n1].value * vm_u[u1].dim[1] + (uint64_t)vm_n[n2].value;
+    usr_object.obj_ref = &vm_u[u1].var_ref->uid_value[usr_object.index];
+}
+
+void obj_usr_init3_187(int u1, int n1, int n2, int n3)
+{
+    //cout << "obj_usr_init3 u" << u1 << endl;
+    usr_object.index = ( (uint64_t)vm_n[n1].value * vm_u[u1].dim[1] * vm_u[u1].dim[2] ) + ((uint64_t)vm_n[n2].value * vm_u[u1].dim[2]) + (uint64_t)vm_n[n3].value;;
+    usr_object.obj_ref = &vm_u[u1].var_ref->uid_value[usr_object.index];
+}
+
+
+
+
+
+bool rc_preset_type(rc_usrId* parent)
+{
+    uint64_t dim_size = parent->uid_value.size();
+
+
+    rc_usrId* p_obj;
+
+    uint64_t field_size = 0;
+
+    for(uint64_t i = 0; i < dim_size; i++)
+    {
+        p_obj = &parent->uid_value[i];
+
+        for(uint64_t n_field = 0; n_field < p_obj->num_var.size(); n_field++)
+        {
+            for(uint64_t nv = 0; nv < p_obj->num_var[n_field].nid_value.value.size(); nv++)
+                p_obj->num_var[n_field].nid_value.value[nv] = 0;
+        }
+
+        for(uint64_t s_field = 0; s_field < p_obj->str_var.size(); s_field++)
+        {
+            for(uint64_t sv = 0; sv < p_obj->str_var[s_field].sid_value.value.size(); sv++)
+                p_obj->str_var[s_field].sid_value.value[sv] = "";
+        }
+
+        for(uint64_t u_field = 0; u_field < p_obj->uid_value.size(); u_field++)
+        {
+            rc_preset_type(&p_obj->uid_value[u_field]);
+        }
+    }
+
+    return true;
+}
+
+void preset_t_188(uint64_t uid, uint64_t utype)
+{
+    cout << "T0" << endl;
+    if(!usr_var[uid].preset_init)
+    {
+        rc_free_type(&usr_var[uid]);
+        dim_type_90(uid, utype);
+        usr_var[uid].preset_init = true;
+    }
+    else
+    {
+        rc_preset_type(&usr_var[uid]);
+    }
+}
+
+void preset_t1_189(uint64_t uid, uint64_t utype, int n1)
+{
+    cout << "T1" << endl;
+    if(!usr_var[uid].preset_init)
+    {
+        rc_free_type(&usr_var[uid]);
+        dim_type1_91(uid, utype, n1);
+        usr_var[uid].preset_init = true;
+    }
+    else
+    {
+        rc_preset_type(&usr_var[uid]);
+    }
+}
+
+void preset_t2_190(uint64_t uid, uint64_t utype, int n1, int n2)
+{
+    cout << "T2" << endl;
+    if(!usr_var[uid].preset_init)
+    {
+        rc_free_type(&usr_var[uid]);
+        dim_type2_92(uid, utype, n1, n2);
+        usr_var[uid].preset_init = true;
+    }
+    else
+    {
+        rc_preset_type(&usr_var[uid]);
+    }
+}
+
+void preset_t3_191(uint64_t uid, uint64_t utype, int n1, int n2, int n3)
+{
+    cout << "T3" << endl;
+    if(!usr_var[uid].preset_init)
+    {
+        rc_free_type(&usr_var[uid]);
+        dim_type3_93(uid, utype, n1, n2, n3);
+        usr_var[uid].preset_init = true;
+    }
+    else
+    {
+        rc_preset_type(&usr_var[uid]);
+    }
+}
+
 bool rcbasic_run()
 {
     unsigned char rcbasic_cmd;
-    double d[6];
-    uint64_t i[6];
+    double d[12];
+    uint64_t i[12];
     bool end_of_program = false;
     while(!end_of_program)
     {
@@ -5286,6 +5430,54 @@ bool rcbasic_run()
                 i[2] = readInt();
                 i[3] = readInt();
                 obj_usr_init3_183(i[0], i[1], i[2], i[3]);
+                break;
+            case 184:
+                i[0] = readInt();
+                obj_usr_init_184(i[0]);
+                break;
+            case 185:
+                i[0] = readInt();
+                i[1] = readInt();
+                obj_usr_init1_185(i[0], i[1]);
+                break;
+            case 186:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                obj_usr_init2_186(i[0], i[1], i[2]);
+                break;
+            case 187:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                i[3] = readInt();
+                obj_usr_init3_187(i[0], i[1], i[2], i[3]);
+                break;
+            case 188:
+                i[0] = readInt();
+                i[1] = readInt();
+                preset_t_188(i[0], i[1]);
+                break;
+            case 189:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                preset_t1_189(i[0], i[1], i[2]);
+                break;
+            case 190:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                i[3] = readInt();
+                preset_t2_190(i[0], i[1], i[2], i[3]);
+                break;
+            case 191:
+                i[0] = readInt();
+                i[1] = readInt();
+                i[2] = readInt();
+                i[3] = readInt();
+                i[4] = readInt();
+                preset_t3_191(i[0], i[1], i[2], i[3], i[4]);
                 break;
             default:
                 cout << "invalid cmd: " << rcbasic_cmd << endl;

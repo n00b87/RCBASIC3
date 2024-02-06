@@ -70,7 +70,7 @@ public:
             s.substr(0,s.find_first_of(" ")).compare("redim1")==0 || s.substr(0,s.find_first_of(" ")).compare("redim1$")==0 ||
             s.substr(0,s.find_first_of(" ")).compare("for_offset_arr2")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_n1")==0 ||
             s.substr(0,s.find_first_of(" ")).compare("obj_usr_s1")==0 || s.substr(0,s.find_first_of(" ")).compare("uref_ptr")==0 ||
-            s.substr(0,s.find_first_of(" ")).compare("obj_usr_init1")==0)
+            s.substr(0,s.find_first_of(" ")).compare("obj_usr_init1")==0 || s.substr(0,s.find_first_of(" ")).compare("preset_t")==0)
         {
             current_address[current_segment] += 17; //1 byte for instruction and 8 bytes for each argument
         }
@@ -138,7 +138,7 @@ public:
                 s.substr(0,s.find_first_of(" ")).compare("redim2")==0 || s.substr(0,s.find_first_of(" ")).compare("redim2$")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("for_offset_arr3")==0 || s.substr(0,s.find_first_of(" ")).compare("dbg")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("obj_usr_n2")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_s2")==0 ||
-                s.substr(0,s.find_first_of(" ")).compare("obj_usr_init2")==0)
+                s.substr(0,s.find_first_of(" ")).compare("obj_usr_init2")==0 || s.substr(0,s.find_first_of(" ")).compare("preset_t1")==0)
         {
             current_address[current_segment] += 25; //1 byte for instruction and 8 bytes for 3 arguments
         }
@@ -147,11 +147,12 @@ public:
                 s.substr(0,s.find_first_of(" ")).compare("obj_num3")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_str3")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("redim3")==0 || s.substr(0,s.find_first_of(" ")).compare("redim3$")==0 ||
                 s.substr(0,s.find_first_of(" ")).compare("obj_usr_n3")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_s3")==0 ||
-                s.substr(0,s.find_first_of(" ")).compare("obj_usr3")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_init3")==0)
+                s.substr(0,s.find_first_of(" ")).compare("obj_usr3")==0 || s.substr(0,s.find_first_of(" ")).compare("obj_usr_init3")==0 ||
+                s.substr(0,s.find_first_of(" ")).compare("preset_t2")==0)
         {
             current_address[current_segment] += 33; //1 byte for instruction and 8 bytes for 4 arguments
         }
-        else if(s.substr(0,s.find_first_of(" ")).compare("dim_type3")==0)
+        else if(s.substr(0,s.find_first_of(" ")).compare("dim_type3")==0 || s.substr(0,s.find_first_of(" ")).compare("preset_t3")==0)
         {
             current_address[current_segment] += 41; //1 byte for instruction and 8 bytes for 5 arguments
         }

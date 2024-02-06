@@ -1141,19 +1141,71 @@ namespace rc_cbc_assembler
             }
             else if(line_arg[0].compare("obj_usr_init")==0)
             {
-                writeSegment(180);
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("u")==0)
+                {
+                    writeSegment(184);
+                }
+                else if(arg1_type.compare("!")==0)
+                {
+                    writeSegment(180);
+                }
             }
             else if(line_arg[0].compare("obj_usr_init1")==0)
             {
-                writeSegment(181);
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("u")==0)
+                {
+                    writeSegment(185);
+                }
+                else if(arg1_type.compare("!")==0)
+                {
+                    writeSegment(181);
+                }
             }
             else if(line_arg[0].compare("obj_usr_init2")==0)
             {
-                writeSegment(182);
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("u")==0)
+                {
+                    writeSegment(186);
+                }
+                else if(arg1_type.compare("!")==0)
+                {
+                    writeSegment(182);
+                }
             }
             else if(line_arg[0].compare("obj_usr_init3")==0)
             {
-                writeSegment(183);
+                string arg1_type = line_arg[1].substr(0,1);
+
+                if(arg1_type.compare("u")==0)
+                {
+                    writeSegment(187);
+                }
+                else if(arg1_type.compare("!")==0)
+                {
+                    writeSegment(183);
+                }
+            }
+            else if(line_arg[0].compare("preset_t")==0)
+            {
+                writeSegment(188);
+            }
+            else if(line_arg[0].compare("preset_t1")==0)
+            {
+                writeSegment(189);
+            }
+            else if(line_arg[0].compare("preset_t2")==0)
+            {
+                writeSegment(190);
+            }
+            else if(line_arg[0].compare("preset_t3")==0)
+            {
+                writeSegment(191);
             }
             else
             {
