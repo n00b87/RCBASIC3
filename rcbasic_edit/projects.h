@@ -87,7 +87,7 @@ class rcbasic_project
     public:
         rcbasic_project();
         rcbasic_project(wxString project_name, wxString project_location, int main_source_flag, wxString main_source_value,
-                        wxString project_author, wxString project_website, wxString project_description);
+                        wxString project_author, wxString project_website, wxString project_description, wxString project_extension);
         ~rcbasic_project();
 
         void copyFromProject(rcbasic_project* p);
