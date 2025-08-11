@@ -113,7 +113,7 @@ wxWindow* rcbasic_project_node::getNotebookPage()
 
 
 rcbasic_project::rcbasic_project(wxString project_name, wxString project_location, int main_source_flag, wxString main_source_value,
-                wxString project_author, wxString project_website, wxString project_description)
+                wxString project_author, wxString project_website, wxString project_description, wxString project_extension)
 {
     last_saved_project = NULL;
     project_valid = false;
@@ -155,7 +155,7 @@ rcbasic_project::rcbasic_project(wxString project_name, wxString project_locatio
     wxFileName fname, dest_name, project_file_name;
 
     project_file_name.SetPath(location);
-    project_file_name.SetName(name + _(".rcprj"));
+    project_file_name.SetName(name + _(".") + project_extension);
 
     //wxFileName x = fname;
     //x.MakeRelativeTo(location);

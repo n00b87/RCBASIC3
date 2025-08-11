@@ -26,6 +26,9 @@ bool rc_ideApp::OnInit()
     if ( wxsOK )
     {
     	rcbasic_edit_frame* Frame = new rcbasic_edit_frame(0, this->argc, args);
+    	#ifdef COS_BASIC
+    	Frame->SetTitle(_("Commodore OS BASIC Studio"));
+    	#endif // COS_BASIC
     	Frame->Show();
     	SetTopWindow(Frame);
     }
@@ -35,6 +38,10 @@ bool rc_ideApp::OnInit()
 
 int rc_ideApp::OnExit()
 {
+    #ifdef COS_BASIC
+    wxPuts(_("Commodore OS BASIC Shutdown Complete"));
+    #else
     wxPuts(_("RCBasic Studio Shutdown Complete"));
+    #endif // COS_BASIC
     return 0;
 }

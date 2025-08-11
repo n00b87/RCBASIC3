@@ -91,6 +91,7 @@ struct rcbasic_edit_scheme
     wxColour current_line_fg_color;
     wxColour line_number_fg_color;
     wxColour line_number_bkg_color;
+    wxFont t_font;
 
     bool style_bkg_color_set;
     bool keyword_fg_color_set;
@@ -108,6 +109,7 @@ struct rcbasic_edit_scheme
     bool current_line_fg_color_set;
     bool line_number_bkg_color_set;
     bool line_number_fg_color_set;
+    bool t_font_set;
 };
 
 /** Implementing rc_ideFrame */
@@ -117,6 +119,12 @@ class rcbasic_edit_frame : public rc_ideFrame
         wxString RCBasic_Studio_Version;
         wxString RCBasic_Documentation_Link;
         wxString Studio_Documentation_Link;
+
+        #ifdef COS_BASIC
+        wxString project_extension = _("cbprj");
+        #else
+        wxString project_extension = _("rcprj");
+        #endif // COS_BASIC
 
         bool conv_rel;
 
@@ -189,6 +197,7 @@ class rcbasic_edit_frame : public rc_ideFrame
 
         wxFont editor_font;
         wxFont default_font;
+        bool e_font_debug = false;
 
         wxProcess* build_process;
         wxProcess* run_process;
@@ -358,6 +367,10 @@ class rcbasic_edit_frame : public rc_ideFrame
 
 		std::vector<rcbasic_symbol> getSymbols() { return symbols; }
 
+		int getFontFamily(wxString family_name);
+		int getFontStyle(wxString style_name);
+		int getFontWeight(wxString weight_name);
+		int getFontEncoding(wxString encoding_name);
 		bool loadScheme(wxFileName fname);
 		void applyScheme(wxStyledTextCtrl* rc_txtCtrl);
 

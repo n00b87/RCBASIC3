@@ -606,7 +606,7 @@ rc_ideFrame( parent )
     for(int i = 1; i < argc; i++)
     {
         wxFileName f(argv[i]);
-        if(f.GetExt().compare(_("rcprj"))==0)
+        if(f.GetExt().compare(project_extension)==0)
             openProject(f);
         else if(f.GetExt().compare(_("bas"))==0 || f.GetExt().compare(_("txt"))==0)
             openSourceFile(f);
@@ -708,6 +708,10 @@ bool rcbasic_edit_frame::loadEditorProperties(wxFileName fname)
             long cc_len = 0;
             value.ToLong(&cc_len);
             lenCompletionCheck = cc_len;
+        }
+        else if(property.compare(_("DEBUG_FONT"))==0)
+        {
+            e_font_debug = (value.Upper().Trim().compare(_("TRUE"))==0 ? true : false);
         }
         else if(property.compare(_("RCBASIC_PATH"))==0)
         {
@@ -958,6 +962,260 @@ bool rcbasic_edit_frame::saveEditorProperties(wxFileName fname)
     return true;
 }
 
+int rcbasic_edit_frame::getFontFamily(wxString family_name)
+{
+    if(family_name.Upper().Trim().compare(_("DEFAULT"))==0)
+        return (int)wxFONTFAMILY_DEFAULT;
+    else if(family_name.Upper().Trim().compare(_("DECORATIVE"))==0)
+        return (int)wxFONTFAMILY_DECORATIVE;
+    else if(family_name.Upper().Trim().compare(_("ROMAN"))==0)
+        return (int)wxFONTFAMILY_ROMAN;
+    else if(family_name.Upper().Trim().compare(_("SCRIPT"))==0)
+        return (int)wxFONTFAMILY_SCRIPT;
+    else if(family_name.Upper().Trim().compare(_("SWISS"))==0)
+        return (int)wxFONTFAMILY_SWISS;
+    else if(family_name.Upper().Trim().compare(_("MODERN"))==0)
+        return (int)wxFONTFAMILY_MODERN;
+
+    return (int)wxFONTFAMILY_DEFAULT;
+}
+
+int rcbasic_edit_frame::getFontStyle(wxString style_name)
+{
+    if(style_name.Upper().Trim().compare(_("NORMAL"))==0)
+        return (int)wxFONTSTYLE_NORMAL;
+    else if(style_name.Upper().Trim().compare(_("SLANT"))==0)
+        return (int)wxFONTSTYLE_SLANT;
+    else if(style_name.Upper().Trim().compare(_("ITALIC"))==0)
+        return (int)wxFONTSTYLE_ITALIC;
+
+    return wxFONTSTYLE_ITALIC;
+}
+
+int rcbasic_edit_frame::getFontWeight(wxString weight_name)
+{
+    if(weight_name.Upper().Trim().compare(_("NORMAL"))==0)
+        return (int)wxFONTWEIGHT_NORMAL;
+    else if(weight_name.Upper().Trim().compare(_("LIGHT"))==0)
+        return (int)wxFONTWEIGHT_LIGHT;
+    else if(weight_name.Upper().Trim().compare(_("BOLD"))==0)
+        return (int)wxFONTWEIGHT_BOLD;
+
+    return wxFONTWEIGHT_NORMAL;
+}
+
+int rcbasic_edit_frame::getFontEncoding(wxString encoding_name)
+{
+    if(encoding_name.Upper().Trim().compare(_("SYSTEM"))==0)
+        return (int)wxFONTENCODING_SYSTEM;
+    else if(encoding_name.Upper().Trim().compare(_("ALTERNATIVE"))==0)
+        return (int)wxFONTENCODING_ALTERNATIVE;
+    else if(encoding_name.Upper().Trim().compare(_("BIG5"))==0)
+        return (int)wxFONTENCODING_BIG5;
+    else if(encoding_name.Upper().Trim().compare(_("BULGARIAN"))==0)
+        return (int)wxFONTENCODING_BULGARIAN;
+    else if(encoding_name.Upper().Trim().compare(_("CP1250"))==0)
+        return (int)wxFONTENCODING_CP1250;
+    else if(encoding_name.Upper().Trim().compare(_("CP1251"))==0)
+        return (int)wxFONTENCODING_CP1251;
+    else if(encoding_name.Upper().Trim().compare(_("CP1252"))==0)
+        return (int)wxFONTENCODING_CP1252;
+    else if(encoding_name.Upper().Trim().compare(_("CP1253"))==0)
+        return (int)wxFONTENCODING_CP1253;
+    else if(encoding_name.Upper().Trim().compare(_("CP1254"))==0)
+        return (int)wxFONTENCODING_CP1254;
+    else if(encoding_name.Upper().Trim().compare(_("CP1255"))==0)
+        return (int)wxFONTENCODING_CP1255;
+    else if(encoding_name.Upper().Trim().compare(_("CP1256"))==0)
+        return (int)wxFONTENCODING_CP1256;
+    else if(encoding_name.Upper().Trim().compare(_("CP1257"))==0)
+        return (int)wxFONTENCODING_CP1257;
+    else if(encoding_name.Upper().Trim().compare(_("CP1258"))==0)
+        return (int)wxFONTENCODING_CP1258;
+    else if(encoding_name.Upper().Trim().compare(_("CP12_MAX"))==0)
+        return (int)wxFONTENCODING_CP12_MAX;
+    else if(encoding_name.Upper().Trim().compare(_("CP1361"))==0)
+        return (int)wxFONTENCODING_CP1361;
+    else if(encoding_name.Upper().Trim().compare(_("CP437"))==0)
+        return (int)wxFONTENCODING_CP437;
+    else if(encoding_name.Upper().Trim().compare(_("CP850"))==0)
+        return (int)wxFONTENCODING_CP850;
+    else if(encoding_name.Upper().Trim().compare(_("CP852"))==0)
+        return (int)wxFONTENCODING_CP852;
+    else if(encoding_name.Upper().Trim().compare(_("CP855"))==0)
+        return (int)wxFONTENCODING_CP855;
+    else if(encoding_name.Upper().Trim().compare(_("CP866"))==0)
+        return (int)wxFONTENCODING_CP866;
+    else if(encoding_name.Upper().Trim().compare(_("CP874"))==0)
+        return (int)wxFONTENCODING_CP874;
+    else if(encoding_name.Upper().Trim().compare(_("CP932"))==0)
+        return (int)wxFONTENCODING_CP932;
+    else if(encoding_name.Upper().Trim().compare(_("CP936"))==0)
+        return (int)wxFONTENCODING_CP936;
+    else if(encoding_name.Upper().Trim().compare(_("CP949"))==0)
+        return (int)wxFONTENCODING_CP949;
+    else if(encoding_name.Upper().Trim().compare(_("CP950"))==0)
+        return (int)wxFONTENCODING_CP950;
+    else if(encoding_name.Upper().Trim().compare(_("DEFAULT"))==0)
+        return (int)wxFONTENCODING_DEFAULT;
+    else if(encoding_name.Upper().Trim().compare(_("EUC_JP"))==0)
+        return (int)wxFONTENCODING_EUC_JP;
+    else if(encoding_name.Upper().Trim().compare(_("EUC_KR"))==0)
+        return (int)wxFONTENCODING_EUC_KR;
+    else if(encoding_name.Upper().Trim().compare(_("GB2312"))==0)
+        return (int)wxFONTENCODING_GB2312;
+    else if(encoding_name.Upper().Trim().compare(_("ISO2022_JP"))==0)
+        return (int)wxFONTENCODING_ISO2022_JP;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_1"))==0)
+        return (int)wxFONTENCODING_ISO8859_1;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_10"))==0)
+        return (int)wxFONTENCODING_ISO8859_10;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_11"))==0)
+        return (int)wxFONTENCODING_ISO8859_11;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_12"))==0)
+        return (int)wxFONTENCODING_ISO8859_12;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_13"))==0)
+        return (int)wxFONTENCODING_ISO8859_13;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_14"))==0)
+        return (int)wxFONTENCODING_ISO8859_14;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_15"))==0)
+        return (int)wxFONTENCODING_ISO8859_15;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_2"))==0)
+        return (int)wxFONTENCODING_ISO8859_2;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_3"))==0)
+        return (int)wxFONTENCODING_ISO8859_3;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_4"))==0)
+        return (int)wxFONTENCODING_ISO8859_4;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_5"))==0)
+        return (int)wxFONTENCODING_ISO8859_5;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_6"))==0)
+        return (int)wxFONTENCODING_ISO8859_6;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_7"))==0)
+        return (int)wxFONTENCODING_ISO8859_7;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_8"))==0)
+        return (int)wxFONTENCODING_ISO8859_8;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_9"))==0)
+        return (int)wxFONTENCODING_ISO8859_9;
+    else if(encoding_name.Upper().Trim().compare(_("ISO8859_MAX"))==0)
+        return (int)wxFONTENCODING_ISO8859_MAX;
+    else if(encoding_name.Upper().Trim().compare(_("JOHAB"))==0)
+        return (int)wxFONTENCODING_JOHAB;
+    else if(encoding_name.Upper().Trim().compare(_("KOI8"))==0)
+        return (int)wxFONTENCODING_KOI8;
+    else if(encoding_name.Upper().Trim().compare(_("KOI8_U"))==0)
+        return (int)wxFONTENCODING_KOI8_U;
+    else if(encoding_name.Upper().Trim().compare(_("MACARABIC"))==0)
+        return (int)wxFONTENCODING_MACARABIC;
+    else if(encoding_name.Upper().Trim().compare(_("MACARABICEXT"))==0)
+        return (int)wxFONTENCODING_MACARABICEXT;
+    else if(encoding_name.Upper().Trim().compare(_("MACARMENIAN"))==0)
+        return (int)wxFONTENCODING_MACARMENIAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACBENGALI"))==0)
+        return (int)wxFONTENCODING_MACBENGALI;
+    else if(encoding_name.Upper().Trim().compare(_("MACBURMESE"))==0)
+        return (int)wxFONTENCODING_MACBURMESE;
+    else if(encoding_name.Upper().Trim().compare(_("MACCELTIC"))==0)
+        return (int)wxFONTENCODING_MACCELTIC;
+    else if(encoding_name.Upper().Trim().compare(_("MACCENTRALEUR"))==0)
+        return (int)wxFONTENCODING_MACCENTRALEUR;
+    else if(encoding_name.Upper().Trim().compare(_("MACCHINESESIMP"))==0)
+        return (int)wxFONTENCODING_MACCHINESESIMP;
+    else if(encoding_name.Upper().Trim().compare(_("MACCHINESETRAD"))==0)
+        return (int)wxFONTENCODING_MACCHINESETRAD;
+    else if(encoding_name.Upper().Trim().compare(_("MACCROATIAN"))==0)
+        return (int)wxFONTENCODING_MACCROATIAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACCYRILLIC"))==0)
+        return (int)wxFONTENCODING_MACCYRILLIC;
+    else if(encoding_name.Upper().Trim().compare(_("MACDEVANAGARI"))==0)
+        return (int)wxFONTENCODING_MACDEVANAGARI;
+    else if(encoding_name.Upper().Trim().compare(_("MACDINGBATS"))==0)
+        return (int)wxFONTENCODING_MACDINGBATS;
+    else if(encoding_name.Upper().Trim().compare(_("MACETHIOPIC"))==0)
+        return (int)wxFONTENCODING_MACETHIOPIC;
+    else if(encoding_name.Upper().Trim().compare(_("MACGAELIC"))==0)
+        return (int)wxFONTENCODING_MACGAELIC;
+    else if(encoding_name.Upper().Trim().compare(_("MACGEORGIAN"))==0)
+        return (int)wxFONTENCODING_MACGEORGIAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACGREEK"))==0)
+        return (int)wxFONTENCODING_MACGREEK;
+    else if(encoding_name.Upper().Trim().compare(_("MACGUJARATI"))==0)
+        return (int)wxFONTENCODING_MACGUJARATI;
+    else if(encoding_name.Upper().Trim().compare(_("MACGURMUKHI"))==0)
+        return (int)wxFONTENCODING_MACGURMUKHI;
+    else if(encoding_name.Upper().Trim().compare(_("MACHEBREW"))==0)
+        return (int)wxFONTENCODING_MACHEBREW;
+    else if(encoding_name.Upper().Trim().compare(_("MACICELANDIC"))==0)
+        return (int)wxFONTENCODING_MACICELANDIC;
+    else if(encoding_name.Upper().Trim().compare(_("MACJAPANESE"))==0)
+        return (int)wxFONTENCODING_MACJAPANESE;
+    else if(encoding_name.Upper().Trim().compare(_("MACKANNADA"))==0)
+        return (int)wxFONTENCODING_MACKANNADA;
+    else if(encoding_name.Upper().Trim().compare(_("MACKEYBOARD"))==0)
+        return (int)wxFONTENCODING_MACKEYBOARD;
+    else if(encoding_name.Upper().Trim().compare(_("MACKHMER"))==0)
+        return (int)wxFONTENCODING_MACKHMER;
+    else if(encoding_name.Upper().Trim().compare(_("MACKOREAN"))==0)
+        return (int)wxFONTENCODING_MACKOREAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACLAOTIAN"))==0)
+        return (int)wxFONTENCODING_MACLAOTIAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACMALAJALAM"))==0)
+        return (int)wxFONTENCODING_MACMALAJALAM;
+    else if(encoding_name.Upper().Trim().compare(_("MACMAX"))==0)
+        return (int)wxFONTENCODING_MACMAX;
+    else if(encoding_name.Upper().Trim().compare(_("MACMIN"))==0)
+        return (int)wxFONTENCODING_MACMIN;
+    else if(encoding_name.Upper().Trim().compare(_("MACMONGOLIAN"))==0)
+        return (int)wxFONTENCODING_MACMONGOLIAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACORIYA"))==0)
+        return (int)wxFONTENCODING_MACORIYA;
+    else if(encoding_name.Upper().Trim().compare(_("MACROMAN"))==0)
+        return (int)wxFONTENCODING_MACROMAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACROMANIAN"))==0)
+        return (int)wxFONTENCODING_MACROMANIAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACSINHALESE"))==0)
+        return (int)wxFONTENCODING_MACSINHALESE;
+    else if(encoding_name.Upper().Trim().compare(_("MACSYMBOL"))==0)
+        return (int)wxFONTENCODING_MACSYMBOL;
+    else if(encoding_name.Upper().Trim().compare(_("MACTAMIL"))==0)
+        return (int)wxFONTENCODING_MACTAMIL;
+    else if(encoding_name.Upper().Trim().compare(_("MACTELUGU"))==0)
+        return (int)wxFONTENCODING_MACTELUGU;
+    else if(encoding_name.Upper().Trim().compare(_("MACTHAI"))==0)
+        return (int)wxFONTENCODING_MACTHAI;
+    else if(encoding_name.Upper().Trim().compare(_("MACTIBETAN"))==0)
+        return (int)wxFONTENCODING_MACTIBETAN;
+    else if(encoding_name.Upper().Trim().compare(_("MACTURKISH"))==0)
+        return (int)wxFONTENCODING_MACTURKISH;
+    else if(encoding_name.Upper().Trim().compare(_("MACVIATNAMESE"))==0)
+        return (int)wxFONTENCODING_MACVIATNAMESE;
+    else if(encoding_name.Upper().Trim().compare(_("MAX"))==0)
+        return (int)wxFONTENCODING_MAX;
+    else if(encoding_name.Upper().Trim().compare(_("SHIFT_JIS"))==0)
+        return (int)wxFONTENCODING_SHIFT_JIS;
+    else if(encoding_name.Upper().Trim().compare(_("UNICODE"))==0)
+        return (int)wxFONTENCODING_UNICODE;
+    else if(encoding_name.Upper().Trim().compare(_("UTF16"))==0)
+        return (int)wxFONTENCODING_UTF16;
+    else if(encoding_name.Upper().Trim().compare(_("UTF16BE"))==0)
+        return (int)wxFONTENCODING_UTF16BE;
+    else if(encoding_name.Upper().Trim().compare(_("UTF16LE"))==0)
+        return (int)wxFONTENCODING_UTF16LE;
+    else if(encoding_name.Upper().Trim().compare(_("UTF32"))==0)
+        return (int)wxFONTENCODING_UTF32;
+    else if(encoding_name.Upper().Trim().compare(_("UTF32BE"))==0)
+        return (int)wxFONTENCODING_UTF32BE;
+    else if(encoding_name.Upper().Trim().compare(_("UTF32LE"))==0)
+        return (int)wxFONTENCODING_UTF32LE;
+    else if(encoding_name.Upper().Trim().compare(_("UTF7"))==0)
+        return (int)wxFONTENCODING_UTF7;
+    else if(encoding_name.Upper().Trim().compare(_("UTF8"))==0)
+        return (int)wxFONTENCODING_UTF8;
+    else if(encoding_name.Upper().Trim().compare(_("VIETNAMESE"))==0)
+        return (int)wxFONTENCODING_VIETNAMESE;
+
+    return wxFONTENCODING_DEFAULT;
+}
+
 bool rcbasic_edit_frame::loadScheme(wxFileName fname)
 {
     wxFile scheme_file;
@@ -986,6 +1244,14 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
         long g = 0;
         long b = 0;
 
+        wxString font_face = _("");
+        wxString font_family = _("");
+        wxString font_size = _("");
+        wxString font_style = _("");
+        wxString font_weight = _("");
+        wxString font_underline = _("");
+        wxString font_encode = _("");
+
         wxString n_value;
 
         editor_scheme.caret_bkg_color_set = false;
@@ -1004,6 +1270,7 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
         editor_scheme.style_bkg_color_set = false;
         editor_scheme.line_number_bkg_color_set = false;
         editor_scheme.line_number_fg_color_set = false;
+        editor_scheme.t_font_set = false;
 
         for(int i = 0; i < scheme_data.length(); i++)
         {
@@ -1016,16 +1283,73 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
             values = scheme_data.substr(vpos+1);
             values = values.substr(0, values.find_first_of(_("\n")));
 
-            n_value = values.substr(0, values.find_first_of(_(",")));
-            n_value.ToLong(&r);
-            values = values.substr(values.find_first_of(_(","))+1);
+            if(property.compare(_("font"))==0)
+            {
+                font_face = _("");
+                font_family = _("");
+                font_size = _("");
+                font_style = _("");
+                font_weight = _("");
+                font_underline = _("");
+                font_encode = _("");
 
-            n_value = values.substr(0, values.find_first_of(_(",")));
-            n_value.ToLong(&g);
-            values = values.substr(values.find_first_of(_(","))+1);
+                int n_index = -1;
 
-            n_value = values.substr(0, values.find_first_of(_("\n")));
-            n_value.ToLong(&b);
+                n_index = values.find_first_of(_(","));
+                if(n_index >= 0 && n_index < values.size())
+                {
+                    n_value = values.substr(0, n_index);
+                    font_face = n_value.Trim();
+                    font_face = font_face.substr(font_face.find_first_not_of(_(" ")));
+                    values = values.substr(n_index+1);
+                }
+
+                n_index = values.find_first_of(_(","));
+                if(n_index >= 0 && n_index < values.size())
+                {
+                    n_value = values.substr(0, n_index);
+                    font_size = n_value.Trim();
+                    font_size = font_size.substr(font_size.find_first_not_of(_(" ")));
+                    values = values.substr(n_index+1);
+                }
+
+                n_index = values.find_first_of(_(","));
+                if(n_index >= 0 && n_index < values.size())
+                {
+                    n_value = values.substr(0, n_index);
+                    font_style = n_value.Trim();
+                    font_style = font_style.substr(font_style.find_first_not_of(_(" ")));
+                    values = values.substr(n_index+1);
+                }
+
+                n_index = values.find_first_of(_(","));
+                if(n_index >= 0 && n_index < values.size())
+                {
+                    n_value = values.substr(0, n_index);
+                    font_weight = n_value.Trim();
+                    font_weight = font_weight.substr(font_weight.find_first_not_of(_(" ")));
+                    values = values.substr(n_index+1);
+                }
+
+                n_value = values.substr(0);
+                font_underline = n_value.Trim();
+                font_underline = font_underline.substr(font_underline.find_first_not_of(_(" ")));
+                font_underline.Replace(_("\n"), _(""));
+
+            }
+            else
+            {
+                n_value = values.substr(0, values.find_first_of(_(",")));
+                n_value.ToLong(&r);
+                values = values.substr(values.find_first_of(_(","))+1);
+
+                n_value = values.substr(0, values.find_first_of(_(",")));
+                n_value.ToLong(&g);
+                values = values.substr(values.find_first_of(_(","))+1);
+
+                n_value = values.substr(0, values.find_first_of(_("\n")));
+                n_value.ToLong(&b);
+            }
 
             if(property.compare(_("style_bkg_color"))==0)
             {
@@ -1106,6 +1430,32 @@ bool rcbasic_edit_frame::loadScheme(wxFileName fname)
             {
                 editor_scheme.line_number_bkg_color = wxColour(r, g, b);
                 editor_scheme.line_number_bkg_color_set = true;
+            }
+            else if(property.compare(_("font"))==0)
+            {
+
+                bool underline_flag = ( (font_underline.Upper().Trim().compare(_("TRUE"))==0 || font_underline.Upper().Trim().compare(_("1"))==0) ? true : false);
+
+                int point_size = 0;
+                font_size.ToInt(&point_size);
+
+                //wxMessageBox( _("Face: ") + font_face);
+                //wxMessageBox( _("Family: ") + font_family);
+                //wxMessageBox( _("point_size = ") + wxString::Format(_("%i"), point_size));
+                //wxMessageBox( _("style = ") + font_style);
+                //wxMessageBox( _("weight = ") + font_weight);
+                //wxMessageBox( _("underline = [") + font_underline.Upper().Trim() + _( "] ~ ") + (underline_flag ? _("TRUE") : _("FALSE")));
+                //wxMessageBox( _("encoding = ") + font_encode);
+
+                editor_scheme.t_font.SetFaceName(font_face);
+                //editor_scheme.t_font.SetFamily(getFontFamily(font_family));
+                editor_scheme.t_font.SetPointSize(point_size);
+                editor_scheme.t_font.SetStyle(getFontStyle(font_style));
+                editor_scheme.t_font.SetWeight(getFontWeight(font_weight));
+                editor_scheme.t_font.SetUnderlined(underline_flag);
+                //editor_scheme.t_font.SetEncoding((wxFontEncoding)getFontEncoding(font_encode));
+
+                editor_scheme.t_font_set = true;
             }
 
 
@@ -1245,6 +1595,20 @@ void rcbasic_edit_frame::applyScheme(wxStyledTextCtrl* rc_txtCtrl)
     {
         if(rc_txtCtrl)
             rc_txtCtrl->StyleSetForeground(wxSTC_STYLE_LINENUMBER, editor_scheme.line_number_fg_color);
+    }
+
+    if(editor_scheme.t_font_set)
+    {
+        if(rc_txtCtrl)
+        {
+            rc_txtCtrl->StyleSetFont(wxSTC_B_KEYWORD, editor_scheme.t_font);
+            rc_txtCtrl->StyleSetFont(wxSTC_B_KEYWORD2, editor_scheme.t_font);
+            rc_txtCtrl->StyleSetFont(wxSTC_B_NUMBER, editor_scheme.t_font);
+            rc_txtCtrl->StyleSetFont(wxSTC_B_STRING, editor_scheme.t_font);
+            rc_txtCtrl->StyleSetFont(wxSTC_B_COMMENT, editor_scheme.t_font);
+            rc_txtCtrl->StyleSetFont(wxSTC_B_IDENTIFIER, editor_scheme.t_font);
+            rc_txtCtrl->StyleSetFont(wxSTC_B_OPERATOR, editor_scheme.t_font);
+        }
     }
 
     //updateFont(rc_txtCtrl);
@@ -1500,7 +1864,7 @@ void rcbasic_edit_frame::newProjectMenuSelect( wxCommandEvent& event)
         wxString project_website = newProject_win->projectWebsite_field->GetValue();
         wxString project_description = newProject_win->projectDescription_field->GetValue();
 
-        rcbasic_project* new_project = new rcbasic_project(project_name, project_location, main_source_flag, main_source_value, project_author, project_website, project_description);
+        rcbasic_project* new_project = new rcbasic_project(project_name, project_location, main_source_flag, main_source_value, project_author, project_website, project_description, project_extension);
         if(!new_project)
         {
             wxMessageBox(_("Error: Could not create New Project"));
@@ -1576,7 +1940,12 @@ void rcbasic_edit_frame::newFileMenuSelect( wxCommandEvent& event)
 void rcbasic_edit_frame::openProjectMenuSelect( wxCommandEvent& event )
 {
     notebook_mutex.Lock();
+    #ifdef COS_BASIC
+    wxFileName project_fname = openFileDialog(_("Open Project"), _("BASIC Project (*.cbprj)|*.cbprj"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    #else
     wxFileName project_fname = openFileDialog(_("Open Project"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    #endif
+
     //wxPuts(_("project_fname: ") + project_fname.GetLongPath());
     if(project_fname.GetFullPath().compare(_(""))!=0)
         openProject(project_fname);
@@ -1586,7 +1955,11 @@ void rcbasic_edit_frame::openProjectMenuSelect( wxCommandEvent& event )
 void rcbasic_edit_frame::openFileMenuSelect( wxCommandEvent& event )
 {
     notebook_mutex.Lock();
+    #ifdef COS_BASIC
+    wxFileName fname = openFileDialog( _("Open BASIC Source file"), _("RCBasic Source files (*.bas)|*.bas"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    #else
     wxFileName fname = openFileDialog( _("Open RCBasic Source file"), _("RCBasic Source files (*.bas)|*.bas"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    #endif
     openSourceFile(fname);
     notebook_mutex.Unlock();
 }
@@ -1736,7 +2109,7 @@ void rcbasic_edit_frame::openProject(wxFileName project_path)
 
         //wxSetWorkingDirectory(cwd);
 
-        rcbasic_project* project = new rcbasic_project(project_name, project_location.GetLongPath(), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description);
+        rcbasic_project* project = new rcbasic_project(project_name, project_location.GetLongPath(), RCBASIC_PROJECT_SOURCE_OPEN, project_main, project_author, project_website, project_description, project_extension);
         for(int i = 0; i < project_source.size(); i++)
         {
             //wxPuts(_("Adding Source: ") + project_source[i]);
@@ -1942,7 +2315,12 @@ void rcbasic_edit_frame::onSaveProjectMenuSelect( wxCommandEvent& event )
 
     if(!wxDirExists(active_project->getLocation()))
     {
+        #ifdef COS_BASIC
+        project_fname = openFileDialog(_("Save Project As"), _("BASIC Project (*.cbprj)|*.cbprj"), wxFD_SAVE);
+        #else
         project_fname = openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_SAVE);
+        #endif
+
         if(project_fname.GetFullPath().compare(_(""))==0)
             return;
     }
@@ -1986,7 +2364,12 @@ void rcbasic_edit_frame::onSaveProjectAsMenuSelect( wxCommandEvent& event )
 
     wxFileName project_fname = wxFileName(active_project->getProjectFileLocation());
 
+    #ifdef COS_BASIC
+    project_fname = openFileDialog(_("Save Project As"), _("BASIC Project (*.cbprj)|*.cbprj"), wxFD_SAVE);
+    #else
     project_fname = openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_SAVE);
+    #endif
+
     if(project_fname.GetFullPath().compare(_(""))==0)
         return;
 
@@ -2207,7 +2590,7 @@ void rcbasic_edit_frame::saveProject(rcbasic_project* project)
 
     project_file.SetPath(project->getLocation());
     project_file.SetName(project->getName());
-    project_file.SetExt(_("rcprj"));
+    project_file.SetExt(project_extension);
 
     project->saveProject(project_file);
 }
@@ -2277,7 +2660,7 @@ int rcbasic_edit_frame::closeProject(rcbasic_project* project)
 
     project_file.SetPath(project->getLocation());
     project_file.SetName(project->getName());
-    project_file.SetExt(_("rcprj"));
+    project_file.SetExt(project_extension);
 
     if(rtn_val == projectCloseFlag_SAVE)
     {
@@ -2336,7 +2719,11 @@ void rcbasic_edit_frame::onSaveProjectAs(wxCommandEvent& event)
     if(active_project)
     {
         notebook_mutex.Lock();
+        #ifdef COS_BASIC
+        active_project->saveProject(openFileDialog(_("Save Project As"), _("BASIC Project (*.cbprj)|*.cbprj"),wxFD_SAVE));
+        #else
         active_project->saveProject(openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"),wxFD_SAVE));
+        #endif
         notebook_mutex.Unlock();
     }
 }
@@ -3208,6 +3595,14 @@ void rcbasic_edit_frame::onGotoMenuSelect( wxCommandEvent& event )
 
 void rcbasic_edit_frame::updateFont(wxStyledTextCtrl* t)
 {
+    if(e_font_debug)
+    {
+        wxMessageBox(_("FONT FACE: ") + editor_font.GetFaceName() + _("\n") +
+                     _("FONT SIZE: ") + wxString::Format(_("%i"), editor_font.GetPointSize()) + _("\n") +
+                     _("FONT STYLE: ") + editor_font.GetStyleString() + _("\n") +
+                     _("FONT WEIGHT: ") + editor_font.GetWeightString());
+    }
+
     t->StyleSetFont(wxSTC_B_COMMENT, editor_font);
     t->StyleSetFont(wxSTC_B_CONSTANT, editor_font);
     t->StyleSetFont(wxSTC_B_DATE, editor_font);
@@ -4387,7 +4782,7 @@ void rcbasic_edit_frame::onDropFiles( wxDropFilesEvent& event )
             wxFileName fname(files[i]);
             if(fname.GetExt().MakeLower().compare(_("bas"))==0 || fname.GetExt().MakeLower().compare(_("txt"))==0)
                 openSourceFile(wxFileName(files[i]));
-            else if(fname.GetExt().MakeLower().compare(_("rcprj"))==0)
+            else if(fname.GetExt().MakeLower().compare(project_extension)==0)
                 openProject(fname);
 
         }

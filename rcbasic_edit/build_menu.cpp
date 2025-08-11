@@ -162,7 +162,12 @@ void rcbasic_edit_frame::buildProject(wxString build_flags)
 
     if(!wxDirExists(build_run_project->getLocation()))
     {
+        #ifdef COS_BASIC
+        project_fname = openFileDialog(_("Save Project As"), _("BASIC Project (*.cbprj)|*.cbprj"), wxFD_SAVE);
+        #else
         project_fname = openFileDialog(_("Save Project As"), _("RCBasic Project (*.rcprj)|*.rcprj"), wxFD_SAVE);
+        #endif // COS_BASIC
+
         if(project_fname.GetFullPath().compare(_(""))==0)
             return;
     }
